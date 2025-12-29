@@ -1,0 +1,4 @@
+{
+  "markdown.preview.mermaid": true,
+  "dart.flutterSdkPath": ".fvm/versions/3.38.1"
+}
