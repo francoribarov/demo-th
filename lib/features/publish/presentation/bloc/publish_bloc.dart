@@ -8,7 +8,7 @@ part 'publish_bloc.freezed.dart';
 
 @freezed
 /// Publish flow actions.
-class PublishEvent with _$PublishEvent {
+abstract class PublishEvent with _$PublishEvent {
   /// Initializes the publish flow.
   const factory PublishEvent.started() = _Started;
 
@@ -63,7 +63,7 @@ class PublishEvent with _$PublishEvent {
 
 @freezed
 /// State for the publish flow.
-class PublishState with _$PublishState {
+abstract class PublishState with _$PublishState {
   /// Creates a publish state snapshot.
   const factory PublishState({
     @Default(0) int formVersion,

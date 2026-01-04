@@ -9,7 +9,7 @@ part 'listing_model.g.dart';
 
 @freezed
 /// Image model used for API serialization.
-class ListingImageModel with _$ListingImageModel {
+abstract class ListingImageModel with _$ListingImageModel {
   /// Creates an image model from API data.
   const factory ListingImageModel({
     required String url,
@@ -32,7 +32,7 @@ class ListingImageModel with _$ListingImageModel {
 
 @freezed
 /// Listing model used for API serialization.
-class ListingModel with _$ListingModel {
+abstract class ListingModel with _$ListingModel {
   /// Creates a listing model from API data.
   const factory ListingModel({
     required String id,
@@ -80,7 +80,7 @@ class ListingModel with _$ListingModel {
 
 @freezed
 /// Request model used for listing creation.
-class ListingCreateRequestModel with _$ListingCreateRequestModel {
+abstract class ListingCreateRequestModel with _$ListingCreateRequestModel {
   /// Creates a listing creation request model.
   const factory ListingCreateRequestModel({
     required String title,

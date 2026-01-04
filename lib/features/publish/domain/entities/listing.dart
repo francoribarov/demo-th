@@ -4,7 +4,7 @@ part 'listing.freezed.dart';
 
 @freezed
 /// Image metadata used by listings.
-class ListingImage with _$ListingImage {
+abstract class ListingImage with _$ListingImage {
   /// Creates an image reference for a listing.
   const factory ListingImage({
     required String url,
@@ -16,7 +16,7 @@ class ListingImage with _$ListingImage {
 
 @freezed
 /// Draft payload used to create a listing.
-class ListingDraft with _$ListingDraft {
+abstract class ListingDraft with _$ListingDraft {
   /// Creates a draft for publishing a listing.
   const factory ListingDraft({
     required String title,
@@ -36,7 +36,7 @@ class ListingDraft with _$ListingDraft {
 
 @freezed
 /// Published listing details returned by the backend.
-class Listing with _$Listing {
+abstract class Listing with _$Listing {
   /// Creates a listing model from backend data.
   const factory Listing({
     required String id,

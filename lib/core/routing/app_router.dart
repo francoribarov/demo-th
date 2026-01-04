@@ -71,10 +71,19 @@ class AppRouter {
 
       final isLogin = location == AppRoutes.login;
       final isRegister = location == AppRoutes.register;
-      final isProtected = location == AppRoutes.publish || RegExp(r'^/game/[^/]+/rental$').hasMatch(location);
+      final isProtected =
+          location == AppRoutes.publish ||
+          RegExp(r'^/game/[^/]+/rental$').hasMatch(location);
 
       final authBloc = getIt<AuthBloc>();
-      final isAuthed = authBloc.state.status == AuthStatus.authenticated;
+      final authState = authBloc.state;
+
+      if (authState.status == AuthStatus.unknown ||
+          authState.isCheckingStatus) {
+        return null;
+      }
+
+      final isAuthed = authState.status == AuthStatus.authenticated;
 
       if (!isAuthed && isProtected) {
         final from = Uri.encodeComponent(state.uri.toString());
@@ -96,14 +105,16 @@ class AppRouter {
           GoRoute(
             path: AppRoutes.home,
             name: 'home',
-            pageBuilder: (context, state) => const NoTransitionPage(child: HomePage()),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: HomePage()),
           ),
           GoRoute(
             path: AppRoutes.publish,
             name: 'publish',
             pageBuilder: (context, state) => NoTransitionPage(
               child: BlocProvider<PublishBloc>(
-                create: (_) => getIt<PublishBloc>()..add(const PublishEvent.started()),
+                create: (_) =>
+                    getIt<PublishBloc>()..add(const PublishEvent.started()),
                 child: const PublishGamePage(),
               ),
             ),
@@ -136,7 +147,9 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return BlocProvider<GameDetailsBloc>(
-            create: (_) => getIt<GameDetailsBloc>()..add(GameDetailsEvent.started(gameId: id)),
+            create: (_) =>
+                getIt<GameDetailsBloc>()
+                  ..add(GameDetailsEvent.started(gameId: id)),
             child: GameDetailsPage(gameId: id),
           );
         },
@@ -148,7 +161,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameRulesBloc>(
-                create: (_) => getIt<GameRulesBloc>()..add(GameRulesEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<GameRulesBloc>()
+                      ..add(GameRulesEvent.started(gameId: id)),
                 child: GameRulesPage(gameId: id),
               );
             },
@@ -160,7 +175,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameReviewsBloc>(
-                create: (_) => getIt<GameReviewsBloc>()..add(GameReviewsEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<GameReviewsBloc>()
+                      ..add(GameReviewsEvent.started(gameId: id)),
                 child: GameReviewsPage(gameId: id),
               );
             },
@@ -172,7 +189,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<UserProfileBloc>(
-                create: (_) => getIt<UserProfileBloc>()..add(UserProfileEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<UserProfileBloc>()
+                      ..add(UserProfileEvent.started(gameId: id)),
                 child: UserProfilePage(gameId: id),
               );
             },
@@ -186,10 +205,24 @@ class AppRouter {
               final extra = state.extra as Map<String, dynamic>?;
               final startDate = extra?['startDate'] as String?;
               final endDate = extra?['endDate'] as String?;
+              final ownerId = extra?['ownerId'] as String?;
+              final deposit = extra?['deposit'] as int?;
               return BlocProvider<RentalBloc>(
-                create: (_) =>
-                    getIt<RentalBloc>()..add(RentalEvent.started(gameId: id, startDate: startDate, endDate: endDate)),
-                child: RentalConfirmPage(gameId: id, startDate: startDate, endDate: endDate),
+                create: (_) => getIt<RentalBloc>()
+                  ..add(
+                    RentalEvent.started(
+                      gameId: id,
+                      startDate: startDate,
+                      endDate: endDate,
+                      ownerId: ownerId,
+                      deposit: deposit,
+                    ),
+                  ),
+                child: RentalConfirmPage(
+                  gameId: id,
+                  startDate: startDate,
+                  endDate: endDate,
+                ),
               );
             },
           ),
@@ -201,11 +234,17 @@ class AppRouter {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('404', style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
+            const Text(
+              '404',
+              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             const Text('Página no encontrada'),
             const SizedBox(height: 24),
-            ElevatedButton(onPressed: () => context.go(AppRoutes.home), child: const Text('Volver al inicio')),
+            ElevatedButton(
+              onPressed: () => context.go(AppRoutes.home),
+              child: const Text('Volver al inicio'),
+            ),
           ],
         ),
       ),
@@ -228,16 +267,35 @@ extension GoRouterExtension on BuildContext {
   void goToGameOwner(String id) => push('/game/$id/owner');
 
   /// Navigate to rental confirmation for [id] with optional dates.
-  void goToRental(String id, {String? startDate, String? endDate}) =>
-      push('/game/$id/rental', extra: {'startDate': startDate, 'endDate': endDate});
+  void goToRental(
+    String id, {
+    String? startDate,
+    String? endDate,
+    String? ownerId,
+    int? deposit,
+  }) => push(
+    '/game/$id/rental',
+    extra: {
+      'startDate': startDate,
+      'endDate': endDate,
+      'ownerId': ownerId,
+      'deposit': deposit,
+    },
+  );
 
   /// Navigate to login with an optional [from] redirect.
-  void goToLogin({String? from}) =>
-      go(from != null ? '${AppRoutes.login}?from=${Uri.encodeComponent(from)}' : AppRoutes.login);
+  void goToLogin({String? from}) => go(
+    from != null
+        ? '${AppRoutes.login}?from=${Uri.encodeComponent(from)}'
+        : AppRoutes.login,
+  );
 
   /// Navigate to registration with an optional [from] redirect.
-  void goToRegister({String? from}) =>
-      go(from != null ? '${AppRoutes.register}?from=${Uri.encodeComponent(from)}' : AppRoutes.register);
+  void goToRegister({String? from}) => go(
+    from != null
+        ? '${AppRoutes.register}?from=${Uri.encodeComponent(from)}'
+        : AppRoutes.register,
+  );
 
   /// Navigate to the publish flow.
   void goToPublish() => go(AppRoutes.publish);

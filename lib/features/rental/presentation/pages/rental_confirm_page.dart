@@ -9,12 +9,18 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/core/widgets/availability_date_selector.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
 
 /// Rental confirmation page matching RentalConfirm.tsx
 class RentalConfirmPage extends StatelessWidget {
-  const RentalConfirmPage({required this.gameId, super.key, this.startDate, this.endDate});
+  const RentalConfirmPage({
+    required this.gameId,
+    super.key,
+    this.startDate,
+    this.endDate,
+  });
   final String gameId;
   final String? startDate;
   final String? endDate;
@@ -23,17 +29,22 @@ class RentalConfirmPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (previous, current) =>
-          previous.snackbarMessage != current.snackbarMessage && current.snackbarMessage != null,
+          previous.snackbarMessage != current.snackbarMessage &&
+          current.snackbarMessage != null,
       listener: (context, state) {
         final message = state.snackbarMessage;
         if (message == null) return;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
         context.read<RentalBloc>().add(const RentalEvent.messageShown());
       },
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator(color: AppColors.gameRust)),
+            body: Center(
+              child: CircularProgressIndicator(color: AppColors.gameRust),
+            ),
           );
         }
 
@@ -46,7 +57,9 @@ class RentalConfirmPage extends StatelessWidget {
                 onPressed: () => context.popOrGo('/game/$gameId'),
               ),
             ),
-            body: Center(child: Text(state.errorMessage ?? 'Juego no encontrado')),
+            body: Center(
+              child: Text(state.errorMessage ?? 'Juego no encontrado'),
+            ),
           );
         }
 
@@ -56,7 +69,10 @@ class RentalConfirmPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.popOrGo('/game/$gameId')),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.popOrGo('/game/$gameId'),
+            ),
             title: const Text('Confirmar alquiler'),
           ),
           body: SingleChildScrollView(
@@ -72,11 +88,13 @@ class RentalConfirmPage extends StatelessWidget {
                 // Dates section
                 const _SectionTitle(title: 'FECHAS DE ALQUILER'),
                 const SizedBox(height: 12),
-                _DateSelector(
+                AvailabilityDateSelector(
+                  game: game,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  onStartDateChanged: (date) => context.read<RentalBloc>().add(RentalEvent.startDateChanged(date)),
-                  onEndDateChanged: (date) => context.read<RentalBloc>().add(RentalEvent.endDateChanged(date)),
+                  onRangeChanged: (start, end) => context.read<RentalBloc>().add(
+                    RentalEvent.dateRangeChanged(start, end),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -88,12 +106,15 @@ class RentalConfirmPage extends StatelessWidget {
                   isDelivery: state.isDelivery,
                   address: state.deliveryAddress,
                   comments: state.deliveryComments,
-                  onDeliveryChanged: ({required bool isDelivery}) =>
-                      context.read<RentalBloc>().add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
-                  onAddressChanged: (value) =>
-                      context.read<RentalBloc>().add(RentalEvent.deliveryAddressChanged(value)),
-                  onCommentsChanged: (value) =>
-                      context.read<RentalBloc>().add(RentalEvent.deliveryCommentsChanged(value)),
+                  onDeliveryChanged: ({required bool isDelivery}) => context
+                      .read<RentalBloc>()
+                      .add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
+                  onAddressChanged: (value) => context.read<RentalBloc>().add(
+                    RentalEvent.deliveryAddressChanged(value),
+                  ),
+                  onCommentsChanged: (value) => context.read<RentalBloc>().add(
+                    RentalEvent.deliveryCommentsChanged(value),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -103,8 +124,9 @@ class RentalConfirmPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 _FoodBundleSelector(
                   selectedBundles: state.selectedFoodBundles,
-                  onBundlesChanged: (bundles) =>
-                      context.read<RentalBloc>().add(RentalEvent.foodBundlesChanged(bundles)),
+                  onBundlesChanged: (bundles) => context.read<RentalBloc>().add(
+                    RentalEvent.foodBundlesChanged(bundles),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -114,7 +136,9 @@ class RentalConfirmPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 _PaymentSelector(
                   selected: state.paymentMethod,
-                  onChanged: (method) => context.read<RentalBloc>().add(RentalEvent.paymentMethodChanged(method)),
+                  onChanged: (method) => context.read<RentalBloc>().add(
+                    RentalEvent.paymentMethodChanged(method),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -135,7 +159,10 @@ class RentalConfirmPage extends StatelessWidget {
                 if (state.errorMessage != null) ...[
                   Text(
                     state.errorMessage!,
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.destructive, fontWeight: FontWeight.w600),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.destructive,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -144,15 +171,24 @@ class RentalConfirmPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: state.isSubmitting
                       ? null
-                      : () => context.read<RentalBloc>().add(const RentalEvent.submitted()),
-                  style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 56)),
+                      : () => context.read<RentalBloc>().add(
+                          const RentalEvent.submitted(),
+                        ),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 56),
+                  ),
                   child: state.isSubmitting
                       ? const SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
-                      : Text('Confirmar y pagar ${CurrencyFormatter.formatUYU(state.total)}'),
+                      : Text(
+                          'Confirmar y pagar ${CurrencyFormatter.formatUYU(state.total)}',
+                        ),
                 ),
 
                 const SizedBox(height: 100),
@@ -191,7 +227,12 @@ class _GameSummary extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            child: Image.network(game.image, width: 80, height: 80, fit: BoxFit.cover),
+            child: Image.network(
+              game.image,
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -202,112 +243,21 @@ class _GameSummary extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   game.category,
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.gameBrown.withOpacityValue(0.7),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   '${CurrencyFormatter.formatUYU(game.price)}/día',
-                  style: AppTypography.titleSmall.copyWith(color: AppColors.gameRust),
+                  style: AppTypography.titleSmall.copyWith(
+                    color: AppColors.gameRust,
+                  ),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _DateSelector extends StatelessWidget {
-  const _DateSelector({
-    required this.startDate,
-    required this.endDate,
-    required this.onStartDateChanged,
-    required this.onEndDateChanged,
-  });
-  final String? startDate;
-  final String? endDate;
-  final void Function(String?) onStartDateChanged;
-  final void Function(String?) onEndDateChanged;
-
-  Future<void> _selectDate(BuildContext context, {required bool isStart}) async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365)),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(colorScheme: const ColorScheme.light(primary: AppColors.gameRust)),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null) {
-      final dateStr = DateFormatter.toIsoString(picked);
-      if (isStart) {
-        onStartDateChanged(dateStr);
-      } else {
-        onEndDateChanged(dateStr);
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _DateButton(label: 'Inicio', value: startDate, onTap: () => _selectDate(context, isStart: true)),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _DateButton(label: 'Fin', value: endDate, onTap: () => _selectDate(context, isStart: false)),
-        ),
-      ],
-    );
-  }
-}
-
-class _DateButton extends StatelessWidget {
-  const _DateButton({required this.label, required this.onTap, this.value});
-  final String label;
-  final String? value;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: AppTypography.labelSmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6))),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    value ?? 'Seleccionar',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: value != null ? AppColors.gameBrown : AppColors.gameBrown.withOpacityValue(0.5),
-                    ),
-                  ),
-                ),
-                const Icon(Icons.calendar_today, size: 16),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -379,7 +329,12 @@ class _DeliverySelector extends StatelessWidget {
 }
 
 class _OptionButton extends StatelessWidget {
-  const _OptionButton({required this.label, required this.icon, required this.isSelected, required this.onTap});
+  const _OptionButton({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
   final String label;
   final IconData icon;
   final bool isSelected;
@@ -395,17 +350,24 @@ class _OptionButton extends StatelessWidget {
           color: isSelected ? AppColors.gameCream : AppColors.card,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+            color: isSelected
+                ? AppColors.gameRust
+                : AppColors.gameBrown.withOpacityValue(0.2),
             width: isSelected ? 2 : 1,
           ),
         ),
         child: Column(
           children: [
-            Icon(icon, color: isSelected ? AppColors.gameRust : AppColors.gameBrown),
+            Icon(
+              icon,
+              color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
+            ),
             const SizedBox(height: 8),
             Text(
               label,
-              style: AppTypography.labelMedium.copyWith(color: isSelected ? AppColors.gameRust : AppColors.gameBrown),
+              style: AppTypography.labelMedium.copyWith(
+                color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -416,7 +378,10 @@ class _OptionButton extends StatelessWidget {
 }
 
 class _FoodBundleSelector extends StatelessWidget {
-  const _FoodBundleSelector({required this.selectedBundles, required this.onBundlesChanged});
+  const _FoodBundleSelector({
+    required this.selectedBundles,
+    required this.onBundlesChanged,
+  });
   final List<String> selectedBundles;
   final void Function(List<String>) onBundlesChanged;
 
@@ -448,7 +413,9 @@ class _FoodBundleSelector extends StatelessWidget {
               color: isSelected ? AppColors.gameCream : AppColors.card,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               border: Border.all(
-                color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+                color: isSelected
+                    ? AppColors.gameRust
+                    : AppColors.gameBrown.withOpacityValue(0.2),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -461,17 +428,27 @@ class _FoodBundleSelector extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
-                  child: Center(child: Text(bundle.$2.split(' ')[0], style: const TextStyle(fontSize: 24))),
+                  child: Center(
+                    child: Text(
+                      bundle.$2.split(' ')[0],
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(bundle.$2.substring(3), style: AppTypography.titleSmall),
+                      Text(
+                        bundle.$2.substring(3),
+                        style: AppTypography.titleSmall,
+                      ),
                       Text(
                         bundle.$3,
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
                       ),
                     ],
                   ),
@@ -516,7 +493,9 @@ class _PaymentSelector extends StatelessWidget {
               color: isSelected ? AppColors.gameCream : AppColors.card,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               border: Border.all(
-                color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+                color: isSelected
+                    ? AppColors.gameRust
+                    : AppColors.gameBrown.withOpacityValue(0.2),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -524,8 +503,11 @@ class _PaymentSelector extends StatelessWidget {
               children: [
                 Icon(method.$3, color: AppColors.gameBrown),
                 const SizedBox(width: 16),
-                Expanded(child: Text(method.$2, style: AppTypography.titleSmall)),
-                if (isSelected) const Icon(Icons.check_circle, color: AppColors.gameRust),
+                Expanded(
+                  child: Text(method.$2, style: AppTypography.titleSmall),
+                ),
+                if (isSelected)
+                  const Icon(Icons.check_circle, color: AppColors.gameRust),
               ],
             ),
           ),
@@ -564,20 +546,30 @@ class _PriceBreakdown extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _PriceRow(label: '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días', value: subtotal),
+          _PriceRow(
+            label:
+                '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
+            value: subtotal,
+          ),
           const SizedBox(height: 8),
           _PriceRow(label: 'Tarifa de servicio', value: serviceFee),
           if (deliveryFee > 0) ...[
             const SizedBox(height: 8),
             _PriceRow(label: 'Envío a domicilio', value: deliveryFee),
           ],
-          if (foodTotal > 0) ...[const SizedBox(height: 8), _PriceRow(label: 'Snacks', value: foodTotal)],
+          if (foodTotal > 0) ...[
+            const SizedBox(height: 8),
+            _PriceRow(label: 'Snacks', value: foodTotal),
+          ],
           const Divider(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Total', style: AppTypography.titleMedium),
-              Text(CurrencyFormatter.formatUYU(total), style: AppTypography.price),
+              Text(
+                CurrencyFormatter.formatUYU(total),
+                style: AppTypography.price,
+              ),
             ],
           ),
         ],
@@ -596,8 +588,16 @@ class _PriceRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7))),
-        Text(CurrencyFormatter.formatUYU(value), style: AppTypography.bodyMedium),
+        Text(
+          label,
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.gameBrown.withOpacityValue(0.7),
+          ),
+        ),
+        Text(
+          CurrencyFormatter.formatUYU(value),
+          style: AppTypography.bodyMedium,
+        ),
       ],
     );
   }
@@ -620,27 +620,44 @@ class _SuccessView extends StatelessWidget {
               Container(
                 width: 120,
                 height: 120,
-                decoration: BoxDecoration(color: Colors.green[50], shape: BoxShape.circle),
-                child: Icon(Icons.check_circle, size: 64, color: Colors.green[600]),
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.check_circle,
+                  size: 64,
+                  color: Colors.green[600],
+                ),
               ),
               const SizedBox(height: 32),
-              Text('¡Reserva confirmada!', style: AppTypography.displaySmall, textAlign: TextAlign.center),
+              Text(
+                '¡Reserva confirmada!',
+                style: AppTypography.displaySmall,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 16),
               Text(
                 'Tu alquiler de ${game.title} ha sido procesado exitosamente.',
-                style: AppTypography.bodyLarge.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                style: AppTypography.bodyLarge.copyWith(
+                  color: AppColors.gameBrown.withOpacityValue(0.7),
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
                 'Te enviaremos un email con los detalles de tu reserva y las instrucciones de entrega.',
-                style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.gameBrown.withOpacityValue(0.6),
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
               ElevatedButton(
                 onPressed: onBackHome,
-                style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 56)),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 56),
+                ),
                 child: const Text('Volver al inicio'),
               ),
             ],
