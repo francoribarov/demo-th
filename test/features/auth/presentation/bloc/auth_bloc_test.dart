@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';

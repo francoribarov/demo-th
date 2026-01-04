@@ -16,7 +16,7 @@ void main() {
   late MockConfirmRental mockConfirmRental;
   late RentalBloc rentalBloc;
 
-  final tGame = Game(
+  const tGame = Game(
     id: 1,
     title: 'Test Game',
     category: 'Strategy',
@@ -30,9 +30,9 @@ void main() {
     price: 100,
     ownerId: 'owner123',
     availability: [
-      const AvailabilityRange(from: '2026-01-01', to: '2026-01-31'),
+      AvailabilityRange(from: '2026-01-01', to: '2026-01-31'),
     ],
-    rules: const GameRules(video: '', text: ''),
+    rules: GameRules(video: '', text: ''),
   );
 
   setUp(() {
@@ -54,12 +54,17 @@ void main() {
     blocTest<RentalBloc, RentalState>(
       'should emit snackbar error when duration is less than 3 days',
       build: () => rentalBloc,
-      seed: () => RentalState(game: tGame, startDate: '2026-01-10'),
-      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
+      seed: () => const RentalState(game: tGame, startDate: '2026-01-10'),
+      act: (bloc) =>
+          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.endDate, 'endDate', null)
-            .having((s) => s.snackbarMessage, 'message', AppStrings.rentalMinDays),
+            .having(
+              (s) => s.snackbarMessage,
+              'message',
+              AppStrings.rentalMinDays,
+            ),
       ],
     );
 
@@ -68,22 +73,30 @@ void main() {
       build: () => rentalBloc,
       seed: () => RentalState(
         game: tGame.copyWith(
-          availability: [const AvailabilityRange(from: '2026-01-01', to: '2026-01-02')],
+          availability: [
+            const AvailabilityRange(from: '2026-01-01', to: '2026-01-02'),
+          ],
         ),
       ),
-      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
+      act: (bloc) =>
+          bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', null)
-            .having((s) => s.snackbarMessage, 'message', AppStrings.rentalMinAvailability),
+            .having(
+              (s) => s.snackbarMessage,
+              'message',
+              AppStrings.rentalMinAvailability,
+            ),
       ],
     );
 
     blocTest<RentalBloc, RentalState>(
       'should emit snackbar error when dates are not within availability',
       build: () => rentalBloc,
-      seed: () => RentalState(game: tGame, startDate: '2026-01-10'),
-      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-05')),
+      seed: () => const RentalState(game: tGame, startDate: '2026-01-10'),
+      act: (bloc) =>
+          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-05')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
@@ -98,11 +111,14 @@ void main() {
       build: () => rentalBloc,
       seed: () => RentalState(
         game: tGame.copyWith(
-          availability: [const AvailabilityRange(from: '2026-01-01', to: '2026-03-01')],
+          availability: [
+            const AvailabilityRange(from: '2026-01-01', to: '2026-03-01'),
+          ],
         ),
         startDate: '2026-01-01',
       ),
-      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
+      act: (bloc) =>
+          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
@@ -115,13 +131,22 @@ void main() {
     blocTest<RentalBloc, RentalState>(
       'should clear end date if start date is changed to after end date',
       build: () => rentalBloc,
-      seed: () => RentalState(game: tGame, startDate: '2026-01-05', endDate: '2026-01-10'),
-      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-15')),
+      seed: () => const RentalState(
+        game: tGame,
+        startDate: '2026-01-05',
+        endDate: '2026-01-10',
+      ),
+      act: (bloc) =>
+          bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-15')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', '2026-01-15')
             .having((s) => s.endDate, 'endDate', null)
-            .having((s) => s.snackbarMessage, 'message', AppStrings.rentalChooseLaterEnd),
+            .having(
+              (s) => s.snackbarMessage,
+              'message',
+              AppStrings.rentalChooseLaterEnd,
+            ),
       ],
     );
   });
