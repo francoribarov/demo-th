@@ -10,12 +10,16 @@ part 'game_model.g.dart';
 
 /// Data transfer object for availability range
 @freezed
-class AvailabilityRangeModel with _$AvailabilityRangeModel {
-  const factory AvailabilityRangeModel({required String from, required String to}) = _AvailabilityRangeModel;
+abstract class AvailabilityRangeModel with _$AvailabilityRangeModel {
+  const factory AvailabilityRangeModel({
+    required String from,
+    required String to,
+  }) = _AvailabilityRangeModel;
 
   const AvailabilityRangeModel._();
 
-  factory AvailabilityRangeModel.fromJson(Map<String, dynamic> json) => _$AvailabilityRangeModelFromJson(json);
+  factory AvailabilityRangeModel.fromJson(Map<String, dynamic> json) =>
+      _$AvailabilityRangeModelFromJson(json);
 
   factory AvailabilityRangeModel.fromEntity(AvailabilityRange entity) =>
       AvailabilityRangeModel(from: entity.from, to: entity.to);
@@ -25,21 +29,24 @@ class AvailabilityRangeModel with _$AvailabilityRangeModel {
 
 /// Data transfer object for game rules
 @freezed
-class GameRulesModel with _$GameRulesModel {
-  const factory GameRulesModel({required String video, required String text}) = _GameRulesModel;
+abstract class GameRulesModel with _$GameRulesModel {
+  const factory GameRulesModel({required String video, required String text}) =
+      _GameRulesModel;
 
   const GameRulesModel._();
 
-  factory GameRulesModel.fromJson(Map<String, dynamic> json) => _$GameRulesModelFromJson(json);
+  factory GameRulesModel.fromJson(Map<String, dynamic> json) =>
+      _$GameRulesModelFromJson(json);
 
-  factory GameRulesModel.fromEntity(GameRules entity) => GameRulesModel(video: entity.video, text: entity.text);
+  factory GameRulesModel.fromEntity(GameRules entity) =>
+      GameRulesModel(video: entity.video, text: entity.text);
 
   GameRules toEntity() => GameRules(video: video, text: text);
 }
 
 /// Data transfer object for game review
 @freezed
-class GameReviewModel with _$GameReviewModel {
+abstract class GameReviewModel with _$GameReviewModel {
   const factory GameReviewModel({
     required String name,
     required String role,
@@ -49,17 +56,23 @@ class GameReviewModel with _$GameReviewModel {
 
   const GameReviewModel._();
 
-  factory GameReviewModel.fromJson(Map<String, dynamic> json) => _$GameReviewModelFromJson(json);
+  factory GameReviewModel.fromJson(Map<String, dynamic> json) =>
+      _$GameReviewModelFromJson(json);
 
-  factory GameReviewModel.fromEntity(GameReview entity) =>
-      GameReviewModel(name: entity.name, role: entity.role, rating: entity.rating, comment: entity.comment);
+  factory GameReviewModel.fromEntity(GameReview entity) => GameReviewModel(
+    name: entity.name,
+    role: entity.role,
+    rating: entity.rating,
+    comment: entity.comment,
+  );
 
-  GameReview toEntity() => GameReview(name: name, role: role, rating: rating, comment: comment);
+  GameReview toEntity() =>
+      GameReview(name: name, role: role, rating: rating, comment: comment);
 }
 
 /// Data transfer object for Game entity
 @freezed
-class GameModel with _$GameModel {
+abstract class GameModel with _$GameModel {
   const factory GameModel({
     required int id,
     required String title,
@@ -72,17 +85,22 @@ class GameModel with _$GameModel {
     required String players,
     required String difficulty,
     required int price,
+    String? ownerId,
+    int? deposit,
     List<AvailabilityRangeModel>? availability,
 
     /// `GET /api/games` returns a summary without `rules`.
     /// `GET /api/games/:id` includes `rules`.
     GameRulesModel? rules,
-    @JsonKey(name: 'reviews_list') @Default([]) List<GameReviewModel> reviewsList,
+    @JsonKey(name: 'reviews_list')
+    @Default([])
+    List<GameReviewModel> reviewsList,
   }) = _GameModel;
 
   const GameModel._();
 
-  factory GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
+  factory GameModel.fromJson(Map<String, dynamic> json) =>
+      _$GameModelFromJson(json);
 
   factory GameModel.fromEntity(Game entity) => GameModel(
     id: entity.id,
@@ -96,7 +114,9 @@ class GameModel with _$GameModel {
     players: entity.players,
     difficulty: entity.difficulty,
     price: entity.price,
-    availability: entity.availability?.map(AvailabilityRangeModel.fromEntity).toList(),
+    availability: entity.availability
+        ?.map(AvailabilityRangeModel.fromEntity)
+        .toList(),
     rules: GameRulesModel.fromEntity(entity.rules),
     reviewsList: entity.reviewsList.map(GameReviewModel.fromEntity).toList(),
   );
@@ -113,6 +133,8 @@ class GameModel with _$GameModel {
     players: players,
     difficulty: difficulty,
     price: price,
+    ownerId: ownerId,
+    deposit: deposit,
     availability: availability?.map((a) => a.toEntity()).toList(),
     rules: (rules ?? const GameRulesModel(video: '', text: '')).toEntity(),
     reviewsList: reviewsList.map((r) => r.toEntity()).toList(),
@@ -121,7 +143,7 @@ class GameModel with _$GameModel {
 
 /// Data transfer object for category
 @freezed
-class GameCategoryModel with _$GameCategoryModel {
+abstract class GameCategoryModel with _$GameCategoryModel {
   const factory GameCategoryModel({
     required int id,
     required String name,
@@ -132,14 +154,21 @@ class GameCategoryModel with _$GameCategoryModel {
 
   const GameCategoryModel._();
 
-  factory GameCategoryModel.fromJson(Map<String, dynamic> json) => _$GameCategoryModelFromJson(json);
+  factory GameCategoryModel.fromJson(Map<String, dynamic> json) =>
+      _$GameCategoryModelFromJson(json);
 
-  GameCategory toEntity() => GameCategory(id: id, name: name, icon: icon, query: query, description: description);
+  GameCategory toEntity() => GameCategory(
+    id: id,
+    name: name,
+    icon: icon,
+    query: query,
+    description: description,
+  );
 }
 
 /// Data transfer object for filter shortcut
 @freezed
-class FilterShortcutModel with _$FilterShortcutModel {
+abstract class FilterShortcutModel with _$FilterShortcutModel {
   const factory FilterShortcutModel({
     required int id,
     required String name,
@@ -151,7 +180,15 @@ class FilterShortcutModel with _$FilterShortcutModel {
 
   const FilterShortcutModel._();
 
-  factory FilterShortcutModel.fromJson(Map<String, dynamic> json) => _$FilterShortcutModelFromJson(json);
+  factory FilterShortcutModel.fromJson(Map<String, dynamic> json) =>
+      _$FilterShortcutModelFromJson(json);
 
-  FilterShortcut toEntity() => FilterShortcut(id: id, name: name, icon: icon, type: type, query: query, value: value);
+  FilterShortcut toEntity() => FilterShortcut(
+    id: id,
+    name: name,
+    icon: icon,
+    type: type,
+    query: query,
+    value: value,
+  );
 }

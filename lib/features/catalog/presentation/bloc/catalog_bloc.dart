@@ -14,7 +14,7 @@ part 'catalog_bloc.freezed.dart';
 
 // Events
 @freezed
-class CatalogEvent with _$CatalogEvent {
+abstract class CatalogEvent with _$CatalogEvent {
   const factory CatalogEvent.loadGames() = LoadGames;
   const factory CatalogEvent.search({String? query, String? startDate, String? endDate}) = SearchCatalog;
   const factory CatalogEvent.applyFilters(FiltersState filters) = ApplyFilters;
@@ -26,7 +26,7 @@ class CatalogEvent with _$CatalogEvent {
 
 // State
 @freezed
-class CatalogState with _$CatalogState {
+abstract class CatalogState with _$CatalogState {
   const factory CatalogState({
     @Default([]) List<Game> allGames,
     @Default([]) List<Game> filteredGames,

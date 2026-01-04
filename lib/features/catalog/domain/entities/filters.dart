@@ -160,7 +160,7 @@ extension SortOptionX on SortOption {
 
 /// Complete filters state
 @freezed
-class FiltersState with _$FiltersState {
+abstract class FiltersState with _$FiltersState {
   const factory FiltersState({
     @Default(PlayersRangeOption.any) PlayersRangeOption playersRange,
     @Default(DurationRangeOption.any) DurationRangeOption durationRange,

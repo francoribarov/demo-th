@@ -7,19 +7,21 @@ part 'game.freezed.dart';
 
 /// Availability range for a game
 @freezed
-class AvailabilityRange with _$AvailabilityRange {
-  const factory AvailabilityRange({required String from, required String to}) = _AvailabilityRange;
+abstract class AvailabilityRange with _$AvailabilityRange {
+  const factory AvailabilityRange({required String from, required String to}) =
+      _AvailabilityRange;
 }
 
 /// Game rules information
 @freezed
-class GameRules with _$GameRules {
-  const factory GameRules({required String video, required String text}) = _GameRules;
+abstract class GameRules with _$GameRules {
+  const factory GameRules({required String video, required String text}) =
+      _GameRules;
 }
 
 /// A review from a user
 @freezed
-class GameReview with _$GameReview {
+abstract class GameReview with _$GameReview {
   const factory GameReview({
     required String name,
     required String role,
@@ -31,7 +33,7 @@ class GameReview with _$GameReview {
 /// Main Game entity
 /// Matches the Game interface from the Vite.js prototype
 @freezed
-class Game with _$Game {
+abstract class Game with _$Game {
   const factory Game({
     required int id,
     required String title,
@@ -45,6 +47,8 @@ class Game with _$Game {
     required String difficulty,
     required int price,
     required GameRules rules,
+    String? ownerId,
+    int? deposit,
     List<AvailabilityRange>? availability,
     @Default([]) List<GameReview> reviewsList,
   }) = _Game;
@@ -120,7 +124,20 @@ class Game with _$Game {
     try {
       final fromDate = DateTime.parse(from);
       final toDate = DateTime.parse(to);
-      final months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+      final months = [
+        'ene',
+        'feb',
+        'mar',
+        'abr',
+        'may',
+        'jun',
+        'jul',
+        'ago',
+        'sep',
+        'oct',
+        'nov',
+        'dic',
+      ];
       return '${fromDate.day} ${months[fromDate.month - 1]} al ${toDate.day} ${months[toDate.month - 1]}';
     } on FormatException {
       return '$from - $to';
@@ -130,7 +147,7 @@ class Game with _$Game {
 
 /// Category for filtering
 @freezed
-class GameCategory with _$GameCategory {
+abstract class GameCategory with _$GameCategory {
   const factory GameCategory({
     required int id,
     required String name,
@@ -142,7 +159,7 @@ class GameCategory with _$GameCategory {
 
 /// Filter shortcut
 @freezed
-class FilterShortcut with _$FilterShortcut {
+abstract class FilterShortcut with _$FilterShortcut {
   const factory FilterShortcut({
     required int id,
     required String name,
