@@ -11,48 +11,8 @@ import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/search_games.dart';
 
 part 'catalog_bloc.freezed.dart';
-
-// Events
-@freezed
-abstract class CatalogEvent with _$CatalogEvent {
-  const factory CatalogEvent.loadGames() = LoadGames;
-  const factory CatalogEvent.search({String? query, String? startDate, String? endDate}) = SearchCatalog;
-  const factory CatalogEvent.applyFilters(FiltersState filters) = ApplyFilters;
-  const factory CatalogEvent.updateSort(SortOption sortOption) = UpdateSort;
-  const factory CatalogEvent.selectCategory(String category) = SelectCategory;
-  const factory CatalogEvent.clearSearch() = ClearSearch;
-  const factory CatalogEvent.setDates({String? startDate, String? endDate}) = SetDates;
-}
-
-// State
-@freezed
-abstract class CatalogState with _$CatalogState {
-  const factory CatalogState({
-    @Default([]) List<Game> allGames,
-    @Default([]) List<Game> filteredGames,
-    @Default([]) List<Game> availableTodayGames,
-    @Default([]) List<GameCategory> categories,
-    @Default([]) List<FilterShortcut> filterShortcuts,
-    @Default('') String query,
-    String? startDate,
-    String? endDate,
-    String? selectedCategory,
-    @Default(FiltersState()) FiltersState filters,
-    @Default(SortOption.availability) SortOption sortOption,
-    @Default(false) bool isLoading,
-    String? errorMessage,
-  }) = _CatalogState;
-
-  const CatalogState._();
-
-  bool get isSearchMode =>
-      query.trim().isNotEmpty ||
-      (startDate != null && endDate != null) ||
-      selectedCategory != null ||
-      filters.hasActiveFilters;
-
-  bool get hasDateFilter => startDate != null && endDate != null;
-}
+part 'catalog_event.dart';
+part 'catalog_state.dart';
 
 @injectable
 class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {

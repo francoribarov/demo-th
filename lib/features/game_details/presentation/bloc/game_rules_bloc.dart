@@ -5,20 +5,8 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 
 part 'game_rules_bloc.freezed.dart';
-
-@freezed
-/// Events for [GameRulesBloc].
-abstract class GameRulesEvent with _$GameRulesEvent {
-  /// Starts loading the game rules.
-  const factory GameRulesEvent.started({required String gameId}) = _Started;
-}
-
-@freezed
-/// State for [GameRulesBloc].
-abstract class GameRulesState with _$GameRulesState {
-  /// Creates a [GameRulesState].
-  const factory GameRulesState({@Default(false) bool isLoading, Game? game, String? errorMessage}) = _GameRulesState;
-}
+part 'game_rules_event.dart';
+part 'game_rules_state.dart';
 
 @injectable
 /// Bloc for loading and presenting game rules.

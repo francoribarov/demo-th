@@ -6,21 +6,8 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 
 part 'user_profile_bloc.freezed.dart';
-
-@freezed
-/// Events for loading user profile data.
-abstract class UserProfileEvent with _$UserProfileEvent {
-  /// Starts loading a profile based on the selected game id.
-  const factory UserProfileEvent.started({required String gameId}) = _Started;
-}
-
-@freezed
-/// State for the user profile screen.
-abstract class UserProfileState with _$UserProfileState {
-  /// Creates the user profile state.
-  const factory UserProfileState({@Default(false) bool isLoading, Game? game, String? errorMessage}) =
-      _UserProfileState;
-}
+part 'user_profile_event.dart';
+part 'user_profile_state.dart';
 
 @injectable
 /// BLoC that loads game data to drive the user profile screen.

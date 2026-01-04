@@ -5,46 +5,8 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 
 part 'game_details_bloc.freezed.dart';
-
-@freezed
-/// Events for [GameDetailsBloc].
-abstract class GameDetailsEvent with _$GameDetailsEvent {
-  /// Starts loading the game details.
-  const factory GameDetailsEvent.started({required String gameId}) = _Started;
-
-  /// Toggles the wishlist status.
-  const factory GameDetailsEvent.toggleWishlist() = _ToggleWishlist;
-
-  /// Updates the start date in the availability form.
-  const factory GameDetailsEvent.checkStartDateChanged(String? value) = _CheckStartDateChanged;
-
-  /// Updates the end date in the availability form.
-  const factory GameDetailsEvent.checkEndDateChanged(String? value) = _CheckEndDateChanged;
-
-  /// Updates both dates in the availability form.
-  const factory GameDetailsEvent.checkDateRangeChanged(String? start, String? end) = _CheckDateRangeChanged;
-
-  /// Triggers the availability check.
-  const factory GameDetailsEvent.checkAvailabilityPressed() = _CheckAvailabilityPressed;
-}
-
-@freezed
-/// State for [GameDetailsBloc].
-abstract class GameDetailsState with _$GameDetailsState {
-  /// Creates a [GameDetailsState].
-  const factory GameDetailsState({
-    @Default(false) bool isLoading,
-    Game? game,
-    @Default([]) List<Game> recommendations,
-    @Default(false) bool isWishlisted,
-    String? errorMessage,
-
-    // Availability check form
-    String? checkStartDate,
-    String? checkEndDate,
-    bool? availabilityResult,
-  }) = _GameDetailsState;
-}
+part 'game_details_event.dart';
+part 'game_details_state.dart';
 
 @injectable
 /// Bloc for loading and presenting game details.
