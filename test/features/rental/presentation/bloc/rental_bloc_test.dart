@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
@@ -54,11 +55,11 @@ void main() {
       'should emit snackbar error when duration is less than 3 days',
       build: () => rentalBloc,
       seed: () => RentalState(game: tGame, startDate: '2026-01-10'),
-      act: (bloc) => bloc.add(const RentalEvent.endDateChanged('2026-01-11')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.endDate, 'endDate', null)
-            .having((s) => s.snackbarMessage, 'message', 'El alquiler mínimo es de 3 días (ej: Lun a Jue).'),
+            .having((s) => s.snackbarMessage, 'message', AppStrings.rentalMinDays),
       ],
     );
 
@@ -70,11 +71,11 @@ void main() {
           availability: [const AvailabilityRange(from: '2026-01-01', to: '2026-01-02')],
         ),
       ),
-      act: (bloc) => bloc.add(const RentalEvent.startDateChanged('2026-01-01')),
+      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', null)
-            .having((s) => s.snackbarMessage, 'message', 'El juego debe estar disponible por al menos 3 días.'),
+            .having((s) => s.snackbarMessage, 'message', AppStrings.rentalMinAvailability),
       ],
     );
 
@@ -82,12 +83,12 @@ void main() {
       'should emit snackbar error when dates are not within availability',
       build: () => rentalBloc,
       seed: () => RentalState(game: tGame, startDate: '2026-01-10'),
-      act: (bloc) => bloc.add(const RentalEvent.endDateChanged('2026-02-05')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-05')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
           'message',
-          'Las fechas seleccionadas no están disponibles en su totalidad.',
+          AppStrings.rentalUnavailableRange,
         ),
       ],
     );
@@ -101,12 +102,12 @@ void main() {
         ),
         startDate: '2026-01-01',
       ),
-      act: (bloc) => bloc.add(const RentalEvent.endDateChanged('2026-02-15')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
           'message',
-          'El alquiler no puede superar los 30 días.',
+          AppStrings.rentalMaxDays,
         ),
       ],
     );
@@ -115,12 +116,12 @@ void main() {
       'should clear end date if start date is changed to after end date',
       build: () => rentalBloc,
       seed: () => RentalState(game: tGame, startDate: '2026-01-05', endDate: '2026-01-10'),
-      act: (bloc) => bloc.add(const RentalEvent.startDateChanged('2026-01-15')),
+      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-15')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', '2026-01-15')
             .having((s) => s.endDate, 'endDate', null)
-            .having((s) => s.snackbarMessage, 'message', 'Elegí una fecha de fin posterior al inicio.'),
+            .having((s) => s.snackbarMessage, 'message', AppStrings.rentalChooseLaterEnd),
       ],
     );
   });

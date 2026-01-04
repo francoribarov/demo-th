@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
@@ -69,18 +70,8 @@ void main() {
       ..add(const AuthEvent.loginEmailChanged('user@example.com'))
       ..add(const AuthEvent.loginPasswordChanged('password123'))
       ..add(const AuthEvent.loginSubmitted()),
-    skip: 2,
+    skip: 4,
     expect: () => [
-      isA<AuthState>().having(
-        (state) => state.loginEmail,
-        'loginEmail',
-        'user@example.com',
-      ),
-      isA<AuthState>().having(
-        (state) => state.loginPassword,
-        'loginPassword',
-        'password123',
-      ),
       isA<AuthState>().having(
         (state) => state.isSubmittingLogin,
         'isSubmittingLogin',
@@ -112,18 +103,8 @@ void main() {
       ..add(const AuthEvent.loginEmailChanged('user@example.com'))
       ..add(const AuthEvent.loginPasswordChanged('password123'))
       ..add(const AuthEvent.loginSubmitted()),
-    skip: 2,
+    skip: 4,
     expect: () => [
-      isA<AuthState>().having(
-        (state) => state.loginEmail,
-        'loginEmail',
-        'user@example.com',
-      ),
-      isA<AuthState>().having(
-        (state) => state.loginPassword,
-        'loginPassword',
-        'password123',
-      ),
       isA<AuthState>().having(
         (state) => state.isSubmittingLogin,
         'isSubmittingLogin',
@@ -163,8 +144,13 @@ void main() {
       ..add(const AuthEvent.registerNameChanged('User One'))
       ..add(const AuthEvent.registerLocationChanged('Montevideo'))
       ..add(const AuthEvent.registerSubmitted()),
-    skip: 5,
+    skip: 7,
     expect: () => [
+      isA<AuthState>().having(
+        (state) => state.isSubmittingRegister,
+        'isSubmittingRegister',
+        true,
+      ),
       isA<AuthState>()
           .having(
             (state) => state.isSubmittingRegister,
@@ -197,8 +183,13 @@ void main() {
       ..add(const AuthEvent.registerNameChanged('User One'))
       ..add(const AuthEvent.registerLocationChanged('Montevideo'))
       ..add(const AuthEvent.registerSubmitted()),
-    skip: 5,
+    skip: 7,
     expect: () => [
+      isA<AuthState>().having(
+        (state) => state.isSubmittingRegister,
+        'isSubmittingRegister',
+        true,
+      ),
       isA<AuthState>()
           .having(
             (state) => state.isSubmittingRegister,

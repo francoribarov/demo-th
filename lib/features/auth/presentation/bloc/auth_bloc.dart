@@ -1,8 +1,11 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/errors/exceptions.dart';
+import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/usecases/get_auth_status.dart';
 import 'package:mobile_table_hopping/features/auth/domain/usecases/login.dart';
@@ -11,107 +14,8 @@ import 'package:mobile_table_hopping/features/auth/domain/usecases/refresh_token
 import 'package:mobile_table_hopping/features/auth/domain/usecases/register.dart';
 
 part 'auth_bloc.freezed.dart';
-
-/// Represents the current authentication status of the user.
-enum AuthStatus {
-  /// Status is not yet determined.
-  unknown,
-
-  /// User has an active authenticated session.
-  authenticated,
-
-  /// User is signed out.
-  unauthenticated,
-}
-
-@freezed
-/// Events for authentication flows and session handling.
-class AuthEvent with _$AuthEvent {
-  /// Starts the authentication status check.
-  const factory AuthEvent.started() = _Started;
-
-  // Login
-  /// Updates the login email input.
-  const factory AuthEvent.loginEmailChanged(String value) = _LoginEmailChanged;
-
-  /// Updates the login password input.
-  const factory AuthEvent.loginPasswordChanged(String value) =
-      _LoginPasswordChanged;
-
-  /// Submits the login request.
-  const factory AuthEvent.loginSubmitted() = _LoginSubmitted;
-
-  // Register
-  /// Updates the register email input.
-  const factory AuthEvent.registerEmailChanged(String value) =
-      _RegisterEmailChanged;
-
-  /// Updates the register password input.
-  const factory AuthEvent.registerPasswordChanged(String value) =
-      _RegisterPasswordChanged;
-
-  /// Updates the repeated register password input.
-  const factory AuthEvent.registerPasswordConfirmChanged(String value) =
-      _RegisterPasswordConfirmChanged;
-
-  /// Toggles password visibility for register form inputs.
-  const factory AuthEvent.registerPasswordVisibilityToggled() =
-      _RegisterPasswordVisibilityToggled;
-
-  /// Updates the register name input.
-  const factory AuthEvent.registerNameChanged(String value) =
-      _RegisterNameChanged;
-
-  /// Updates the register location input.
-  const factory AuthEvent.registerLocationChanged(String value) =
-      _RegisterLocationChanged;
-
-  /// Submits the registration request.
-  const factory AuthEvent.registerSubmitted() = _RegisterSubmitted;
-
-  // Session
-  /// Requests a logout.
-  const factory AuthEvent.logoutRequested() = _LogoutRequested;
-
-  /// Requests a token refresh.
-  const factory AuthEvent.refreshRequested() = _RefreshRequested;
-
-  /// Clears any surfaced error messages.
-  const factory AuthEvent.clearErrors() = _ClearErrors;
-}
-
-@freezed
-/// State for authentication and auth-related forms.
-abstract class AuthState with _$AuthState {
-  /// Creates the current authentication state snapshot.
-  const factory AuthState({
-    @Default(AuthStatus.unknown) AuthStatus status,
-    AuthSession? session,
-    @Default(false) bool isCheckingStatus,
-    String? errorMessage,
-
-    // Login
-    @Default('') String loginEmail,
-    @Default('') String loginPassword,
-    @Default(false) bool isSubmittingLogin,
-    String? loginErrorMessage,
-
-    // Register
-    @Default('') String registerEmail,
-    @Default('') String registerPassword,
-    @Default('') String registerPasswordConfirm,
-    @Default('') String registerName,
-    @Default('') String registerLocation,
-    @Default(false) bool isSubmittingRegister,
-    @Default(false) bool isRegisterPasswordVisible,
-    String? registerErrorMessage,
-  }) = _AuthState;
-
-  const AuthState._();
-
-  /// Whether the current state indicates an authenticated user.
-  bool get isAuthenticated => status == AuthStatus.authenticated;
-}
+part 'auth_event.dart';
+part 'auth_state.dart';
 
 @lazySingleton
 /// BLoC orchestrating authentication state and form submissions.
@@ -173,6 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     } on Exception catch (e) {
+      if (kDebugMode) debugPrint('AuthBloc: Error checking status: $e');
       emit(
         state.copyWith(
           isCheckingStatus: false,
@@ -190,7 +95,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onLoginEmailChanged(_LoginEmailChanged event, Emitter<AuthState> emit) {
     emit(
       state.copyWith(
-        loginEmail: event.value,
+        loginEmail: event.email,
         loginErrorMessage: null,
         errorMessage: null,
       ),
@@ -203,7 +108,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(
       state.copyWith(
-        loginPassword: event.value,
+        loginPassword: event.password,
         loginErrorMessage: null,
         errorMessage: null,
       ),
@@ -227,7 +132,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final passwordError = _validatePassword(
       password,
-      emptyMessage: 'Ingresá tu contraseña.',
+      emptyMessage: AppStrings.authPasswordRequired,
     );
     if (passwordError != null) {
       emit(
@@ -255,12 +160,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     } on Exception catch (e) {
+      if (kDebugMode) debugPrint('AuthBloc: Login error: $e');
       emit(
         state.copyWith(
           isSubmittingLogin: false,
           loginErrorMessage: _friendlyMessage(
             e,
-            fallback: 'No pudimos iniciar sesión. Intenta nuevamente.',
+            fallback: AppStrings.authLoginError,
           ),
         ),
       );
@@ -273,7 +179,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(
       state.copyWith(
-        registerEmail: event.value,
+        registerEmail: event.email,
         registerErrorMessage: null,
         errorMessage: null,
       ),
@@ -286,7 +192,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(
       state.copyWith(
-        registerPassword: event.value,
+        registerPassword: event.password,
         registerErrorMessage: null,
         errorMessage: null,
       ),
@@ -299,7 +205,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(
       state.copyWith(
-        registerPasswordConfirm: event.value,
+        registerPasswordConfirm: event.confirmPassword,
         registerErrorMessage: null,
         errorMessage: null,
       ),
@@ -312,7 +218,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(
       state.copyWith(
-        registerName: event.value,
+        registerName: event.name,
         registerErrorMessage: null,
         errorMessage: null,
       ),
@@ -325,7 +231,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(
       state.copyWith(
-        registerLocation: event.value,
+        registerLocation: event.location,
         registerErrorMessage: null,
         errorMessage: null,
       ),
@@ -371,7 +277,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final passwordError = _validatePassword(
       password,
-      emptyMessage: 'Ingresá una contraseña.',
+      emptyMessage: AppStrings.authPasswordRequired,
     );
     if (passwordError != null) {
       emit(
@@ -383,7 +289,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (password != confirmPassword) {
       emit(
         state.copyWith(
-          registerErrorMessage: 'Las contraseñas no coinciden.',
+          registerErrorMessage: AppStrings.authPasswordsDontMatch,
           errorMessage: null,
         ),
       );
@@ -415,12 +321,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     } on Exception catch (e) {
+      if (kDebugMode) debugPrint('AuthBloc: Register error: $e');
       emit(
         state.copyWith(
           isSubmittingRegister: false,
           registerErrorMessage: _friendlyMessage(
             e,
-            fallback: 'No pudimos crear tu cuenta. Intenta nuevamente.',
+            fallback: AppStrings.authRegisterError,
           ),
         ),
       );
@@ -434,8 +341,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(errorMessage: null));
     try {
       await _logout();
-    } on Exception catch (_) {
-      // Ignore logout errors, always clear local session in repository.
+    } on Exception catch (e) {
+      if (kDebugMode) debugPrint('AuthBloc: Logout error: $e');
     } finally {
       emit(state.copyWith(status: AuthStatus.unauthenticated, session: null));
     }
@@ -451,11 +358,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final tokens = await _refreshToken();
       emit(state.copyWith(session: state.session!.copyWith(tokens: tokens)));
     } on Exception catch (e) {
+      if (kDebugMode) debugPrint('AuthBloc: Refresh error: $e');
       emit(
         state.copyWith(
           errorMessage: _friendlyMessage(
             e,
-            fallback: 'Error al refrescar sesión.',
+            fallback: AppStrings.authRefreshError,
           ),
         ),
       );
@@ -474,10 +382,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   String? _validateEmail(String email) {
     if (email.isEmpty) {
-      return 'Ingresá tu email.';
+      return AppStrings.authEmailRequired;
     }
     if (!_emailPattern.hasMatch(email)) {
-      return 'Ingresá un email válido.';
+      return AppStrings.authEmailInvalid;
     }
     return null;
   }
@@ -487,14 +395,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return emptyMessage;
     }
     if (password.length < 8) {
-      return 'La contraseña debe tener al menos 8 caracteres.';
+      return AppStrings.authPasswordTooShort;
     }
     return null;
   }
 
   String? _validateName(String name) {
     if (name.isEmpty) {
-      return 'Ingresá tu nombre.';
+      return AppStrings.authNameRequired;
     }
     return null;
   }
