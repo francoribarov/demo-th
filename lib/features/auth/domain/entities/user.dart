@@ -4,7 +4,7 @@ part 'user.freezed.dart';
 
 @freezed
 /// Domain entity representing an authenticated user.
-class User with _$User {
+abstract class User with _$User {
   /// Creates a [User] entity.
   const factory User({
     required String id,

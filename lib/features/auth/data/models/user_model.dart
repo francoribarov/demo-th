@@ -9,7 +9,7 @@ part 'user_model.g.dart';
 
 /// User model matching backend UserSchema
 @freezed
-class UserModel with _$UserModel {
+abstract class UserModel with _$UserModel {
   /// Creates a [UserModel] instance from backend fields.
   const factory UserModel({
     required String id,

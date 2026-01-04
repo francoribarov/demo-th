@@ -11,7 +11,7 @@ part 'auth_models.g.dart';
 
 /// Login request model
 @freezed
-class LoginRequest with _$LoginRequest {
+abstract class LoginRequest with _$LoginRequest {
   /// Creates a login request.
   const factory LoginRequest({required String email, required String password}) = _LoginRequest;
 
@@ -26,7 +26,7 @@ class LoginRequest with _$LoginRequest {
 
 /// Register request model
 @freezed
-class RegisterRequest with _$RegisterRequest {
+abstract class RegisterRequest with _$RegisterRequest {
   /// Creates a register request.
   const factory RegisterRequest({
     required String email,
@@ -51,7 +51,7 @@ class RegisterRequest with _$RegisterRequest {
 
 /// Token response model
 @freezed
-class TokenResponse with _$TokenResponse {
+abstract class TokenResponse with _$TokenResponse {
   /// Creates a token response model.
   const factory TokenResponse({
     @JsonKey(name: 'access_token') required String accessToken,
@@ -70,7 +70,7 @@ class TokenResponse with _$TokenResponse {
 
 /// Authentication response model
 @freezed
-class AuthResponse with _$AuthResponse {
+abstract class AuthResponse with _$AuthResponse {
   /// Creates an authentication response model.
   const factory AuthResponse({
     required UserModel user,
@@ -93,15 +93,15 @@ class AuthResponse with _$AuthResponse {
 
 /// Refresh token request model
 @freezed
-class RefreshTokenRequest with _$RefreshTokenRequest {
+abstract class RefreshTokenRequest with _$RefreshTokenRequest {
   /// Creates a refresh token request.
-  const factory RefreshTokenRequest({required String refreshToken}) = _RefreshTokenRequest;
+  const factory RefreshTokenRequest({
+    @JsonKey(name: 'refresh_token') required String refreshToken,
+  }) = _RefreshTokenRequest;
 
   const RefreshTokenRequest._();
 
   /// Creates a [RefreshTokenRequest] from JSON.
   factory RefreshTokenRequest.fromJson(Map<String, dynamic> json) => _$RefreshTokenRequestFromJson(json);
 
-  /// Serializes the request payload.
-  Map<String, dynamic> toJson() => {'refresh_token': refreshToken};
 }

@@ -85,18 +85,14 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       final data = error.response!.data;
 
       var message = 'Error de autenticación';
-      if (data is Map && data['detail'] != null) {
-        message = data['detail'].toString();
-      } else if (data is Map && data['message'] != null) {
+      if (data is Map && data['message'] != null) {
         message = data['message'].toString();
+      } else if (data is Map && data['detail'] != null) {
+        message = data['detail'].toString();
       }
 
-      if (statusCode == 401) {
-        return Exception('Credenciales inválidas');
-      } else if (statusCode == 400) {
+      if (statusCode == 400 || statusCode == 401 || statusCode == 409 || statusCode == 422) {
         return Exception(message);
-      } else if (statusCode == 409) {
-        return Exception('El usuario ya existe');
       }
     }
     return Exception('Error de conexión. Intente nuevamente.');

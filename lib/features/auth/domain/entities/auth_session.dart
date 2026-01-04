@@ -7,7 +7,7 @@ part 'auth_session.freezed.dart';
 
 @freezed
 /// Domain entity representing an authenticated session.
-class AuthSession with _$AuthSession {
+abstract class AuthSession with _$AuthSession {
   /// Creates an [AuthSession] instance.
   const factory AuthSession({required AuthTokens tokens, User? user}) = _AuthSession;
 }

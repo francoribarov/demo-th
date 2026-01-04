@@ -24,8 +24,13 @@ class AuthRepositoryImpl implements AuthRepository {
   final SharedPreferences _prefs;
 
   @override
-  Future<AuthSession> login({required String email, required String password}) async {
-    final response = await _remote.login(LoginRequest(email: email, password: password));
+  Future<AuthSession> login({
+    required String email,
+    required String password,
+  }) async {
+    final response = await _remote.login(
+      LoginRequest(email: email, password: password),
+    );
     await _persistSession(response);
     return response.toEntity();
   }
@@ -38,7 +43,12 @@ class AuthRepositoryImpl implements AuthRepository {
     String? location,
   }) async {
     final response = await _remote.register(
-      RegisterRequest(email: email, password: password, name: name, location: location),
+      RegisterRequest(
+        email: email,
+        password: password,
+        name: name,
+        location: location,
+      ),
     );
     await _persistSession(response);
     return response.toEntity();
@@ -51,7 +61,9 @@ class AuthRepositoryImpl implements AuthRepository {
       throw Exception('No refresh token available');
     }
 
-    final response = await _remote.refreshToken(RefreshTokenRequest(refreshToken: refreshToken));
+    final response = await _remote.refreshToken(
+      RefreshTokenRequest(refreshToken: refreshToken),
+    );
 
     await _tokenStorage.saveTokens(response.accessToken, response.refreshToken);
     return response.toEntity();
