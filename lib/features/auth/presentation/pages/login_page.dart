@@ -33,7 +33,10 @@ class _LoginPageState extends State<LoginPage> {
           previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
         final redirectTo = widget.from;
-        if (redirectTo != null && redirectTo.trim().isNotEmpty) {
+        if (redirectTo != null &&
+            redirectTo.trim().isNotEmpty &&
+            !redirectTo.contains(AppRoutes.login) &&
+            !redirectTo.contains(AppRoutes.register)) {
           context.go(redirectTo);
         } else {
           context.goHome();
@@ -84,8 +87,8 @@ class _LoginPageState extends State<LoginPage> {
                               labelText: 'Email',
                               hintText: 'tu@email.com',
                             ),
-                            onChanged: (v) => context.read<AuthBloc>().add(
-                              AuthEvent.loginEmailChanged(v),
+                            onChanged: (email) => context.read<AuthBloc>().add(
+                              AuthEvent.loginEmailChanged(email),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -99,8 +102,8 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: const InputDecoration(
                               labelText: 'Contraseña',
                             ),
-                            onChanged: (v) => context.read<AuthBloc>().add(
-                              AuthEvent.loginPasswordChanged(v),
+                            onChanged: (password) => context.read<AuthBloc>().add(
+                              AuthEvent.loginPasswordChanged(password),
                             ),
                             onSubmitted: (_) {
                               if (!isSubmitting) {

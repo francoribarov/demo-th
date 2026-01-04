@@ -99,7 +99,11 @@ class RefreshInterceptor extends Interceptor {
       completer.complete(null);
       return completer.future;
     } finally {
-      _refreshing = null;
+      // Small delay to ensure concurrent requests hitting this simultaneously
+      // don't trigger multiple refreshes before the first one completes and saves.
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _refreshing = null;
+      });
     }
   }
 }

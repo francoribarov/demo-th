@@ -102,7 +102,10 @@ class _RegisterPageState extends State<RegisterPage> {
           previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
         final redirectTo = widget.from;
-        if (redirectTo != null && redirectTo.trim().isNotEmpty) {
+        if (redirectTo != null &&
+            redirectTo.trim().isNotEmpty &&
+            !redirectTo.contains(AppRoutes.login) &&
+            !redirectTo.contains(AppRoutes.register)) {
           context.go(redirectTo);
         } else {
           context.goHome();
@@ -159,9 +162,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     decoration: const InputDecoration(
                                       labelText: 'Nombre',
                                     ),
-                                    onChanged: (v) => context
+                                    onChanged: (name) => context
                                         .read<AuthBloc>()
-                                        .add(AuthEvent.registerNameChanged(v)),
+                                        .add(AuthEvent.registerNameChanged(name)),
                                   ),
                                   const SizedBox(height: 12),
                                   TextField(
@@ -174,9 +177,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                       labelText: 'Email',
                                       hintText: 'tu@email.com',
                                     ),
-                                    onChanged: (v) => context
+                                    onChanged: (email) => context
                                         .read<AuthBloc>()
-                                        .add(AuthEvent.registerEmailChanged(v)),
+                                        .add(AuthEvent.registerEmailChanged(email)),
                                   ),
                                   const SizedBox(height: 12),
                                   _PasswordField(
@@ -184,9 +187,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     enabled: !isSubmitting,
                                     autofillHint: AutofillHints.newPassword,
                                     visibleNotifier: _passwordVisible,
-                                    onChanged: (v) =>
+                                    onChanged: (password) =>
                                         context.read<AuthBloc>().add(
-                                          AuthEvent.registerPasswordChanged(v),
+                                          AuthEvent.registerPasswordChanged(password),
                                         ),
                                     onSubmitted: (_) {
                                       if (!isSubmitting) {
@@ -202,9 +205,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     enabled: !isSubmitting,
                                     autofillHint: AutofillHints.newPassword,
                                     visibleNotifier: _passwordVisible,
-                                    onChanged: (v) => context.read<AuthBloc>().add(
+                                    onChanged: (confirmPassword) => context.read<AuthBloc>().add(
                                       AuthEvent.registerPasswordConfirmChanged(
-                                        v,
+                                        confirmPassword,
                                       ),
                                     ),
                                     onSubmitted: (_) {
