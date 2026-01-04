@@ -62,13 +62,34 @@ class AppTheme {
       // Color scheme
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
+        onPrimary: Colors.white,
+        primaryContainer: AppColors.gameCream,
+        onPrimaryContainer: AppColors.gameBrown,
         secondary: AppColors.secondary,
         onSecondary: AppColors.secondaryForeground,
+        secondaryContainer: AppColors.gameCream,
+        onSecondaryContainer: AppColors.gameBrown,
         tertiary: AppColors.accent,
         onTertiary: AppColors.accentForeground,
+        surface: Colors.white,
         onSurface: AppColors.cardForeground,
         error: AppColors.destructive,
         onError: AppColors.destructiveForeground,
+      ),
+
+      // Date Picker Theme
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: Colors.white,
+        headerBackgroundColor: AppColors.gameRust,
+        headerForegroundColor: Colors.white,
+        rangeSelectionBackgroundColor: AppColors.gameCream,
+        rangeSelectionOverlayColor: WidgetStateProperty.all(AppColors.gameRust.withOpacityValue(0.1)),
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return Colors.white;
+          return AppColors.gameBrown;
+        }),
+        todayForegroundColor: WidgetStateProperty.all(AppColors.gameRust),
+        surfaceTintColor: Colors.transparent,
       ),
 
       // Scaffold

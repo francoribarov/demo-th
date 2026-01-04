@@ -8,7 +8,7 @@ part 'game_reviews_bloc.freezed.dart';
 
 @freezed
 /// Events for [GameReviewsBloc].
-class GameReviewsEvent with _$GameReviewsEvent {
+abstract class GameReviewsEvent with _$GameReviewsEvent {
   /// Starts loading the game reviews.
   const factory GameReviewsEvent.started({required String gameId}) = _Started;
 
@@ -18,7 +18,7 @@ class GameReviewsEvent with _$GameReviewsEvent {
 
 @freezed
 /// State for [GameReviewsBloc].
-class GameReviewsState with _$GameReviewsState {
+abstract class GameReviewsState with _$GameReviewsState {
   /// Creates a [GameReviewsState].
   const factory GameReviewsState({
     @Default(false) bool isLoading,

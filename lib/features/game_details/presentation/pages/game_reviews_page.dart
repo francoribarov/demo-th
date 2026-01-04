@@ -26,7 +26,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator(color: AppColors.gameRust)),
+            body: Center(
+              child: CircularProgressIndicator(color: AppColors.gameRust),
+            ),
           );
         }
 
@@ -39,7 +41,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                 onPressed: () => context.popOrGo('/game/${widget.gameId}'),
               ),
             ),
-            body: Center(child: Text(state.errorMessage ?? 'Juego no encontrado')),
+            body: Center(
+              child: Text(state.errorMessage ?? 'Juego no encontrado'),
+            ),
           );
         }
 
@@ -77,11 +81,16 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                       // Overall rating
                       Column(
                         children: [
-                          Text(game.rating.toStringAsFixed(1), style: AppTypography.displayLarge),
+                          Text(
+                            game.rating.toStringAsFixed(1),
+                            style: AppTypography.displayLarge,
+                          ),
                           Row(
                             children: List.generate(5, (i) {
                               return Icon(
-                                i < game.rating.floor() ? Icons.star : Icons.star_border,
+                                i < game.rating.floor()
+                                    ? Icons.star
+                                    : Icons.star_border,
                                 color: AppColors.gameGold,
                                 size: 20,
                               );
@@ -90,7 +99,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           const SizedBox(height: 4),
                           Text(
                             '${game.reviews} reseñas',
-                            style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.gameBrown.withOpacityValue(0.7),
+                            ),
                           ),
                         ],
                       ),
@@ -101,8 +112,14 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           children: List.generate(5, (i) {
                             final stars = 5 - i;
                             final count = ratingCounts[stars] ?? 0;
-                            final percentage = game.reviewsList.isNotEmpty ? count / game.reviewsList.length : 0.0;
-                            return _RatingBar(stars: stars, percentage: percentage, count: count);
+                            final percentage = game.reviewsList.isNotEmpty
+                                ? count / game.reviewsList.length
+                                : 0.0;
+                            return _RatingBar(
+                              stars: stars,
+                              percentage: percentage,
+                              count: count,
+                            );
                           }),
                         ),
                       ),
@@ -120,15 +137,18 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                       _FilterChip(
                         label: 'Todas',
                         isSelected: state.filterRating == null,
-                        onTap: () =>
-                            context.read<GameReviewsBloc>().add(const GameReviewsEvent.filterRatingChanged(null)),
+                        onTap: () => context.read<GameReviewsBloc>().add(
+                          const GameReviewsEvent.filterRatingChanged(null),
+                        ),
                       ),
                       ...List.generate(5, (i) {
                         final stars = 5 - i;
                         return _FilterChip(
                           label: '$stars ⭐',
                           isSelected: state.filterRating == stars,
-                          onTap: () => context.read<GameReviewsBloc>().add(GameReviewsEvent.filterRatingChanged(stars)),
+                          onTap: () => context.read<GameReviewsBloc>().add(
+                            GameReviewsEvent.filterRatingChanged(stars),
+                          ),
                         );
                       }),
                     ],
@@ -139,7 +159,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
 
                 Text(
                   '${reviews.length} ${reviews.length == 1 ? 'reseña' : 'reseñas'}',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.gameBrown.withOpacityValue(0.7),
+                  ),
                 ),
 
                 const SizedBox(height: 16),
@@ -151,7 +173,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                     child: Center(
                       child: Text(
                         'No hay reseñas con este filtro',
-                        style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
                       ),
                     ),
                   )
@@ -169,7 +193,11 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
 }
 
 class _RatingBar extends StatelessWidget {
-  const _RatingBar({required this.stars, required this.percentage, required this.count});
+  const _RatingBar({
+    required this.stars,
+    required this.percentage,
+    required this.count,
+  });
   final int stars;
   final double percentage;
   final int count;
@@ -193,7 +221,10 @@ class _RatingBar extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 widthFactor: percentage,
                 child: Container(
-                  decoration: BoxDecoration(color: AppColors.gameGold, borderRadius: BorderRadius.circular(4)),
+                  decoration: BoxDecoration(
+                    color: AppColors.gameGold,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
             ),
@@ -203,7 +234,9 @@ class _RatingBar extends StatelessWidget {
             width: 24,
             child: Text(
               '$count',
-              style: AppTypography.labelSmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
+              style: AppTypography.labelSmall.copyWith(
+                color: AppColors.gameBrown.withOpacityValue(0.6),
+              ),
             ),
           ),
         ],
@@ -213,7 +246,11 @@ class _RatingBar extends StatelessWidget {
 }
 
 class _FilterChip extends StatelessWidget {
-  const _FilterChip({required this.label, required this.isSelected, required this.onTap});
+  const _FilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
@@ -230,14 +267,18 @@ class _FilterChip extends StatelessWidget {
             color: isSelected ? AppColors.gameCream : AppColors.card,
             borderRadius: BorderRadius.circular(AppTheme.radius2xl),
             border: Border.all(
-              color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+              color: isSelected
+                  ? AppColors.gameRust
+                  : AppColors.gameBrown.withOpacityValue(0.2),
               width: isSelected ? 2 : 1,
             ),
           ),
           child: Text(
             label,
             style: AppTypography.labelMedium.copyWith(
-              color: isSelected ? AppColors.gameBrown : AppColors.gameBrown.withOpacityValue(0.7),
+              color: isSelected
+                  ? AppColors.gameBrown
+                  : AppColors.gameBrown.withOpacityValue(0.7),
             ),
           ),
         ),
@@ -268,7 +309,10 @@ class _ReviewCard extends StatelessWidget {
               CircleAvatar(
                 radius: 20,
                 backgroundColor: AppColors.gameCream,
-                child: Text(review.name[0].toUpperCase(), style: AppTypography.titleMedium),
+                child: Text(
+                  review.name[0].toUpperCase(),
+                  style: AppTypography.titleMedium,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -278,14 +322,20 @@ class _ReviewCard extends StatelessWidget {
                     Text(review.name, style: AppTypography.titleSmall),
                     Text(
                       review.role,
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.gameBrown.withOpacityValue(0.6),
+                      ),
                     ),
                   ],
                 ),
               ),
               Row(
                 children: List.generate(5, (i) {
-                  return Icon(i < review.rating ? Icons.star : Icons.star_border, color: AppColors.gameGold, size: 16);
+                  return Icon(
+                    i < review.rating ? Icons.star : Icons.star_border,
+                    color: AppColors.gameGold,
+                    size: 16,
+                  );
                 }),
               ),
             ],

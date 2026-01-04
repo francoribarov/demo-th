@@ -9,14 +9,14 @@ part 'user_profile_bloc.freezed.dart';
 
 @freezed
 /// Events for loading user profile data.
-class UserProfileEvent with _$UserProfileEvent {
+abstract class UserProfileEvent with _$UserProfileEvent {
   /// Starts loading a profile based on the selected game id.
   const factory UserProfileEvent.started({required String gameId}) = _Started;
 }
 
 @freezed
 /// State for the user profile screen.
-class UserProfileState with _$UserProfileState {
+abstract class UserProfileState with _$UserProfileState {
   /// Creates the user profile state.
   const factory UserProfileState({@Default(false) bool isLoading, Game? game, String? errorMessage}) =
       _UserProfileState;

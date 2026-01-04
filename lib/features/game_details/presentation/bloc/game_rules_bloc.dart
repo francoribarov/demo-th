@@ -8,14 +8,14 @@ part 'game_rules_bloc.freezed.dart';
 
 @freezed
 /// Events for [GameRulesBloc].
-class GameRulesEvent with _$GameRulesEvent {
+abstract class GameRulesEvent with _$GameRulesEvent {
   /// Starts loading the game rules.
   const factory GameRulesEvent.started({required String gameId}) = _Started;
 }
 
 @freezed
 /// State for [GameRulesBloc].
-class GameRulesState with _$GameRulesState {
+abstract class GameRulesState with _$GameRulesState {
   /// Creates a [GameRulesState].
   const factory GameRulesState({@Default(false) bool isLoading, Game? game, String? errorMessage}) = _GameRulesState;
 }

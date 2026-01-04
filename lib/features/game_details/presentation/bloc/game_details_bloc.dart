@@ -8,7 +8,7 @@ part 'game_details_bloc.freezed.dart';
 
 @freezed
 /// Events for [GameDetailsBloc].
-class GameDetailsEvent with _$GameDetailsEvent {
+abstract class GameDetailsEvent with _$GameDetailsEvent {
   /// Starts loading the game details.
   const factory GameDetailsEvent.started({required String gameId}) = _Started;
 
@@ -21,13 +21,16 @@ class GameDetailsEvent with _$GameDetailsEvent {
   /// Updates the end date in the availability form.
   const factory GameDetailsEvent.checkEndDateChanged(String? value) = _CheckEndDateChanged;
 
+  /// Updates both dates in the availability form.
+  const factory GameDetailsEvent.checkDateRangeChanged(String? start, String? end) = _CheckDateRangeChanged;
+
   /// Triggers the availability check.
   const factory GameDetailsEvent.checkAvailabilityPressed() = _CheckAvailabilityPressed;
 }
 
 @freezed
 /// State for [GameDetailsBloc].
-class GameDetailsState with _$GameDetailsState {
+abstract class GameDetailsState with _$GameDetailsState {
   /// Creates a [GameDetailsState].
   const factory GameDetailsState({
     @Default(false) bool isLoading,
@@ -52,6 +55,7 @@ class GameDetailsBloc extends Bloc<GameDetailsEvent, GameDetailsState> {
     on<_ToggleWishlist>(_onToggleWishlist);
     on<_CheckStartDateChanged>(_onCheckStartDateChanged);
     on<_CheckEndDateChanged>(_onCheckEndDateChanged);
+    on<_CheckDateRangeChanged>(_onCheckDateRangeChanged);
     on<_CheckAvailabilityPressed>(_onCheckAvailabilityPressed);
   }
   final GetGames _getGames;
@@ -89,6 +93,15 @@ class GameDetailsBloc extends Bloc<GameDetailsEvent, GameDetailsState> {
 
   void _onCheckEndDateChanged(_CheckEndDateChanged event, Emitter<GameDetailsState> emit) {
     emit(state.copyWith(checkEndDate: event.value, availabilityResult: null, errorMessage: null));
+  }
+
+  void _onCheckDateRangeChanged(_CheckDateRangeChanged event, Emitter<GameDetailsState> emit) {
+    emit(state.copyWith(
+      checkStartDate: event.start,
+      checkEndDate: event.end,
+      availabilityResult: null,
+      errorMessage: null,
+    ));
   }
 
   void _onCheckAvailabilityPressed(_CheckAvailabilityPressed event, Emitter<GameDetailsState> emit) {
