@@ -9,9 +9,9 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/core/widgets/availability_date_selector.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
+import 'package:mobile_table_hopping/features/rental/presentation/widgets/availability_date_selector.dart';
 
 /// Rental confirmation page matching RentalConfirm.tsx
 class RentalConfirmPage extends StatelessWidget {
@@ -93,7 +93,10 @@ class RentalConfirmPage extends StatelessWidget {
                   startDate: state.startDate,
                   endDate: state.endDate,
                   onRangeChanged: (start, end) => context.read<RentalBloc>().add(
-                    RentalEvent.dateRangeChanged(start, end),
+                    RentalEvent.dateRangeChanged(
+                      startDate: start,
+                      endDate: end,
+                    ),
                   ),
                 ),
 
@@ -110,10 +113,10 @@ class RentalConfirmPage extends StatelessWidget {
                       .read<RentalBloc>()
                       .add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
                   onAddressChanged: (value) => context.read<RentalBloc>().add(
-                    RentalEvent.deliveryAddressChanged(value),
+                    RentalEvent.deliveryAddressChanged(address: value),
                   ),
                   onCommentsChanged: (value) => context.read<RentalBloc>().add(
-                    RentalEvent.deliveryCommentsChanged(value),
+                    RentalEvent.deliveryCommentsChanged(comments: value),
                   ),
                 ),
 
@@ -125,7 +128,7 @@ class RentalConfirmPage extends StatelessWidget {
                 _FoodBundleSelector(
                   selectedBundles: state.selectedFoodBundles,
                   onBundlesChanged: (bundles) => context.read<RentalBloc>().add(
-                    RentalEvent.foodBundlesChanged(bundles),
+                    RentalEvent.foodBundlesChanged(foodBundles: bundles),
                   ),
                 ),
 
@@ -137,7 +140,7 @@ class RentalConfirmPage extends StatelessWidget {
                 _PaymentSelector(
                   selected: state.paymentMethod,
                   onChanged: (method) => context.read<RentalBloc>().add(
-                    RentalEvent.paymentMethodChanged(method),
+                    RentalEvent.paymentMethodChanged(paymentMethod: method),
                   ),
                 ),
 
@@ -238,14 +241,20 @@ class _GameSummary extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(game.title, style: AppTypography.titleMedium),
+                Text(
+                  game.title,
+                  style: AppTypography.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 4),
                 Text(
                   game.category,
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.gameBrown.withOpacityValue(0.7),
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -441,7 +450,7 @@ class _FoodBundleSelector extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        bundle.$2.substring(3),
+                        bundle.$2.length > 3 ? bundle.$2.substring(3) : bundle.$2,
                         style: AppTypography.titleSmall,
                       ),
                       Text(
