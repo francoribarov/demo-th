@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
+import 'package:mobile_table_hopping/features/rental/data/models/rental_models.dart';
 import 'package:mobile_table_hopping/features/rental/domain/entities/rental_draft.dart';
 import 'package:mobile_table_hopping/features/rental/domain/repositories/rental_repository.dart';
 
@@ -15,21 +16,7 @@ class RentalRepositoryImpl implements RentalRepository {
 
   @override
   Future<void> confirmRental(RentalDraft draft) async {
-    final payload = {
-      'gameId': draft.gameId.toString(),
-      'ownerId': draft.ownerId,
-      'startDate': draft.startDate,
-      'endDate': draft.endDate,
-      'pricePerDay': draft.pricePerDay,
-      'deposit': draft.deposit,
-      'deliveryMethod': draft.isDelivery ? 'delivery' : 'pickup',
-      'deliveryAddress': draft.isDelivery && draft.deliveryAddress.isNotEmpty
-          ? draft.deliveryAddress
-          : null,
-      'paymentMethod': draft.paymentMethod,
-      'foodBundleIds': draft.foodBundleIds.isEmpty ? null : draft.foodBundleIds,
-    };
-
-    await _dioClient.post<void>(ApiConstants.rentals, data: payload);
+    final model = RentalCreateRequestModel.fromEntity(draft);
+    await _dioClient.post<void>(ApiConstants.rentals, data: model.toJson());
   }
 }

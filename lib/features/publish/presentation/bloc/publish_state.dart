@@ -30,11 +30,17 @@ abstract class PublishState with _$PublishState {
   bool get canProceed {
     switch (currentStep) {
       case 0:
-        return title.trim().isNotEmpty && description.trim().isNotEmpty;
+        return ListingValidator.validateBasics(
+          title: title,
+          description: description,
+        ).isValid;
       case 1:
         return true;
       case 2:
-        return pricePerDay > 0;
+        return ListingValidator.validatePricing(
+          pricePerDay: pricePerDay,
+          deposit: deposit,
+        ).isValid;
       case 3:
         return true;
       default:
