@@ -64,7 +64,7 @@ void main() {
   }
 
   group('RentalConfirmPage Calendar Logic', () {
-    testWidgets('should open range picker and Jan 3 should be enabled', (
+    testWidgets('should open range picker and Jan 5 should be enabled', (
       tester,
     ) async {
       await tester.binding.setSurfaceSize(const Size(1200, 1024));
@@ -80,7 +80,7 @@ void main() {
       await tester.tap(find.text('Inicio'));
       await tester.pumpAndSettle();
 
-      expect(find.text('3'), findsWidgets);
+      expect(find.text('5'), findsWidgets);
     });
 
     testWidgets(
@@ -97,18 +97,24 @@ void main() {
         await tester.tap(find.text('Inicio'));
         await tester.pumpAndSettle();
 
-        // Start Jan 3, End Jan 5 (3 days total)
-        // Using last because there might be multiple '3' in the calendar view
-        await tester.tap(find.text('3').last);
-        await tester.pump();
+        // Start Jan 5, End Jan 7 (3 days total)
+        // Today is Jan 4, 2026. Jan 3 is in the past and disabled.
         await tester.tap(find.text('5').last);
+        await tester.pump();
+        await tester.tap(find.text('7').last);
         await tester.pump();
 
         final saveButton = find.text('GUARDAR');
         if (tester.any(saveButton)) {
           await tester.tap(saveButton);
         } else {
-          await tester.tap(find.byType(TextButton).first);
+          // Fallback to finding by icon or position in case text varies by platform/locale
+          final okButton = find.text('OK');
+          if (tester.any(okButton)) {
+            await tester.tap(okButton);
+          } else {
+            await tester.tap(find.byType(TextButton).last);
+          }
         }
 
         await tester.pumpAndSettle();
@@ -133,7 +139,7 @@ void main() {
         await tester.tap(find.text('Inicio'));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('3').last);
+        await tester.tap(find.text('5').last);
         await tester.pump();
 
         // Try to tap Jan 23 (gap exists)
@@ -149,21 +155,7 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        final captured = verify(
-          () => mockRentalBloc.add(captureAny()),
-        ).captured;
-
-        var foundInvalidEnd = false;
-        for (final event in captured) {
-          if (event is RentalEvent) {
-            event.mapOrNull(
-              dateRangeChanged: (e) {
-                if (e.endDate == '2026-01-23') foundInvalidEnd = true;
-              },
-            );
-          }
-        }
-        expect(foundInvalidEnd, false);
+        verifyNever(() => mockRentalBloc.add(any()));
       },
     );
   });

@@ -65,6 +65,9 @@ class AvailabilityDateSelector extends StatelessWidget {
     );
 
     if (picked != null) {
+      final startStr = DateFormatter.toIsoString(picked.start);
+      final endStr = DateFormatter.toIsoString(picked.end);
+
       final duration = picked.end.difference(picked.start).inDays + 1;
       if (duration < 3) {
         if (context.mounted) {
@@ -78,10 +81,19 @@ class AvailabilityDateSelector extends StatelessWidget {
         return;
       }
 
-      onRangeChanged(
-        DateFormatter.toIsoString(picked.start),
-        DateFormatter.toIsoString(picked.end),
-      );
+      if (!game.isAvailableFor(startStr, endStr)) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('El rango seleccionado contiene días no disponibles.'),
+              backgroundColor: AppColors.gameRust,
+            ),
+          );
+        }
+        return;
+      }
+
+      onRangeChanged(startStr, endStr);
     }
   }
 

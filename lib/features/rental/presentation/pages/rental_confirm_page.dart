@@ -1,6 +1,7 @@
 // UI widgets are documented at a higher level; omit per-member docs.
 // ignore_for_file: public_member_api_docs
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -230,11 +231,13 @@ class _GameSummary extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            child: Image.network(
-              game.image,
+            child: CachedNetworkImage(
+              imageUrl: game.image,
               width: 80,
               height: 80,
               fit: BoxFit.cover,
+              placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
             ),
           ),
           const SizedBox(width: 16),
