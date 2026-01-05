@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/widgets/review_widgets.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 
 /// User profile page matching UserProfile.tsx
@@ -236,7 +237,7 @@ class UserProfilePage extends StatelessWidget {
                             final percentage = totalReviews > 0
                                 ? count / totalReviews
                                 : 0.0;
-                            return _RatingBar(
+                            return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,
                               count: count,
@@ -254,11 +255,11 @@ class UserProfilePage extends StatelessWidget {
                 Text('RESEÑAS', style: AppTypography.sectionHeader),
                 const SizedBox(height: 12),
                 ...reviews.map(
-                  (review) => _ReviewCard(
+                  (review) => ReviewCard(
                     name: review.name,
                     rating: review.rating,
                     comment: review.comment,
-                    date: review.date,
+                    dateOrRole: review.date,
                   ),
                 ),
 
@@ -304,128 +305,6 @@ class _StatCard extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RatingBar extends StatelessWidget {
-  const _RatingBar({
-    required this.stars,
-    required this.percentage,
-    required this.count,
-  });
-  final int stars;
-  final double percentage;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Text('$stars', style: AppTypography.labelSmall),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              height: 8,
-              decoration: BoxDecoration(
-                color: AppColors.gameBrown.withOpacityValue(0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: percentage,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.gameGold,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 24,
-            child: Text(
-              '$count',
-              style: AppTypography.labelSmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.6),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ReviewCard extends StatelessWidget {
-  const _ReviewCard({
-    required this.name,
-    required this.rating,
-    required this.comment,
-    required this.date,
-  });
-  final String name;
-  final double rating;
-  final String comment;
-  final String date;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: AppColors.gameCream,
-                child: Text(
-                  name[0].toUpperCase(),
-                  style: AppTypography.labelMedium,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(name, style: AppTypography.titleSmall),
-                    Text(
-                      date,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                children: List.generate(5, (i) {
-                  return Icon(
-                    i < rating ? Icons.star : Icons.star_border,
-                    color: AppColors.gameGold,
-                    size: 14,
-                  );
-                }),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(comment, style: AppTypography.bodyMedium),
         ],
       ),
     );
