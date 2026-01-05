@@ -37,6 +37,12 @@ class AppRoutes {
   /// Publish game route.
   static const String publish = '/publish';
 
+  /// My games route.
+  static const String myGames = '/my-games';
+
+  /// Personal profile route.
+  static const String profile = '/profile';
+
   /// Game details route template.
   static const String gameDetails = '/game/:id';
 
@@ -116,6 +122,26 @@ class AppRouter {
                 create: (_) =>
                     getIt<PublishBloc>()..add(const PublishEvent.started()),
                 child: const PublishGamePage(),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.myGames,
+            name: 'my-games',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: Scaffold(
+                appBar: AppBar(title: const Text('Mis Juegos')),
+                body: const Center(child: Text('Tus juegos publicados aparecerán aquí.')),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: AppRoutes.profile,
+            name: 'profile',
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: Scaffold(
+                appBar: AppBar(title: const Text('Mi Perfil')),
+                body: const Center(child: Text('Configuración de tu perfil.')),
               ),
             ),
           ),

@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
 import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_details_bloc.dart';
 import 'package:mobile_table_hopping/features/game_details/presentation/widgets/availability_checker.dart';
 import 'package:mobile_table_hopping/features/game_details/presentation/widgets/game_detail_row.dart';
@@ -238,28 +239,9 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                             .withOpacityValue(0.12),
                                       ),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.star,
-                                          color: AppColors.gameGold,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          game.rating.toStringAsFixed(1),
-                                          style: AppTypography.titleSmall,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '(${game.reviews})',
-                                          style: AppTypography.bodySmall
-                                              .copyWith(
-                                                color: AppColors.gameBrown
-                                                    .withOpacityValue(0.6),
-                                              ),
-                                        ),
-                                      ],
+                                    child: GameRatingBadge(
+                                      rating: game.rating,
+                                      reviewCount: game.reviews,
                                     ),
                                   ),
                                 ],
