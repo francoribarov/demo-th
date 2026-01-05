@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/listing.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_listing.dart';
+import 'package:mobile_table_hopping/features/publish/domain/validators/listing_validator.dart';
 
 part 'publish_bloc.freezed.dart';
 part 'publish_event.dart';
