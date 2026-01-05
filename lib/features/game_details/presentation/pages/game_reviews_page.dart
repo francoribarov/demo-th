@@ -4,7 +4,7 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/core/widgets/review_widgets.dart';
 import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_reviews_bloc.dart';
 
 /// Game reviews page matching GameReviews.tsx
@@ -115,7 +115,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                             final percentage = game.reviewsList.isNotEmpty
                                 ? count / game.reviewsList.length
                                 : 0.0;
-                            return _RatingBar(
+                            return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,
                               count: count,
@@ -129,10 +129,12 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
 
                 const SizedBox(height: 24),
 
-                // Filter chips
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+                // Filters
+                SizedBox(
+                  height: 40,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
                       _FilterChip(
                         label: 'Todas',
@@ -155,7 +157,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
                 Text(
                   '${reviews.length} ${reviews.length == 1 ? 'reseña' : 'reseñas'}',
@@ -166,7 +168,6 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
 
                 const SizedBox(height: 16),
 
-                // Reviews list
                 if (reviews.isEmpty)
                   Container(
                     padding: const EdgeInsets.all(32),
@@ -180,7 +181,14 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                     ),
                   )
                 else
-                  ...reviews.map((review) => _ReviewCard(review: review)),
+                  ...reviews.map(
+                    (review) => ReviewCard(
+                      name: review.name,
+                      rating: review.rating,
+                      comment: review.comment,
+                      dateOrRole: review.role,
+                    ),
+                  ),
 
                 const SizedBox(height: 100),
               ],
@@ -188,59 +196,6 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
           ),
         );
       },
-    );
-  }
-}
-
-class _RatingBar extends StatelessWidget {
-  const _RatingBar({
-    required this.stars,
-    required this.percentage,
-    required this.count,
-  });
-  final int stars;
-  final double percentage;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Text('$stars', style: AppTypography.labelSmall),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              height: 8,
-              decoration: BoxDecoration(
-                color: AppColors.gameBrown.withOpacityValue(0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: percentage,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.gameGold,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 24,
-            child: Text(
-              '$count',
-              style: AppTypography.labelSmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.6),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -282,67 +237,6 @@ class _FilterChip extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _ReviewCard extends StatelessWidget {
-  const _ReviewCard({required this.review});
-  final GameReview review;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: AppColors.gameCream,
-                child: Text(
-                  review.name[0].toUpperCase(),
-                  style: AppTypography.titleMedium,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(review.name, style: AppTypography.titleSmall),
-                    Text(
-                      review.role,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                children: List.generate(5, (i) {
-                  return Icon(
-                    i < review.rating ? Icons.star : Icons.star_border,
-                    color: AppColors.gameGold,
-                    size: 16,
-                  );
-                }),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(review.comment, style: AppTypography.bodyMedium),
-        ],
       ),
     );
   }
