@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 
 /// Game card widget matching the Vite.js prototype GameCard component
@@ -121,9 +121,7 @@ class GameCard extends StatelessWidget {
                       const SizedBox(width: 12),
                       Row(
                         children: [
-                          Icon(Icons.star, size: 16, color: Colors.amber[400]),
-                          const SizedBox(width: 4),
-                          Text(game.rating.toStringAsFixed(1), style: AppTypography.labelLarge),
+                          GameRatingBadge(rating: game.rating),
                         ],
                       ),
                     ],
@@ -164,32 +162,7 @@ class GameCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Desde',
-                            style: AppTypography.labelSmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.6),
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(CurrencyFormatter.formatUYU(game.price), style: AppTypography.price),
-                              const SizedBox(width: 4),
-                              Text(
-                                '/ día',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.gameBrown.withOpacityValue(0.7),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      GamePriceLabel(price: game.price),
                       Row(
                         children: [
                           Text(

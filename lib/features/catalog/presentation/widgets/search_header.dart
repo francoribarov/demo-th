@@ -1,6 +1,7 @@
 // UI widgets are documented at a higher level; omit per-member docs.
 // ignore_for_file: public_member_api_docs
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,11 +55,17 @@ class SearchHeader extends StatelessWidget {
       child: Row(
         children: [
           // Logo
-          Image.network(
-            'https://images.vexels.com/media/users/3/189702/isolated/preview/0909c4a72562b45eb247012f1606c4c6-icono-de-juguete-de-dados.png',
+          CachedNetworkImage(
+            imageUrl: 'https://images.vexels.com/media/users/3/189702/isolated/preview/0909c4a72562b45eb247012f1606c4c6-icono-de-juguete-de-dados.png',
             height: 40,
             width: 40,
-            errorBuilder: (_, _, _) => Container(
+            placeholder: (context, url) => Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(color: AppColors.gameRust, borderRadius: BorderRadius.circular(8)),
+              child: const Icon(Icons.casino, color: Colors.white, size: 24),
+            ),
+            errorWidget: (context, url, error) => Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(color: AppColors.gameRust, borderRadius: BorderRadius.circular(8)),
