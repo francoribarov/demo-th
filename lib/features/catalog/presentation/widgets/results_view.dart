@@ -80,9 +80,11 @@ class ResultsView extends StatelessWidget {
                   highlightAvailability: state.hasDateFilter,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  onTap: () => context.goToGame(game.id.toString()),
+                  onTap: () => context.goToGame(game.id),
                   onCategoryTap: () {
-                    context.read<CatalogBloc>().add(SelectCategory(game.category));
+                    if (game.categories.isNotEmpty) {
+                      context.read<CatalogBloc>().add(SelectCategory(game.categories.first.name));
+                    }
                   },
                 );
               },

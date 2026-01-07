@@ -62,16 +62,16 @@ class ApiConstants {
   static const String games = '$apiBasePath/games';
 
   /// Game detail endpoint.
-  static String gameById(int id) => '$games/$id';
+  static String gameById(dynamic id) => '$publications/$id';
 
   /// Games available today endpoint.
   static const String gamesAvailableToday = '$games/available-today';
 
   /// Game reviews endpoint.
-  static String gameReviews(int id) => '$games/$id/reviews';
+  static String gameReviews(dynamic id) => '$publications/$id/reviews';
 
   /// Game recommendations endpoint.
-  static String gameRecommendations(int id) => '$games/$id/recommendations';
+  static String gameRecommendations(dynamic id) => '$games/$id/recommendations';
 
   /// Categories endpoints.
   static const String categories = '$apiBasePath/categories';
@@ -85,8 +85,8 @@ class ApiConstants {
   /// Current user endpoint.
   static const String currentUser = '$users/me';
 
-  /// Listings endpoints.
-  static const String listings = '$apiBasePath/listings';
+  /// Publications endpoints.
+  static const String publications = '$apiBasePath/publications';
 
   /// Rentals endpoints.
   static const String rentals = '$apiBasePath/rentals';

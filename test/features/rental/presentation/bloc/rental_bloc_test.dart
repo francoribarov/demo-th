@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
@@ -17,14 +18,15 @@ void main() {
   late RentalBloc rentalBloc;
 
   const tGame = Game(
-    id: 1,
+    id: '123',
+    catalogId: 123,
     title: 'Test Game',
-    category: 'Strategy',
-    image: '',
+    categories: [GameCategory(id: 1, name: 'Strategy', icon: 'img')],
+    images: ['image1.jpg'],
     rating: 4.5,
-    reviews: 10,
+    reviewsCount: 10,
     description: '',
-    duration: '60 min',
+    duration: 60,
     players: '2-4',
     difficulty: 'Medium',
     price: 100,
@@ -32,7 +34,7 @@ void main() {
     availability: [
       AvailabilityRange(from: '2026-01-01', to: '2026-01-31'),
     ],
-    rules: GameRules(video: '', text: ''),
+    rules: GameRules(videoUrl: '', ruleCompleteUrl: '', summaryRules: ''),
   );
 
   setUp(() {

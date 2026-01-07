@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+// 
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +55,7 @@ class RentalConfirmPage extends StatelessWidget {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/game/$gameId'),
+                onPressed: () => context.popOrGo('/publication/$gameId'),
               ),
             ),
             body: Center(
@@ -72,7 +72,7 @@ class RentalConfirmPage extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/game/$gameId'),
+              onPressed: () => context.popOrGo('/publication/$gameId'),
             ),
             title: const Text('Confirmar alquiler'),
           ),
@@ -93,12 +93,13 @@ class RentalConfirmPage extends StatelessWidget {
                   game: game,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  onRangeChanged: (start, end) => context.read<RentalBloc>().add(
-                    RentalEvent.dateRangeChanged(
-                      startDate: start,
-                      endDate: end,
-                    ),
-                  ),
+                  onRangeChanged: (start, end) =>
+                      context.read<RentalBloc>().add(
+                        RentalEvent.dateRangeChanged(
+                          startDate: start,
+                          endDate: end,
+                        ),
+                      ),
                 ),
 
                 const SizedBox(height: 24),
@@ -232,12 +233,14 @@ class _GameSummary extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             child: CachedNetworkImage(
-              imageUrl: game.image,
+              imageUrl: game.images.isNotEmpty ? game.images.first : '',
               width: 80,
               height: 80,
               fit: BoxFit.cover,
-              placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
+              placeholder: (context, url) =>
+                  const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (context, url, error) =>
+                  const Icon(Icons.image_not_supported),
             ),
           ),
           const SizedBox(width: 16),
@@ -253,7 +256,9 @@ class _GameSummary extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  game.category,
+                  game.categories.isNotEmpty
+                      ? game.categories.first.name
+                      : 'Varios',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.gameBrown.withOpacityValue(0.7),
                   ),
@@ -398,7 +403,7 @@ class _FoodBundleSelector extends StatelessWidget {
   final void Function(List<String>) onBundlesChanged;
 
   static const _bundles = [
-    ('classic', '🍿 Pack Clásico', 'Pochoclos, papas y bebidas'),
+    ('classic', '🍿 Pack Clásico', 'Pop, papas y bebidas'),
     ('sweet', '🍫 Pack Dulce', 'Chocolates, galletas y jugos'),
     ('premium', '🧀 Pack Premium', 'Quesos, fiambres y vino'),
   ];
@@ -453,7 +458,9 @@ class _FoodBundleSelector extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        bundle.$2.length > 3 ? bundle.$2.substring(3) : bundle.$2,
+                        bundle.$2.length > 3
+                            ? bundle.$2.substring(3)
+                            : bundle.$2,
                         style: AppTypography.titleSmall,
                       ),
                       Text(

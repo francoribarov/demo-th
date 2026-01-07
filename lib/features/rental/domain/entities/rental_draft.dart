@@ -7,7 +7,7 @@ part 'rental_draft.freezed.dart';
 abstract class RentalDraft with _$RentalDraft {
   /// Creates a draft payload for a rental request.
   const factory RentalDraft({
-    required int gameId,
+    required String publicationId,
     required String ownerId,
     required String startDate,
     required String endDate,

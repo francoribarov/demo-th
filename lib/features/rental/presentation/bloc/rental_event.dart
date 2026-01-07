@@ -5,7 +5,7 @@ part of 'rental_bloc.dart';
 abstract class RentalEvent with _$RentalEvent {
   /// Loads the game and initializes dates for the rental flow.
   const factory RentalEvent.started({
-    required String gameId,
+    required String publicationId,
     String? startDate,
     String? endDate,
     String? ownerId,

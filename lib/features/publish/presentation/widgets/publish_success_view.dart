@@ -6,14 +6,10 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 class PublishSuccessView extends StatelessWidget {
   /// Creates a [PublishSuccessView].
   const PublishSuccessView({
-    required this.title,
     required this.onBackHome,
     required this.onPublishAnother,
     super.key,
   });
-
-  /// Title of the published game.
-  final String title;
 
   /// Callback to navigate back home.
   final VoidCallback onBackHome;
@@ -40,7 +36,7 @@ class PublishSuccessView extends StatelessWidget {
               Text('¡Juego publicado!', style: AppTypography.displaySmall, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               Text(
-                'Tu juego "$title" ya está disponible para alquilar.',
+                'Tu publicación ya está disponible para alquilar.',
                 style: AppTypography.bodyLarge.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
                 textAlign: TextAlign.center,
               ),

@@ -86,7 +86,7 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Cooperativos populares',
             description: 'Perfectos para ganar (o perder) todos juntos.',
-            games: state.filteredGames.where((g) => g.category.toLowerCase().contains('cooper')).take(4).toList(),
+            games: state.filteredGames.where((g) => g.categories.any((c) => c.name.toLowerCase().contains('cooper'))).take(4).toList(),
             variant: GameSectionVariant.carousel,
           ),
 
@@ -95,7 +95,7 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Para jugar en familia',
             description: 'Reglas simples y partidas ágiles para todas las edades.',
-            games: state.filteredGames.where((g) => g.category.toLowerCase().contains('familiar')).take(4).toList(),
+            games: state.filteredGames.where((g) => g.categories.any((c) => c.name.toLowerCase().contains('familiar'))).take(4).toList(),
             variant: GameSectionVariant.grid,
           ),
 
@@ -104,7 +104,7 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Fiesta y party games',
             description: 'Animá tu reunión con risas y creatividad.',
-            games: state.filteredGames.where((g) => g.category.toLowerCase().contains('fiesta')).take(4).toList(),
+            games: state.filteredGames.where((g) => g.categories.any((c) => c.name.toLowerCase().contains('fiesta'))).take(4).toList(),
             variant: GameSectionVariant.carousel,
           ),
 
@@ -114,7 +114,7 @@ class DiscoveryView extends StatelessWidget {
             title: 'Noches estratégicas',
             description: 'Opciones para quienes buscan desafíos bien profundos.',
             games: state.filteredGames
-                .where((g) => ['estrategia', 'experto', 'deck'].any((tag) => g.category.toLowerCase().contains(tag)))
+                .where((g) => g.categories.any((c) => ['estrategia', 'experto', 'deck'].any((tag) => c.name.toLowerCase().contains(tag))))
                 .take(4)
                 .toList(),
             variant: GameSectionVariant.grid,
@@ -128,7 +128,9 @@ class DiscoveryView extends StatelessWidget {
             variant: GameSectionVariant.grid,
             onGameTap: (game) => context.goToGame(game.id.toString()),
             onCategoryTap: (game) {
-              context.read<CatalogBloc>().add(SelectCategory(game.category));
+              if (game.categories.isNotEmpty) {
+                context.read<CatalogBloc>().add(SelectCategory(game.categories.first.name));
+              }
             },
           ),
 
@@ -155,7 +157,9 @@ class DiscoveryView extends StatelessWidget {
         variant: variant,
         onGameTap: (game) => context.goToGame(game.id.toString()),
         onCategoryTap: (game) {
-          context.read<CatalogBloc>().add(SelectCategory(game.category));
+          if (game.categories.isNotEmpty) {
+            context.read<CatalogBloc>().add(SelectCategory(game.categories.first.name));
+          }
         },
       ),
     );

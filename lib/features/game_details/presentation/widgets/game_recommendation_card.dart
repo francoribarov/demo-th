@@ -43,7 +43,7 @@ class GameRecommendationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CachedNetworkImage(
-              imageUrl: game.image,
+              imageUrl: game.images.isNotEmpty ? game.images.first : '',
               height: 100,
               width: double.infinity,
               fit: BoxFit.cover,

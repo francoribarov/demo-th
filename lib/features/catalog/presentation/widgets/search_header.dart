@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+// 
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

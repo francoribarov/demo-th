@@ -1,5 +1,5 @@
 // Use cases are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+// 
 
 import 'package:injectable/injectable.dart';
 

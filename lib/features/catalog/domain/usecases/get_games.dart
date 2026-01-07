@@ -1,5 +1,5 @@
 // Use cases are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+// 
 
 import 'package:injectable/injectable.dart';
 
@@ -21,12 +21,14 @@ class GetGames {
     return _repository.getGamesAvailableToday();
   }
 
-  Future<Game?> getById(int id) async {
+  /// Get a single game by ID
+  Future<Game?> getById(String id) async {
     return _repository.getGameById(id);
   }
 
-  Future<List<Game>> getRecommended(int gameId) async {
-    return _repository.getRecommendedGames(gameId);
+  /// Get recommended games for a specific game
+  Future<List<Game>> getRecommended(String id) async {
+    return _repository.getRecommendedGames(id);
   }
 
   Future<List<GameCategory>> getCategories() async {

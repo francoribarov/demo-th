@@ -1,18 +1,18 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_listing.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockCreateListing extends Mock implements CreateListing {}
+class MockCreatePublication extends Mock implements CreatePublication {}
 
 void main() {
-  late MockCreateListing mockCreateListing;
+  late MockCreatePublication mockCreatePublication;
   late PublishBloc publishBloc;
 
   setUp(() {
-    mockCreateListing = MockCreateListing();
-    publishBloc = PublishBloc(createListing: mockCreateListing);
+    mockCreatePublication = MockCreatePublication();
+    publishBloc = PublishBloc(createPublication: mockCreatePublication);
   });
 
   tearDown(() async {
@@ -25,14 +25,14 @@ void main() {
     });
 
     blocTest<PublishBloc, PublishState>(
-      'updates title and canProceed status',
+      'updates gameId and canProceed status',
       build: () => publishBloc,
-      act: (bloc) => bloc.add(const PublishEvent.titleChanged('Catan')),
+      act: (bloc) => bloc.add(const PublishEvent.gameIdChanged(123)),
       expect: () => [
-        const PublishState(title: 'Catan'),
+        const PublishState(gameId: 123),
       ],
       verify: (bloc) {
-        expect(bloc.state.canProceed, false); // No description yet
+        expect(bloc.state.canProceed, false); // No description/price yet
       },
     );
 
@@ -41,14 +41,16 @@ void main() {
       build: () => publishBloc,
       act: (bloc) {
         bloc
-          ..add(const PublishEvent.titleChanged('Catan'))
-          ..add(const PublishEvent.descriptionChanged('A very long and descriptive text for the game.'));
+          ..add(const PublishEvent.gameIdChanged(123))
+          ..add(const PublishEvent.descriptionChanged('A very long and descriptive text for the game.'))
+          ..add(const PublishEvent.priceChanged(100));
       },
-      skip: 1,
+      skip: 2,
       expect: () => [
         const PublishState(
-          title: 'Catan',
+          gameId: 123,
           description: 'A very long and descriptive text for the game.',
+          price: 100,
         ),
       ],
       verify: (bloc) {

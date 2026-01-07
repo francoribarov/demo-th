@@ -37,7 +37,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/game/${widget.gameId}'),
+                onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
               ),
             ),
             body: Center(
@@ -50,7 +50,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/game/${widget.gameId}'),
+              onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
             ),
             title: Text('Reglas de ${game.title}'),
           ),
@@ -69,7 +69,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _InfoChip(icon: Icons.timer, label: game.duration),
+                      _InfoChip(icon: Icons.timer, label: '${game.duration} min'),
                       _InfoChip(icon: Icons.people, label: game.players),
                       _InfoChip(icon: Icons.psychology, label: game.difficulty),
                     ],
@@ -104,12 +104,22 @@ class _GameRulesPageState extends State<GameRulesPage> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          '(próximamente)',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.gameBrown.withOpacityValue(0.5),
+                        if (game.rules.videoUrl.isEmpty)
+                          Text(
+                            '(próximamente)',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.gameBrown.withOpacityValue(0.5),
+                            ),
+                          )
+                        else
+                          Text(
+                            game.rules.videoUrl,
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.gameBrown.withOpacityValue(0.5),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -129,7 +139,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
                       color: AppColors.gameBrown.withOpacityValue(0.1),
                     ),
                   ),
-                  child: Text(game.rules.text, style: AppTypography.bodyLarge),
+                  child: Text(game.rules.summaryRules, style: AppTypography.bodyLarge),
                 ),
 
                 const SizedBox(height: 24),

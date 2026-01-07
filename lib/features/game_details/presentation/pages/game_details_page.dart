@@ -149,7 +149,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                     fit: StackFit.expand,
                     children: [
                       CachedNetworkImage(
-                        imageUrl: game.image,
+                        imageUrl: game.images.isNotEmpty ? game.images.first : '',
                         fit: BoxFit.cover,
                         placeholder: (context, url) =>
                             const ColoredBox(color: AppColors.gameCream),
@@ -220,7 +220,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                       ),
                                     ),
                                     child: Text(
-                                      game.category,
+                                      game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
                                       style: AppTypography.categoryChip,
                                     ),
                                   ),
@@ -241,7 +241,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                     ),
                                     child: GameRatingBadge(
                                       rating: game.rating,
-                                      reviewCount: game.reviews,
+                                      reviewCount: game.reviewsCount,
                                     ),
                                   ),
                                 ],
@@ -434,7 +434,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                           GameDetailRow(
                                             icon: Icons.timer_outlined,
                                             label: 'Duración',
-                                            value: game.duration,
+                                            value: '${game.duration} min',
                                           ),
                                           const Divider(height: 24),
                                           GameDetailRow(
@@ -517,7 +517,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                             return GameRecommendationCard(
                                               game: rec,
                                               onTap: () => context.goToGame(
-                                                rec.id.toString(),
+                                                rec.id,
                                               ),
                                             );
                                           },
@@ -575,7 +575,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                '${game.reviews} reseñas',
+                                                '${game.reviewsCount} reseñas',
                                                 style: AppTypography.bodySmall
                                                     .copyWith(
                                                       color: AppColors.gameBrown

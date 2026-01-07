@@ -12,13 +12,18 @@ part 'game_reviews_state.dart';
 /// Bloc for loading and presenting game reviews.
 class GameReviewsBloc extends Bloc<GameReviewsEvent, GameReviewsState> {
   /// Creates a [GameReviewsBloc].
-  GameReviewsBloc({required GetGames getGames}) : _getGames = getGames, super(const GameReviewsState()) {
+  GameReviewsBloc({required GetGames getGames})
+    : _getGames = getGames,
+      super(const GameReviewsState()) {
     on<_Started>(_onStarted);
     on<_FilterRatingChanged>(_onFilterRatingChanged);
   }
   final GetGames _getGames;
 
-  Future<void> _onStarted(_Started event, Emitter<GameReviewsState> emit) async {
+  Future<void> _onStarted(
+    _Started event,
+    Emitter<GameReviewsState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
     final id = int.tryParse(event.gameId);
@@ -28,18 +33,28 @@ class GameReviewsBloc extends Bloc<GameReviewsEvent, GameReviewsState> {
     }
 
     try {
-      final game = await _getGames.getById(id);
+      final game = await _getGames.getById(event.gameId);
       if (game == null) {
-        emit(state.copyWith(isLoading: false, errorMessage: 'Juego no encontrado'));
+        emit(
+          state.copyWith(isLoading: false, errorMessage: 'Juego no encontrado'),
+        );
         return;
       }
       emit(state.copyWith(isLoading: false, game: game));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al cargar reseñas: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al cargar reseñas: $e',
+        ),
+      );
     }
   }
 
-  void _onFilterRatingChanged(_FilterRatingChanged event, Emitter<GameReviewsState> emit) {
+  void _onFilterRatingChanged(
+    _FilterRatingChanged event,
+    Emitter<GameReviewsState> emit,
+  ) {
     emit(state.copyWith(filterRating: event.value));
   }
 }

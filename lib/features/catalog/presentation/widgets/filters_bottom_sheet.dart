@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
 

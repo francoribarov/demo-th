@@ -16,9 +16,7 @@ class PublishGamePage extends StatelessWidget {
   /// Creates the publish game page.
   const PublishGamePage({super.key});
 
-  static const _categories = ['Estrategia', 'Cooperativo', 'Familiar', 'Fiesta', 'Experto', 'Abstracto'];
 
-  static const _difficulties = ['Fácil', 'Medio', 'Difícil', 'Experto'];
   static const _conditions = [
     ('new', 'Nuevo', 'Sellado o usado una vez'),
     ('like_new', 'Como nuevo', 'Excelente estado, sin marcas'),
@@ -33,7 +31,6 @@ class PublishGamePage extends StatelessWidget {
       builder: (context, state) {
         if (state.success) {
           return PublishSuccessView(
-            title: state.title,
             onBackHome: () => context.go('/'),
             onPublishAnother: () => context.read<PublishBloc>().add(const PublishEvent.publishAnother()),
           );
@@ -58,23 +55,11 @@ class PublishGamePage extends StatelessWidget {
                     children: [
                       DataStep(
                         formVersion: state.formVersion,
-                        title: state.title,
-                        publisher: state.publisher,
-                        category: state.category,
+                        gameId: state.gameId,
                         description: state.description,
-                        duration: state.duration,
-                        players: state.players,
-                        difficulty: state.difficulty,
-                        categories: _categories,
-                        difficulties: _difficulties,
-                        onTitleChanged: (v) => context.read<PublishBloc>().add(PublishEvent.titleChanged(v)),
-                        onPublisherChanged: (v) => context.read<PublishBloc>().add(PublishEvent.publisherChanged(v)),
-                        onCategoryChanged: (v) => context.read<PublishBloc>().add(PublishEvent.categoryChanged(v)),
+                        onGameIdChanged: (v) => context.read<PublishBloc>().add(PublishEvent.gameIdChanged(v)),
                         onDescriptionChanged: (v) =>
                             context.read<PublishBloc>().add(PublishEvent.descriptionChanged(v)),
-                        onDurationChanged: (v) => context.read<PublishBloc>().add(PublishEvent.durationChanged(v)),
-                        onPlayersChanged: (v) => context.read<PublishBloc>().add(PublishEvent.playersChanged(v)),
-                        onDifficultyChanged: (v) => context.read<PublishBloc>().add(PublishEvent.difficultyChanged(v)),
                       ),
                       PhotosStep(
                         images: state.images,
@@ -82,28 +67,21 @@ class PublishGamePage extends StatelessWidget {
                       ),
                       PriceStep(
                         formVersion: state.formVersion,
-                        pricePerDay: state.pricePerDay,
-                        deposit: state.deposit,
+                        price: state.price,
                         condition: state.condition,
-                        visibility: state.visibility,
+                        // visibility removed
                         conditions: _conditions,
-                        onPriceChanged: (v) => context.read<PublishBloc>().add(PublishEvent.pricePerDayChanged(v)),
-                        onDepositChanged: (v) => context.read<PublishBloc>().add(PublishEvent.depositChanged(v)),
+                        deliveryMethods: state.deliveryMethods,
+                        onPriceChanged: (v) => context.read<PublishBloc>().add(PublishEvent.priceChanged(v)),
                         onConditionChanged: (v) => context.read<PublishBloc>().add(PublishEvent.conditionChanged(v)),
-                        onVisibilityChanged: (v) => context.read<PublishBloc>().add(PublishEvent.visibilityChanged(v)),
+                        onDeliveryMethodsChanged: (v) =>
+                            context.read<PublishBloc>().add(PublishEvent.deliveryMethodsChanged(v)),
                       ),
                       ReviewStep(
-                        title: state.title,
-                        publisher: state.publisher,
-                        category: state.category,
+                        gameId: state.gameId,
                         description: state.description,
-                        duration: state.duration,
-                        players: state.players,
-                        difficulty: state.difficulty,
-                        pricePerDay: state.pricePerDay,
-                        deposit: state.deposit,
+                        price: state.price,
                         condition: state.condition,
-                        visibility: state.visibility,
                         images: state.images,
                         conditions: _conditions,
                       ),

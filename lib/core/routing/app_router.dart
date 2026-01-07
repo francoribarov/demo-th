@@ -44,19 +44,19 @@ class AppRoutes {
   static const String profile = '/profile';
 
   /// Game details route template.
-  static const String gameDetails = '/game/:id';
+  static const String gameDetails = '/publication/:id';
 
   /// Game rules route template.
-  static const String gameRules = '/game/:id/rules';
+  static const String gameRules = '/publication/:id/rules';
 
   /// Game reviews route template.
-  static const String gameReviews = '/game/:id/reviews';
+  static const String gameReviews = '/publication/:id/reviews';
 
   /// Game owner route template.
-  static const String gameOwner = '/game/:id/owner';
+  static const String gameOwner = '/publication/:id/owner';
 
   /// Rental confirmation route template.
-  static const String rental = '/game/:id/rental';
+  static const String rental = '/publication/:id/rental';
 }
 
 /// App router configuration using go_router.
@@ -79,7 +79,7 @@ class AppRouter {
       final isRegister = location == AppRoutes.register;
       final isProtected =
           location == AppRoutes.publish ||
-          RegExp(r'^/game/[^/]+/rental$').hasMatch(location);
+          RegExp(r'^/publication/[^/]+/rental$').hasMatch(location);
 
       final authBloc = getIt<AuthBloc>();
       final authState = authBloc.state;
@@ -237,7 +237,7 @@ class AppRouter {
                 create: (_) => getIt<RentalBloc>()
                   ..add(
                     RentalEvent.started(
-                      gameId: id,
+                      publicationId: id,
                       startDate: startDate,
                       endDate: endDate,
                       ownerId: ownerId,
@@ -281,16 +281,16 @@ class AppRouter {
 /// Extension methods for easier navigation.
 extension GoRouterExtension on BuildContext {
   /// Use `push` for detail flows so back navigation works.
-  void goToGame(String id) => push('/game/$id');
+  void goToGame(String id) => push('/publication/$id');
 
   /// Navigate to game rules for [id].
-  void goToGameRules(String id) => push('/game/$id/rules');
+  void goToGameRules(String id) => push('/publication/$id/rules');
 
   /// Navigate to game reviews for [id].
-  void goToGameReviews(String id) => push('/game/$id/reviews');
+  void goToGameReviews(String id) => push('/publication/$id/reviews');
 
   /// Navigate to game owner for [id].
-  void goToGameOwner(String id) => push('/game/$id/owner');
+  void goToGameOwner(String id) => push('/publication/$id/owner');
 
   /// Navigate to rental confirmation for [id] with optional dates.
   void goToRental(
@@ -300,7 +300,7 @@ extension GoRouterExtension on BuildContext {
     String? ownerId,
     int? deposit,
   }) => push(
-    '/game/$id/rental',
+    '/publication/$id/rental',
     extra: {
       'startDate': startDate,
       'endDate': endDate,

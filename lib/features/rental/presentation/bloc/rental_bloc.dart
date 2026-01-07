@@ -49,11 +49,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       ),
     );
 
-    final id = int.tryParse(event.gameId);
-    if (id == null) {
-      emit(state.copyWith(isLoading: false, errorMessage: AppStrings.errorInvalidId));
-      return;
-    }
+    final id = event.publicationId;
 
     try {
       final game = await _getGames.getById(id);
@@ -231,7 +227,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     try {
       await _confirmRental(
         RentalDraft(
-          gameId: game.id,
+          publicationId: game.id.toString(),
           ownerId: ownerId,
           startDate: start,
           endDate: end,

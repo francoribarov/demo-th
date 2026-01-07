@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/features/publish/data/datasources/publish_remote_datasource.dart';
-import 'package:mobile_table_hopping/features/publish/data/models/listing_model.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/listing.dart';
+import 'package:mobile_table_hopping/features/publish/data/models/publication_model.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/repositories/publish_repository.dart';
 
 @LazySingleton(as: PublishRepository)
@@ -12,8 +12,8 @@ class PublishRepositoryImpl implements PublishRepository {
   final PublishRemoteDatasource _remote;
 
   @override
-  Future<Listing> createListing(ListingDraft draft) async {
-    final response = await _remote.createListing(ListingCreateRequestModel.fromEntity(draft));
+  Future<Publication> createPublication(PublicationDraft draft) async {
+    final response = await _remote.createPublication(PublicationCreateRequestModel.fromEntity(draft));
     return response.toEntity();
   }
 }

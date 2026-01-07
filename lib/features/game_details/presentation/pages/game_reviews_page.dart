@@ -38,7 +38,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/game/${widget.gameId}'),
+                onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
               ),
             ),
             body: Center(
@@ -60,7 +60,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/game/${widget.gameId}'),
+              onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
             ),
             title: Text('Reseñas de ${game.title}'),
           ),
@@ -98,7 +98,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${game.reviews} reseñas',
+                            '${game.reviewsCount} reseñas',
                             style: AppTypography.bodySmall.copyWith(
                               color: AppColors.gameBrown.withOpacityValue(0.7),
                             ),
@@ -114,7 +114,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                             final count = ratingCounts[stars] ?? 0;
                             final percentage = game.reviewsList.isNotEmpty
                                 ? count / game.reviewsList.length
-                                : 0.0;
+                                : count / game.reviewsList.length.clamp(1, double.infinity);
                             return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,
@@ -183,10 +183,10 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                 else
                   ...reviews.map(
                     (review) => ReviewCard(
-                      name: review.name,
+                      name: review.name ?? 'Anónimo',
                       rating: review.rating,
                       comment: review.comment,
-                      dateOrRole: review.role,
+                      dateOrRole: '', // Role removed
                     ),
                   ),
 

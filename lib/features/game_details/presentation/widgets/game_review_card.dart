@@ -13,10 +13,10 @@ class GameReviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReviewCard(
-      name: review.name,
+      name: review.name ?? 'Anónimo',
       rating: review.rating,
       comment: review.comment,
-      dateOrRole: review.role,
+      dateOrRole: '', // Role removed from entity
     );
   }
 }

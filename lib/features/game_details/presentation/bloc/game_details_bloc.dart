@@ -25,11 +25,7 @@ class GameDetailsBloc extends Bloc<GameDetailsEvent, GameDetailsState> {
   Future<void> _onStarted(_Started event, Emitter<GameDetailsState> emit) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    final id = int.tryParse(event.gameId);
-    if (id == null) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'ID inválido'));
-      return;
-    }
+    final id = event.gameId;
 
     try {
       final game = await _getGames.getById(id);
@@ -38,7 +34,8 @@ class GameDetailsBloc extends Bloc<GameDetailsEvent, GameDetailsState> {
         return;
       }
 
-      final recs = await _getGames.getRecommended(id);
+      // Use catalogId for recommendations as backend expects the game table ID
+      final recs = await _getGames.getRecommended(game.catalogId.toString());
       emit(state.copyWith(isLoading: false, game: game, recommendations: recs));
     } on Exception catch (e) {
       emit(state.copyWith(isLoading: false, errorMessage: 'Error al cargar el juego: $e'));

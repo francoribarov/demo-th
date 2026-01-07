@@ -34,8 +34,6 @@ import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.d
     as _i701;
 import 'package:mobile_table_hopping/features/catalog/data/datasources/category_remote_datasource.dart'
     as _i460;
-import 'package:mobile_table_hopping/features/catalog/data/datasources/game_local_datasource.dart'
-    as _i918;
 import 'package:mobile_table_hopping/features/catalog/data/datasources/game_remote_datasource.dart'
     as _i349;
 import 'package:mobile_table_hopping/features/catalog/data/repositories/game_repository_impl.dart'
@@ -62,8 +60,8 @@ import 'package:mobile_table_hopping/features/publish/data/repositories/publish_
     as _i327;
 import 'package:mobile_table_hopping/features/publish/domain/repositories/publish_repository.dart'
     as _i374;
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_listing.dart'
-    as _i976;
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart'
+    as _i692;
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart'
     as _i530;
 import 'package:mobile_table_hopping/features/rental/data/repositories/rental_repository_impl.dart'
@@ -95,9 +93,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i737.DioClient>(
       () => _i737.DioClient(gh<_i717.TokenStorage>()),
-    );
-    gh.lazySingleton<_i918.GameLocalDatasource>(
-      () => _i918.GameLocalDatasourceImpl(),
     );
     gh.lazySingleton<_i599.PublishRemoteDatasource>(
       () => _i599.PublishRemoteDatasourceImpl(gh<_i737.DioClient>()),
@@ -133,8 +128,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i460.SharedPreferences>(),
       ),
     );
-    gh.factory<_i976.CreateListing>(
-      () => _i976.CreateListing(gh<_i374.PublishRepository>()),
+    gh.factory<_i692.CreatePublication>(
+      () => _i692.CreatePublication(gh<_i374.PublishRepository>()),
     );
     gh.factory<_i257.GetAuthStatus>(
       () => _i257.GetAuthStatus(gh<_i198.AuthRepository>()),
@@ -155,9 +150,6 @@ extension GetItInjectableX on _i174.GetIt {
         logout: gh<_i252.Logout>(),
         refreshToken: gh<_i1028.RefreshToken>(),
       ),
-    );
-    gh.factory<_i530.PublishBloc>(
-      () => _i530.PublishBloc(createListing: gh<_i976.CreateListing>()),
     );
     gh.factory<_i249.GetCategories>(
       () => _i249.GetCategories(gh<_i305.GameRepository>()),
@@ -182,6 +174,9 @@ extension GetItInjectableX on _i174.GetIt {
         getGames: gh<_i499.GetGames>(),
         confirmRental: gh<_i649.ConfirmRental>(),
       ),
+    );
+    gh.factory<_i530.PublishBloc>(
+      () => _i530.PublishBloc(createPublication: gh<_i692.CreatePublication>()),
     );
     gh.factory<_i878.GameDetailsBloc>(
       () => _i878.GameDetailsBloc(getGames: gh<_i499.GetGames>()),

@@ -1,5 +1,5 @@
 // Freezed entities are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+//
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -15,18 +15,21 @@ abstract class AvailabilityRange with _$AvailabilityRange {
 /// Game rules information
 @freezed
 abstract class GameRules with _$GameRules {
-  const factory GameRules({required String video, required String text}) =
-      _GameRules;
+  const factory GameRules({
+    required String videoUrl,
+    required String ruleCompleteUrl,
+    required String summaryRules,
+  }) = _GameRules;
 }
 
 /// A review from a user
 @freezed
 abstract class GameReview with _$GameReview {
   const factory GameReview({
-    required String name,
-    required String role,
+    required String userId,
     required double rating,
     required String comment,
+    String? name, // Keeping name for UI convenience if backend sends it
   }) = _GameReview;
 }
 
@@ -35,14 +38,23 @@ abstract class GameReview with _$GameReview {
 @freezed
 abstract class Game with _$Game {
   const factory Game({
-    required int id,
+    /// Unique game identifier (Publication ID)
+    required String id,
+
+    /// Internal game identifier from Catalog (Int)
+    @Default(0) int catalogId,
+
+    /// Game title
     required String title,
-    required String category,
-    required String image,
+
+    /// Condition of the publication (e.g., "Nuevo", "Usado")
+    @Default('') String? condition,
+    required List<GameCategory> categories,
+    required List<String> images,
     required double rating,
-    required int reviews,
+    required int reviewsCount, // Renamed from reviews to clarify it's a count
     required String description,
-    required String duration,
+    required int duration, // Minutes
     required String players,
     required String difficulty,
     required int price,

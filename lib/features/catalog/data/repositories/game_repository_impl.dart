@@ -1,10 +1,11 @@
 // Public members in this file are self-explanatory within the data layer.
-// ignore_for_file: public_member_api_docs
+// 
 
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/features/catalog/data/datasources/category_remote_datasource.dart';
 import 'package:mobile_table_hopping/features/catalog/data/datasources/game_remote_datasource.dart';
+
 import 'package:mobile_table_hopping/features/catalog/domain/entities/filters.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/repositories/game_repository.dart';
@@ -19,18 +20,14 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<List<Game>> getGames() async {
-    final response = await _gameDatasource.getGames();
-    return response.items.map((m) => m.toEntity()).toList();
+    final response = await _gameDatasource.getPublications();
+    return response.items.map((m) => m.toGameEntity()).toList();
   }
 
   @override
-  Future<Game?> getGameById(int id) async {
-    try {
-      final model = await _gameDatasource.getGameById(id);
-      return model.toEntity();
-    } on Exception {
-      return null;
-    }
+  Future<Game?> getGameById(String id) async {
+    final response = await _gameDatasource.getGameById(id);
+    return response.toGameEntity();
   }
 
   @override
@@ -84,7 +81,7 @@ class GameRepositoryImpl implements GameRepository {
       SortOption.duration => 'duration',
     };
 
-    final response = await _gameDatasource.getGames(
+    final response = await _gameDatasource.getPublications(
       query: query,
       category: categoryParam,
       players: playersParam,
@@ -97,7 +94,7 @@ class GameRepositoryImpl implements GameRepository {
       sortBy: sortByParam,
     );
 
-    return response.items.map((m) => m.toEntity()).toList();
+    return response.items.map((m) => m.toGameEntity()).toList();
   }
 
   @override
@@ -107,9 +104,9 @@ class GameRepositoryImpl implements GameRepository {
   }
 
   @override
-  Future<List<Game>> getRecommendedGames(int gameId) async {
-    final models = await _gameDatasource.getGameRecommendations(gameId);
-    return models.map((m) => m.toEntity()).toList();
+  Future<List<Game>> getRecommendedGames(String gameId) async {
+    final response = await _gameDatasource.getGameRecommendations(gameId);
+    return response.map((m) => m.toEntity()).toList();
   }
 
   @override

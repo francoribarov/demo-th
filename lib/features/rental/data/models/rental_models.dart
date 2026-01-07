@@ -9,7 +9,7 @@ part 'rental_models.g.dart';
 abstract class RentalCreateRequestModel with _$RentalCreateRequestModel {
   /// Creates a rental request model.
   const factory RentalCreateRequestModel({
-    required String gameId,
+    @JsonKey(name: 'publicationId') required String publicationId,
     required String ownerId,
     required String startDate,
     required String endDate,
@@ -24,7 +24,7 @@ abstract class RentalCreateRequestModel with _$RentalCreateRequestModel {
   /// Creates a [RentalCreateRequestModel] from a [RentalDraft].
   factory RentalCreateRequestModel.fromEntity(RentalDraft draft) {
     return RentalCreateRequestModel(
-      gameId: draft.gameId.toString(),
+      publicationId: draft.publicationId,
       ownerId: draft.ownerId,
       startDate: draft.startDate,
       endDate: draft.endDate,
