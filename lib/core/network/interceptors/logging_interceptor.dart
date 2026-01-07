@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 
 /// Logging interceptor for debugging.
 class LoggingInterceptor extends Interceptor {
-  static const int _maxBodyChars = 4000;
-
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (kDebugMode) {
@@ -15,7 +13,7 @@ class LoggingInterceptor extends Interceptor {
         debugPrint('  query: ${options.queryParameters}');
       }
       if (options.data != null) {
-        debugPrint('  body: ${_truncate(_safeToString(options.data))}');
+        debugPrint('  body: ${_safeToString(options.data)}');
       }
     }
     super.onRequest(options, handler);
@@ -32,7 +30,7 @@ class LoggingInterceptor extends Interceptor {
       );
       debugPrint('  headers: ${response.headers.map}');
       if (response.data != null) {
-        debugPrint('  data: ${_truncate(_safeToString(response.data))}');
+        debugPrint('  data: ${_safeToString(response.data)}');
       }
     }
     super.onResponse(response, handler);
@@ -52,7 +50,7 @@ class LoggingInterceptor extends Interceptor {
         );
       }
       if (err.response?.data != null) {
-        debugPrint('  data: ${_truncate(_safeToString(err.response!.data))}');
+        debugPrint('  data: ${_safeToString(err.response!.data)}');
       }
     }
     super.onError(err, handler);
@@ -69,10 +67,5 @@ class LoggingInterceptor extends Interceptor {
     } on Exception catch (_) {
       return value.toString();
     }
-  }
-
-  String _truncate(String value) {
-    if (value.length <= _maxBodyChars) return value;
-    return '${value.substring(0, _maxBodyChars)}…(truncated)';
   }
 }
