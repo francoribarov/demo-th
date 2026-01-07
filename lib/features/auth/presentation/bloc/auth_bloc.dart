@@ -40,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_RegisterEmailChanged>(_onRegisterEmailChanged);
     on<_RegisterPasswordChanged>(_onRegisterPasswordChanged);
     on<_RegisterPasswordConfirmChanged>(_onRegisterPasswordConfirmChanged);
-    on<_RegisterNameChanged>(_onRegisterNameChanged);
+    on<_RegisterUsernameChanged>(_onRegisterUsernameChanged);
     on<_RegisterLocationChanged>(_onRegisterLocationChanged);
     on<_RegisterPasswordVisibilityToggled>(
       _onRegisterPasswordVisibilityToggled,
@@ -212,13 +212,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  void _onRegisterNameChanged(
-    _RegisterNameChanged event,
+  void _onRegisterUsernameChanged(
+    _RegisterUsernameChanged event,
     Emitter<AuthState> emit,
   ) {
     emit(
       state.copyWith(
-        registerName: event.name,
+        registerUsername: event.username,
         registerErrorMessage: null,
         errorMessage: null,
       ),
@@ -258,12 +258,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final email = state.registerEmail.trim();
     final password = state.registerPassword;
     final confirmPassword = state.registerPasswordConfirm;
-    final name = state.registerName.trim();
+    final username = state.registerUsername.trim();
     final location = state.registerLocation.trim();
 
-    final nameError = _validateName(name);
-    if (nameError != null) {
-      emit(state.copyWith(registerErrorMessage: nameError, errorMessage: null));
+    final usernameError = _validateUsername(username);
+    if (usernameError != null) {
+      emit(state.copyWith(registerErrorMessage: usernameError, errorMessage: null));
       return;
     }
 
@@ -308,7 +308,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final session = await _register(
         email: email,
         password: password,
-        name: name,
+        username: username,
         location: location.isEmpty ? null : location,
       );
       emit(
@@ -400,8 +400,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     return null;
   }
 
-  String? _validateName(String name) {
-    if (name.isEmpty) {
+  String? _validateUsername(String username) {
+    if (username.isEmpty) {
       return AppStrings.authNameRequired;
     }
     return null;

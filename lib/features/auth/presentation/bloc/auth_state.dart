@@ -32,7 +32,7 @@ abstract class AuthState with _$AuthState {
     @Default('') String registerEmail,
     @Default('') String registerPassword,
     @Default('') String registerPasswordConfirm,
-    @Default('') String registerName,
+    @Default('') String registerUsername,
     @Default('') String registerLocation,
     @Default(false) bool isSubmittingRegister,
     @Default(false) bool isRegisterPasswordVisible,

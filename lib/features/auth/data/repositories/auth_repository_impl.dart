@@ -39,14 +39,14 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AuthSession> register({
     required String email,
     required String password,
-    required String name,
+    required String username,
     String? location,
   }) async {
     final response = await _remote.register(
       RegisterRequest(
         email: email,
         password: password,
-        name: name,
+        username: username,
         location: location,
       ),
     );

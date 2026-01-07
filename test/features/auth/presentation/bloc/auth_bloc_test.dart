@@ -33,7 +33,7 @@ void main() {
       accessToken: 'access-token',
       refreshToken: 'refresh-token',
     ),
-    user: User(id: 'user-1', email: 'user@example.com', name: 'User One'),
+    user: User(id: 'user-1', email: 'user@example.com', username: 'User One'),
   );
 
   setUp(() {
@@ -130,7 +130,7 @@ void main() {
         () => register(
           email: any(named: 'email'),
           password: any(named: 'password'),
-          name: any(named: 'name'),
+          username: any(named: 'username'),
           location: any(named: 'location'),
         ),
       ).thenAnswer((_) async => session);
@@ -140,7 +140,7 @@ void main() {
       ..add(const AuthEvent.registerEmailChanged('user@example.com'))
       ..add(const AuthEvent.registerPasswordChanged('password123'))
       ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
-      ..add(const AuthEvent.registerNameChanged('User One'))
+      ..add(const AuthEvent.registerUsernameChanged('User One'))
       ..add(const AuthEvent.registerLocationChanged('Montevideo'))
       ..add(const AuthEvent.registerSubmitted()),
     skip: 7,
@@ -169,7 +169,7 @@ void main() {
         () => register(
           email: any(named: 'email'),
           password: any(named: 'password'),
-          name: any(named: 'name'),
+          username: any(named: 'username'),
           location: any(named: 'location'),
         ),
       ).thenThrow(Exception('Register failed'));
@@ -179,7 +179,7 @@ void main() {
       ..add(const AuthEvent.registerEmailChanged('user@example.com'))
       ..add(const AuthEvent.registerPasswordChanged('password123'))
       ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
-      ..add(const AuthEvent.registerNameChanged('User One'))
+      ..add(const AuthEvent.registerUsernameChanged('User One'))
       ..add(const AuthEvent.registerLocationChanged('Montevideo'))
       ..add(const AuthEvent.registerSubmitted()),
     skip: 7,

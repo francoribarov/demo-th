@@ -3,6 +3,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/user_address.dart';
+import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -14,9 +16,13 @@ abstract class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
     required String email,
-    required String name,
+    required String username,
+    @JsonKey(name: 'image_url') String? imageUrl,
+    @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
+    UserAddressModel? address,
+    @JsonKey(name: 'delivery_zone') List<String>? deliveryZone,
+    @JsonKey(name: 'preferences') @Default([]) List<GameCategoryModel> preferences,
     String? location,
-    @JsonKey(name: 'avatar_url') String? avatarUrl,
     @JsonKey(name: 'response_time') String? responseTime,
     @JsonKey(name: 'member_since') DateTime? memberSince,
     @JsonKey(name: 'completed_rentals') @Default(0) int completedRentals,
@@ -35,9 +41,13 @@ abstract class UserModel with _$UserModel {
   factory UserModel.fromEntity(User entity) => UserModel(
     id: entity.id,
     email: entity.email,
-    name: entity.name,
+    username: entity.username,
+    imageUrl: entity.imageUrl,
+    dateOfBirth: entity.dateOfBirth,
+    address: entity.address != null ? UserAddressModel.fromEntity(entity.address!) : null,
+    deliveryZone: entity.deliveryZone,
+    preferences: entity.preferences.map(GameCategoryModel.fromEntity).toList(),
     location: entity.location,
-    avatarUrl: entity.avatarUrl,
     responseTime: entity.responseTime,
     memberSince: entity.memberSince,
     completedRentals: entity.completedRentals,
@@ -51,9 +61,13 @@ abstract class UserModel with _$UserModel {
   User toEntity() => User(
     id: id,
     email: email,
-    name: name,
+    username: username,
+    imageUrl: imageUrl,
+    dateOfBirth: dateOfBirth,
+    address: address?.toEntity(),
+    deliveryZone: deliveryZone,
+    preferences: preferences.map((p) => p.toEntity()).toList(),
     location: location,
-    avatarUrl: avatarUrl,
     responseTime: responseTime,
     memberSince: memberSince,
     completedRentals: completedRentals,
@@ -61,5 +75,33 @@ abstract class UserModel with _$UserModel {
     totalReviews: totalReviews,
     isActive: isActive,
     createdAt: createdAt,
+  );
+}
+
+@freezed
+abstract class UserAddressModel with _$UserAddressModel {
+  const factory UserAddressModel({
+    required String address,
+    @JsonKey(name: 'address_name') required String addressName,
+    required String number,
+    @JsonKey(name: 'additional_notes') String? additionalNotes,
+  }) = _UserAddressModel;
+
+  const UserAddressModel._();
+
+  factory UserAddressModel.fromJson(Map<String, dynamic> json) => _$UserAddressModelFromJson(json);
+
+  factory UserAddressModel.fromEntity(UserAddress entity) => UserAddressModel(
+    address: entity.address,
+    addressName: entity.addressName,
+    number: entity.number,
+    additionalNotes: entity.additionalNotes,
+  );
+
+  UserAddress toEntity() => UserAddress(
+    address: address,
+    addressName: addressName,
+    number: number,
+    additionalNotes: additionalNotes,
   );
 }

@@ -164,7 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                     onChanged: (name) => context
                                         .read<AuthBloc>()
-                                        .add(AuthEvent.registerNameChanged(name)),
+                                        .add(AuthEvent.registerUsernameChanged(name)),
                                   ),
                                   const SizedBox(height: 12),
                                   TextField(

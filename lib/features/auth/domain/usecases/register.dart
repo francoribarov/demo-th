@@ -12,7 +12,7 @@ class Register {
   final AuthRepository _repository;
 
   /// Registers a new account and returns the authenticated session.
-  Future<AuthSession> call({required String email, required String password, required String name, String? location}) {
-    return _repository.register(email: email, password: password, name: name, location: location);
+  Future<AuthSession> call({required String email, required String password, required String username, String? location}) {
+    return _repository.register(email: email, password: password, username: username, location: location);
   }
 }

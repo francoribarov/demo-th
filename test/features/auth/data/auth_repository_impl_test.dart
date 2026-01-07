@@ -21,7 +21,7 @@ void main() {
   const userModel = UserModel(
     id: 'user-1',
     email: 'user@example.com',
-    name: 'User One',
+    username: 'User One',
     location: 'Montevideo',
   );
   const authResponse = AuthResponse(
@@ -38,7 +38,8 @@ void main() {
       const RegisterRequest(
         email: 'fallback@example.com',
         password: 'password',
-        name: 'Fallback',
+        username: 'Fallback',
+        location: 'Montevideo',
       ),
     );
     registerFallbackValue(
@@ -85,7 +86,7 @@ void main() {
     final session = await repository.register(
       email: 'user@example.com',
       password: 'secret',
-      name: 'User One',
+      username: 'User One',
       location: 'Montevideo',
     );
 
@@ -98,7 +99,7 @@ void main() {
         const RegisterRequest(
           email: 'user@example.com',
           password: 'secret',
-          name: 'User One',
+          username: 'User One',
           location: 'Montevideo',
         ),
       ),

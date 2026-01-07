@@ -34,9 +34,9 @@ abstract class AuthEvent with _$AuthEvent {
   const factory AuthEvent.registerPasswordVisibilityToggled() =
       _RegisterPasswordVisibilityToggled;
 
-  /// Updates the register name input.
-  const factory AuthEvent.registerNameChanged(String name) =
-      _RegisterNameChanged;
+  /// Updates the register username input.
+  const factory AuthEvent.registerUsernameChanged(String username) =
+      _RegisterUsernameChanged;
 
   /// Updates the register location input.
   const factory AuthEvent.registerLocationChanged(String location) =

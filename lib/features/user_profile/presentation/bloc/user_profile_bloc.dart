@@ -13,13 +13,18 @@ part 'user_profile_state.dart';
 /// BLoC that loads game data to drive the user profile screen.
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   /// Creates a [UserProfileBloc].
-  UserProfileBloc({required GetGames getGames}) : _getGames = getGames, super(const UserProfileState()) {
+  UserProfileBloc({required GetGames getGames})
+    : _getGames = getGames,
+      super(const UserProfileState()) {
     on<_Started>(_onStarted);
   }
 
   final GetGames _getGames;
 
-  Future<void> _onStarted(_Started event, Emitter<UserProfileState> emit) async {
+  Future<void> _onStarted(
+    _Started event,
+    Emitter<UserProfileState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
     final id = int.tryParse(event.gameId);
@@ -29,14 +34,21 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     }
 
     try {
-      final game = await _getGames.getById(id);
+      final game = await _getGames.getById(event.gameId);
       if (game == null) {
-        emit(state.copyWith(isLoading: false, errorMessage: 'Juego no encontrado'));
+        emit(
+          state.copyWith(isLoading: false, errorMessage: 'Juego no encontrado'),
+        );
         return;
       }
       emit(state.copyWith(isLoading: false, game: game));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al cargar perfil: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al cargar perfil: $e',
+        ),
+      );
     }
   }
 }

@@ -31,7 +31,11 @@ abstract class RegisterRequest with _$RegisterRequest {
   const factory RegisterRequest({
     required String email,
     required String password,
-    required String name,
+    required String username,
+    @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
+    @JsonKey(name: 'image_url') String? imageUrl,
+    UserAddressModel? address,
+    @JsonKey(name: 'delivery_zone') List<String>? deliveryZone,
     String? location,
   }) = _RegisterRequest;
 
@@ -44,7 +48,11 @@ abstract class RegisterRequest with _$RegisterRequest {
   Map<String, dynamic> toJson() => {
     'email': email,
     'password': password,
-    'name': name,
+    'username': username,
+    if (dateOfBirth != null) 'date_of_birth': dateOfBirth!.toIso8601String(),
+    if (imageUrl != null) 'image_url': imageUrl,
+    if (address != null) 'address': address!.toJson(),
+    if (deliveryZone != null) 'delivery_zone': deliveryZone,
     if (location != null) 'location': location,
   };
 }
