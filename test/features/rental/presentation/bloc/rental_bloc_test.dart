@@ -57,8 +57,7 @@ void main() {
       'should emit snackbar error when duration is less than 3 days',
       build: () => rentalBloc,
       seed: () => const RentalState(game: tGame, startDate: '2026-01-10'),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.endDate, 'endDate', null)
@@ -80,8 +79,7 @@ void main() {
           ],
         ),
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
+      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', null)
@@ -97,8 +95,7 @@ void main() {
       'should emit snackbar error when dates are not within availability',
       build: () => rentalBloc,
       seed: () => const RentalState(game: tGame, startDate: '2026-01-10'),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-05')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-05')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
@@ -119,8 +116,7 @@ void main() {
         ),
         startDate: '2026-01-01',
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
@@ -138,8 +134,7 @@ void main() {
         startDate: '2026-01-05',
         endDate: '2026-01-10',
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-15')),
+      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-15')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', '2026-01-15')

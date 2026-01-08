@@ -86,7 +86,10 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Cooperativos populares',
             description: 'Perfectos para ganar (o perder) todos juntos.',
-            games: state.filteredGames.where((g) => g.categories.any((c) => c.name.toLowerCase().contains('cooper'))).take(4).toList(),
+            games: state.filteredGames
+                .where((g) => g.categories.any((c) => c.name.toLowerCase().contains('cooper')))
+                .take(4)
+                .toList(),
             variant: GameSectionVariant.carousel,
           ),
 
@@ -95,7 +98,10 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Para jugar en familia',
             description: 'Reglas simples y partidas ágiles para todas las edades.',
-            games: state.filteredGames.where((g) => g.categories.any((c) => c.name.toLowerCase().contains('familiar'))).take(4).toList(),
+            games: state.filteredGames
+                .where((g) => g.categories.any((c) => c.name.toLowerCase().contains('familiar')))
+                .take(4)
+                .toList(),
             variant: GameSectionVariant.grid,
           ),
 
@@ -104,7 +110,10 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Fiesta y party games',
             description: 'Animá tu reunión con risas y creatividad.',
-            games: state.filteredGames.where((g) => g.categories.any((c) => c.name.toLowerCase().contains('fiesta'))).take(4).toList(),
+            games: state.filteredGames
+                .where((g) => g.categories.any((c) => c.name.toLowerCase().contains('fiesta')))
+                .take(4)
+                .toList(),
             variant: GameSectionVariant.carousel,
           ),
 
@@ -114,7 +123,11 @@ class DiscoveryView extends StatelessWidget {
             title: 'Noches estratégicas',
             description: 'Opciones para quienes buscan desafíos bien profundos.',
             games: state.filteredGames
-                .where((g) => g.categories.any((c) => ['estrategia', 'experto', 'deck'].any((tag) => c.name.toLowerCase().contains(tag))))
+                .where(
+                  (g) => g.categories.any(
+                    (c) => ['estrategia', 'experto', 'deck'].any((tag) => c.name.toLowerCase().contains(tag)),
+                  ),
+                )
                 .take(4)
                 .toList(),
             variant: GameSectionVariant.grid,

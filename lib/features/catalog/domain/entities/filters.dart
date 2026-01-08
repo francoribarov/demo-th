@@ -1,5 +1,5 @@
 // Public enums/props are self-explanatory within the filters domain.
-// 
+//
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 

@@ -5,11 +5,12 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/presentation/widgets/game_card.dart';
 
 /// Variant for game section layout
-enum GameSectionVariant { 
+enum GameSectionVariant {
   /// Grid layout (vertical stack)
-  grid, 
+  grid,
+
   /// Carousel layout (horizontal scroll)
-  carousel 
+  carousel,
 }
 
 /// A section displaying a group of games with a title and description.

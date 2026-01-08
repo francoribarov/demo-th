@@ -93,8 +93,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
       final itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
       final items = itemsData
           .map(
-            (json) =>
-                PublicationListItemModel.fromJson(json as Map<String, dynamic>),
+            (json) => PublicationListItemModel.fromJson(json as Map<String, dynamic>),
           )
           .toList();
 
@@ -171,9 +170,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
 
       final data = response.data ?? const <String, dynamic>{};
       final itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
-      final items = itemsData
-          .map((json) => GameReviewModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final items = itemsData.map((json) => GameReviewModel.fromJson(json as Map<String, dynamic>)).toList();
 
       return PaginatedResponse(
         items: items,
@@ -199,9 +196,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
       );
 
       final data = response.data ?? const <dynamic>[];
-      return data
-          .map((json) => GameModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      return data.map((json) => GameModel.fromJson(json as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw _handleError(e);
     }

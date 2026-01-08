@@ -7,8 +7,7 @@ import 'package:mobile_table_hopping/features/publish/domain/repositories/publis
 
 @LazySingleton(as: PublishRepository)
 /// Repository implementation for publish actions.
-class PublishRepositoryImpl extends BaseRepository
-    implements PublishRepository {
+class PublishRepositoryImpl extends BaseRepository implements PublishRepository {
   /// Creates a repository backed by the remote datasource.
   PublishRepositoryImpl(this._remote);
   final PublishRemoteDatasource _remote;

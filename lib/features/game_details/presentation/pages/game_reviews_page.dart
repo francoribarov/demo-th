@@ -88,9 +88,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           Row(
                             children: List.generate(5, (i) {
                               return Icon(
-                                i < game.rating.floor()
-                                    ? Icons.star
-                                    : Icons.star_border,
+                                i < game.rating.floor() ? Icons.star : Icons.star_border,
                                 color: AppColors.gameGold,
                                 size: 20,
                               );
@@ -222,18 +220,14 @@ class _FilterChip extends StatelessWidget {
             color: isSelected ? AppColors.gameCream : AppColors.card,
             borderRadius: BorderRadius.circular(AppTheme.radius2xl),
             border: Border.all(
-              color: isSelected
-                  ? AppColors.gameRust
-                  : AppColors.gameBrown.withOpacityValue(0.2),
+              color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
               width: isSelected ? 2 : 1,
             ),
           ),
           child: Text(
             label,
             style: AppTypography.labelMedium.copyWith(
-              color: isSelected
-                  ? AppColors.gameBrown
-                  : AppColors.gameBrown.withOpacityValue(0.7),
+              color: isSelected ? AppColors.gameBrown : AppColors.gameBrown.withOpacityValue(0.7),
             ),
           ),
         ),

@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// 
+//
 
 import 'dart:async';
 
@@ -71,9 +71,7 @@ class HomePage extends StatelessWidget {
       },
       onSurprise: () {
         // Random pick from filtered games
-        final games = state.filteredGames.isNotEmpty
-            ? state.filteredGames
-            : state.allGames;
+        final games = state.filteredGames.isNotEmpty ? state.filteredGames : state.allGames;
         if (games.isNotEmpty) {
           final random = games[DateTime.now().millisecond % games.length];
           context.goToGame(random.id);

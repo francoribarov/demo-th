@@ -32,7 +32,7 @@ abstract class PublishEvent with _$PublishEvent {
 
   /// Updates the selected images.
   const factory PublishEvent.imagesChanged(List<String> value) = _ImagesChanged;
-  
+
   /// Updates delivery methods.
   const factory PublishEvent.deliveryMethodsChanged(List<DeliveryMethod> value) = _DeliveryMethodsChanged;
 }

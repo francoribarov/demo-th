@@ -17,7 +17,8 @@ abstract class User with _$User {
     UserAddress? address,
     List<String>? deliveryZone,
     @Default([]) List<GameCategory> preferences,
-    String? location, // Kept as per plan? "address" is object now. "location" might be deprecated or different. Plan said "address?" in register.
+    String?
+    location, // Kept as per plan? "address" is object now. "location" might be deprecated or different. Plan said "address?" in register.
     // Keeping existing fields that weren't explicitly removed but might be useful
     String? responseTime,
     DateTime? memberSince,

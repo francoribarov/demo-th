@@ -14,7 +14,9 @@ part 'publish_state.dart';
 /// Coordinates publish flow actions and side effects.
 class PublishBloc extends Bloc<PublishEvent, PublishState> {
   /// Creates a publish bloc wired to the create publication use case.
-  PublishBloc({required CreatePublication createPublication}) : _createPublication = createPublication, super(const PublishState()) {
+  PublishBloc({required CreatePublication createPublication})
+    : _createPublication = createPublication,
+      super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
     on<_PreviousStep>(_onPreviousStep);
@@ -27,7 +29,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     on<_ImagesChanged>(_onImagesChanged);
     on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
   }
-  
+
   final CreatePublication _createPublication;
   static const _defaultImageUrl = 'https://via.placeholder.com/300'; // Temporary placeholder
 
@@ -48,7 +50,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     if (state.currentStep <= 0) return;
     emit(state.copyWith(currentStep: state.currentStep - 1));
   }
-  
+
   void _onPublishAnother(_PublishAnother event, Emitter<PublishState> emit) {
     emit(PublishState(formVersion: state.formVersion + 1));
   }

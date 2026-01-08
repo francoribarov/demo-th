@@ -66,8 +66,7 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
     }
 
     String? difficultyParam;
-    if (filters?.difficulty != null &&
-        filters!.difficulty != DifficultyOption.any) {
+    if (filters?.difficulty != null && filters!.difficulty != DifficultyOption.any) {
       difficultyParam = filters.difficulty.label;
     }
 

@@ -16,7 +16,6 @@ class PublishGamePage extends StatelessWidget {
   /// Creates the publish game page.
   const PublishGamePage({super.key});
 
-
   static const _conditions = [
     ('new', 'Nuevo', 'Sellado o usado una vez'),
     ('like_new', 'Como nuevo', 'Excelente estado, sin marcas'),

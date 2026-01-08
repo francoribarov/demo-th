@@ -12,6 +12,5 @@ abstract class UserAddress with _$UserAddress {
     String? additionalNotes,
   }) = _UserAddress;
 
-  factory UserAddress.fromJson(Map<String, dynamic> json) =>
-      _$UserAddressFromJson(json);
+  factory UserAddress.fromJson(Map<String, dynamic> json) => _$UserAddressFromJson(json);
 }

@@ -8,8 +8,7 @@ part 'game.freezed.dart';
 /// Availability range for a game
 @freezed
 abstract class AvailabilityRange with _$AvailabilityRange {
-  const factory AvailabilityRange({required String from, required String to}) =
-      _AvailabilityRange;
+  const factory AvailabilityRange({required String from, required String to}) = _AvailabilityRange;
 }
 
 /// Game rules information

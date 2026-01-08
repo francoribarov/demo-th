@@ -9,9 +9,7 @@ part 'publication_list_item_model.g.dart';
 
 /// Data transfer object for publication images
 @freezed
-sealed class PublicationImageModel
-    with _$PublicationImageModel
-    implements BaseDtoResponse<PublicationImage> {
+sealed class PublicationImageModel with _$PublicationImageModel implements BaseDtoResponse<PublicationImage> {
   const factory PublicationImageModel({
     required String url,
     @Default('gallery') String type,
@@ -21,8 +19,7 @@ sealed class PublicationImageModel
 
   const PublicationImageModel._();
 
-  factory PublicationImageModel.fromJson(Map<String, dynamic> json) =>
-      _$PublicationImageModelFromJson(json);
+  factory PublicationImageModel.fromJson(Map<String, dynamic> json) => _$PublicationImageModelFromJson(json);
 
   @override
   PublicationImage toDomainModel() => PublicationImage(
@@ -35,9 +32,7 @@ sealed class PublicationImageModel
 
 /// Data transfer object for game images within publications
 @freezed
-sealed class GameImageModelV2
-    with _$GameImageModelV2
-    implements BaseDtoResponse<GameImage> {
+sealed class GameImageModelV2 with _$GameImageModelV2 implements BaseDtoResponse<GameImage> {
   const factory GameImageModelV2({
     required String url,
     @Default('gallery') String type,
@@ -47,8 +42,7 @@ sealed class GameImageModelV2
 
   const GameImageModelV2._();
 
-  factory GameImageModelV2.fromJson(Map<String, dynamic> json) =>
-      _$GameImageModelV2FromJson(json);
+  factory GameImageModelV2.fromJson(Map<String, dynamic> json) => _$GameImageModelV2FromJson(json);
 
   @override
   GameImage toDomainModel() => GameImage(
@@ -61,9 +55,7 @@ sealed class GameImageModelV2
 
 /// Data transfer object for nested game within a publication
 @freezed
-sealed class GameInPublicationModel
-    with _$GameInPublicationModel
-    implements BaseDtoResponse<GameInPublication> {
+sealed class GameInPublicationModel with _$GameInPublicationModel implements BaseDtoResponse<GameInPublication> {
   const factory GameInPublicationModel({
     required int id,
     required String title,
@@ -80,8 +72,7 @@ sealed class GameInPublicationModel
 
   const GameInPublicationModel._();
 
-  factory GameInPublicationModel.fromJson(Map<String, dynamic> json) =>
-      _$GameInPublicationModelFromJson(json);
+  factory GameInPublicationModel.fromJson(Map<String, dynamic> json) => _$GameInPublicationModelFromJson(json);
 
   @override
   GameInPublication toDomainModel() => GameInPublication(
@@ -102,21 +93,19 @@ sealed class GameInPublicationModel
 
 /// Data transfer object for publication list items
 @freezed
-sealed class PublicationListItemModel
-    with _$PublicationListItemModel
-    implements BaseDtoResponse<PublicationListItem> {
+sealed class PublicationListItemModel with _$PublicationListItemModel implements BaseDtoResponse<PublicationListItem> {
   const factory PublicationListItemModel({
     required String id,
     required String description,
     required String condition,
     required int price,
-    required GameInPublicationModel game, @Default([]) List<PublicationImageModel> images,
+    required GameInPublicationModel game,
+    @Default([]) List<PublicationImageModel> images,
   }) = _PublicationListItemModel;
 
   const PublicationListItemModel._();
 
-  factory PublicationListItemModel.fromJson(Map<String, dynamic> json) =>
-      _$PublicationListItemModelFromJson(json);
+  factory PublicationListItemModel.fromJson(Map<String, dynamic> json) => _$PublicationListItemModelFromJson(json);
 
   @override
   PublicationListItem toDomainModel() => PublicationListItem(
@@ -150,22 +139,21 @@ sealed class PublicationListItemModel
 
 /// Data transfer object for publication details (adds extras used in getById)
 @freezed
-sealed class PublicationDetailModel
-    with _$PublicationDetailModel
-    implements BaseDtoResponse<Game> {
+sealed class PublicationDetailModel with _$PublicationDetailModel implements BaseDtoResponse<Game> {
   const factory PublicationDetailModel({
     required String id,
     required String description,
     required String condition,
     required int price,
-    required GameInPublicationModel game, required String ownerId, @Default([]) List<PublicationImageModel> images,
+    required GameInPublicationModel game,
+    required String ownerId,
+    @Default([]) List<PublicationImageModel> images,
     int? deposit,
   }) = _PublicationDetailModel;
 
   const PublicationDetailModel._();
 
-  factory PublicationDetailModel.fromJson(Map<String, dynamic> json) =>
-      _$PublicationDetailModelFromJson(json);
+  factory PublicationDetailModel.fromJson(Map<String, dynamic> json) => _$PublicationDetailModelFromJson(json);
 
   @override
   Game toDomainModel() => toGameEntity();
@@ -187,9 +175,7 @@ sealed class PublicationDetailModel
     price: price,
     ownerId: ownerId,
     deposit: deposit,
-    rules:
-        game.rules?.toDomainModel() ??
-        const GameRules(videoUrl: '', ruleCompleteUrl: '', summaryRules: ''),
+    rules: game.rules?.toDomainModel() ?? const GameRules(videoUrl: '', ruleCompleteUrl: '', summaryRules: ''),
     availability: game.availability.map((a) => a.toDomainModel()).toList(),
   );
 }

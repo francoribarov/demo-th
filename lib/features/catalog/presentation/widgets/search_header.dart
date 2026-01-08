@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// 
+//
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +56,8 @@ class SearchHeader extends StatelessWidget {
         children: [
           // Logo
           CachedNetworkImage(
-            imageUrl: 'https://images.vexels.com/media/users/3/189702/isolated/preview/0909c4a72562b45eb247012f1606c4c6-icono-de-juguete-de-dados.png',
+            imageUrl:
+                'https://images.vexels.com/media/users/3/189702/isolated/preview/0909c4a72562b45eb247012f1606c4c6-icono-de-juguete-de-dados.png',
             height: 40,
             width: 40,
             placeholder: (context, url) => Container(

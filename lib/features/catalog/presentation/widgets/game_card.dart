@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// 
+//
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -69,85 +69,85 @@ class GameCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                  Positioned(
-                    top: 12,
-                    left: 12,
-                    child: GestureDetector(
-                      onTap: onCategoryTap,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacityValue(0.9),
-                          borderRadius: BorderRadius.circular(AppTheme.radius2xl),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacityValue(0.1), blurRadius: 4)],
-                        ),
-                        child: Text(
-                          game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
-                          style: AppTypography.categoryChip,
-                        ),
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: GestureDetector(
+                    onTap: onCategoryTap,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacityValue(0.9),
+                        borderRadius: BorderRadius.circular(AppTheme.radius2xl),
+                        boxShadow: [BoxShadow(color: Colors.black.withOpacityValue(0.1), blurRadius: 4)],
+                      ),
+                      child: Text(
+                        game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
+                        style: AppTypography.categoryChip,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
 
-              // Content
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title and rating row
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                game.title,
-                                style: AppTypography.titleLarge,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                game.description,
-                                style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Row(
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title and rating row
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            GameRatingBadge(rating: game.rating),
+                            Text(
+                              game.title,
+                              style: AppTypography.titleLarge,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              game.description,
+                              style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 12),
+                      Row(
+                        children: [
+                          GameRatingBadge(rating: game.rating),
+                        ],
+                      ),
+                    ],
+                  ),
 
-                    const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                    // Game info (players, duration, difficulty)
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        Text(
-                          game.players,
-                          style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
-                        ),
-                        Text(
-                          '•',
-                          style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
-                        ),
-                        Text(
-                          '${game.duration} min',
-                          style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
-                        ),
+                  // Game info (players, duration, difficulty)
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      Text(
+                        game.players,
+                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                      ),
+                      Text(
+                        '•',
+                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                      ),
+                      Text(
+                        '${game.duration} min',
+                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                      ),
                       Text(
                         '•',
                         style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
@@ -257,57 +257,57 @@ class GameCardHorizontal extends StatelessWidget {
             // Image
             ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                  child: CachedNetworkImage(
-                    imageUrl: game.images.isNotEmpty ? game.images.first : '',
-                    width: 110,
-                    height: 150,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => const SizedBox(
-                      width: 110,
-                      height: 150,
-                      child: ColoredBox(color: AppColors.gameCream),
-                    ),
-                    errorWidget: (context, url, error) => const SizedBox(
-                      width: 110,
-                      height: 150,
-                      child: ColoredBox(
-                        color: AppColors.gameCream,
-                        child: Icon(Icons.image_not_supported_outlined),
-                      ),
-                    ),
+              child: CachedNetworkImage(
+                imageUrl: game.images.isNotEmpty ? game.images.first : '',
+                width: 110,
+                height: 150,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const SizedBox(
+                  width: 110,
+                  height: 150,
+                  child: ColoredBox(color: AppColors.gameCream),
+                ),
+                errorWidget: (context, url, error) => const SizedBox(
+                  width: 110,
+                  height: 150,
+                  child: ColoredBox(
+                    color: AppColors.gameCream,
+                    child: Icon(Icons.image_not_supported_outlined),
                   ),
                 ),
-                const SizedBox(width: 12),
-                // Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+            const SizedBox(width: 12),
+            // Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(game.title, style: AppTypography.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 4),
+                  Text(
+                    game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
                     children: [
-                      Text(game.title, style: AppTypography.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      const SizedBox(height: 4),
-                      Text(
-                        game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                      const Icon(Icons.star, size: 14, color: AppColors.gameGold),
+                      const SizedBox(width: 4),
+                      Text(game.rating.toStringAsFixed(1), style: AppTypography.labelSmall),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          '· ${game.players}',
+                          style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, size: 14, color: AppColors.gameGold),
-                          const SizedBox(width: 4),
-                          Text(game.rating.toStringAsFixed(1), style: AppTypography.labelSmall),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              '· ${game.players}',
-                              style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                            ),
-                          ),
-                        ],
-                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

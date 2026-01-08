@@ -87,9 +87,7 @@ class AvailabilityChecker extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      result!
-                          ? '¡Disponible para esas fechas!'
-                          : 'No disponible para esas fechas',
+                      result! ? '¡Disponible para esas fechas!' : 'No disponible para esas fechas',
                       style: AppTypography.bodyMedium.copyWith(
                         color: result! ? Colors.green[700] : Colors.red[600],
                       ),

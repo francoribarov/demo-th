@@ -8,9 +8,7 @@ part 'publication_model.g.dart';
 
 @freezed
 /// Image model used for API serialization.
-sealed class PublicationImageModel
-    with _$PublicationImageModel
-    implements BaseDtoResponse<PublicationImage> {
+sealed class PublicationImageModel with _$PublicationImageModel implements BaseDtoResponse<PublicationImage> {
   /// Creates an image model from API data.
   const factory PublicationImageModel({
     required String url,
@@ -20,29 +18,24 @@ sealed class PublicationImageModel
   }) = _PublicationImageModel;
 
   /// Creates a model from a domain entity.
-  factory PublicationImageModel.fromEntity(PublicationImage entity) =>
-      PublicationImageModel(
-        url: entity.url,
-        type: entity.type,
-        width: entity.width,
-        height: entity.height,
-      );
+  factory PublicationImageModel.fromEntity(PublicationImage entity) => PublicationImageModel(
+    url: entity.url,
+    type: entity.type,
+    width: entity.width,
+    height: entity.height,
+  );
   const PublicationImageModel._();
 
   /// Creates a model from JSON.
-  factory PublicationImageModel.fromJson(Map<String, dynamic> json) =>
-      _$PublicationImageModelFromJson(json);
+  factory PublicationImageModel.fromJson(Map<String, dynamic> json) => _$PublicationImageModelFromJson(json);
 
   @override
-  PublicationImage toDomainModel() =>
-      PublicationImage(url: url, type: type, width: width, height: height);
+  PublicationImage toDomainModel() => PublicationImage(url: url, type: type, width: width, height: height);
 }
 
 @freezed
 /// Publication model used for API serialization.
-sealed class PublicationModel
-    with _$PublicationModel
-    implements BaseDtoResponse<Publication> {
+sealed class PublicationModel with _$PublicationModel implements BaseDtoResponse<Publication> {
   /// Creates a publication model from API data.
   const factory PublicationModel({
     required String id,
@@ -57,8 +50,7 @@ sealed class PublicationModel
   const PublicationModel._();
 
   /// Creates a model from JSON.
-  factory PublicationModel.fromJson(Map<String, dynamic> json) =>
-      _$PublicationModelFromJson(json);
+  factory PublicationModel.fromJson(Map<String, dynamic> json) => _$PublicationModelFromJson(json);
 
   @override
   Publication toDomainModel() => Publication(
@@ -75,8 +67,7 @@ sealed class PublicationModel
 
 @freezed
 /// Request model used for publication creation.
-sealed class PublicationCreateRequestModel
-    with _$PublicationCreateRequestModel {
+sealed class PublicationCreateRequestModel with _$PublicationCreateRequestModel {
   /// Creates a publication creation request model.
   const factory PublicationCreateRequestModel({
     required int gameId,
@@ -93,15 +84,12 @@ sealed class PublicationCreateRequestModel
       _$PublicationCreateRequestModelFromJson(json);
 
   /// Creates a request model from a domain draft.
-  factory PublicationCreateRequestModel.fromEntity(PublicationDraft entity) =>
-      PublicationCreateRequestModel(
-        gameId: entity.gameId,
-        description: entity.description,
-        price: entity.price,
-        condition: entity.condition,
-        images: entity.images.map(PublicationImageModel.fromEntity).toList(),
-        deliveryMethods: entity.deliveryMethods
-            .map(DeliveryMethodModel.fromEntity)
-            .toList(),
-      );
+  factory PublicationCreateRequestModel.fromEntity(PublicationDraft entity) => PublicationCreateRequestModel(
+    gameId: entity.gameId,
+    description: entity.description,
+    price: entity.price,
+    condition: entity.condition,
+    images: entity.images.map(PublicationImageModel.fromEntity).toList(),
+    deliveryMethods: entity.deliveryMethods.map(DeliveryMethodModel.fromEntity).toList(),
+  );
 }

@@ -43,9 +43,7 @@ class AvailabilityDateSelector extends StatelessWidget {
     }
 
     final firstDate = today;
-    final lastDate = ranges.isNotEmpty
-        ? ranges.last.$2
-        : today.add(const Duration(days: 365));
+    final lastDate = ranges.isNotEmpty ? ranges.last.$2 : today.add(const Duration(days: 365));
 
     final picked = await showDateRangePicker(
       context: context,
@@ -215,9 +213,7 @@ class _DateButton extends StatelessWidget {
                   child: Text(
                     value ?? 'Seleccionar',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: value != null
-                          ? AppColors.gameBrown
-                          : AppColors.gameBrown.withOpacityValue(0.5),
+                      color: value != null ? AppColors.gameBrown : AppColors.gameBrown.withOpacityValue(0.5),
                     ),
                   ),
                 ),

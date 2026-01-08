@@ -98,8 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status && current.isAuthenticated,
+      listenWhen: (previous, current) => previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
         final redirectTo = widget.from;
         if (redirectTo != null &&
@@ -156,15 +155,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                   TextField(
                                     enabled: !isSubmitting,
                                     textInputAction: TextInputAction.next,
-                                    textCapitalization:
-                                        TextCapitalization.words,
+                                    textCapitalization: TextCapitalization.words,
                                     autofillHints: const [AutofillHints.name],
                                     decoration: const InputDecoration(
                                       labelText: 'Nombre',
                                     ),
-                                    onChanged: (name) => context
-                                        .read<AuthBloc>()
-                                        .add(AuthEvent.registerUsernameChanged(name)),
+                                    onChanged: (name) =>
+                                        context.read<AuthBloc>().add(AuthEvent.registerUsernameChanged(name)),
                                   ),
                                   const SizedBox(height: 12),
                                   TextField(
@@ -177,9 +174,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       labelText: 'Email',
                                       hintText: 'tu@email.com',
                                     ),
-                                    onChanged: (email) => context
-                                        .read<AuthBloc>()
-                                        .add(AuthEvent.registerEmailChanged(email)),
+                                    onChanged: (email) =>
+                                        context.read<AuthBloc>().add(AuthEvent.registerEmailChanged(email)),
                                   ),
                                   const SizedBox(height: 12),
                                   _PasswordField(
@@ -187,10 +183,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     enabled: !isSubmitting,
                                     autofillHint: AutofillHints.newPassword,
                                     visibleNotifier: _passwordVisible,
-                                    onChanged: (password) =>
-                                        context.read<AuthBloc>().add(
-                                          AuthEvent.registerPasswordChanged(password),
-                                        ),
+                                    onChanged: (password) => context.read<AuthBloc>().add(
+                                      AuthEvent.registerPasswordChanged(password),
+                                    ),
                                     onSubmitted: (_) {
                                       if (!isSubmitting) {
                                         context.read<AuthBloc>().add(
@@ -265,12 +260,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ? null
                                   : () {
                                       final from = widget.from;
-                                      final encodedFrom = from != null
-                                          ? Uri.encodeComponent(from)
-                                          : null;
-                                      final query = encodedFrom != null
-                                          ? '?from=$encodedFrom'
-                                          : '';
+                                      final encodedFrom = from != null ? Uri.encodeComponent(from) : null;
+                                      final query = encodedFrom != null ? '?from=$encodedFrom' : '';
                                       context.go('${AppRoutes.login}$query');
                                     },
                               child: const Text('Ya tengo cuenta'),

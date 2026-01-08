@@ -55,12 +55,14 @@ class GameDetailsBloc extends Bloc<GameDetailsEvent, GameDetailsState> {
   }
 
   void _onCheckDateRangeChanged(_CheckDateRangeChanged event, Emitter<GameDetailsState> emit) {
-    emit(state.copyWith(
-      checkStartDate: event.start,
-      checkEndDate: event.end,
-      availabilityResult: null,
-      errorMessage: null,
-    ));
+    emit(
+      state.copyWith(
+        checkStartDate: event.start,
+        checkEndDate: event.end,
+        availabilityResult: null,
+        errorMessage: null,
+      ),
+    );
   }
 
   void _onCheckAvailabilityPressed(_CheckAvailabilityPressed event, Emitter<GameDetailsState> emit) {

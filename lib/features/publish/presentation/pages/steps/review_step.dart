@@ -71,7 +71,7 @@ class ReviewStep extends StatelessWidget {
                 child: const Center(child: Icon(Icons.image, size: 48, color: AppColors.gameBrown)),
               ),
               const SizedBox(height: 16),
-              
+
               Text('Juego ID: $gameId', style: AppTypography.headlineMedium),
               const SizedBox(height: 8),
               Text(
@@ -82,7 +82,7 @@ class ReviewStep extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _InfoChip(icon: Icons.grade, label: conditionLabel),
-              
+
               const Divider(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

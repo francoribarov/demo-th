@@ -122,11 +122,13 @@ class PriceStep extends StatelessWidget {
           onToggle: (selected) {
             final current = List<DeliveryMethod>.from(deliveryMethods);
             if (selected) {
-              current.add(const DeliveryMethod(
-                id: 1, // ID will be handled by backend or is fixed 'pickup'
-                deliveryType: 'pickup',
-                price: 0,
-              ));
+              current.add(
+                const DeliveryMethod(
+                  id: 1, // ID will be handled by backend or is fixed 'pickup'
+                  deliveryType: 'pickup',
+                  price: 0,
+                ),
+              );
             } else {
               current.removeWhere((m) => m.deliveryType == 'pickup');
             }
@@ -138,16 +140,23 @@ class PriceStep extends StatelessWidget {
         _DeliveryOption(
           title: 'Envío propio',
           subtitle: 'Vos llevás el juego',
-          price: deliveryMethods.firstWhere((m) => m.deliveryType == 'delivery', orElse: () => const DeliveryMethod(id: 0, deliveryType: 'delivery', price: 0)).price,
+          price: deliveryMethods
+              .firstWhere(
+                (m) => m.deliveryType == 'delivery',
+                orElse: () => const DeliveryMethod(id: 0, deliveryType: 'delivery', price: 0),
+              )
+              .price,
           isSelected: deliveryMethods.any((m) => m.deliveryType == 'delivery'),
           onToggle: (selected) {
             final current = List<DeliveryMethod>.from(deliveryMethods);
             if (selected) {
-              current.add(const DeliveryMethod(
-                id: 2,
-                deliveryType: 'delivery',
-                price: 150, // Default price
-              ));
+              current.add(
+                const DeliveryMethod(
+                  id: 2,
+                  deliveryType: 'delivery',
+                  price: 150, // Default price
+                ),
+              );
             } else {
               current.removeWhere((m) => m.deliveryType == 'delivery');
             }
@@ -227,19 +236,19 @@ class _DeliveryOption extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                   Text('Costo de envío:', style: AppTypography.bodySmall),
-                   const SizedBox(width: 16),
-                   Expanded(
-                     child: TextFormField(
-                       initialValue: price.toString(),
-                       keyboardType: TextInputType.number,
-                       decoration: const InputDecoration(
-                         prefixText: r'$ ',
-                         isDense: true,
-                       ),
-                       onChanged: (v) => onPriceChanged?.call(int.tryParse(v) ?? 0),
-                     ),
-                   ),
+                  Text('Costo de envío:', style: AppTypography.bodySmall),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      initialValue: price.toString(),
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        prefixText: r'$ ',
+                        isDense: true,
+                      ),
+                      onChanged: (v) => onPriceChanged?.call(int.tryParse(v) ?? 0),
+                    ),
+                  ),
                 ],
               ),
             ),

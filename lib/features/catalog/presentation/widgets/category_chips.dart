@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// 
+//
 
 import 'package:flutter/material.dart';
 

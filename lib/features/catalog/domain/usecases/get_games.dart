@@ -1,5 +1,5 @@
 // Use cases are documented at a higher level; omit per-member docs.
-// 
+//
 
 import 'package:injectable/injectable.dart';
 

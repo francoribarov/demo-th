@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// 
+//
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +30,7 @@ class RentalConfirmPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (previous, current) =>
-          previous.snackbarMessage != current.snackbarMessage &&
-          current.snackbarMessage != null,
+          previous.snackbarMessage != current.snackbarMessage && current.snackbarMessage != null,
       listener: (context, state) {
         final message = state.snackbarMessage;
         if (message == null) return;
@@ -93,13 +92,12 @@ class RentalConfirmPage extends StatelessWidget {
                   game: game,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  onRangeChanged: (start, end) =>
-                      context.read<RentalBloc>().add(
-                        RentalEvent.dateRangeChanged(
-                          startDate: start,
-                          endDate: end,
-                        ),
-                      ),
+                  onRangeChanged: (start, end) => context.read<RentalBloc>().add(
+                    RentalEvent.dateRangeChanged(
+                      startDate: start,
+                      endDate: end,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -111,9 +109,8 @@ class RentalConfirmPage extends StatelessWidget {
                   isDelivery: state.isDelivery,
                   address: state.deliveryAddress,
                   comments: state.deliveryComments,
-                  onDeliveryChanged: ({required bool isDelivery}) => context
-                      .read<RentalBloc>()
-                      .add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
+                  onDeliveryChanged: ({required bool isDelivery}) =>
+                      context.read<RentalBloc>().add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
                   onAddressChanged: (value) => context.read<RentalBloc>().add(
                     RentalEvent.deliveryAddressChanged(address: value),
                   ),
@@ -237,10 +234,8 @@ class _GameSummary extends StatelessWidget {
               width: 80,
               height: 80,
               fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (context, url, error) =>
-                  const Icon(Icons.image_not_supported),
+              placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
             ),
           ),
           const SizedBox(width: 16),
@@ -256,9 +251,7 @@ class _GameSummary extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  game.categories.isNotEmpty
-                      ? game.categories.first.name
-                      : 'Varios',
+                  game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.gameBrown.withOpacityValue(0.7),
                   ),
@@ -367,9 +360,7 @@ class _OptionButton extends StatelessWidget {
           color: isSelected ? AppColors.gameCream : AppColors.card,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: isSelected
-                ? AppColors.gameRust
-                : AppColors.gameBrown.withOpacityValue(0.2),
+            color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -430,9 +421,7 @@ class _FoodBundleSelector extends StatelessWidget {
               color: isSelected ? AppColors.gameCream : AppColors.card,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               border: Border.all(
-                color: isSelected
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.2),
+                color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -458,9 +447,7 @@ class _FoodBundleSelector extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        bundle.$2.length > 3
-                            ? bundle.$2.substring(3)
-                            : bundle.$2,
+                        bundle.$2.length > 3 ? bundle.$2.substring(3) : bundle.$2,
                         style: AppTypography.titleSmall,
                       ),
                       Text(
@@ -512,9 +499,7 @@ class _PaymentSelector extends StatelessWidget {
               color: isSelected ? AppColors.gameCream : AppColors.card,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               border: Border.all(
-                color: isSelected
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.2),
+                color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -525,8 +510,7 @@ class _PaymentSelector extends StatelessWidget {
                 Expanded(
                   child: Text(method.$2, style: AppTypography.titleSmall),
                 ),
-                if (isSelected)
-                  const Icon(Icons.check_circle, color: AppColors.gameRust),
+                if (isSelected) const Icon(Icons.check_circle, color: AppColors.gameRust),
               ],
             ),
           ),
@@ -566,8 +550,7 @@ class _PriceBreakdown extends StatelessWidget {
       child: Column(
         children: [
           _PriceRow(
-            label:
-                '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
+            label: '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
             value: subtotal,
           ),
           const SizedBox(height: 8),

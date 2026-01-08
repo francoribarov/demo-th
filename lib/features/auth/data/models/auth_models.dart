@@ -21,8 +21,7 @@ abstract class LoginRequest with _$LoginRequest {
   const LoginRequest._();
 
   /// Creates a [LoginRequest] from JSON.
-  factory LoginRequest.fromJson(Map<String, dynamic> json) =>
-      _$LoginRequestFromJson(json);
+  factory LoginRequest.fromJson(Map<String, dynamic> json) => _$LoginRequestFromJson(json);
 
   /// Serializes the request payload.
   Map<String, dynamic> toJson() => {'email': email, 'password': password};
@@ -46,8 +45,7 @@ abstract class RegisterRequest with _$RegisterRequest {
   const RegisterRequest._();
 
   /// Creates a [RegisterRequest] from JSON.
-  factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
-      _$RegisterRequestFromJson(json);
+  factory RegisterRequest.fromJson(Map<String, dynamic> json) => _$RegisterRequestFromJson(json);
 
   /// Serializes the request payload.
   Map<String, dynamic> toJson() => {
@@ -64,9 +62,7 @@ abstract class RegisterRequest with _$RegisterRequest {
 
 /// Token response model
 @freezed
-sealed class TokenResponse
-    with _$TokenResponse
-    implements BaseDtoResponse<AuthTokens> {
+sealed class TokenResponse with _$TokenResponse implements BaseDtoResponse<AuthTokens> {
   /// Creates a token response model.
   const factory TokenResponse({
     @JsonKey(name: 'access_token') required String accessToken,
@@ -77,8 +73,7 @@ sealed class TokenResponse
   const TokenResponse._();
 
   /// Creates a [TokenResponse] from JSON.
-  factory TokenResponse.fromJson(Map<String, dynamic> json) =>
-      _$TokenResponseFromJson(json);
+  factory TokenResponse.fromJson(Map<String, dynamic> json) => _$TokenResponseFromJson(json);
 
   @override
   AuthTokens toDomainModel() => AuthTokens(
@@ -90,9 +85,7 @@ sealed class TokenResponse
 
 /// Authentication response model
 @freezed
-sealed class AuthResponse
-    with _$AuthResponse
-    implements BaseDtoResponse<AuthSession> {
+sealed class AuthResponse with _$AuthResponse implements BaseDtoResponse<AuthSession> {
   /// Creates an authentication response model.
   const factory AuthResponse({
     required UserModel user,
@@ -104,8 +97,7 @@ sealed class AuthResponse
   const AuthResponse._();
 
   /// Creates an [AuthResponse] from JSON.
-  factory AuthResponse.fromJson(Map<String, dynamic> json) =>
-      _$AuthResponseFromJson(json);
+  factory AuthResponse.fromJson(Map<String, dynamic> json) => _$AuthResponseFromJson(json);
 
   @override
   AuthSession toDomainModel() => AuthSession(
@@ -129,6 +121,5 @@ abstract class RefreshTokenRequest with _$RefreshTokenRequest {
   const RefreshTokenRequest._();
 
   /// Creates a [RefreshTokenRequest] from JSON.
-  factory RefreshTokenRequest.fromJson(Map<String, dynamic> json) =>
-      _$RefreshTokenRequestFromJson(json);
+  factory RefreshTokenRequest.fromJson(Map<String, dynamic> json) => _$RefreshTokenRequestFromJson(json);
 }

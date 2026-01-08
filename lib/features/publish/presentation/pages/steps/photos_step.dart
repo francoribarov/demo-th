@@ -79,7 +79,12 @@ class PhotosStep extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    child: Image.network(images[index], fit: BoxFit.cover, height: double.infinity, width: double.infinity),
+                    child: Image.network(
+                      images[index],
+                      fit: BoxFit.cover,
+                      height: double.infinity,
+                      width: double.infinity,
+                    ),
                   ),
                   Positioned(
                     top: 4,

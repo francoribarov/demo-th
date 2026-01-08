@@ -25,8 +25,7 @@ class GameDetailsPage extends StatefulWidget {
   State<GameDetailsPage> createState() => _GameDetailsPageState();
 }
 
-class _GameDetailsPageState extends State<GameDetailsPage>
-    with SingleTickerProviderStateMixin {
+class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -111,12 +110,8 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        state.isWishlisted
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: state.isWishlisted
-                            ? Colors.red
-                            : AppColors.gameBrown,
+                        state.isWishlisted ? Icons.favorite : Icons.favorite_border,
+                        color: state.isWishlisted ? Colors.red : AppColors.gameBrown,
                       ),
                     ),
                     onPressed: () => context.read<GameDetailsBloc>().add(
@@ -151,8 +146,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                       CachedNetworkImage(
                         imageUrl: game.images.isNotEmpty ? game.images.first : '',
                         fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            const ColoredBox(color: AppColors.gameCream),
+                        placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
                         errorWidget: (context, url, error) => const ColoredBox(
                           color: AppColors.gameCream,
                           child: Icon(Icons.image_not_supported),
@@ -205,8 +199,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                             children: [
                               // Category and rating
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.symmetric(
@@ -235,8 +228,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                         AppTheme.radius2xl,
                                       ),
                                       border: Border.all(
-                                        color: AppColors.gameBrown
-                                            .withOpacityValue(0.12),
+                                        color: AppColors.gameBrown.withOpacityValue(0.12),
                                       ),
                                     ),
                                     child: GameRatingBadge(
@@ -259,8 +251,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
 
                               // Owner card
                               GestureDetector(
-                                onTap: () =>
-                                    context.goToGameOwner(widget.gameId),
+                                onTap: () => context.goToGameOwner(widget.gameId),
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
@@ -269,8 +260,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                       AppTheme.radiusLg,
                                     ),
                                     border: Border.all(
-                                      color: AppColors.gameBrown
-                                          .withOpacityValue(0.08),
+                                      color: AppColors.gameBrown.withOpacityValue(0.08),
                                     ),
                                     boxShadow: [
                                       BoxShadow(
@@ -289,15 +279,13 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                         backgroundColor: AppColors.gameBrown,
                                         child: Text(
                                           'M',
-                                          style: AppTypography.titleMedium
-                                              .copyWith(color: Colors.white),
+                                          style: AppTypography.titleMedium.copyWith(color: Colors.white),
                                         ),
                                       ),
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Martín R.',
@@ -305,11 +293,9 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                             ),
                                             Text(
                                               'Montevideo • Responde en menos de 1h',
-                                              style: AppTypography.bodySmall
-                                                  .copyWith(
-                                                    color: AppColors.gameBrown
-                                                        .withOpacityValue(0.7),
-                                                  ),
+                                              style: AppTypography.bodySmall.copyWith(
+                                                color: AppColors.gameBrown.withOpacityValue(0.7),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -346,8 +332,7 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                     horizontal: 10,
                                   ),
                                   labelStyle: AppTypography.labelLarge,
-                                  unselectedLabelStyle:
-                                      AppTypography.labelLarge,
+                                  unselectedLabelStyle: AppTypography.labelLarge,
                                   labelColor: Colors.white,
                                   unselectedLabelColor: AppColors.gameBrown,
                                   dividerColor: Colors.transparent,
@@ -358,10 +343,9 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.gameRust
-                                            .withOpacityValue(
-                                              0.35,
-                                            ),
+                                        color: AppColors.gameRust.withOpacityValue(
+                                          0.35,
+                                        ),
                                         blurRadius: 12,
                                         offset: const Offset(0, 6),
                                       ),
@@ -417,13 +401,11 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                           AppTheme.radiusLg,
                                         ),
                                         border: Border.all(
-                                          color: AppColors.gameBrown
-                                              .withOpacityValue(0.1),
+                                          color: AppColors.gameBrown.withOpacityValue(0.1),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black
-                                                .withOpacityValue(0.04),
+                                            color: Colors.black.withOpacityValue(0.04),
                                             blurRadius: 10,
                                             offset: const Offset(0, 4),
                                           ),
@@ -481,17 +463,15 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                       startDate: state.checkStartDate,
                                       endDate: state.checkEndDate,
                                       result: state.availabilityResult,
-                                      onRangeSelected: (start, end) =>
-                                          context.read<GameDetailsBloc>().add(
-                                            GameDetailsEvent.checkDateRangeChanged(
-                                              start,
-                                              end,
-                                            ),
-                                          ),
-                                      onCheck: () =>
-                                          context.read<GameDetailsBloc>().add(
-                                            const GameDetailsEvent.checkAvailabilityPressed(),
-                                          ),
+                                      onRangeSelected: (start, end) => context.read<GameDetailsBloc>().add(
+                                        GameDetailsEvent.checkDateRangeChanged(
+                                          start,
+                                          end,
+                                        ),
+                                      ),
+                                      onCheck: () => context.read<GameDetailsBloc>().add(
+                                        const GameDetailsEvent.checkAvailabilityPressed(),
+                                      ),
                                     ),
 
                                     const SizedBox(height: 32),
@@ -507,13 +487,10 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                         height: 200,
                                         child: ListView.separated(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount:
-                                              state.recommendations.length,
-                                          separatorBuilder: (_, _) =>
-                                              const SizedBox(width: 12),
+                                          itemCount: state.recommendations.length,
+                                          separatorBuilder: (_, _) => const SizedBox(width: 12),
                                           itemBuilder: (context, index) {
-                                            final rec =
-                                                state.recommendations[index];
+                                            final rec = state.recommendations[index];
                                             return GameRecommendationCard(
                                               game: rec,
                                               onTap: () => context.goToGame(
@@ -547,27 +524,22 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                           AppTheme.radiusLg,
                                         ),
                                         border: Border.all(
-                                          color: AppColors.gameBrown
-                                              .withOpacityValue(0.08),
+                                          color: AppColors.gameBrown.withOpacityValue(0.08),
                                         ),
                                       ),
                                       child: Row(
                                         children: [
                                           Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 game.rating.toStringAsFixed(1),
-                                                style:
-                                                    AppTypography.displayMedium,
+                                                style: AppTypography.displayMedium,
                                               ),
                                               Row(
                                                 children: List.generate(5, (i) {
                                                   return Icon(
-                                                    i < game.rating.floor()
-                                                        ? Icons.star
-                                                        : Icons.star_border,
+                                                    i < game.rating.floor() ? Icons.star : Icons.star_border,
                                                     color: AppColors.gameGold,
                                                     size: 16,
                                                   );
@@ -576,13 +548,11 @@ class _GameDetailsPageState extends State<GameDetailsPage>
                                               const SizedBox(height: 4),
                                               Text(
                                                 '${game.reviewsCount} reseñas',
-                                                style: AppTypography.bodySmall
-                                                    .copyWith(
-                                                      color: AppColors.gameBrown
-                                                          .withOpacityValue(
-                                                            0.7,
-                                                          ),
-                                                    ),
+                                                style: AppTypography.bodySmall.copyWith(
+                                                  color: AppColors.gameBrown.withOpacityValue(
+                                                    0.7,
+                                                  ),
+                                                ),
                                               ),
                                             ],
                                           ),

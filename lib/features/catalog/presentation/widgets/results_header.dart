@@ -127,18 +127,12 @@ class ResultsHeader extends StatelessWidget {
                   onPressed: onOpenFilters,
                   icon: const Icon(Icons.filter_list, size: 18),
                   label: Text(
-                    filters.hasActiveFilters
-                        ? 'Filtros (${filters.activeFiltersCount})'
-                        : 'Filtros',
+                    filters.hasActiveFilters ? 'Filtros (${filters.activeFiltersCount})' : 'Filtros',
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: filters.hasActiveFilters
-                        ? AppColors.gameRust
-                        : AppColors.gameBrown,
+                    foregroundColor: filters.hasActiveFilters ? AppColors.gameRust : AppColors.gameBrown,
                     side: BorderSide(
-                      color: filters.hasActiveFilters
-                          ? AppColors.gameRust
-                          : AppColors.gameBrown.withOpacityValue(0.2),
+                      color: filters.hasActiveFilters ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
                     ),
                     backgroundColor: AppColors.card,
                   ),

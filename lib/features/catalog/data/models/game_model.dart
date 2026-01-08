@@ -10,9 +10,7 @@ part 'game_model.g.dart';
 
 /// Data transfer object for availability range
 @freezed
-sealed class AvailabilityRangeModel
-    with _$AvailabilityRangeModel
-    implements BaseDtoResponse<AvailabilityRange> {
+sealed class AvailabilityRangeModel with _$AvailabilityRangeModel implements BaseDtoResponse<AvailabilityRange> {
   const factory AvailabilityRangeModel({
     required String from,
     required String to,
@@ -20,8 +18,7 @@ sealed class AvailabilityRangeModel
 
   const AvailabilityRangeModel._();
 
-  factory AvailabilityRangeModel.fromJson(Map<String, dynamic> json) =>
-      _$AvailabilityRangeModelFromJson(json);
+  factory AvailabilityRangeModel.fromJson(Map<String, dynamic> json) => _$AvailabilityRangeModelFromJson(json);
 
   factory AvailabilityRangeModel.fromEntity(AvailabilityRange entity) =>
       AvailabilityRangeModel(from: entity.from, to: entity.to);
@@ -32,9 +29,7 @@ sealed class AvailabilityRangeModel
 
 /// Data transfer object for game rules
 @freezed
-sealed class GameRulesModel
-    with _$GameRulesModel
-    implements BaseDtoResponse<GameRules> {
+sealed class GameRulesModel with _$GameRulesModel implements BaseDtoResponse<GameRules> {
   const factory GameRulesModel({
     @Default('') String videoUrl,
     @Default('') String ruleCompleteUrl,
@@ -43,8 +38,7 @@ sealed class GameRulesModel
 
   const GameRulesModel._();
 
-  factory GameRulesModel.fromJson(Map<String, dynamic> json) =>
-      _$GameRulesModelFromJson(json);
+  factory GameRulesModel.fromJson(Map<String, dynamic> json) => _$GameRulesModelFromJson(json);
 
   factory GameRulesModel.fromEntity(GameRules entity) => GameRulesModel(
     videoUrl: entity.videoUrl,
@@ -62,9 +56,7 @@ sealed class GameRulesModel
 
 /// Data transfer object for game review
 @freezed
-sealed class GameReviewModel
-    with _$GameReviewModel
-    implements BaseDtoResponse<GameReview> {
+sealed class GameReviewModel with _$GameReviewModel implements BaseDtoResponse<GameReview> {
   const factory GameReviewModel({
     @Default('') String userId,
     @Default(0.0) double rating,
@@ -74,8 +66,7 @@ sealed class GameReviewModel
 
   const GameReviewModel._();
 
-  factory GameReviewModel.fromJson(Map<String, dynamic> json) =>
-      _$GameReviewModelFromJson(json);
+  factory GameReviewModel.fromJson(Map<String, dynamic> json) => _$GameReviewModelFromJson(json);
 
   factory GameReviewModel.fromEntity(GameReview entity) => GameReviewModel(
     userId: entity.userId,
@@ -117,15 +108,12 @@ sealed class GameModel with _$GameModel implements BaseDtoResponse<Game> {
     /// `GET /api/games` returns a summary without `rules`.
     /// `GET /api/games/:id` includes `rules`.
     GameRulesModel? rules,
-    @JsonKey(name: 'reviews_list')
-    @Default([])
-    List<GameReviewModel> reviewsList,
+    @JsonKey(name: 'reviews_list') @Default([]) List<GameReviewModel> reviewsList,
   }) = _GameModel;
 
   const GameModel._();
 
-  factory GameModel.fromJson(Map<String, dynamic> json) =>
-      _$GameModelFromJson(json);
+  factory GameModel.fromJson(Map<String, dynamic> json) => _$GameModelFromJson(json);
 
   factory GameModel.fromEntity(Game game) => GameModel(
     id: game.id,
@@ -142,9 +130,7 @@ sealed class GameModel with _$GameModel implements BaseDtoResponse<Game> {
     price: game.price,
     ownerId: game.ownerId,
     deposit: game.deposit,
-    availability: game.availability
-        ?.map(AvailabilityRangeModel.fromEntity)
-        .toList(),
+    availability: game.availability?.map(AvailabilityRangeModel.fromEntity).toList(),
     rules: GameRulesModel.fromEntity(game.rules),
     reviewsList: game.reviewsList.map(GameReviewModel.fromEntity).toList(),
   );
@@ -174,9 +160,7 @@ sealed class GameModel with _$GameModel implements BaseDtoResponse<Game> {
 
 /// Data transfer object for category
 @freezed
-sealed class GameCategoryModel
-    with _$GameCategoryModel
-    implements BaseDtoResponse<GameCategory> {
+sealed class GameCategoryModel with _$GameCategoryModel implements BaseDtoResponse<GameCategory> {
   const factory GameCategoryModel({
     required int id,
     required String name,
@@ -187,17 +171,15 @@ sealed class GameCategoryModel
 
   const GameCategoryModel._();
 
-  factory GameCategoryModel.fromJson(Map<String, dynamic> json) =>
-      _$GameCategoryModelFromJson(json);
+  factory GameCategoryModel.fromJson(Map<String, dynamic> json) => _$GameCategoryModelFromJson(json);
 
-  factory GameCategoryModel.fromEntity(GameCategory entity) =>
-      GameCategoryModel(
-        id: entity.id,
-        name: entity.name,
-        icon: entity.icon,
-        query: entity.query,
-        description: entity.description,
-      );
+  factory GameCategoryModel.fromEntity(GameCategory entity) => GameCategoryModel(
+    id: entity.id,
+    name: entity.name,
+    icon: entity.icon,
+    query: entity.query,
+    description: entity.description,
+  );
 
   @override
   GameCategory toDomainModel() => GameCategory(
@@ -211,9 +193,7 @@ sealed class GameCategoryModel
 
 /// Data transfer object for filter shortcut
 @freezed
-sealed class FilterShortcutModel
-    with _$FilterShortcutModel
-    implements BaseDtoResponse<FilterShortcut> {
+sealed class FilterShortcutModel with _$FilterShortcutModel implements BaseDtoResponse<FilterShortcut> {
   const factory FilterShortcutModel({
     required int id,
     required String name,
@@ -225,8 +205,7 @@ sealed class FilterShortcutModel
 
   const FilterShortcutModel._();
 
-  factory FilterShortcutModel.fromJson(Map<String, dynamic> json) =>
-      _$FilterShortcutModelFromJson(json);
+  factory FilterShortcutModel.fromJson(Map<String, dynamic> json) => _$FilterShortcutModelFromJson(json);
 
   @override
   FilterShortcut toDomainModel() => FilterShortcut(
@@ -246,8 +225,7 @@ abstract class GameImageModel with _$GameImageModel {
     required String url,
   }) = _GameImageModel;
 
-  factory GameImageModel.fromJson(Map<String, dynamic> json) =>
-      _$GameImageModelFromJson(json);
+  factory GameImageModel.fromJson(Map<String, dynamic> json) => _$GameImageModelFromJson(json);
 }
 
 String _toString(dynamic value) => value.toString();

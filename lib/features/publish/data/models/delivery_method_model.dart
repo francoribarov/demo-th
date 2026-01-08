@@ -6,9 +6,7 @@ part 'delivery_method_model.freezed.dart';
 part 'delivery_method_model.g.dart';
 
 @freezed
-sealed class DeliveryMethodModel
-    with _$DeliveryMethodModel
-    implements BaseDtoResponse<DeliveryMethod> {
+sealed class DeliveryMethodModel with _$DeliveryMethodModel implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodModel({
     required int id,
     required String deliveryType,
@@ -19,17 +17,15 @@ sealed class DeliveryMethodModel
 
   const DeliveryMethodModel._();
 
-  factory DeliveryMethodModel.fromJson(Map<String, dynamic> json) =>
-      _$DeliveryMethodModelFromJson(json);
+  factory DeliveryMethodModel.fromJson(Map<String, dynamic> json) => _$DeliveryMethodModelFromJson(json);
 
-  factory DeliveryMethodModel.fromEntity(DeliveryMethod entity) =>
-      DeliveryMethodModel(
-        id: entity.id,
-        deliveryType: entity.deliveryType,
-        price: entity.price,
-        initPickupTime: entity.initPickupTime,
-        finishPickupTime: entity.finishPickupTime,
-      );
+  factory DeliveryMethodModel.fromEntity(DeliveryMethod entity) => DeliveryMethodModel(
+    id: entity.id,
+    deliveryType: entity.deliveryType,
+    price: entity.price,
+    initPickupTime: entity.initPickupTime,
+    finishPickupTime: entity.finishPickupTime,
+  );
 
   @override
   DeliveryMethod toDomainModel() => DeliveryMethod(

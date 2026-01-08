@@ -15,7 +15,6 @@ part of 'publish_bloc.dart';
 // However, `deliveryMethods` uses `DeliveryMethod` Type. `PublishBloc` imports `delivery_method.dart`.
 // So it should be fine.
 
-
 @freezed
 /// State for the publish flow.
 abstract class PublishState with _$PublishState {
@@ -41,7 +40,7 @@ abstract class PublishState with _$PublishState {
     // Simplified logic for now as steps might change
     // Assuming single page or fewer steps
     return PublicationValidator.validateDescription(description).isValid &&
-           PublicationValidator.validatePricing(price).isValid &&
-           gameId > 0;
+        PublicationValidator.validatePricing(price).isValid &&
+        gameId > 0;
   }
 }

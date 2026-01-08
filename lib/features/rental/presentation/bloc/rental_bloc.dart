@@ -102,11 +102,13 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       if (startDate != null) {
         final minEndDate = startDate.add(const Duration(days: 2));
         if (!state.game!.isAvailableFor(newStart, minEndDate.toIso8601String())) {
-          return emit(state.copyWith(
-            startDate: null,
-            endDate: null,
-            snackbarMessage: AppStrings.rentalMinAvailability,
-          ));
+          return emit(
+            state.copyWith(
+              startDate: null,
+              endDate: null,
+              snackbarMessage: AppStrings.rentalMinAvailability,
+            ),
+          );
         }
       }
     }
@@ -199,7 +201,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final game = state.game;
 
     if (game == null) return;
-    
+
     final ownerId = game.ownerId ?? state.ownerId;
     if (ownerId == null || ownerId.isEmpty) {
       emit(state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError));

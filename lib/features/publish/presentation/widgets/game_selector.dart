@@ -56,7 +56,7 @@ class _GameSelectorState extends State<GameSelector> {
       child: BlocBuilder<CatalogBloc, CatalogState>(
         builder: (context, state) {
           final selectedGame = state.allGames.where((g) => g.id == widget.selectedGameId).firstOrNull;
-          
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -66,23 +66,23 @@ class _GameSelectorState extends State<GameSelector> {
                   onClear: () {
                     context.read<CatalogBloc>().add(const CatalogEvent.clearSearch());
                     _searchController.clear();
-                    // We can't clear the parent state easily without a clear callback or passing null, 
-                    // but the parent expects a Game object. 
+                    // We can't clear the parent state easily without a clear callback or passing null,
+                    // but the parent expects a Game object.
                     // Ideally we should have onClear or allow null in onGameSelected.
-                    // For now, let's just show the search field again. 
+                    // For now, let's just show the search field again.
                     // Actually, if selectedGameId is not null, we show the card.
                     // If the user wants to change, they tap "Change".
                   },
                   onChange: () {
-                     // Just focus the search to show results again?
-                     // Or maybe we need a callback to clear selection in parent.
-                     // The requirement is to select a game.
-                     // Let's assume onGameSelected handles new selection.
-                     setState(() {
-                       _showResults = true;
-                     });
-                     _focusNode.requestFocus();
-                  }
+                    // Just focus the search to show results again?
+                    // Or maybe we need a callback to clear selection in parent.
+                    // The requirement is to select a game.
+                    // Let's assume onGameSelected handles new selection.
+                    setState(() {
+                      _showResults = true;
+                    });
+                    _focusNode.requestFocus();
+                  },
                 ),
                 const SizedBox(height: 16),
               ],
@@ -149,8 +149,10 @@ class _GameSelectorState extends State<GameSelector> {
                               ),
                               title: Text(game.title, style: AppTypography.bodyMedium),
                               subtitle: Text(
-                                '${game.duration} min • ${game.players}', 
-                                style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                                '${game.duration} min • ${game.players}',
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.gameBrown.withOpacityValue(0.7),
+                                ),
                               ),
                               onTap: () {
                                 widget.onGameSelected(game);
@@ -199,8 +201,8 @@ class _SelectedGameCard extends StatelessWidget {
               width: 60,
               height: 60,
               fit: BoxFit.cover,
-               placeholder: (_, url) => const ColoredBox(color: AppColors.gameCream),
-               errorWidget: (_, url, error) => const Icon(Icons.image_not_supported),
+              placeholder: (_, url) => const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (_, url, error) => const Icon(Icons.image_not_supported),
             ),
           ),
           const SizedBox(width: 12),

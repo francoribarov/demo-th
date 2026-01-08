@@ -46,7 +46,7 @@ class DataStep extends StatelessWidget {
         // Game Selector
         GameSelector(
           selectedGameId: gameId.toString(), // Selector expects String? or int?
-            onGameSelected: (game) {
+          onGameSelected: (game) {
             onGameIdChanged(game.catalogId);
             onDescriptionChanged(game.description);
           },
