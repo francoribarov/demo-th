@@ -64,6 +64,8 @@ import 'package:mobile_table_hopping/features/publish/domain/usecases/create_pub
     as _i692;
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart'
     as _i530;
+import 'package:mobile_table_hopping/features/rental/data/datasources/rental_remote_datasource.dart'
+    as _i579;
 import 'package:mobile_table_hopping/features/rental/data/repositories/rental_repository_impl.dart'
     as _i472;
 import 'package:mobile_table_hopping/features/rental/domain/repositories/rental_repository.dart'
@@ -97,6 +99,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i599.PublishRemoteDatasource>(
       () => _i599.PublishRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
+    gh.lazySingleton<_i579.RentalRemoteDatasource>(
+      () => _i579.RentalRemoteDatasourceImpl(gh<_i737.DioClient>()),
+    );
     gh.lazySingleton<_i930.AuthRemoteDatasource>(
       () => _i930.AuthRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
@@ -105,9 +110,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i460.CategoryRemoteDatasource>(
       () => _i460.CategoryRemoteDatasourceImpl(gh<_i737.DioClient>()),
-    );
-    gh.lazySingleton<_i996.RentalRepository>(
-      () => _i472.RentalRepositoryImpl(gh<_i737.DioClient>()),
     );
     gh.lazySingleton<_i349.GameRemoteDatasource>(
       () => _i349.GameRemoteDatasourceImpl(gh<_i737.DioClient>()),
@@ -118,8 +120,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i460.CategoryRemoteDatasource>(),
       ),
     );
-    gh.factory<_i649.ConfirmRental>(
-      () => _i649.ConfirmRental(gh<_i996.RentalRepository>()),
+    gh.lazySingleton<_i996.RentalRepository>(
+      () => _i472.RentalRepositoryImpl(gh<_i579.RentalRemoteDatasource>()),
     );
     gh.lazySingleton<_i198.AuthRepository>(
       () => _i187.AuthRepositoryImpl(
@@ -168,6 +170,9 @@ extension GetItInjectableX on _i174.GetIt {
         getGames: gh<_i499.GetGames>(),
         searchGames: gh<_i144.SearchGames>(),
       ),
+    );
+    gh.factory<_i649.ConfirmRental>(
+      () => _i649.ConfirmRental(gh<_i996.RentalRepository>()),
     );
     gh.factory<_i675.RentalBloc>(
       () => _i675.RentalBloc(
