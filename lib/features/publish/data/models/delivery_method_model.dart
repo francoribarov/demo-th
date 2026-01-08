@@ -1,11 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
 
 part 'delivery_method_model.freezed.dart';
 part 'delivery_method_model.g.dart';
 
 @freezed
-abstract class DeliveryMethodModel with _$DeliveryMethodModel {
+sealed class DeliveryMethodModel
+    with _$DeliveryMethodModel
+    implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodModel({
     required int id,
     required String deliveryType,
@@ -28,11 +31,12 @@ abstract class DeliveryMethodModel with _$DeliveryMethodModel {
         finishPickupTime: entity.finishPickupTime,
       );
 
-  DeliveryMethod toEntity() => DeliveryMethod(
-        id: id,
-        deliveryType: deliveryType,
-        price: price,
-        initPickupTime: initPickupTime,
-        finishPickupTime: finishPickupTime,
-      );
+  @override
+  DeliveryMethod toDomainModel() => DeliveryMethod(
+    id: id,
+    deliveryType: deliveryType,
+    price: price,
+    initPickupTime: initPickupTime,
+    finishPickupTime: finishPickupTime,
+  );
 }

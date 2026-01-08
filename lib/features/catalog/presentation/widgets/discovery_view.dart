@@ -63,7 +63,7 @@ class DiscoveryView extends StatelessWidget {
               description: 'Nuestra mezcla favorita de clásicos y estrenos recientes.',
               games: state.filteredGames.take(6).toList(),
               variant: GameSectionVariant.carousel,
-              onGameTap: (game) => context.goToGame(game.id.toString()),
+              onGameTap: (game) => context.goToGame(game.id),
             ),
             const SizedBox(height: 32),
           ],
@@ -76,7 +76,7 @@ class DiscoveryView extends StatelessWidget {
                 final today = DateFormatter.toIsoString(DateTime.now());
                 context.read<CatalogBloc>().add(SetDates(startDate: today, endDate: today));
               },
-              onGameTap: (game) => context.goToGame(game.id.toString()),
+              onGameTap: (game) => context.goToGame(game.id),
             ),
             const SizedBox(height: 32),
           ],
@@ -126,7 +126,7 @@ class DiscoveryView extends StatelessWidget {
             description: 'Todo lo que podés alquilar hoy mismo.',
             games: state.filteredGames,
             variant: GameSectionVariant.grid,
-            onGameTap: (game) => context.goToGame(game.id.toString()),
+            onGameTap: (game) => context.goToGame(game.id),
             onCategoryTap: (game) {
               if (game.categories.isNotEmpty) {
                 context.read<CatalogBloc>().add(SelectCategory(game.categories.first.name));
@@ -155,7 +155,7 @@ class DiscoveryView extends StatelessWidget {
         description: description,
         games: games,
         variant: variant,
-        onGameTap: (game) => context.goToGame(game.id.toString()),
+        onGameTap: (game) => context.goToGame(game.id),
         onCategoryTap: (game) {
           if (game.categories.isNotEmpty) {
             context.read<CatalogBloc>().add(SelectCategory(game.categories.first.name));

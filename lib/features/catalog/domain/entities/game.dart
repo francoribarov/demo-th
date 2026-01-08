@@ -41,24 +41,24 @@ abstract class Game with _$Game {
     /// Unique game identifier (Publication ID)
     required String id,
 
-    /// Internal game identifier from Catalog (Int)
-    @Default(0) int catalogId,
-
     /// Game title
     required String title,
-
-    /// Condition of the publication (e.g., "Nuevo", "Usado")
-    @Default('') String? condition,
     required List<GameCategory> categories,
     required List<String> images,
     required double rating,
-    required int reviewsCount, // Renamed from reviews to clarify it's a count
+    required int reviewsCount,
     required String description,
-    required int duration, // Minutes
+    required int duration,
     required String players,
     required String difficulty,
     required int price,
     required GameRules rules,
+
+    /// Internal game identifier from Catalog (Int)
+    @Default(0) int catalogId,
+
+    /// Condition of the publication (e.g., "Nuevo", "Usado")
+    @Default('') String? condition,
     String? ownerId,
     int? deposit,
     List<AvailabilityRange>? availability,

@@ -55,7 +55,7 @@ class _GameSelectorState extends State<GameSelector> {
       create: (_) => getIt<CatalogBloc>()..add(const CatalogEvent.loadGames()),
       child: BlocBuilder<CatalogBloc, CatalogState>(
         builder: (context, state) {
-          final selectedGame = state.allGames.where((g) => g.id.toString() == widget.selectedGameId).firstOrNull;
+          final selectedGame = state.allGames.where((g) => g.id == widget.selectedGameId).firstOrNull;
           
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

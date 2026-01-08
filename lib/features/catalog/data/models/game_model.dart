@@ -2,7 +2,7 @@
 // ignore_for_file: invalid_annotation_target
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 
 part 'game_model.freezed.dart';
@@ -10,7 +10,9 @@ part 'game_model.g.dart';
 
 /// Data transfer object for availability range
 @freezed
-abstract class AvailabilityRangeModel with _$AvailabilityRangeModel {
+sealed class AvailabilityRangeModel
+    with _$AvailabilityRangeModel
+    implements BaseDtoResponse<AvailabilityRange> {
   const factory AvailabilityRangeModel({
     required String from,
     required String to,
@@ -24,12 +26,15 @@ abstract class AvailabilityRangeModel with _$AvailabilityRangeModel {
   factory AvailabilityRangeModel.fromEntity(AvailabilityRange entity) =>
       AvailabilityRangeModel(from: entity.from, to: entity.to);
 
-  AvailabilityRange toEntity() => AvailabilityRange(from: from, to: to);
+  @override
+  AvailabilityRange toDomainModel() => AvailabilityRange(from: from, to: to);
 }
 
 /// Data transfer object for game rules
 @freezed
-abstract class GameRulesModel with _$GameRulesModel {
+sealed class GameRulesModel
+    with _$GameRulesModel
+    implements BaseDtoResponse<GameRules> {
   const factory GameRulesModel({
     @Default('') String videoUrl,
     @Default('') String ruleCompleteUrl,
@@ -47,7 +52,8 @@ abstract class GameRulesModel with _$GameRulesModel {
     summaryRules: entity.summaryRules,
   );
 
-  GameRules toEntity() => GameRules(
+  @override
+  GameRules toDomainModel() => GameRules(
     videoUrl: videoUrl,
     ruleCompleteUrl: ruleCompleteUrl,
     summaryRules: summaryRules,
@@ -56,7 +62,9 @@ abstract class GameRulesModel with _$GameRulesModel {
 
 /// Data transfer object for game review
 @freezed
-abstract class GameReviewModel with _$GameReviewModel {
+sealed class GameReviewModel
+    with _$GameReviewModel
+    implements BaseDtoResponse<GameReview> {
   const factory GameReviewModel({
     @Default('') String userId,
     @Default(0.0) double rating,
@@ -76,7 +84,8 @@ abstract class GameReviewModel with _$GameReviewModel {
     name: entity.name,
   );
 
-  GameReview toEntity() => GameReview(
+  @override
+  GameReview toDomainModel() => GameReview(
     userId: userId,
     rating: rating,
     comment: comment,
@@ -86,7 +95,7 @@ abstract class GameReviewModel with _$GameReviewModel {
 
 /// Data transfer object for Game entity
 @freezed
-abstract class GameModel with _$GameModel {
+sealed class GameModel with _$GameModel implements BaseDtoResponse<Game> {
   const factory GameModel({
     /// Unique identifier for the game
     @JsonKey(name: 'id', fromJson: _toString) required String id,
@@ -136,16 +145,17 @@ abstract class GameModel with _$GameModel {
     availability: game.availability
         ?.map(AvailabilityRangeModel.fromEntity)
         .toList(),
-    rules: game.rules != null ? GameRulesModel.fromEntity(game.rules!) : null,
+    rules: GameRulesModel.fromEntity(game.rules),
     reviewsList: game.reviewsList.map(GameReviewModel.fromEntity).toList(),
   );
 
-  Game toEntity() => Game(
+  @override
+  Game toDomainModel() => Game(
     id: id,
     catalogId: int.tryParse(id) ?? 0,
     title: title,
     condition: condition,
-    categories: categories.map((c) => c.toEntity()).toList(),
+    categories: categories.map((c) => c.toDomainModel()).toList(),
     images: images.map((i) => i.url).toList(),
     rating: rating,
     reviewsCount: reviewsCount,
@@ -156,15 +166,17 @@ abstract class GameModel with _$GameModel {
     price: price,
     ownerId: ownerId,
     deposit: deposit,
-    availability: availability?.map((a) => a.toEntity()).toList(),
-    rules: (rules ?? const GameRulesModel()).toEntity(),
-    reviewsList: reviewsList.map((r) => r.toEntity()).toList(),
+    availability: availability?.map((a) => a.toDomainModel()).toList(),
+    rules: (rules ?? const GameRulesModel()).toDomainModel(),
+    reviewsList: reviewsList.map((r) => r.toDomainModel()).toList(),
   );
 }
 
 /// Data transfer object for category
 @freezed
-abstract class GameCategoryModel with _$GameCategoryModel {
+sealed class GameCategoryModel
+    with _$GameCategoryModel
+    implements BaseDtoResponse<GameCategory> {
   const factory GameCategoryModel({
     required int id,
     required String name,
@@ -187,7 +199,8 @@ abstract class GameCategoryModel with _$GameCategoryModel {
         description: entity.description,
       );
 
-  GameCategory toEntity() => GameCategory(
+  @override
+  GameCategory toDomainModel() => GameCategory(
     id: id,
     name: name,
     icon: icon,
@@ -198,7 +211,9 @@ abstract class GameCategoryModel with _$GameCategoryModel {
 
 /// Data transfer object for filter shortcut
 @freezed
-abstract class FilterShortcutModel with _$FilterShortcutModel {
+sealed class FilterShortcutModel
+    with _$FilterShortcutModel
+    implements BaseDtoResponse<FilterShortcut> {
   const factory FilterShortcutModel({
     required int id,
     required String name,
@@ -213,7 +228,8 @@ abstract class FilterShortcutModel with _$FilterShortcutModel {
   factory FilterShortcutModel.fromJson(Map<String, dynamic> json) =>
       _$FilterShortcutModelFromJson(json);
 
-  FilterShortcut toEntity() => FilterShortcut(
+  @override
+  FilterShortcut toDomainModel() => FilterShortcut(
     id: id,
     name: name,
     icon: icon,

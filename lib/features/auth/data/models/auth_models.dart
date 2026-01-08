@@ -1,7 +1,7 @@
 // ignore_for_file: annotate_overrides, invalid_annotation_target // Required for Freezed/json annotations.
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/auth/data/models/user_model.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
@@ -13,12 +13,16 @@ part 'auth_models.g.dart';
 @freezed
 abstract class LoginRequest with _$LoginRequest {
   /// Creates a login request.
-  const factory LoginRequest({required String email, required String password}) = _LoginRequest;
+  const factory LoginRequest({
+    required String email,
+    required String password,
+  }) = _LoginRequest;
 
   const LoginRequest._();
 
   /// Creates a [LoginRequest] from JSON.
-  factory LoginRequest.fromJson(Map<String, dynamic> json) => _$LoginRequestFromJson(json);
+  factory LoginRequest.fromJson(Map<String, dynamic> json) =>
+      _$LoginRequestFromJson(json);
 
   /// Serializes the request payload.
   Map<String, dynamic> toJson() => {'email': email, 'password': password};
@@ -42,7 +46,8 @@ abstract class RegisterRequest with _$RegisterRequest {
   const RegisterRequest._();
 
   /// Creates a [RegisterRequest] from JSON.
-  factory RegisterRequest.fromJson(Map<String, dynamic> json) => _$RegisterRequestFromJson(json);
+  factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
+      _$RegisterRequestFromJson(json);
 
   /// Serializes the request payload.
   Map<String, dynamic> toJson() => {
@@ -59,7 +64,9 @@ abstract class RegisterRequest with _$RegisterRequest {
 
 /// Token response model
 @freezed
-abstract class TokenResponse with _$TokenResponse {
+sealed class TokenResponse
+    with _$TokenResponse
+    implements BaseDtoResponse<AuthTokens> {
   /// Creates a token response model.
   const factory TokenResponse({
     @JsonKey(name: 'access_token') required String accessToken,
@@ -70,15 +77,22 @@ abstract class TokenResponse with _$TokenResponse {
   const TokenResponse._();
 
   /// Creates a [TokenResponse] from JSON.
-  factory TokenResponse.fromJson(Map<String, dynamic> json) => _$TokenResponseFromJson(json);
+  factory TokenResponse.fromJson(Map<String, dynamic> json) =>
+      _$TokenResponseFromJson(json);
 
-  /// Converts the model into a domain [AuthTokens] entity.
-  AuthTokens toEntity() => AuthTokens(accessToken: accessToken, refreshToken: refreshToken, tokenType: tokenType);
+  @override
+  AuthTokens toDomainModel() => AuthTokens(
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    tokenType: tokenType,
+  );
 }
 
 /// Authentication response model
 @freezed
-abstract class AuthResponse with _$AuthResponse {
+sealed class AuthResponse
+    with _$AuthResponse
+    implements BaseDtoResponse<AuthSession> {
   /// Creates an authentication response model.
   const factory AuthResponse({
     required UserModel user,
@@ -90,12 +104,17 @@ abstract class AuthResponse with _$AuthResponse {
   const AuthResponse._();
 
   /// Creates an [AuthResponse] from JSON.
-  factory AuthResponse.fromJson(Map<String, dynamic> json) => _$AuthResponseFromJson(json);
+  factory AuthResponse.fromJson(Map<String, dynamic> json) =>
+      _$AuthResponseFromJson(json);
 
-  /// Converts the model into a domain [AuthSession] entity.
-  AuthSession toEntity() => AuthSession(
-    user: user.toEntity(),
-    tokens: AuthTokens(accessToken: accessToken, refreshToken: refreshToken, tokenType: tokenType),
+  @override
+  AuthSession toDomainModel() => AuthSession(
+    user: user.toDomainModel(),
+    tokens: AuthTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      tokenType: tokenType,
+    ),
   );
 }
 
@@ -110,6 +129,6 @@ abstract class RefreshTokenRequest with _$RefreshTokenRequest {
   const RefreshTokenRequest._();
 
   /// Creates a [RefreshTokenRequest] from JSON.
-  factory RefreshTokenRequest.fromJson(Map<String, dynamic> json) => _$RefreshTokenRequestFromJson(json);
-
+  factory RefreshTokenRequest.fromJson(Map<String, dynamic> json) =>
+      _$RefreshTokenRequestFromJson(json);
 }

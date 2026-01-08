@@ -55,7 +55,6 @@ abstract class PublicationListItem with _$PublicationListItem {
     required String description,
     required String condition,
     required int price,
-    @Default([]) List<PublicationImage> images,
-    required GameInPublication game,
+    required GameInPublication game, @Default([]) List<PublicationImage> images,
   }) = _PublicationListItem;
 }

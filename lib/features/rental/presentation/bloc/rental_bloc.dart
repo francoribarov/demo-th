@@ -227,7 +227,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     try {
       await _confirmRental(
         RentalDraft(
-          publicationId: game.id.toString(),
+          publicationId: game.id,
           ownerId: ownerId,
           startDate: start,
           endDate: end,

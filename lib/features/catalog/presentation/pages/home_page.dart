@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
             : state.allGames;
         if (games.isNotEmpty) {
           final random = games[DateTime.now().millisecond % games.length];
-          context.goToGame(random.id.toString());
+          context.goToGame(random.id);
         }
       },
     );
