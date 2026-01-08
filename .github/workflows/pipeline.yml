@@ -17,7 +17,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.0'  # Synced with .fvmrc and pubspec.yaml SDK constraint
+          flutter-version: '3.38.1'  # Synced with .fvmrc
           cache: true
 
       - name: Install dependencies
