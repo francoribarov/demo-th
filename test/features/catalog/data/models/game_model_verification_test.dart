@@ -38,21 +38,23 @@ void main() {
       final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
       final gameModel = GameModel.fromJson(jsonMap);
 
-      expect(gameModel.id, 1);
+      expect(gameModel.id, '1');
       expect(gameModel.title, 'Catan');
       expect(gameModel.images, isA<List<GameImageModel>>());
       expect(gameModel.images.length, 1);
       expect(gameModel.images.first.url, 'https://example.com/image1.jpg');
-      
+
       // Verify conversion to entity
-      final entity = gameModel.toEntity();
+      final entity = gameModel.toDomainModel();
       expect(entity.images, isA<List<String>>());
       expect(entity.images.length, 1);
       expect(entity.images.first, 'https://example.com/image1.jpg');
     });
 
-    test('should correctly deserialize game with null rules providing defaults', () {
-      const jsonString = '''
+    test(
+      'should correctly deserialize game with null rules providing defaults',
+      () {
+        const jsonString = '''
       {
         "id": 2,
         "title": "Azul",
@@ -73,17 +75,20 @@ void main() {
       }
       ''';
 
-      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-      final gameModel = GameModel.fromJson(jsonMap);
+        final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+        final gameModel = GameModel.fromJson(jsonMap);
 
-      expect(gameModel.rules, isNotNull);
-      expect(gameModel.rules?.videoUrl, '');
-      expect(gameModel.rules?.ruleCompleteUrl, '');
-      expect(gameModel.rules?.summaryRules, '');
-    });
+        expect(gameModel.rules, isNotNull);
+        expect(gameModel.rules?.videoUrl, '');
+        expect(gameModel.rules?.ruleCompleteUrl, '');
+        expect(gameModel.rules?.summaryRules, '');
+      },
+    );
 
-    test('should correctly deserialize game with null review fields providing defaults', () {
-      const jsonString = '''
+    test(
+      'should correctly deserialize game with null review fields providing defaults',
+      () {
+        const jsonString = '''
       {
         "id": 3,
         "title": "Catan",
@@ -107,17 +112,18 @@ void main() {
       }
       ''';
 
-      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-      final gameModel = GameModel.fromJson(jsonMap);
+        final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+        final gameModel = GameModel.fromJson(jsonMap);
 
-      expect(gameModel.reviewsList.length, 1);
-      expect(gameModel.reviewsList.first.userId, '');
-      expect(gameModel.reviewsList.first.rating, 0.0);
-      expect(gameModel.reviewsList.first.comment, '');
-      expect(gameModel.reviewsList.first.name, isNull);
-    });
+        expect(gameModel.reviewsList.length, 1);
+        expect(gameModel.reviewsList.first.userId, '');
+        expect(gameModel.reviewsList.first.rating, 0.0);
+        expect(gameModel.reviewsList.first.comment, '');
+        expect(gameModel.reviewsList.first.name, isNull);
+      },
+    );
 
-    test('should assign fallback owner ID when owner_id is null', () {
+    test('should return null owner ID when owner_id is null', () {
       const jsonString = '''
       {
         "id": 1,
@@ -138,8 +144,7 @@ void main() {
       final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
       final gameModel = GameModel.fromJson(jsonMap);
 
-      expect(gameModel.ownerId, isNotNull);
-      expect(gameModel.ownerId, 'owner-2'); // 1 % 3 = 1 -> fallbackOwners[1]
+      expect(gameModel.ownerId, isNull);
     });
   });
 }
