@@ -6,31 +6,56 @@ on:
     branches:
       - develop
       - main
+  schedule:
+    - cron: '0 0 * * 0' # Weekly run for security scans
 
 jobs:
-  flutter:
+  quality_gate:
+    name: Quality Gate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Setup Flutter using version from .fvmrc
+      # We use .fvmrc to dictate the version, but flutter-action reads pubspec 'environment' 
+      # OR we can manually parse it. The easiest reliable way with fvmrc is to just read it or use a simpler action.
+      # subosito/flutter-action supports `flutter-version-file` which points to `pubspec.yaml` usually.
+      # To support .fvmrc directly efficiently, we can use a jq command or allow the action to read it if supported.
+      # subosito/flutter-action supports .fvmrc via channel/version parsing if configured, 
+      # but standard practice is 'flutter-version' or 'glue' scripts.
+      # We will extract it for precision.
+      - name: Read Flutter Version from .fvmrc
+        id: fvm-config
+        run: |
+          FLUTTER_VERSION=$(grep -o '"flutter": *"[^"]*"' .fvmrc | cut -d'"' -f4)
+          echo "FLUTTER_VERSION=${FLUTTER_VERSION}" >> $GITHUB_ENV
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.38.1'  # Synced with .fvmrc
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
-
-      - name: Install dependencies
+      
+      # Prepare dependencies
+      - name: Install Dependencies
         run: flutter pub get
 
-      - name: Run code generation
-        run: dart run build_runner build --delete-conflicting-outputs
+      # Run the robust gate script
+      - name: Run Pre-PR Check
+        run: ./scripts/pre_pr.sh --ci
 
-      - name: Format
-        run: make format
+  security_scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    # Only run on PRs or schedule to save resources, or if meaningful changes happen.
+    if: github.event_name == 'pull_request' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Analyze
-        run: make analyze
-
-      - name: Test
-        run: make test
+      - name: Run OSV Scanner
+        uses: google/osv-scanner-action@v1.9.0
+        with:
+          # Scan the lockfile
+          lockfile: pubspec.lock
