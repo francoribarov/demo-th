@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
+import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/features/auth/data/models/auth_models.dart';
 import 'package:mobile_table_hopping/features/auth/data/models/user_model.dart';
@@ -13,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: AuthRepository)
 /// Default implementation of [AuthRepository].
-class AuthRepositoryImpl implements AuthRepository {
+class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   /// Creates an [AuthRepositoryImpl].
   AuthRepositoryImpl(this._remote, this._tokenStorage, this._prefs);
 
@@ -32,7 +33,7 @@ class AuthRepositoryImpl implements AuthRepository {
       LoginRequest(email: email, password: password),
     );
     await _persistSession(response);
-    return response.toEntity();
+    return response.toDomainModel();
   }
 
   @override
@@ -51,7 +52,7 @@ class AuthRepositoryImpl implements AuthRepository {
       ),
     );
     await _persistSession(response);
-    return response.toEntity();
+    return response.toDomainModel();
   }
 
   @override
@@ -66,7 +67,7 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     await _tokenStorage.saveTokens(response.accessToken, response.refreshToken);
-    return response.toEntity();
+    return response.toDomainModel();
   }
 
   @override
@@ -105,7 +106,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final json = jsonDecode(raw);
       if (json is! Map<String, dynamic>) return null;
-      return UserModel.fromJson(json).toEntity();
+      return UserModel.fromJson(json).toDomainModel();
     } on Exception catch (_) {
       return null;
     }

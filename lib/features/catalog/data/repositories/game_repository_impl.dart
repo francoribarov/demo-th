@@ -1,10 +1,12 @@
 // Public members in this file are self-explanatory within the data layer.
-// 
+//
 
 import 'package:injectable/injectable.dart';
 
+import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/features/catalog/data/datasources/category_remote_datasource.dart';
 import 'package:mobile_table_hopping/features/catalog/data/datasources/game_remote_datasource.dart';
+import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
 
 import 'package:mobile_table_hopping/features/catalog/domain/entities/filters.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
@@ -12,7 +14,7 @@ import 'package:mobile_table_hopping/features/catalog/domain/repositories/game_r
 
 /// Implementation of GameRepository using remote datasource
 @LazySingleton(as: GameRepository)
-class GameRepositoryImpl implements GameRepository {
+class GameRepositoryImpl extends BaseRepository implements GameRepository {
   GameRepositoryImpl(this._gameDatasource, this._categoryDatasource);
 
   final GameRemoteDatasource _gameDatasource;
@@ -64,7 +66,8 @@ class GameRepositoryImpl implements GameRepository {
     }
 
     String? difficultyParam;
-    if (filters?.difficulty != null && filters!.difficulty != DifficultyOption.any) {
+    if (filters?.difficulty != null &&
+        filters!.difficulty != DifficultyOption.any) {
       difficultyParam = filters.difficulty.label;
     }
 
@@ -99,25 +102,29 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<List<Game>> getGamesAvailableToday() async {
-    final models = await _gameDatasource.getGamesAvailableToday();
-    return models.map((m) => m.toEntity()).toList();
+    return executeDataSourceList<GameModel, Game>(
+      function: _gameDatasource.getGamesAvailableToday,
+    );
   }
 
   @override
   Future<List<Game>> getRecommendedGames(String gameId) async {
-    final response = await _gameDatasource.getGameRecommendations(gameId);
-    return response.map((m) => m.toEntity()).toList();
+    return executeDataSourceList<GameModel, Game>(
+      function: () => _gameDatasource.getGameRecommendations(gameId),
+    );
   }
 
   @override
   Future<List<GameCategory>> getCategories() async {
-    final models = await _categoryDatasource.getCategories();
-    return models.map((m) => m.toEntity()).toList();
+    return executeDataSourceList<GameCategoryModel, GameCategory>(
+      function: _categoryDatasource.getCategories,
+    );
   }
 
   @override
   Future<List<FilterShortcut>> getFilterShortcuts() async {
-    final models = await _categoryDatasource.getFilterShortcuts();
-    return models.map((m) => m.toEntity()).toList();
+    return executeDataSourceList<FilterShortcutModel, FilterShortcut>(
+      function: _categoryDatasource.getFilterShortcuts,
+    );
   }
 }
