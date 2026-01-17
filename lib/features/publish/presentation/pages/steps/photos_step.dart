@@ -27,35 +27,41 @@ class PhotosStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Agregá fotos del juego para que los inquilinos lo vean',
-          style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+          style: AppTypography.bodyMedium
+              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
         ),
         const SizedBox(height: 24),
 
         // Photo upload placeholder
         GestureDetector(
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Carga de imágenes próximamente')));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Carga de imágenes próximamente'),),);
           },
           child: Container(
             height: 200,
             decoration: BoxDecoration(
               color: AppColors.gameCream.withOpacityValue(0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.3)),
+              border:
+                  Border.all(color: AppColors.gameBrown.withOpacityValue(0.3)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.add_photo_alternate_outlined, size: 48, color: AppColors.gameBrown.withOpacityValue(0.5)),
+                Icon(Icons.add_photo_alternate_outlined,
+                    size: 48, color: AppColors.gameBrown.withOpacityValue(0.5),),
                 const SizedBox(height: 16),
                 Text(
                   'Tocá para agregar fotos',
-                  style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                  style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.gameBrown.withOpacityValue(0.7),),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'La primera foto será la portada',
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.5)),
+                  style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.gameBrown.withOpacityValue(0.5),),
                 ),
               ],
             ),
@@ -91,13 +97,16 @@ class PhotosStep extends StatelessWidget {
                     right: 4,
                     child: GestureDetector(
                       onTap: () {
-                        final newImages = List<String>.from(images)..removeAt(index);
+                        final newImages = List<String>.from(images)
+                          ..removeAt(index);
                         onImagesChanged(newImages);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
-                        child: const Icon(Icons.close, size: 16, color: Colors.white),
+                        decoration: const BoxDecoration(
+                            color: Colors.black54, shape: BoxShape.circle,),
+                        child: const Icon(Icons.close,
+                            size: 16, color: Colors.white,),
                       ),
                     ),
                   ),

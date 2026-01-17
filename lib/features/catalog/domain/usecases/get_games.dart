@@ -17,10 +17,6 @@ class GetGames {
     return _repository.getGames();
   }
 
-  Future<List<Game>> getAvailableToday() async {
-    return _repository.getGamesAvailableToday();
-  }
-
   /// Get a single game by ID
   Future<Game?> getById(String id) async {
     return _repository.getGameById(id);

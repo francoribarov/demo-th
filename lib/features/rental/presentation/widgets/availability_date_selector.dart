@@ -3,22 +3,22 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// A unified date range selector widget for game availability.
 /// Used in both Game Details and Rental Confirmation flows.
 class AvailabilityDateSelector extends StatelessWidget {
   /// Creates an availability date selector.
   const AvailabilityDateSelector({
-    required this.game,
+    required this.publication,
     required this.onRangeChanged,
     this.startDate,
     this.endDate,
     super.key,
   });
 
-  /// The game whose availability should be respected.
-  final Game game;
+  /// The publication whose availability should be respected.
+  final PublicationListing publication;
 
   /// Currently selected start date string.
   final String? startDate;
@@ -43,7 +43,9 @@ class AvailabilityDateSelector extends StatelessWidget {
     }
 
     final firstDate = today;
-    final lastDate = ranges.isNotEmpty ? ranges.last.$2 : today.add(const Duration(days: 365));
+    final lastDate = ranges.isNotEmpty
+        ? ranges.last.$2
+        : today.add(const Duration(days: 365));
 
     final picked = await showDateRangePicker(
       context: context,
@@ -79,11 +81,12 @@ class AvailabilityDateSelector extends StatelessWidget {
         return;
       }
 
-      if (!game.isAvailableFor(startStr, endStr)) {
+      if (!publication.isAvailableFor(startStr, endStr)) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('El rango seleccionado contiene días no disponibles.'),
+              content:
+                  Text('El rango seleccionado contiene días no disponibles.'),
               backgroundColor: AppColors.gameRust,
             ),
           );
@@ -96,7 +99,7 @@ class AvailabilityDateSelector extends StatelessWidget {
   }
 
   List<(DateTime, DateTime)> _normalizedRanges() {
-    final ranges = game.availability;
+    final ranges = publication.availability;
     if (ranges == null || ranges.isEmpty) return const [];
 
     return ranges
@@ -213,7 +216,9 @@ class _DateButton extends StatelessWidget {
                   child: Text(
                     value ?? 'Seleccionar',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: value != null ? AppColors.gameBrown : AppColors.gameBrown.withOpacityValue(0.5),
+                      color: value != null
+                          ? AppColors.gameBrown
+                          : AppColors.gameBrown.withOpacityValue(0.5),
                     ),
                   ),
                 ),

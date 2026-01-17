@@ -5,7 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/review_widgets.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_reviews_bloc.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart';
 
 /// Game reviews page matching GameReviews.tsx
 class GameReviewsPage extends StatefulWidget {
@@ -38,7 +38,8 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
+                onPressed: () =>
+                    context.popOrGo('/publications/${widget.gameId}'),
               ),
             ),
             body: Center(
@@ -51,7 +52,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
 
         // Calculate rating breakdown
         final ratingCounts = <int, int>{};
-        for (final review in game.reviewsList) {
+        for (final review in game.reviews) {
           final stars = review.rating.floor();
           ratingCounts[stars] = (ratingCounts[stars] ?? 0) + 1;
         }
@@ -60,7 +61,8 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
+              onPressed: () =>
+                  context.popOrGo('/games/${widget.gameId}'),
             ),
             title: Text('Reseñas de ${game.title}'),
           ),
@@ -88,7 +90,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           Row(
                             children: List.generate(5, (i) {
                               return Icon(
-                                i < game.rating.floor() ? Icons.star : Icons.star_border,
+                                i < game.rating.floor()
+                                    ? Icons.star
+                                    : Icons.star_border,
                                 color: AppColors.gameGold,
                                 size: 20,
                               );
@@ -110,9 +114,11 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           children: List.generate(5, (i) {
                             final stars = 5 - i;
                             final count = ratingCounts[stars] ?? 0;
-                            final percentage = game.reviewsList.isNotEmpty
-                                ? count / game.reviewsList.length
-                                : count / game.reviewsList.length.clamp(1, double.infinity);
+                            final percentage = game.reviews.isNotEmpty
+                                ? count / game.reviews.length
+                                : count /
+                                    game.reviews.length
+                                        .clamp(1, double.infinity);
                             return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,
@@ -138,8 +144,8 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                         label: 'Todas',
                         isSelected: state.filterRating == null,
                         onTap: () => context.read<GameReviewsBloc>().add(
-                          const GameReviewsEvent.filterRatingChanged(null),
-                        ),
+                              const GameReviewsEvent.filterRatingChanged(null),
+                            ),
                       ),
                       ...List.generate(5, (i) {
                         final stars = 5 - i;
@@ -147,8 +153,8 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           label: '$stars ⭐',
                           isSelected: state.filterRating == stars,
                           onTap: () => context.read<GameReviewsBloc>().add(
-                            GameReviewsEvent.filterRatingChanged(stars),
-                          ),
+                                GameReviewsEvent.filterRatingChanged(stars),
+                              ),
                         );
                       }),
                     ],
@@ -181,7 +187,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                 else
                   ...reviews.map(
                     (review) => ReviewCard(
-                      name: review.name ?? 'Anónimo',
+                      name: review.name,
                       rating: review.rating,
                       comment: review.comment,
                       dateOrRole: '', // Role removed
@@ -220,14 +226,18 @@ class _FilterChip extends StatelessWidget {
             color: isSelected ? AppColors.gameCream : AppColors.card,
             borderRadius: BorderRadius.circular(AppTheme.radius2xl),
             border: Border.all(
-              color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+              color: isSelected
+                  ? AppColors.gameRust
+                  : AppColors.gameBrown.withOpacityValue(0.2),
               width: isSelected ? 2 : 1,
             ),
           ),
           child: Text(
             label,
             style: AppTypography.labelMedium.copyWith(
-              color: isSelected ? AppColors.gameBrown : AppColors.gameBrown.withOpacityValue(0.7),
+              color: isSelected
+                  ? AppColors.gameBrown
+                  : AppColors.gameBrown.withOpacityValue(0.7),
             ),
           ),
         ),

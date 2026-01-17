@@ -77,7 +77,7 @@ class UserProfilePage extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/publication/$gameId'),
+              onPressed: () => context.popOrGo('/publications/$gameId'),
             ),
             title: const Text('Perfil del dueño'),
           ),

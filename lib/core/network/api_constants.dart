@@ -58,20 +58,20 @@ class ApiConstants {
   /// Logout endpoint.
   static const String logout = '$apiBasePath/auth/logout';
 
-  /// Games endpoints.
-  static const String games = '$apiBasePath/games';
+  /// Publications endpoints.
+  static const String publications = '$apiBasePath/publications';
 
-  /// Game detail endpoint.
-  static String gameById(dynamic id) => '$publications/$id';
+  /// Publication detail endpoint.
+  static String publicationById(dynamic id) => '$publications/$id';
 
-  /// Games available today endpoint.
-  static const String gamesAvailableToday = '$games/available-today';
+  /// Publications available today endpoint.
+  static const String publicationsAvailableToday = '$publications/available-today';
 
-  /// Game reviews endpoint.
-  static String gameReviews(dynamic id) => '$publications/$id/reviews';
+  /// Publication reviews endpoint.
+  static String publicationReviews(dynamic id) => '$publications/$id/reviews';
 
-  /// Game recommendations endpoint.
-  static String gameRecommendations(dynamic id) => '$games/$id/recommendations';
+  /// Publication recommendations endpoint.
+  static String publicationRecommendations(dynamic id) => '$publications/$id/recommendations';
 
   /// Categories endpoints.
   static const String categories = '$apiBasePath/categories';
@@ -85,8 +85,8 @@ class ApiConstants {
   /// Current user endpoint.
   static const String currentUser = '$users/me';
 
-  /// Publications endpoints.
-  static const String publications = '$apiBasePath/publications';
+  /// Games endpoints.
+  static const String games = '$apiBasePath/games';
 
   /// Rentals endpoints.
   static const String rentals = '$apiBasePath/rentals';

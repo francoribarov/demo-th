@@ -18,14 +18,14 @@ class DataStep extends StatelessWidget {
   /// Incremented when the form is reset to clear internal controller states.
   final int formVersion;
 
-  /// Current game ID.
-  final int gameId;
+  /// Current game ID (String UUID).
+  final String gameId;
 
   /// Current description value.
   final String description;
 
   /// Callback when game ID changes.
-  final void Function(int) onGameIdChanged;
+  final void Function(String) onGameIdChanged;
 
   /// Callback when description changes.
   final void Function(String) onDescriptionChanged;
@@ -39,15 +39,16 @@ class DataStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Contanos sobre el juego que querés publicar',
-          style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+          style: AppTypography.bodyMedium
+              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
         ),
         const SizedBox(height: 24),
 
         // Game Selector
         GameSelector(
-          selectedGameId: gameId.toString(), // Selector expects String? or int?
+          selectedGameId: gameId.isEmpty ? null : gameId,
           onGameSelected: (game) {
-            onGameIdChanged(game.catalogId);
+            onGameIdChanged(game.id);
             onDescriptionChanged(game.description);
           },
         ),

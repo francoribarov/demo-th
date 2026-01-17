@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_details_page.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
 
 /// Placeholder tests for game_details feature.
 

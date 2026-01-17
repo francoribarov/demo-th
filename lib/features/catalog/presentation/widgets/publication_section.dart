@@ -1,27 +1,27 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/presentation/widgets/game_card.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/features/catalog/presentation/widgets/publication_card.dart';
 
-/// Variant for game section layout
-enum GameSectionVariant {
-  /// Grid layout (vertical stack)
+/// Variant for publication section layout.
+enum PublicationSectionVariant {
+  /// Grid layout (vertical stack).
   grid,
 
-  /// Carousel layout (horizontal scroll)
+  /// Carousel layout (horizontal scroll).
   carousel,
 }
 
-/// A section displaying a group of games with a title and description.
-class GameSection extends StatelessWidget {
-  /// Creates a [GameSection].
-  const GameSection({
+/// A section displaying a group of publications with a title and description.
+class PublicationSection extends StatelessWidget {
+  /// Creates a [PublicationSection].
+  const PublicationSection({
     required this.title,
     required this.description,
-    required this.games,
+    required this.publications,
     required this.variant,
-    this.onGameTap,
+    this.onPublicationTap,
     this.onCategoryTap,
     super.key,
   });
@@ -32,21 +32,21 @@ class GameSection extends StatelessWidget {
   /// Description of the section.
   final String description;
 
-  /// List of games to display.
-  final List<Game> games;
+  /// List of publications to display.
+  final List<PublicationListing> publications;
 
   /// Layout variant (grid or carousel).
-  final GameSectionVariant variant;
+  final PublicationSectionVariant variant;
 
-  /// Callback when a game is tapped.
-  final void Function(Game)? onGameTap;
+  /// Callback when a publication is tapped.
+  final void Function(PublicationListing)? onPublicationTap;
 
-  /// Callback when a game category is tapped.
-  final void Function(Game)? onCategoryTap;
+  /// Callback when a publication category is tapped.
+  final void Function(PublicationListing)? onCategoryTap;
 
   @override
   Widget build(BuildContext context) {
-    if (games.isEmpty) return const SizedBox.shrink();
+    if (publications.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,21 +75,26 @@ class GameSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        if (variant == GameSectionVariant.carousel)
+        if (variant == PublicationSectionVariant.carousel)
           SizedBox(
-            height: 200,
+            height: 280, // Height for PublicationCardHorizontal or Vertical?
+            // Actually PublicationCardHorizontal is compact, but carousel usually implies full cards.
+            // Let's use horizontal scrolling row of *Vertical* cards for carousel,
+            // or modify PublicationCardHorizontal to be bigger.
+            // Based on design, carousels usually show vertical cards.
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: games.length,
+              itemCount: publications.length,
               separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
-                final game = games[index];
+                final publication = publications[index];
                 return SizedBox(
                   width: 280,
-                  child: GameCardHorizontal(
-                    game: game,
-                    onTap: () => onGameTap?.call(game),
+                  child: PublicationCard(
+                    publication: publication,
+                    onTap: () => onPublicationTap?.call(publication),
+                    onCategoryTap: () => onCategoryTap?.call(publication),
                   ),
                 );
               },
@@ -99,13 +104,13 @@ class GameSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              children: games.map((game) {
+              children: publications.map((publication) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
-                  child: GameCard(
-                    game: game,
-                    onTap: () => onGameTap?.call(game),
-                    onCategoryTap: () => onCategoryTap?.call(game),
+                  child: PublicationCard(
+                    publication: publication,
+                    onTap: () => onPublicationTap?.call(publication),
+                    onCategoryTap: () => onCategoryTap?.call(publication),
                   ),
                 );
               }).toList(),
@@ -115,4 +120,3 @@ class GameSection extends StatelessWidget {
     );
   }
 }
-*/

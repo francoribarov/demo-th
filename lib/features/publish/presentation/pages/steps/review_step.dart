@@ -18,7 +18,7 @@ class ReviewStep extends StatelessWidget {
   });
 
   /// The game ID.
-  final int gameId;
+  final String gameId;
 
   /// The game description.
   final String description;
@@ -37,7 +37,9 @@ class ReviewStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final conditionLabel = conditions.firstWhere((c) => c.$1 == condition, orElse: () => ('', condition, '')).$2;
+    final conditionLabel = conditions
+        .firstWhere((c) => c.$1 == condition, orElse: () => ('', condition, ''))
+        .$2;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +48,8 @@ class ReviewStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Revisá que todo esté correcto antes de publicar',
-          style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+          style: AppTypography.bodyMedium
+              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
         ),
         const SizedBox(height: 24),
 
@@ -56,7 +59,8 @@ class ReviewStep extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-            border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+            border:
+                Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +72,9 @@ class ReviewStep extends StatelessWidget {
                   color: AppColors.gameCream,
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
-                child: const Center(child: Icon(Icons.image, size: 48, color: AppColors.gameBrown)),
+                child: const Center(
+                    child: Icon(Icons.image,
+                        size: 48, color: AppColors.gameBrown,),),
               ),
               const SizedBox(height: 16),
 
@@ -92,9 +98,11 @@ class ReviewStep extends StatelessWidget {
                     children: [
                       Text(
                         'Precio',
-                        style: AppTypography.labelSmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
+                        style: AppTypography.labelSmall.copyWith(
+                            color: AppColors.gameBrown.withOpacityValue(0.6),),
                       ),
-                      Text(CurrencyFormatter.formatUYU(price), style: AppTypography.price),
+                      Text(CurrencyFormatter.formatUYU(price),
+                          style: AppTypography.price,),
                     ],
                   ),
                 ],

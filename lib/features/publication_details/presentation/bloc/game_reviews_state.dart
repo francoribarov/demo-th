@@ -1,6 +1,7 @@
 part of 'game_reviews_bloc.dart';
 
 @freezed
+
 /// State for [GameReviewsBloc].
 abstract class GameReviewsState with _$GameReviewsState {
   /// Creates a [GameReviewsState].
@@ -17,7 +18,7 @@ abstract class GameReviewsState with _$GameReviewsState {
     final game = this.game;
     if (game == null) return const [];
     final rating = filterRating;
-    if (rating == null) return game.reviewsList;
-    return game.reviewsList.where((r) => r.rating.floor() == rating).toList();
+    if (rating == null) return game.reviews;
+    return game.reviews.where((r) => r.rating.floor() == rating).toList();
   }
 }

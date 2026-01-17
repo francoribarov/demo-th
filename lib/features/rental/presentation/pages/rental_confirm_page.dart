@@ -10,19 +10,19 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/widgets/availability_date_selector.dart';
 
 /// Rental confirmation page matching RentalConfirm.tsx
 class RentalConfirmPage extends StatelessWidget {
   const RentalConfirmPage({
-    required this.gameId,
+    required this.publicationId,
     super.key,
     this.startDate,
     this.endDate,
   });
-  final String gameId;
+  final String publicationId;
   final String? startDate;
   final String? endDate;
 
@@ -30,7 +30,8 @@ class RentalConfirmPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (previous, current) =>
-          previous.snackbarMessage != current.snackbarMessage && current.snackbarMessage != null,
+          previous.snackbarMessage != current.snackbarMessage &&
+          current.snackbarMessage != null,
       listener: (context, state) {
         final message = state.snackbarMessage;
         if (message == null) return;
@@ -48,30 +49,32 @@ class RentalConfirmPage extends StatelessWidget {
           );
         }
 
-        final game = state.game;
-        if (game == null) {
+        final publication = state.publication;
+        if (publication == null) {
           return Scaffold(
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/publication/$gameId'),
+                onPressed: () =>
+                    context.popOrGo('/publications/$publicationId'),
               ),
             ),
             body: Center(
-              child: Text(state.errorMessage ?? 'Juego no encontrado'),
+              child: Text(state.errorMessage ?? 'Publicación no encontrada'),
             ),
           );
         }
 
         if (state.success) {
-          return _SuccessView(game: game, onBackHome: () => context.go('/'));
+          return _SuccessView(
+              publication: publication, onBackHome: () => context.go('/'));
         }
 
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/publication/$gameId'),
+              onPressed: () => context.popOrGo('/publications/$publicationId'),
             ),
             title: const Text('Confirmar alquiler'),
           ),
@@ -80,8 +83,8 @@ class RentalConfirmPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Game summary
-                _GameSummary(game: game),
+                // Publication summary
+                _PublicationSummary(publication: publication),
 
                 const SizedBox(height: 24),
 
@@ -89,15 +92,16 @@ class RentalConfirmPage extends StatelessWidget {
                 const _SectionTitle(title: 'FECHAS DE ALQUILER'),
                 const SizedBox(height: 12),
                 AvailabilityDateSelector(
-                  game: game,
+                  publication: publication,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  onRangeChanged: (start, end) => context.read<RentalBloc>().add(
-                    RentalEvent.dateRangeChanged(
-                      startDate: start,
-                      endDate: end,
-                    ),
-                  ),
+                  onRangeChanged: (start, end) =>
+                      context.read<RentalBloc>().add(
+                            RentalEvent.dateRangeChanged(
+                              startDate: start,
+                              endDate: end,
+                            ),
+                          ),
                 ),
 
                 const SizedBox(height: 24),
@@ -109,14 +113,15 @@ class RentalConfirmPage extends StatelessWidget {
                   isDelivery: state.isDelivery,
                   address: state.deliveryAddress,
                   comments: state.deliveryComments,
-                  onDeliveryChanged: ({required bool isDelivery}) =>
-                      context.read<RentalBloc>().add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
+                  onDeliveryChanged: ({required bool isDelivery}) => context
+                      .read<RentalBloc>()
+                      .add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
                   onAddressChanged: (value) => context.read<RentalBloc>().add(
-                    RentalEvent.deliveryAddressChanged(address: value),
-                  ),
+                        RentalEvent.deliveryAddressChanged(address: value),
+                      ),
                   onCommentsChanged: (value) => context.read<RentalBloc>().add(
-                    RentalEvent.deliveryCommentsChanged(comments: value),
-                  ),
+                        RentalEvent.deliveryCommentsChanged(comments: value),
+                      ),
                 ),
 
                 const SizedBox(height: 24),
@@ -127,8 +132,8 @@ class RentalConfirmPage extends StatelessWidget {
                 _FoodBundleSelector(
                   selectedBundles: state.selectedFoodBundles,
                   onBundlesChanged: (bundles) => context.read<RentalBloc>().add(
-                    RentalEvent.foodBundlesChanged(foodBundles: bundles),
-                  ),
+                        RentalEvent.foodBundlesChanged(foodBundles: bundles),
+                      ),
                 ),
 
                 const SizedBox(height: 24),
@@ -139,8 +144,8 @@ class RentalConfirmPage extends StatelessWidget {
                 _PaymentSelector(
                   selected: state.paymentMethod,
                   onChanged: (method) => context.read<RentalBloc>().add(
-                    RentalEvent.paymentMethodChanged(paymentMethod: method),
-                  ),
+                        RentalEvent.paymentMethodChanged(paymentMethod: method),
+                      ),
                 ),
 
                 const SizedBox(height: 24),
@@ -149,7 +154,7 @@ class RentalConfirmPage extends StatelessWidget {
                 _PriceBreakdown(
                   subtotal: state.subtotal,
                   days: state.rentalDays,
-                  pricePerDay: game.price,
+                  pricePerDay: publication.price,
                   serviceFee: state.serviceFee,
                   deliveryFee: state.deliveryFee,
                   foodTotal: state.foodTotal,
@@ -174,8 +179,8 @@ class RentalConfirmPage extends StatelessWidget {
                   onPressed: state.isSubmitting
                       ? null
                       : () => context.read<RentalBloc>().add(
-                          const RentalEvent.submitted(),
-                        ),
+                            const RentalEvent.submitted(),
+                          ),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 56),
                   ),
@@ -213,9 +218,9 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _GameSummary extends StatelessWidget {
-  const _GameSummary({required this.game});
-  final Game game;
+class _PublicationSummary extends StatelessWidget {
+  const _PublicationSummary({required this.publication});
+  final PublicationListing publication;
 
   @override
   Widget build(BuildContext context) {
@@ -230,12 +235,14 @@ class _GameSummary extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             child: CachedNetworkImage(
-              imageUrl: game.images.isNotEmpty ? game.images.first : '',
+              imageUrl: publication.heroImage,
               width: 80,
               height: 80,
               fit: BoxFit.cover,
-              placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
+              placeholder: (context, url) =>
+                  const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (context, url, error) =>
+                  const Icon(Icons.image_not_supported),
             ),
           ),
           const SizedBox(width: 16),
@@ -245,13 +252,13 @@ class _GameSummary extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  game.title,
+                  publication.title,
                   style: AppTypography.titleMedium,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
+                  publication.categoryName,
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.gameBrown.withOpacityValue(0.7),
                   ),
@@ -259,7 +266,7 @@ class _GameSummary extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${CurrencyFormatter.formatUYU(game.price)}/día',
+                  '${CurrencyFormatter.formatUYU(publication.price)}/día',
                   style: AppTypography.titleSmall.copyWith(
                     color: AppColors.gameRust,
                   ),
@@ -360,7 +367,9 @@ class _OptionButton extends StatelessWidget {
           color: isSelected ? AppColors.gameCream : AppColors.card,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+            color: isSelected
+                ? AppColors.gameRust
+                : AppColors.gameBrown.withOpacityValue(0.2),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -421,7 +430,9 @@ class _FoodBundleSelector extends StatelessWidget {
               color: isSelected ? AppColors.gameCream : AppColors.card,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               border: Border.all(
-                color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+                color: isSelected
+                    ? AppColors.gameRust
+                    : AppColors.gameBrown.withOpacityValue(0.2),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -447,7 +458,9 @@ class _FoodBundleSelector extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        bundle.$2.length > 3 ? bundle.$2.substring(3) : bundle.$2,
+                        bundle.$2.length > 3
+                            ? bundle.$2.substring(3)
+                            : bundle.$2,
                         style: AppTypography.titleSmall,
                       ),
                       Text(
@@ -499,7 +512,9 @@ class _PaymentSelector extends StatelessWidget {
               color: isSelected ? AppColors.gameCream : AppColors.card,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               border: Border.all(
-                color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+                color: isSelected
+                    ? AppColors.gameRust
+                    : AppColors.gameBrown.withOpacityValue(0.2),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -510,7 +525,8 @@ class _PaymentSelector extends StatelessWidget {
                 Expanded(
                   child: Text(method.$2, style: AppTypography.titleSmall),
                 ),
-                if (isSelected) const Icon(Icons.check_circle, color: AppColors.gameRust),
+                if (isSelected)
+                  const Icon(Icons.check_circle, color: AppColors.gameRust),
               ],
             ),
           ),
@@ -530,13 +546,13 @@ class _PriceBreakdown extends StatelessWidget {
     required this.foodTotal,
     required this.total,
   });
-  final int subtotal;
+  final num subtotal;
   final int days;
-  final int pricePerDay;
-  final int serviceFee;
-  final int deliveryFee;
-  final int foodTotal;
-  final int total;
+  final num pricePerDay;
+  final num serviceFee;
+  final num deliveryFee;
+  final num foodTotal;
+  final num total;
 
   @override
   Widget build(BuildContext context) {
@@ -550,7 +566,8 @@ class _PriceBreakdown extends StatelessWidget {
       child: Column(
         children: [
           _PriceRow(
-            label: '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
+            label:
+                '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
             value: subtotal,
           ),
           const SizedBox(height: 8),
@@ -583,7 +600,7 @@ class _PriceBreakdown extends StatelessWidget {
 class _PriceRow extends StatelessWidget {
   const _PriceRow({required this.label, required this.value});
   final String label;
-  final int value;
+  final num value;
 
   @override
   Widget build(BuildContext context) {
@@ -606,8 +623,8 @@ class _PriceRow extends StatelessWidget {
 }
 
 class _SuccessView extends StatelessWidget {
-  const _SuccessView({required this.game, required this.onBackHome});
-  final Game game;
+  const _SuccessView({required this.publication, required this.onBackHome});
+  final PublicationListing publication;
   final VoidCallback onBackHome;
 
   @override
@@ -640,7 +657,7 @@ class _SuccessView extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Tu alquiler de ${game.title} ha sido procesado exitosamente.',
+                'Tu alquiler de ${publication.title} ha sido procesado exitosamente.',
                 style: AppTypography.bodyLarge.copyWith(
                   color: AppColors.gameBrown.withOpacityValue(0.7),
                 ),

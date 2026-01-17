@@ -1,6 +1,7 @@
 part of 'publish_bloc.dart';
 
 @freezed
+
 /// Publish flow actions.
 abstract class PublishEvent with _$PublishEvent {
   /// Initializes the publish flow.
@@ -19,10 +20,11 @@ abstract class PublishEvent with _$PublishEvent {
   const factory PublishEvent.publishAnother() = _PublishAnother;
 
   /// Updates the game ID input.
-  const factory PublishEvent.gameIdChanged(int value) = _GameIdChanged;
+  const factory PublishEvent.gameIdChanged(String value) = _GameIdChanged;
 
   /// Updates the description input.
-  const factory PublishEvent.descriptionChanged(String value) = _DescriptionChanged;
+  const factory PublishEvent.descriptionChanged(String value) =
+      _DescriptionChanged;
 
   /// Updates the price input.
   const factory PublishEvent.priceChanged(int value) = _PriceChanged;
@@ -32,7 +34,4 @@ abstract class PublishEvent with _$PublishEvent {
 
   /// Updates the selected images.
   const factory PublishEvent.imagesChanged(List<String> value) = _ImagesChanged;
-
-  /// Updates delivery methods.
-  const factory PublishEvent.deliveryMethodsChanged(List<DeliveryMethod> value) = _DeliveryMethodsChanged;
 }

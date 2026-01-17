@@ -6,7 +6,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/widgets/empty_results_state.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/widgets/filters_bottom_sheet.dart';
-import 'package:mobile_table_hopping/features/catalog/presentation/widgets/game_card.dart';
+import 'package:mobile_table_hopping/features/catalog/presentation/widgets/publication_card.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/widgets/results_header.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/widgets/search_header.dart';
 
@@ -30,7 +30,7 @@ class ResultsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final noResults = state.filteredGames.isEmpty;
+    final noResults = state.filteredPublications.isEmpty;
 
     if (noResults) {
       return EmptyResultsState(
@@ -46,7 +46,7 @@ class ResultsView extends StatelessWidget {
         // Results header
         ResultsHeader(
           title: _resultsTitle,
-          count: state.filteredGames.length,
+          count: state.filteredPublications.length,
           hasDateFilter: state.hasDateFilter,
           filters: state.filters,
           sortOption: state.sortOption,
@@ -72,18 +72,18 @@ class ResultsView extends StatelessWidget {
                 childAspectRatio: 0.85,
                 mainAxisSpacing: 16,
               ),
-              itemCount: state.filteredGames.length,
+              itemCount: state.filteredPublications.length,
               itemBuilder: (context, index) {
-                final game = state.filteredGames[index];
-                return GameCard(
-                  game: game,
-                  highlightAvailability: state.hasDateFilter,
-                  startDate: state.startDate,
-                  endDate: state.endDate,
-                  onTap: () => context.goToGame(game.id),
+                final publication = state.filteredPublications[index];
+                return PublicationCard(
+                  publication: publication,
+                  onTap: () => context.goToPublication(publication.id),
                   onCategoryTap: () {
-                    if (game.categories.isNotEmpty) {
-                      context.read<CatalogBloc>().add(SelectCategory(game.categories.first.name));
+                    if (publication.game.categories.isNotEmpty) {
+                      context.read<CatalogBloc>().add(
+                            SelectCategory(
+                                publication.game.categories.first.name),
+                          );
                     }
                   },
                 );
@@ -103,8 +103,9 @@ class ResultsView extends StatelessWidget {
       initialEndDate: state.endDate,
       onSearch: (query, startDate, endDate) {
         context.read<CatalogBloc>().add(
-          SearchCatalog(query: query, startDate: startDate, endDate: endDate),
-        );
+              SearchCatalog(
+                  query: query, startDate: startDate, endDate: endDate),
+            );
       },
       onClear: () {
         context.read<CatalogBloc>().add(const ClearSearch());
@@ -118,7 +119,8 @@ class ResultsView extends StatelessWidget {
       initialFilters: state.filters,
       hasDateFilter: state.hasDateFilter,
       getPreviewCount: (filters) {
-        return state.filteredGames.length;
+        return state.filteredPublications
+            .length; // TODO: Implement filtering logic preview for publications
       },
     );
 

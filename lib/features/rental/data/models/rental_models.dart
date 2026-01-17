@@ -13,8 +13,8 @@ abstract class RentalCreateRequestModel with _$RentalCreateRequestModel {
     required String ownerId,
     required String startDate,
     required String endDate,
-    required int pricePerDay,
-    required int deposit,
+    required double pricePerDay,
+    required double deposit,
     required String deliveryMethod,
     required String paymentMethod,
     String? deliveryAddress,
@@ -32,11 +32,14 @@ abstract class RentalCreateRequestModel with _$RentalCreateRequestModel {
       deposit: draft.deposit,
       deliveryMethod: draft.isDelivery ? 'delivery' : 'pickup',
       paymentMethod: draft.paymentMethod,
-      deliveryAddress: draft.isDelivery && draft.deliveryAddress.isNotEmpty ? draft.deliveryAddress : null,
+      deliveryAddress: draft.isDelivery && draft.deliveryAddress.isNotEmpty
+          ? draft.deliveryAddress
+          : null,
       foodBundleIds: draft.foodBundleIds.isEmpty ? null : draft.foodBundleIds,
     );
   }
 
   /// Creates a [RentalCreateRequestModel] from JSON.
-  factory RentalCreateRequestModel.fromJson(Map<String, dynamic> json) => _$RentalCreateRequestModelFromJson(json);
+  factory RentalCreateRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$RentalCreateRequestModelFromJson(json);
 }

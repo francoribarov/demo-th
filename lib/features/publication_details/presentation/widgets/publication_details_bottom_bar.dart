@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// Bottom bar for the game details page with price and rent button.
-class GameDetailsBottomBar extends StatelessWidget {
-  /// Creates a [GameDetailsBottomBar].
-  const GameDetailsBottomBar({
-    required this.game,
+class PublicationDetailsBottomBar extends StatelessWidget {
+  /// Creates a [PublicationDetailsBottomBar].
+  const PublicationDetailsBottomBar({
+    required this.publication,
     required this.onRent,
     super.key,
   });
 
-  /// The game being displayed.
-  final Game game;
+  /// The publication being displayed.
+  final PublicationListing publication;
 
   /// Callback when the rent button is pressed.
   final VoidCallback onRent;
@@ -38,7 +38,7 @@ class GameDetailsBottomBar extends StatelessWidget {
       child: SafeArea(
         child: Row(
           children: [
-            GamePriceLabel(price: game.price),
+            GamePriceLabel(price: publication.price),
             const Spacer(),
             ElevatedButton(
               onPressed: onRent,

@@ -1,6 +1,7 @@
 part of 'rental_bloc.dart';
 
 @freezed
+
 /// Events for creating and submitting a rental draft.
 abstract class RentalEvent with _$RentalEvent {
   /// Loads the game and initializes dates for the rental flow.
@@ -9,11 +10,12 @@ abstract class RentalEvent with _$RentalEvent {
     String? startDate,
     String? endDate,
     String? ownerId,
-    int? deposit,
+    double? deposit,
   }) = _Started;
 
   /// Updates the rental start date.
-  const factory RentalEvent.startDateChanged({String? startDate}) = _StartDateChanged;
+  const factory RentalEvent.startDateChanged({String? startDate}) =
+      _StartDateChanged;
 
   /// Updates the rental end date.
   const factory RentalEvent.endDateChanged({String? endDate}) = _EndDateChanged;
@@ -25,19 +27,24 @@ abstract class RentalEvent with _$RentalEvent {
   }) = _DateRangeChanged;
 
   /// Toggles delivery for the current rental draft.
-  const factory RentalEvent.deliveryChanged({required bool isDelivery}) = _DeliveryChanged;
+  const factory RentalEvent.deliveryChanged({required bool isDelivery}) =
+      _DeliveryChanged;
 
   /// Updates the delivery address.
-  const factory RentalEvent.deliveryAddressChanged({required String address}) = _DeliveryAddressChanged;
+  const factory RentalEvent.deliveryAddressChanged({required String address}) =
+      _DeliveryAddressChanged;
 
   /// Updates delivery comments/notes.
-  const factory RentalEvent.deliveryCommentsChanged({required String comments}) = _DeliveryCommentsChanged;
+  const factory RentalEvent.deliveryCommentsChanged(
+      {required String comments}) = _DeliveryCommentsChanged;
 
   /// Updates the selected payment method.
-  const factory RentalEvent.paymentMethodChanged({required String paymentMethod}) = _PaymentMethodChanged;
+  const factory RentalEvent.paymentMethodChanged(
+      {required String paymentMethod}) = _PaymentMethodChanged;
 
   /// Updates the selected food bundle identifiers.
-  const factory RentalEvent.foodBundlesChanged({required List<String> foodBundles}) = _FoodBundlesChanged;
+  const factory RentalEvent.foodBundlesChanged(
+      {required List<String> foodBundles}) = _FoodBundlesChanged;
 
   /// Submits the current rental draft.
   const factory RentalEvent.submitted() = _Submitted;

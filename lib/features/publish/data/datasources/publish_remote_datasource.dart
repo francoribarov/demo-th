@@ -8,10 +8,12 @@ import 'package:mobile_table_hopping/features/publish/data/models/publication_mo
 // ignore: one_member_abstracts
 abstract class PublishRemoteDatasource {
   /// Creates a publication on the backend.
-  Future<PublicationModel> createPublication(PublicationCreateRequestModel request);
+  Future<PublicationModel> createPublication(
+      PublicationCreateRequestModel request,);
 }
 
 @LazySingleton(as: PublishRemoteDatasource)
+
 /// Remote datasource implementation using Dio.
 class PublishRemoteDatasourceImpl implements PublishRemoteDatasource {
   /// Creates a datasource backed by the shared Dio client.
@@ -19,7 +21,8 @@ class PublishRemoteDatasourceImpl implements PublishRemoteDatasource {
   final DioClient _dioClient;
 
   @override
-  Future<PublicationModel> createPublication(PublicationCreateRequestModel request) async {
+  Future<PublicationModel> createPublication(
+      PublicationCreateRequestModel request,) async {
     try {
       final response = await _dioClient.post<Map<String, dynamic>>(
         ApiConstants.publications,

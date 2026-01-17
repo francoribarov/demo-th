@@ -21,7 +21,9 @@ sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
     @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
     UserAddressModel? address,
     @JsonKey(name: 'delivery_zone') List<String>? deliveryZone,
-    @JsonKey(name: 'preferences') @Default([]) List<GameCategoryModel> preferences,
+    @JsonKey(name: 'preferences')
+    @Default([])
+    List<GameCategoryModel> preferences,
     String? location,
     @JsonKey(name: 'response_time') String? responseTime,
     @JsonKey(name: 'member_since') DateTime? memberSince,
@@ -35,51 +37,57 @@ sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
   const UserModel._();
 
   /// Creates a [UserModel] from JSON.
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 
   /// Creates a [UserModel] from a domain [User] entity.
   factory UserModel.fromEntity(User entity) => UserModel(
-    id: entity.id,
-    email: entity.email,
-    username: entity.username,
-    imageUrl: entity.imageUrl,
-    dateOfBirth: entity.dateOfBirth,
-    address: entity.address != null ? UserAddressModel.fromEntity(entity.address!) : null,
-    deliveryZone: entity.deliveryZone,
-    preferences: entity.preferences.map(GameCategoryModel.fromEntity).toList(),
-    location: entity.location,
-    responseTime: entity.responseTime,
-    memberSince: entity.memberSince,
-    completedRentals: entity.completedRentals,
-    rating: entity.rating,
-    totalReviews: entity.totalReviews,
-    isActive: entity.isActive,
-    createdAt: entity.createdAt,
-  );
+        id: entity.id,
+        email: entity.email,
+        username: entity.username,
+        imageUrl: entity.imageUrl,
+        dateOfBirth: entity.dateOfBirth,
+        address: entity.address != null
+            ? UserAddressModel.fromEntity(entity.address!)
+            : null,
+        deliveryZone: entity.deliveryZone,
+        preferences:
+            entity.preferences.map(GameCategoryModel.fromEntity).toList(),
+        location: entity.location,
+        responseTime: entity.responseTime,
+        memberSince: entity.memberSince,
+        completedRentals: entity.completedRentals,
+        rating: entity.rating,
+        totalReviews: entity.totalReviews,
+        isActive: entity.isActive,
+        createdAt: entity.createdAt,
+      );
 
   @override
   User toDomainModel() => User(
-    id: id,
-    email: email,
-    username: username,
-    imageUrl: imageUrl,
-    dateOfBirth: dateOfBirth,
-    address: address?.toDomainModel(),
-    deliveryZone: deliveryZone,
-    preferences: preferences.map((p) => p.toDomainModel()).toList(),
-    location: location,
-    responseTime: responseTime,
-    memberSince: memberSince,
-    completedRentals: completedRentals,
-    rating: rating,
-    totalReviews: totalReviews,
-    isActive: isActive,
-    createdAt: createdAt,
-  );
+        id: id,
+        email: email,
+        username: username,
+        imageUrl: imageUrl,
+        dateOfBirth: dateOfBirth,
+        address: address?.toDomainModel(),
+        deliveryZone: deliveryZone,
+        preferences: preferences.map((p) => p.toDomainModel()).toList(),
+        location: location,
+        responseTime: responseTime,
+        memberSince: memberSince,
+        completedRentals: completedRentals,
+        rating: rating,
+        totalReviews: totalReviews,
+        isActive: isActive,
+        createdAt: createdAt,
+      );
 }
 
 @freezed
-sealed class UserAddressModel with _$UserAddressModel implements BaseDtoResponse<UserAddress> {
+sealed class UserAddressModel
+    with _$UserAddressModel
+    implements BaseDtoResponse<UserAddress> {
   const factory UserAddressModel({
     required String address,
     @JsonKey(name: 'address_name') required String addressName,
@@ -89,20 +97,21 @@ sealed class UserAddressModel with _$UserAddressModel implements BaseDtoResponse
 
   const UserAddressModel._();
 
-  factory UserAddressModel.fromJson(Map<String, dynamic> json) => _$UserAddressModelFromJson(json);
+  factory UserAddressModel.fromJson(Map<String, dynamic> json) =>
+      _$UserAddressModelFromJson(json);
 
   factory UserAddressModel.fromEntity(UserAddress entity) => UserAddressModel(
-    address: entity.address,
-    addressName: entity.addressName,
-    number: entity.number,
-    additionalNotes: entity.additionalNotes,
-  );
+        address: entity.address,
+        addressName: entity.addressName,
+        number: entity.number,
+        additionalNotes: entity.additionalNotes,
+      );
 
   @override
   UserAddress toDomainModel() => UserAddress(
-    address: address,
-    addressName: addressName,
-    number: number,
-    additionalNotes: additionalNotes,
-  );
+        address: address,
+        addressName: addressName,
+        number: number,
+        additionalNotes: additionalNotes,
+      );
 }

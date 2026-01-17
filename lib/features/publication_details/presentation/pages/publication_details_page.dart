@@ -6,26 +6,27 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_details_bloc.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/widgets/availability_checker.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/widgets/game_detail_row.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/widgets/game_details_bottom_bar.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/widgets/game_recommendation_card.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/widgets/game_review_card.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/availability_checker.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_detail_row.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_bottom_bar.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/game_recommendation_card.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/game_review_card.dart';
 
 /// Game details page matching ProductDetail.tsx
-class GameDetailsPage extends StatefulWidget {
-  /// Creates a [GameDetailsPage] for the provided game id.
-  const GameDetailsPage({required this.gameId, super.key});
+class PublicationDetailsPage extends StatefulWidget {
+  /// Creates a [PublicationDetailsPage] for the provided publication id.
+  const PublicationDetailsPage({required this.publicationId, super.key});
 
-  /// Game id used to load the game details.
-  final String gameId;
+  /// Publication id used to load the details.
+  final String publicationId;
 
   @override
-  State<GameDetailsPage> createState() => _GameDetailsPageState();
+  State<PublicationDetailsPage> createState() => _PublicationDetailsPageState();
 }
 
-class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProviderStateMixin {
+class _PublicationDetailsPageState extends State<PublicationDetailsPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -42,7 +43,7 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GameDetailsBloc, GameDetailsState>(
+    return BlocBuilder<PublicationDetailsBloc, PublicationDetailsState>(
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
@@ -52,8 +53,10 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
           );
         }
 
-        final game = state.game;
-        if (game == null) {
+        final publication = state.publication;
+        final gameDetail = state.gameDetail;
+
+        if (publication == null || gameDetail == null) {
           return Scaffold(
             appBar: AppBar(
               leading: IconButton(
@@ -110,13 +113,17 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        state.isWishlisted ? Icons.favorite : Icons.favorite_border,
-                        color: state.isWishlisted ? Colors.red : AppColors.gameBrown,
+                        state.isWishlisted
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: state.isWishlisted
+                            ? Colors.red
+                            : AppColors.gameBrown,
                       ),
                     ),
-                    onPressed: () => context.read<GameDetailsBloc>().add(
-                      const GameDetailsEvent.toggleWishlist(),
-                    ),
+                    onPressed: () => context.read<PublicationDetailsBloc>().add(
+                          const PublicationDetailsEvent.toggleWishlist(),
+                        ),
                   ),
                   IconButton(
                     icon: Container(
@@ -144,9 +151,10 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                     fit: StackFit.expand,
                     children: [
                       CachedNetworkImage(
-                        imageUrl: game.images.isNotEmpty ? game.images.first : '',
+                        imageUrl: publication.heroImage,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
+                        placeholder: (context, url) =>
+                            const ColoredBox(color: AppColors.gameCream),
                         errorWidget: (context, url, error) => const ColoredBox(
                           color: AppColors.gameCream,
                           child: Icon(Icons.image_not_supported),
@@ -199,7 +207,8 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                             children: [
                               // Category and rating
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.symmetric(
@@ -213,7 +222,7 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                       ),
                                     ),
                                     child: Text(
-                                      game.categories.isNotEmpty ? game.categories.first.name : 'Varios',
+                                      publication.categoryName,
                                       style: AppTypography.categoryChip,
                                     ),
                                   ),
@@ -228,12 +237,13 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                         AppTheme.radius2xl,
                                       ),
                                       border: Border.all(
-                                        color: AppColors.gameBrown.withOpacityValue(0.12),
+                                        color: AppColors.gameBrown
+                                            .withOpacityValue(0.12),
                                       ),
                                     ),
                                     child: GameRatingBadge(
-                                      rating: game.rating,
-                                      reviewCount: game.reviewsCount,
+                                      rating: gameDetail.rating,
+                                      reviewCount: gameDetail.reviewsCount,
                                     ),
                                   ),
                                 ],
@@ -243,7 +253,7 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
 
                               // Title
                               Text(
-                                game.title,
+                                publication.title,
                                 style: AppTypography.displaySmall,
                               ),
 
@@ -251,7 +261,8 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
 
                               // Owner card
                               GestureDetector(
-                                onTap: () => context.goToGameOwner(widget.gameId),
+                                onTap: () =>
+                                    context.goToGameOwner(widget.publicationId),
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
@@ -260,7 +271,8 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                       AppTheme.radiusLg,
                                     ),
                                     border: Border.all(
-                                      color: AppColors.gameBrown.withOpacityValue(0.08),
+                                      color: AppColors.gameBrown
+                                          .withOpacityValue(0.08),
                                     ),
                                     boxShadow: [
                                       BoxShadow(
@@ -279,13 +291,15 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                         backgroundColor: AppColors.gameBrown,
                                         child: Text(
                                           'M',
-                                          style: AppTypography.titleMedium.copyWith(color: Colors.white),
+                                          style: AppTypography.titleMedium
+                                              .copyWith(color: Colors.white),
                                         ),
                                       ),
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               'Martín R.',
@@ -293,8 +307,10 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                             ),
                                             Text(
                                               'Montevideo • Responde en menos de 1h',
-                                              style: AppTypography.bodySmall.copyWith(
-                                                color: AppColors.gameBrown.withOpacityValue(0.7),
+                                              style: AppTypography.bodySmall
+                                                  .copyWith(
+                                                color: AppColors.gameBrown
+                                                    .withOpacityValue(0.7),
                                               ),
                                             ),
                                           ],
@@ -332,7 +348,8 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                     horizontal: 10,
                                   ),
                                   labelStyle: AppTypography.labelLarge,
-                                  unselectedLabelStyle: AppTypography.labelLarge,
+                                  unselectedLabelStyle:
+                                      AppTypography.labelLarge,
                                   labelColor: Colors.white,
                                   unselectedLabelColor: AppColors.gameBrown,
                                   dividerColor: Colors.transparent,
@@ -343,7 +360,8 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.gameRust.withOpacityValue(
+                                        color:
+                                            AppColors.gameRust.withOpacityValue(
                                           0.35,
                                         ),
                                         blurRadius: 12,
@@ -386,7 +404,7 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      game.description,
+                                      gameDetail.description,
                                       style: AppTypography.bodyLarge,
                                     ),
 
@@ -401,11 +419,13 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                           AppTheme.radiusLg,
                                         ),
                                         border: Border.all(
-                                          color: AppColors.gameBrown.withOpacityValue(0.1),
+                                          color: AppColors.gameBrown
+                                              .withOpacityValue(0.1),
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacityValue(0.04),
+                                            color: Colors.black
+                                                .withOpacityValue(0.04),
                                             blurRadius: 10,
                                             offset: const Offset(0, 4),
                                           ),
@@ -416,19 +436,19 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                           GameDetailRow(
                                             icon: Icons.timer_outlined,
                                             label: 'Duración',
-                                            value: '${game.duration} min',
+                                            value: '${gameDetail.duration} min',
                                           ),
                                           const Divider(height: 24),
                                           GameDetailRow(
                                             icon: Icons.people_outline,
                                             label: 'Jugadores',
-                                            value: game.players,
+                                            value: gameDetail.players,
                                           ),
                                           const Divider(height: 24),
                                           GameDetailRow(
                                             icon: Icons.psychology_outlined,
                                             label: 'Dificultad',
-                                            value: game.difficulty,
+                                            value: gameDetail.difficulty,
                                           ),
                                         ],
                                       ),
@@ -439,7 +459,7 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                     // Rules link
                                     OutlinedButton.icon(
                                       onPressed: () => context.goToGameRules(
-                                        widget.gameId,
+                                        widget.publicationId,
                                       ),
                                       icon: const Icon(
                                         Icons.menu_book_outlined,
@@ -459,19 +479,25 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
 
                                     // Availability check
                                     AvailabilityChecker(
-                                      game: game,
+                                      publication: publication,
                                       startDate: state.checkStartDate,
                                       endDate: state.checkEndDate,
                                       result: state.availabilityResult,
-                                      onRangeSelected: (start, end) => context.read<GameDetailsBloc>().add(
-                                        GameDetailsEvent.checkDateRangeChanged(
-                                          start,
-                                          end,
-                                        ),
-                                      ),
-                                      onCheck: () => context.read<GameDetailsBloc>().add(
-                                        const GameDetailsEvent.checkAvailabilityPressed(),
-                                      ),
+                                      onRangeSelected: (start, end) => context
+                                          .read<PublicationDetailsBloc>()
+                                          .add(
+                                            PublicationDetailsEvent
+                                                .checkDateRangeChanged(
+                                              "start",
+                                              "end",
+                                            ),
+                                          ),
+                                      onCheck: () => context
+                                          .read<PublicationDetailsBloc>()
+                                          .add(
+                                            const PublicationDetailsEvent
+                                                .checkAvailabilityPressed(),
+                                          ),
                                     ),
 
                                     const SizedBox(height: 32),
@@ -487,13 +513,17 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                         height: 200,
                                         child: ListView.separated(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: state.recommendations.length,
-                                          separatorBuilder: (_, _) => const SizedBox(width: 12),
+                                          itemCount:
+                                              state.recommendations.length,
+                                          separatorBuilder: (_, __) =>
+                                              const SizedBox(width: 12),
                                           itemBuilder: (context, index) {
-                                            final rec = state.recommendations[index];
+                                            final rec =
+                                                state.recommendations[index];
                                             return GameRecommendationCard(
-                                              game: rec,
-                                              onTap: () => context.goToGame(
+                                              publication: rec,
+                                              onTap: () =>
+                                                  context.goToPublication(
                                                 rec.id,
                                               ),
                                             );
@@ -524,22 +554,30 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                           AppTheme.radiusLg,
                                         ),
                                         border: Border.all(
-                                          color: AppColors.gameBrown.withOpacityValue(0.08),
+                                          color: AppColors.gameBrown
+                                              .withOpacityValue(0.08),
                                         ),
                                       ),
                                       child: Row(
                                         children: [
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                game.rating.toStringAsFixed(1),
-                                                style: AppTypography.displayMedium,
+                                                gameDetail.rating
+                                                    .toStringAsFixed(1),
+                                                style:
+                                                    AppTypography.displayMedium,
                                               ),
                                               Row(
                                                 children: List.generate(5, (i) {
                                                   return Icon(
-                                                    i < game.rating.floor() ? Icons.star : Icons.star_border,
+                                                    i <
+                                                            gameDetail.rating
+                                                                .floor()
+                                                        ? Icons.star
+                                                        : Icons.star_border,
                                                     color: AppColors.gameGold,
                                                     size: 16,
                                                   );
@@ -547,9 +585,11 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                '${game.reviewsCount} reseñas',
-                                                style: AppTypography.bodySmall.copyWith(
-                                                  color: AppColors.gameBrown.withOpacityValue(
+                                                '${gameDetail.reviewsCount} reseñas',
+                                                style: AppTypography.bodySmall
+                                                    .copyWith(
+                                                  color: AppColors.gameBrown
+                                                      .withOpacityValue(
                                                     0.7,
                                                   ),
                                                 ),
@@ -563,14 +603,14 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
                                     const SizedBox(height: 24),
 
                                     // Reviews list
-                                    ...game.reviewsList.map((review) {
+                                    ...gameDetail.reviews.map((review) {
                                       return GameReviewCard(review: review);
                                     }),
 
                                     // See all reviews
                                     OutlinedButton(
                                       onPressed: () => context.goToGameReviews(
-                                        widget.gameId,
+                                        widget.publicationId,
                                       ),
                                       style: OutlinedButton.styleFrom(
                                         minimumSize: const Size(
@@ -597,14 +637,14 @@ class _GameDetailsPageState extends State<GameDetailsPage> with SingleTickerProv
               ),
             ],
           ),
-          bottomNavigationBar: GameDetailsBottomBar(
-            game: game,
+          bottomNavigationBar: PublicationDetailsBottomBar(
+            publication: publication,
             onRent: () => context.goToRental(
-              widget.gameId,
+              widget.publicationId,
               startDate: state.checkStartDate,
               endDate: state.checkEndDate,
-              ownerId: game.ownerId,
-              deposit: game.deposit,
+              ownerId: publication.ownerId,
+              deposit: publication.deposit,
             ),
           ),
         );

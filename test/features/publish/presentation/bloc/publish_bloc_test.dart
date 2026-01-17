@@ -1,18 +1,42 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
+import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockCreatePublication extends Mock implements CreatePublication {}
 
+class MockAuthBloc extends Mock implements AuthBloc {}
+
 void main() {
   late MockCreatePublication mockCreatePublication;
+  late MockAuthBloc mockAuthBloc;
   late PublishBloc publishBloc;
 
   setUp(() {
     mockCreatePublication = MockCreatePublication();
-    publishBloc = PublishBloc(createPublication: mockCreatePublication);
+    mockAuthBloc = MockAuthBloc();
+
+    // Mock authenticated state
+    when(() => mockAuthBloc.state).thenReturn(
+      AuthState(
+        status: AuthStatus.authenticated,
+        session: AuthSession(
+          tokens: const AuthTokens(accessToken: 'test', refreshToken: 'test'),
+          user: const User(
+              id: 'user-123', email: 'test@test.com', username: 'testuser'),
+        ),
+      ),
+    );
+
+    publishBloc = PublishBloc(
+      createPublication: mockCreatePublication,
+      authBloc: mockAuthBloc,
+    );
   });
 
   tearDown(() async {
@@ -27,9 +51,10 @@ void main() {
     blocTest<PublishBloc, PublishState>(
       'updates gameId and canProceed status',
       build: () => publishBloc,
-      act: (bloc) => bloc.add(const PublishEvent.gameIdChanged(123)),
+      act: (bloc) =>
+          bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
       expect: () => [
-        const PublishState(gameId: 123),
+        const PublishState(gameId: 'game-uuid-123'),
       ],
       verify: (bloc) {
         expect(bloc.state.canProceed, false); // No description/price yet
@@ -41,14 +66,15 @@ void main() {
       build: () => publishBloc,
       act: (bloc) {
         bloc
-          ..add(const PublishEvent.gameIdChanged(123))
-          ..add(const PublishEvent.descriptionChanged('A very long and descriptive text for the game.'))
+          ..add(const PublishEvent.gameIdChanged('game-uuid-123'))
+          ..add(const PublishEvent.descriptionChanged(
+              'A very long and descriptive text for the game.'))
           ..add(const PublishEvent.priceChanged(100));
       },
       skip: 2,
       expect: () => [
         const PublishState(
-          gameId: 123,
+          gameId: 'game-uuid-123',
           description: 'A very long and descriptive text for the game.',
           price: 100,
         ),

@@ -1,4 +1,4 @@
-// UI widgets are documented at a higher level; omit per-member docs.
+/*// UI widgets are documented at a higher level; omit per-member docs.
 //
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,12 +8,11 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
-/// Game card widget matching the Vite.js prototype GameCard component
-class GameCard extends StatelessWidget {
-  const GameCard({
-    required this.game,
+class PublicationCard extends StatelessWidget {
+  const PublicationCard({
+    required this.publication,
     this.highlightAvailability = false,
     this.startDate,
     this.endDate,
@@ -22,7 +21,7 @@ class GameCard extends StatelessWidget {
     super.key,
   });
 
-  final Game game;
+  final Publication publication;
   final bool highlightAvailability;
   final String? startDate;
   final String? endDate;
@@ -32,9 +31,9 @@ class GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showRangeMessage = highlightAvailability && startDate != null && endDate != null;
-    final availableForRange = showRangeMessage ? game.isAvailableFor(startDate, endDate) : null;
+    final availableForRange = showRangeMessage ? publication.isAvailableFor(startDate, endDate) : null;
     final isAvailableForRange = availableForRange ?? false;
-    final rangeInfo = game.getAvailabilityLabel(searchStart: startDate, searchEnd: endDate);
+    final rangeInfo = publication.getAvailabilityLabel(searchStart: startDate, searchEnd: endDate);
 
     return GestureDetector(
       onTap: onTap,
@@ -317,3 +316,4 @@ class GameCardHorizontal extends StatelessWidget {
     );
   }
 }
+*/

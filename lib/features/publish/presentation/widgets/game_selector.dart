@@ -55,7 +55,9 @@ class _GameSelectorState extends State<GameSelector> {
       create: (_) => getIt<CatalogBloc>()..add(const CatalogEvent.loadGames()),
       child: BlocBuilder<CatalogBloc, CatalogState>(
         builder: (context, state) {
-          final selectedGame = state.allGames.where((g) => g.id == widget.selectedGameId).firstOrNull;
+          final selectedGame = state.allGames
+              .where((g) => g.id == widget.selectedGameId)
+              .firstOrNull;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +66,9 @@ class _GameSelectorState extends State<GameSelector> {
                 _SelectedGameCard(
                   game: selectedGame,
                   onClear: () {
-                    context.read<CatalogBloc>().add(const CatalogEvent.clearSearch());
+                    context
+                        .read<CatalogBloc>()
+                        .add(const CatalogEvent.clearSearch());
                     _searchController.clear();
                     // We can't clear the parent state easily without a clear callback or passing null,
                     // but the parent expects a Game object.
@@ -86,7 +90,6 @@ class _GameSelectorState extends State<GameSelector> {
                 ),
                 const SizedBox(height: 16),
               ],
-
               if (selectedGame == null || _showResults)
                 Column(
                   children: [
@@ -102,25 +105,30 @@ class _GameSelectorState extends State<GameSelector> {
                                 icon: const Icon(Icons.clear),
                                 onPressed: () {
                                   _searchController.clear();
-                                  context.read<CatalogBloc>().add(const CatalogEvent.search(query: ''));
+                                  context.read<CatalogBloc>().add(
+                                        const CatalogEvent.search(query: ''),
+                                      );
                                 },
                               )
                             : null,
                       ),
                       onChanged: (value) {
-                        context.read<CatalogBloc>().add(CatalogEvent.search(query: value));
+                        context
+                            .read<CatalogBloc>()
+                            .add(CatalogEvent.search(query: value));
                         setState(() {
                           _showResults = true;
                         });
                       },
                     ),
-                    if (_showResults && state.filteredGames.isNotEmpty)
+                    if (_showResults && state.allGames.isNotEmpty)
                       Container(
                         constraints: const BoxConstraints(maxHeight: 300),
                         margin: const EdgeInsets.only(top: 8),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.radiusMd),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacityValue(0.1),
@@ -131,27 +139,37 @@ class _GameSelectorState extends State<GameSelector> {
                         ),
                         child: ListView.separated(
                           shrinkWrap: true,
-                          itemCount: state.filteredGames.length,
-                          separatorBuilder: (_, sepIndex) => const Divider(height: 1),
+                          itemCount: state.allGames.length,
+                          separatorBuilder: (_, sepIndex) =>
+                              const Divider(height: 1),
                           itemBuilder: (context, index) {
-                            final game = state.filteredGames[index];
+                            final game = state.allGames[index];
                             return ListTile(
                               leading: ClipRRect(
                                 borderRadius: BorderRadius.circular(4),
                                 child: CachedNetworkImage(
-                                  imageUrl: game.images.isNotEmpty ? game.images.first : '',
+                                  imageUrl: game.images.isNotEmpty
+                                      ? game.images.first
+                                      : '',
                                   width: 40,
                                   height: 40,
                                   fit: BoxFit.cover,
-                                  placeholder: (_, url) => const ColoredBox(color: AppColors.gameCream),
-                                  errorWidget: (_, url, error) => const Icon(Icons.image_not_supported),
+                                  placeholder: (_, url) => const ColoredBox(
+                                    color: AppColors.gameCream,
+                                  ),
+                                  errorWidget: (_, url, error) =>
+                                      const Icon(Icons.image_not_supported),
                                 ),
                               ),
-                              title: Text(game.title, style: AppTypography.bodyMedium),
+                              title: Text(
+                                game.title,
+                                style: AppTypography.bodyMedium,
+                              ),
                               subtitle: Text(
                                 '${game.duration} min • ${game.players}',
                                 style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.gameBrown.withOpacityValue(0.7),
+                                  color:
+                                      AppColors.gameBrown.withOpacityValue(0.7),
                                 ),
                               ),
                               onTap: () {
@@ -177,7 +195,11 @@ class _GameSelectorState extends State<GameSelector> {
 }
 
 class _SelectedGameCard extends StatelessWidget {
-  const _SelectedGameCard({required this.game, required this.onClear, required this.onChange});
+  const _SelectedGameCard({
+    required this.game,
+    required this.onClear,
+    required this.onChange,
+  });
 
   final Game game;
   final VoidCallback onClear;
@@ -201,8 +223,10 @@ class _SelectedGameCard extends StatelessWidget {
               width: 60,
               height: 60,
               fit: BoxFit.cover,
-              placeholder: (_, url) => const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (_, url, error) => const Icon(Icons.image_not_supported),
+              placeholder: (_, url) =>
+                  const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (_, url, error) =>
+                  const Icon(Icons.image_not_supported),
             ),
           ),
           const SizedBox(width: 12),
@@ -213,7 +237,8 @@ class _SelectedGameCard extends StatelessWidget {
                 Text(game.title, style: AppTypography.titleMedium),
                 Text(
                   'Juego seleccionado',
-                  style: AppTypography.labelSmall.copyWith(color: AppColors.gameRust),
+                  style: AppTypography.labelSmall
+                      .copyWith(color: AppColors.gameRust),
                 ),
               ],
             ),

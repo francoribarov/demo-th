@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
+import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
@@ -11,12 +11,16 @@ part 'publish_event.dart';
 part 'publish_state.dart';
 
 @injectable
+
 /// Coordinates publish flow actions and side effects.
 class PublishBloc extends Bloc<PublishEvent, PublishState> {
   /// Creates a publish bloc wired to the create publication use case.
-  PublishBloc({required CreatePublication createPublication})
-    : _createPublication = createPublication,
-      super(const PublishState()) {
+  PublishBloc({
+    required CreatePublication createPublication,
+    required AuthBloc authBloc,
+  })  : _createPublication = createPublication,
+        _authBloc = authBloc,
+        super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
     on<_PreviousStep>(_onPreviousStep);
@@ -27,11 +31,12 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     on<_PriceChanged>(_onPriceChanged);
     on<_ConditionChanged>(_onConditionChanged);
     on<_ImagesChanged>(_onImagesChanged);
-    on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
   }
 
   final CreatePublication _createPublication;
-  static const _defaultImageUrl = 'https://via.placeholder.com/300'; // Temporary placeholder
+  final AuthBloc _authBloc;
+  static const _defaultImageUrl =
+      'https://via.placeholder.com/300'; // Temporary placeholder
 
   void _onStarted(_Started event, Emitter<PublishState> emit) {
     emit(const PublishState());
@@ -57,10 +62,19 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
 
   Future<void> _onSubmit(_Submit event, Emitter<PublishState> emit) async {
     if (state.isSubmitting) return;
+
+    // Get owner ID from authenticated user
+    final user = _authBloc.state.session?.user;
+    if (user == null) {
+      emit(state.copyWith(errorMessage: 'Debes iniciar sesión para publicar'));
+      return;
+    }
+
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
     try {
-      final images = state.images.isNotEmpty ? state.images : [_defaultImageUrl];
+      final images =
+          state.images.isNotEmpty ? state.images : [_defaultImageUrl];
       await _createPublication(
         PublicationDraft(
           gameId: state.gameId,
@@ -70,15 +84,18 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
           images: images
               .asMap()
               .entries
-              .map((entry) => PublicationImage(url: entry.value, type: entry.key == 0 ? 'hero' : 'gallery'))
+              .map((entry) => PublicationImage(
+                  url: entry.value, type: entry.key == 0 ? 'hero' : 'gallery',),)
               .toList(),
           deliveryMethods: state.deliveryMethods,
         ),
+        ownerId: user.id,
       );
 
       emit(state.copyWith(isSubmitting: false, success: true));
     } on Exception catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: 'No se pudo publicar: $error'));
+      emit(state.copyWith(
+          isSubmitting: false, errorMessage: 'No se pudo publicar: $error',),);
     }
   }
 
@@ -86,7 +103,8 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(state.copyWith(gameId: event.value));
   }
 
-  void _onDescriptionChanged(_DescriptionChanged event, Emitter<PublishState> emit) {
+  void _onDescriptionChanged(
+      _DescriptionChanged event, Emitter<PublishState> emit,) {
     emit(state.copyWith(description: event.value));
   }
 
@@ -94,15 +112,12 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(state.copyWith(price: event.value));
   }
 
-  void _onConditionChanged(_ConditionChanged event, Emitter<PublishState> emit) {
+  void _onConditionChanged(
+      _ConditionChanged event, Emitter<PublishState> emit,) {
     emit(state.copyWith(condition: event.value));
   }
 
   void _onImagesChanged(_ImagesChanged event, Emitter<PublishState> emit) {
     emit(state.copyWith(images: event.value));
-  }
-
-  void _onDeliveryMethodsChanged(_DeliveryMethodsChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(deliveryMethods: event.value));
   }
 }

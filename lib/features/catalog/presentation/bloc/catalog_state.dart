@@ -5,14 +5,17 @@ part of 'catalog_bloc.dart';
 abstract class CatalogState with _$CatalogState {
   /// Creates a CatalogState.
   const factory CatalogState({
-    /// All games available in the system.
+    /// All publications available in the system.
+    @Default([]) List<PublicationListing> allPublications,
+
+    /// Publications filtered by the current search/filters.
+    @Default([]) List<PublicationListing> filteredPublications,
+
+    /// Publications available for rental today.
+    @Default([]) List<PublicationListing> availableTodayPublications,
+
+    /// All games available in the system (legacy, for detail views).
     @Default([]) List<Game> allGames,
-
-    /// Games filtered by the current search/filters.
-    @Default([]) List<Game> filteredGames,
-
-    /// Games available for rental today.
-    @Default([]) List<Game> availableTodayGames,
 
     /// List of game categories.
     @Default([]) List<GameCategory> categories,

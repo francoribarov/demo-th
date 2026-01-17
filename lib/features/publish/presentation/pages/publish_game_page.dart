@@ -31,19 +31,25 @@ class PublishGamePage extends StatelessWidget {
         if (state.success) {
           return PublishSuccessView(
             onBackHome: () => context.go('/'),
-            onPublishAnother: () => context.read<PublishBloc>().add(const PublishEvent.publishAnother()),
+            onPublishAnother: () => context
+                .read<PublishBloc>()
+                .add(const PublishEvent.publishAnother()),
           );
         }
 
         return Scaffold(
           appBar: AppBar(
             title: const Text('Publicar juego'),
-            leading: IconButton(icon: const Icon(Icons.close), onPressed: () => context.go('/')),
+            leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => context.go('/'),),
           ),
           body: Column(
             children: [
               // Progress indicator
-              StepIndicator(currentStep: state.currentStep, steps: const ['Datos', 'Fotos', 'Precio', 'Revisión']),
+              StepIndicator(
+                  currentStep: state.currentStep,
+                  steps: const ['Datos', 'Fotos', 'Precio', 'Revisión'],),
 
               // Content
               Expanded(
@@ -56,25 +62,30 @@ class PublishGamePage extends StatelessWidget {
                         formVersion: state.formVersion,
                         gameId: state.gameId,
                         description: state.description,
-                        onGameIdChanged: (v) => context.read<PublishBloc>().add(PublishEvent.gameIdChanged(v)),
-                        onDescriptionChanged: (v) =>
-                            context.read<PublishBloc>().add(PublishEvent.descriptionChanged(v)),
+                        onGameIdChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.gameIdChanged(v)),
+                        onDescriptionChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.descriptionChanged(v)),
                       ),
                       PhotosStep(
                         images: state.images,
-                        onImagesChanged: (v) => context.read<PublishBloc>().add(PublishEvent.imagesChanged(v)),
+                        onImagesChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.imagesChanged(v)),
                       ),
                       PriceStep(
                         formVersion: state.formVersion,
                         price: state.price,
                         condition: state.condition,
-                        // visibility removed
                         conditions: _conditions,
-                        deliveryMethods: state.deliveryMethods,
-                        onPriceChanged: (v) => context.read<PublishBloc>().add(PublishEvent.priceChanged(v)),
-                        onConditionChanged: (v) => context.read<PublishBloc>().add(PublishEvent.conditionChanged(v)),
-                        onDeliveryMethodsChanged: (v) =>
-                            context.read<PublishBloc>().add(PublishEvent.deliveryMethodsChanged(v)),
+                        onPriceChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.priceChanged(v)),
+                        onConditionChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.conditionChanged(v)),
                       ),
                       ReviewStep(
                         gameId: state.gameId,
@@ -94,7 +105,9 @@ class PublishGamePage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     state.errorMessage!,
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.destructive, fontWeight: FontWeight.w600),
+                    style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.destructive,
+                        fontWeight: FontWeight.w600,),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -104,7 +117,9 @@ class PublishGamePage extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.card,
-                  border: Border(top: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.1))),
+                  border: Border(
+                      top: BorderSide(
+                          color: AppColors.gameBrown.withOpacityValue(0.1),),),
                 ),
                 child: SafeArea(
                   child: Row(
@@ -114,7 +129,9 @@ class PublishGamePage extends StatelessWidget {
                           child: OutlinedButton(
                             onPressed: state.isSubmitting
                                 ? null
-                                : () => context.read<PublishBloc>().add(const PublishEvent.previousStep()),
+                                : () => context
+                                    .read<PublishBloc>()
+                                    .add(const PublishEvent.previousStep()),
                             child: const Text('Anterior'),
                           ),
                         ),
@@ -124,14 +141,19 @@ class PublishGamePage extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: (!state.canProceed || state.isSubmitting)
                               ? null
-                              : () => context.read<PublishBloc>().add(const PublishEvent.nextStep()),
+                              : () => context
+                                  .read<PublishBloc>()
+                                  .add(const PublishEvent.nextStep()),
                           child: state.isSubmitting
                               ? const SizedBox(
                                   height: 18,
                                   width: 18,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2, color: Colors.white,),
                                 )
-                              : Text(state.currentStep == 3 ? 'Publicar' : 'Siguiente'),
+                              : Text(state.currentStep == 3
+                                  ? 'Publicar'
+                                  : 'Siguiente',),
                         ),
                       ),
                     ],

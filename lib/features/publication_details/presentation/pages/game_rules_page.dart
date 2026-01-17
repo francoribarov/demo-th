@@ -4,7 +4,7 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_rules_bloc.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_rules_bloc.dart';
 
 /// Game rules page matching GameRules.tsx
 class GameRulesPage extends StatefulWidget {
@@ -37,7 +37,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
+                onPressed: () => context.popOrGo('/games/${widget.gameId}'),
               ),
             ),
             body: Center(
@@ -50,7 +50,8 @@ class _GameRulesPageState extends State<GameRulesPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
+              onPressed: () =>
+                  context.popOrGo('/publications/${widget.gameId}'),
             ),
             title: Text('Reglas de ${game.title}'),
           ),
@@ -69,7 +70,8 @@ class _GameRulesPageState extends State<GameRulesPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _InfoChip(icon: Icons.timer, label: '${game.duration} min'),
+                      _InfoChip(
+                          icon: Icons.timer, label: '${game.duration} min'),
                       _InfoChip(icon: Icons.people, label: game.players),
                       _InfoChip(icon: Icons.psychology, label: game.difficulty),
                     ],
@@ -104,7 +106,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        if (game.rules.videoUrl.isEmpty)
+                        if ((game.rules?.videoUrl ?? '').isEmpty)
                           Text(
                             '(próximamente)',
                             style: AppTypography.bodySmall.copyWith(
@@ -113,7 +115,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
                           )
                         else
                           Text(
-                            game.rules.videoUrl,
+                            game.rules?.videoUrl ?? '',
                             style: AppTypography.bodySmall.copyWith(
                               color: AppColors.gameBrown.withOpacityValue(0.5),
                             ),
@@ -139,7 +141,10 @@ class _GameRulesPageState extends State<GameRulesPage> {
                       color: AppColors.gameBrown.withOpacityValue(0.1),
                     ),
                   ),
-                  child: Text(game.rules.summaryRules, style: AppTypography.bodyLarge),
+                  child: Text(
+                    game.rules?.summaryRules ?? '',
+                    style: AppTypography.bodyLarge,
+                  ),
                 ),
 
                 const SizedBox(height: 24),

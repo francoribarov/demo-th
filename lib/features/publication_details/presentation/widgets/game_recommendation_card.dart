@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// A small card for recommending other games.
 class GameRecommendationCard extends StatelessWidget {
   /// Creates a [GameRecommendationCard].
   const GameRecommendationCard({
-    required this.game,
+    required this.publication,
     required this.onTap,
     super.key,
   });
 
-  /// The game to recommend.
-  final Game game;
+  /// The publication to recommend.
+  final PublicationListing publication;
 
   /// Callback when the card is tapped.
   final VoidCallback onTap;
@@ -43,7 +43,7 @@ class GameRecommendationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CachedNetworkImage(
-              imageUrl: game.images.isNotEmpty ? game.images.first : '',
+              imageUrl: publication.heroImage,
               height: 100,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -54,25 +54,17 @@ class GameRecommendationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    game.title,
+                    publication.title,
                     style: AppTypography.labelMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        size: 12,
-                        color: AppColors.gameGold,
-                      ),
-                      const SizedBox(width: 2),
-                      Text(
-                        game.rating.toStringAsFixed(1),
-                        style: AppTypography.labelSmall,
-                      ),
-                    ],
+                  Text(
+                    publication.game.players,
+                    style: AppTypography.labelSmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
