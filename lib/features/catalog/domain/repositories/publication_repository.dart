@@ -35,4 +35,7 @@ abstract class PublicationRepository {
 
   /// Fetches filter shortcuts for quick filtering.
   Future<List<FilterShortcut>> getFilterShortcuts();
+
+  /// Fetches the current user's publications.
+  Future<List<PublicationListing>> getMyPublications();
 }

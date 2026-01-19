@@ -56,6 +56,8 @@ import 'package:mobile_table_hopping/features/catalog/domain/usecases/search_gam
     as _i144;
 import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart'
     as _i896;
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart'
+    as _i658;
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart'
     as _i643;
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_rules_bloc.dart'
@@ -153,6 +155,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i829.GetPublications>(
         () => _i829.GetPublications(gh<_i977.PublicationRepository>()));
+    gh.factory<_i658.MyPublicationsBloc>(() =>
+        _i658.MyPublicationsBloc(getPublications: gh<_i829.GetPublications>()));
     gh.factory<_i249.GetCategories>(
         () => _i249.GetCategories(gh<_i305.GameRepository>()));
     gh.factory<_i249.GetFilterShortcuts>(
@@ -165,12 +169,13 @@ extension GetItInjectableX on _i174.GetIt {
           getPublications: gh<_i829.GetPublications>(),
           getGames: gh<_i499.GetGames>(),
         ));
+    gh.factory<_i649.ConfirmRental>(
+        () => _i649.ConfirmRental(gh<_i996.RentalRepository>()));
     gh.factory<_i530.PublishBloc>(() => _i530.PublishBloc(
           createPublication: gh<_i692.CreatePublication>(),
           authBloc: gh<_i701.AuthBloc>(),
+          getGames: gh<_i499.GetGames>(),
         ));
-    gh.factory<_i649.ConfirmRental>(
-        () => _i649.ConfirmRental(gh<_i996.RentalRepository>()));
     gh.factory<_i896.CatalogBloc>(() => _i896.CatalogBloc(
           getGames: gh<_i499.GetGames>(),
           getPublications: gh<_i829.GetPublications>(),

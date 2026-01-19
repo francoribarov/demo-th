@@ -76,7 +76,7 @@ class AppScaffold extends StatelessWidget {
                 _NavItem(
                   icon: Icons.casino_outlined,
                   activeIcon: Icons.casino,
-                  label: 'Mis Juegos',
+                  label: 'Mis Publicaciones',
                   isSelected: selectedIndex == 1,
                   onTap: () => _onItemTapped(context, 1),
                 ),

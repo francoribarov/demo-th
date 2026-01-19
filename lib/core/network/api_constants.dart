@@ -65,13 +65,18 @@ class ApiConstants {
   static String publicationById(dynamic id) => '$publications/$id';
 
   /// Publications available today endpoint.
-  static const String publicationsAvailableToday = '$publications/available-today';
+  static const String publicationsAvailableToday =
+      '$publications/available-today';
+
+  /// My publications endpoint (current user's publications).
+  static const String myPublications = '$publications/my-publications';
 
   /// Publication reviews endpoint.
   static String publicationReviews(dynamic id) => '$publications/$id/reviews';
 
   /// Publication recommendations endpoint.
-  static String publicationRecommendations(dynamic id) => '$publications/$id/recommendations';
+  static String publicationRecommendations(dynamic id) =>
+      '$publications/$id/recommendations';
 
   /// Categories endpoints.
   static const String categories = '$apiBasePath/categories';

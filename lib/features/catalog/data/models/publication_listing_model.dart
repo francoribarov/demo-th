@@ -10,8 +10,8 @@ part 'publication_listing_model.g.dart';
 @freezed
 sealed class AvailabilityRangeModel with _$AvailabilityRangeModel {
   const factory AvailabilityRangeModel({
-    required String from,
-    required String to,
+    @JsonKey(name: 'start_date') required String from,
+    @JsonKey(name: 'end_date') required String to,
   }) = _AvailabilityRangeModel;
 
   factory AvailabilityRangeModel.fromJson(Map<String, dynamic> json) =>
@@ -55,6 +55,10 @@ sealed class PublicationGameDataModel with _$PublicationGameDataModel {
     @Default('') String players,
     @Default(0) int duration,
     @Default([]) List<PublicationCategoryModel> categories,
+    @Default('') String description,
+    @Default(0.0) double rating,
+    @JsonKey(name: 'reviews_count') @Default(0) int reviewsCount,
+    @Default('') String difficulty,
   }) = _PublicationGameDataModel;
 
   const PublicationGameDataModel._();
@@ -66,6 +70,10 @@ sealed class PublicationGameDataModel with _$PublicationGameDataModel {
         players: players,
         duration: duration,
         categories: categories.map((c) => c.toDomainModel()).toList(),
+        description: description,
+        rating: rating,
+        reviewsCount: reviewsCount,
+        difficulty: difficulty,
       );
 }
 
@@ -77,7 +85,7 @@ sealed class PublicationListingModel
   const factory PublicationListingModel({
     required String id,
     @JsonKey(name: 'owner_id') required String ownerId,
-    @JsonKey(name: 'game_id') required String gameId,
+    @JsonKey(name: 'game_id') @IntToStringConverter() required String gameId,
     required String title,
     required String condition,
     required double price,
@@ -107,7 +115,7 @@ sealed class PublicationListingModel
         deposit: deposit,
         images: images,
         isActive: isActive,
-        availability: bookedRanges.map((a) => a.toDomainModel()).toList(),
+        bookedDates: bookedRanges.map((a) => a.toDomainModel()).toList(),
         createdAt: createdAt,
         game: (game ?? const PublicationGameDataModel()).toDomainModel(),
       );
@@ -132,4 +140,19 @@ sealed class PublicationListingModel
       reviewsCount: 0,
     );
   }
+}
+
+class IntToStringConverter implements JsonConverter<String, dynamic> {
+  const IntToStringConverter();
+
+  @override
+  String fromJson(dynamic json) {
+    if (json is int) {
+      return json.toString();
+    }
+    return json as String;
+  }
+
+  @override
+  dynamic toJson(String object) => object;
 }

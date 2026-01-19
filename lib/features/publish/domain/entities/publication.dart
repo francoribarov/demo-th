@@ -25,7 +25,7 @@ abstract class PublicationDraft with _$PublicationDraft {
     required int price,
     required String condition, // "new"|"like_new"|"good"|"fair"|"worn"
     required List<PublicationImage> images,
-    required List<String> deliveryMethods,
+    required List<DeliveryMethod> deliveryMethods,
   }) = _PublicationDraft;
 }
 

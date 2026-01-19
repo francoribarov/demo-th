@@ -21,6 +21,10 @@ abstract class PublicationGameData with _$PublicationGameData {
     @Default('') String players,
     @Default(0) int duration,
     @Default([]) List<GameCategory> categories,
+    @Default('') String description,
+    @Default(0.0) double rating,
+    @Default(0) int reviewsCount,
+    @Default('') String difficulty,
   }) = _PublicationGameData;
 }
 
@@ -56,8 +60,8 @@ abstract class PublicationListing with _$PublicationListing {
     /// Whether the publication is currently active/available.
     @Default(true) bool isActive,
 
-    /// Date ranges when the publication is available for rent.
-    @Default([]) List<AvailabilityRange> availability,
+    /// Date ranges when the publication is booked/unavailable.
+    @Default([]) List<AvailabilityRange> bookedDates,
 
     /// When the publication was created.
     required DateTime createdAt,
@@ -78,47 +82,26 @@ abstract class PublicationListing with _$PublicationListing {
   /// Check if available for the given date range.
   bool isAvailableFor(String? startDate, String? endDate) {
     if (startDate == null || endDate == null) return true;
-    if (availability.isEmpty) return true;
 
     final start = DateTime.tryParse(startDate);
     final end = DateTime.tryParse(endDate);
     if (start == null || end == null) return true;
 
-    return availability.any((range) {
-      final from = DateTime.tryParse(range.from);
-      final to = DateTime.tryParse(range.to);
-      if (from == null || to == null) return false;
-      return !from.isAfter(start) && !to.isBefore(end);
+    // Check if the requested range overlaps with any booked range
+    return !bookedDates.any((booked) {
+      final bookedStart = DateTime.tryParse(booked.from);
+      final bookedEnd = DateTime.tryParse(booked.to);
+
+      if (bookedStart == null || bookedEnd == null) return false;
+
+      // Overlap logic: (StartA <= EndB) and (EndA >= StartB)
+      return start.isBefore(bookedEnd.add(const Duration(days: 1))) &&
+          end.isAfter(bookedStart.subtract(const Duration(days: 1)));
     });
   }
 
   /// Formatted availability label for UI.
   String get availabilityLabel {
-    if (availability.isEmpty) return 'Calendario a coordinar';
-    final first = availability.first;
-    return 'Disponible: ${_formatDate(first.from)} - ${_formatDate(first.to)}';
-  }
-
-  String _formatDate(String dateStr) {
-    try {
-      final date = DateTime.parse(dateStr);
-      const months = [
-        'ene',
-        'feb',
-        'mar',
-        'abr',
-        'may',
-        'jun',
-        'jul',
-        'ago',
-        'sep',
-        'oct',
-        'nov',
-        'dic'
-      ];
-      return '${date.day} ${months[date.month - 1]}';
-    } catch (_) {
-      return dateStr;
-    }
+    return 'Disponible';
   }
 }

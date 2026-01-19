@@ -10,8 +10,11 @@ class DataStep extends StatelessWidget {
     required this.formVersion,
     required this.gameId,
     required this.description,
+    required this.condition,
+    required this.conditions,
     required this.onGameIdChanged,
     required this.onDescriptionChanged,
+    required this.onConditionChanged,
     super.key,
   });
 
@@ -24,11 +27,20 @@ class DataStep extends StatelessWidget {
   /// Current description value.
   final String description;
 
+  /// Current game condition key.
+  final String condition;
+
+  /// List of condition metadata (key, label, description).
+  final List<(String, String, String)> conditions;
+
   /// Callback when game ID changes.
   final void Function(String) onGameIdChanged;
 
   /// Callback when description changes.
   final void Function(String) onDescriptionChanged;
+
+  /// Callback when condition changes.
+  final void Function(String) onConditionChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +76,65 @@ class DataStep extends StatelessWidget {
             hintText: 'Contanos qué hace especial a este juego...',
           ),
           onChanged: onDescriptionChanged,
+        ),
+        const SizedBox(height: 24),
+
+        // Condition
+        Text('Estado del juego', style: AppTypography.titleMedium),
+        const SizedBox(height: 12),
+        DropdownButtonFormField<String>(
+          value: condition,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: AppColors.gameBrown.withOpacityValue(0.2),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: AppColors.gameBrown.withOpacityValue(0.2),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: AppColors.gameRust,
+                width: 2,
+              ),
+            ),
+            filled: true,
+            fillColor: AppColors.card,
+          ),
+          items: conditions.map((c) {
+            return DropdownMenuItem<String>(
+              value: c.$1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(c.$2, style: AppTypography.bodyMedium),
+                  Text(
+                    c.$3,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.gameBrown.withOpacityValue(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            if (value != null) {
+              onConditionChanged(value);
+            }
+          },
+          selectedItemBuilder: (context) {
+            return conditions.map((c) {
+              return Text(c.$2, style: AppTypography.bodyMedium);
+            }).toList();
+          },
         ),
       ],
     );

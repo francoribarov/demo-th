@@ -11,7 +11,7 @@ import 'package:mobile_table_hopping/features/catalog/data/models/publication_li
 abstract class PublicationRemoteDatasource {
   /// Fetches paginated publication listings with optional filters.
   /// GET /api/publications
-  Future<PaginatedResponse<PublicationListingModel>> getPublications({
+  Future<List<PublicationListingModel>> getPublications({
     String? query,
     String? category,
     String? players,
@@ -47,6 +47,10 @@ abstract class PublicationRemoteDatasource {
   /// GET /api/publications?game_id={gameId}
   Future<List<PublicationListingModel>> getRecommendedPublications(
       String gameId);
+
+  /// Fetches the current user's publications.
+  /// GET /api/publications/my-publications
+  Future<List<PublicationListingModel>> getMyPublications();
 }
 
 /// Filter shortcut model for category chips.
@@ -88,7 +92,7 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
   final DioClient _dioClient;
 
   @override
-  Future<PaginatedResponse<PublicationListingModel>> getPublications({
+  Future<List<PublicationListingModel>> getPublications({
     String? query,
     String? category,
     String? players,
@@ -114,13 +118,37 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
       if (endDate != null) queryParams['end_date'] = endDate;
       if (sortBy != null) queryParams['sort_by'] = sortBy;
 
-      final response = await _dioClient.get<Map<String, dynamic>>(
+      final response = await _dioClient.get<dynamic>(
         ApiConstants.publications,
         queryParameters: queryParams,
       );
 
-      final data = response.data ?? const <String, dynamic>{};
-      final itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      List<dynamic> itemsData;
+      int total;
+      int pages;
+      int currentPage = page;
+      int currentLimit = limit;
+
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+        total = itemsData.length;
+        pages = 1;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+        total = data['total'] as int? ?? 0;
+        pages = data['pages'] as int? ?? 0;
+        currentPage = data['page'] as int? ?? page;
+        currentLimit = data['limit'] as int? ?? limit;
+      } else {
+        itemsData = const <dynamic>[];
+        total = 0;
+        pages = 0;
+      }
+
+      // ignore: avoid_print
+      print('DEBUG: getPublications response data: $itemsData');
+
       final items = itemsData
           .map(
             (json) =>
@@ -128,13 +156,7 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
           )
           .toList();
 
-      return PaginatedResponse(
-        items: items,
-        total: data['total'] as int? ?? 0,
-        page: data['page'] as int? ?? page,
-        limit: data['limit'] as int? ?? limit,
-        pages: data['pages'] as int? ?? 0,
-      );
+      return items;
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -220,13 +242,40 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
     String gameId,
   ) async {
     try {
-      final response = await _dioClient.get<Map<String, dynamic>>(
+      final response = await _dioClient.get<List<dynamic>>(
         ApiConstants.publications,
         queryParameters: {'game_id': gameId, 'limit': 10},
       );
 
-      final data = response.data ?? const <String, dynamic>{};
-      final itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      final data = response.data ?? const <dynamic>[];
+      return data
+          .map(
+            (json) =>
+                PublicationListingModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  @override
+  Future<List<PublicationListingModel>> getMyPublications() async {
+    try {
+      final response = await _dioClient.get<dynamic>(
+        ApiConstants.myPublications,
+      );
+
+      final data = response.data;
+      final List<dynamic> itemsData;
+
+      if (data is List) {
+        itemsData = data;
+      } else if (data is Map<String, dynamic>) {
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
       return itemsData
           .map(
             (json) =>
@@ -239,9 +288,11 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
   }
 
   Exception _handleError(DioException e) {
-    final message = e.response?.data?['detail'] as String? ??
-        e.message ??
-        'Error de conexión';
+    var message = e.message ?? 'Error de conexión';
+    final data = e.response?.data;
+    if (data is Map && data['detail'] != null) {
+      message = data['detail'].toString();
+    }
     return Exception(message);
   }
 }

@@ -41,15 +41,17 @@ class PublishGamePage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Publicar juego'),
             leading: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => context.go('/'),),
+              icon: const Icon(Icons.close),
+              onPressed: () => context.go('/'),
+            ),
           ),
           body: Column(
             children: [
               // Progress indicator
               StepIndicator(
-                  currentStep: state.currentStep,
-                  steps: const ['Datos', 'Fotos', 'Precio', 'Revisión'],),
+                currentStep: state.currentStep,
+                steps: const ['Datos', 'Fotos', 'Precio', 'Revisión'],
+              ),
 
               // Content
               Expanded(
@@ -62,12 +64,17 @@ class PublishGamePage extends StatelessWidget {
                         formVersion: state.formVersion,
                         gameId: state.gameId,
                         description: state.description,
+                        condition: state.condition,
+                        conditions: _conditions,
                         onGameIdChanged: (v) => context
                             .read<PublishBloc>()
                             .add(PublishEvent.gameIdChanged(v)),
                         onDescriptionChanged: (v) => context
                             .read<PublishBloc>()
                             .add(PublishEvent.descriptionChanged(v)),
+                        onConditionChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.conditionChanged(v)),
                       ),
                       PhotosStep(
                         images: state.images,
@@ -78,14 +85,13 @@ class PublishGamePage extends StatelessWidget {
                       PriceStep(
                         formVersion: state.formVersion,
                         price: state.price,
-                        condition: state.condition,
-                        conditions: _conditions,
+                        deliveryMethods: state.deliveryMethods,
                         onPriceChanged: (v) => context
                             .read<PublishBloc>()
                             .add(PublishEvent.priceChanged(v)),
-                        onConditionChanged: (v) => context
+                        onDeliveryMethodsChanged: (v) => context
                             .read<PublishBloc>()
-                            .add(PublishEvent.conditionChanged(v)),
+                            .add(PublishEvent.deliveryMethodsChanged(v)),
                       ),
                       ReviewStep(
                         gameId: state.gameId,
@@ -106,8 +112,9 @@ class PublishGamePage extends StatelessWidget {
                   child: Text(
                     state.errorMessage!,
                     style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.destructive,
-                        fontWeight: FontWeight.w600,),
+                      color: AppColors.destructive,
+                      fontWeight: FontWeight.w600,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -118,8 +125,10 @@ class PublishGamePage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.card,
                   border: Border(
-                      top: BorderSide(
-                          color: AppColors.gameBrown.withOpacityValue(0.1),),),
+                    top: BorderSide(
+                      color: AppColors.gameBrown.withOpacityValue(0.1),
+                    ),
+                  ),
                 ),
                 child: SafeArea(
                   child: Row(
@@ -149,11 +158,15 @@ class PublishGamePage extends StatelessWidget {
                                   height: 18,
                                   width: 18,
                                   child: CircularProgressIndicator(
-                                      strokeWidth: 2, color: Colors.white,),
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
                                 )
-                              : Text(state.currentStep == 3
-                                  ? 'Publicar'
-                                  : 'Siguiente',),
+                              : Text(
+                                  state.currentStep == 3
+                                      ? 'Publicar'
+                                      : 'Siguiente',
+                                ),
                         ),
                       ),
                     ],

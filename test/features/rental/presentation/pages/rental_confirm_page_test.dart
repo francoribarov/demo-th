@@ -25,22 +25,18 @@ void main() {
   final tPublication = PublicationListing(
     id: '1',
     ownerId: 'owner-1',
-    gameId: 1,
+    gameId: '1',
     title: 'Test Game',
     condition: 'like_new',
     price: 100,
     deposit: 50,
     createdAt: DateTime(2026, 1, 1),
     game: const PublicationGameData(
-      id: 1,
-      title: 'Test Game',
       players: '2-4',
       duration: 60,
       categories: [GameCategory(id: 1, name: 'Strategy', icon: 'img')],
     ),
-    availability: const [
-      AvailabilityRange(from: '2024-01-01', to: '2030-12-31'),
-    ],
+    bookedDates: const [],
   );
 
   setUp(() {

@@ -20,22 +20,18 @@ void main() {
   final tPublication = PublicationListing(
     id: '123',
     ownerId: 'owner-1',
-    gameId: 1,
+    gameId: '1',
     title: 'Test Game',
     condition: 'like_new',
     price: 100,
     deposit: 50,
     createdAt: DateTime(2026, 1, 1),
     game: const PublicationGameData(
-      id: 1,
-      title: 'Test Game',
       players: '2-4',
       duration: 60,
       categories: [GameCategory(id: 1, name: 'Strategy', icon: 'img')],
     ),
-    availability: const [
-      AvailabilityRange(from: '2026-01-01', to: '2026-12-31'),
-    ],
+    bookedDates: const [],
   );
 
   setUp(() {
@@ -76,8 +72,8 @@ void main() {
       build: () => rentalBloc,
       seed: () => RentalState(
         publication: tPublication.copyWith(
-          availability: const [
-            AvailabilityRange(from: '2026-01-01', to: '2026-01-02'),
+          bookedDates: const [
+            AvailabilityRange(from: '2026-01-03', to: '2026-01-03'),
           ],
         ),
       ),
@@ -95,8 +91,14 @@ void main() {
     blocTest<RentalBloc, RentalState>(
       'should emit snackbar error when dates are not within availability',
       build: () => rentalBloc,
-      seed: () =>
-          RentalState(publication: tPublication, startDate: '2026-01-10'),
+      seed: () => RentalState(
+        publication: tPublication.copyWith(
+          bookedDates: const [
+            AvailabilityRange(from: '2026-06-01', to: '2026-06-01'),
+          ],
+        ),
+        startDate: '2026-01-10',
+      ),
       act: (bloc) =>
           bloc.add(const RentalEvent.endDateChanged(endDate: '2027-02-05')),
       expect: () => [
@@ -113,9 +115,7 @@ void main() {
       build: () => rentalBloc,
       seed: () => RentalState(
         publication: tPublication.copyWith(
-          availability: const [
-            AvailabilityRange(from: '2026-01-01', to: '2026-03-01'),
-          ],
+          bookedDates: const [],
         ),
         startDate: '2026-01-01',
       ),

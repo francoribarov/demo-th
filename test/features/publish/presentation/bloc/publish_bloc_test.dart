@@ -8,18 +8,24 @@ import 'package:mobile_table_hopping/features/publish/domain/usecases/create_pub
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
+
 class MockCreatePublication extends Mock implements CreatePublication {}
 
 class MockAuthBloc extends Mock implements AuthBloc {}
 
+class MockGetGames extends Mock implements GetGames {}
+
 void main() {
   late MockCreatePublication mockCreatePublication;
   late MockAuthBloc mockAuthBloc;
+  late MockGetGames mockGetGames;
   late PublishBloc publishBloc;
 
   setUp(() {
     mockCreatePublication = MockCreatePublication();
     mockAuthBloc = MockAuthBloc();
+    mockGetGames = MockGetGames();
 
     // Mock authenticated state
     when(() => mockAuthBloc.state).thenReturn(
@@ -33,9 +39,13 @@ void main() {
       ),
     );
 
+    // Stub GetGames call since it might be called
+    when(() => mockGetGames()).thenAnswer((_) async => []);
+
     publishBloc = PublishBloc(
       createPublication: mockCreatePublication,
       authBloc: mockAuthBloc,
+      getGames: mockGetGames,
     );
   });
 

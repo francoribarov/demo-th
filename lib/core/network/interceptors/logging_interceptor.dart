@@ -8,13 +8,6 @@ class LoggingInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (kDebugMode) {
       debugPrint('🌐 REQUEST[${options.method}] => URL: ${options.uri}');
-      debugPrint('  headers: ${options.headers}');
-      if (options.queryParameters.isNotEmpty) {
-        debugPrint('  query: ${options.queryParameters}');
-      }
-      if (options.data != null) {
-        debugPrint('  body: ${_safeToString(options.data)}');
-      }
     }
     super.onRequest(options, handler);
   }
@@ -26,12 +19,8 @@ class LoggingInterceptor extends Interceptor {
   ) {
     if (kDebugMode) {
       debugPrint(
-        '✅ RESPONSE[${response.statusCode}] => URL: ${response.requestOptions.uri}',
+        '✅ RESPONSE[${response.statusCode}] => URL: ${response.requestOptions.uri} DATA: ${response.data}',
       );
-      debugPrint('  headers: ${response.headers.map}');
-      if (response.data != null) {
-        debugPrint('  data: ${_safeToString(response.data)}');
-      }
     }
     super.onResponse(response, handler);
   }

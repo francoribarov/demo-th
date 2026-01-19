@@ -40,7 +40,7 @@ class PublicationRepositoryImpl implements PublicationRepository {
       page: page,
       limit: limit,
     );
-    return response.items.map((m) => m.toDomainModel()).toList();
+    return response.map((m) => m.toDomainModel()).toList();
   }
 
   @override
@@ -99,5 +99,11 @@ class PublicationRepositoryImpl implements PublicationRepository {
               value: m.value,
             ))
         .toList();
+  }
+
+  @override
+  Future<List<PublicationListing>> getMyPublications() async {
+    final models = await _datasource.getMyPublications();
+    return models.map((m) => m.toDomainModel()).toList();
   }
 }

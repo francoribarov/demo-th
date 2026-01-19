@@ -11,7 +11,7 @@ import 'package:mobile_table_hopping/features/catalog/data/models/publication_li
 /// Remote datasource for games API calls
 abstract class GameRemoteDatasource {
   /// Fetches paginated publications (with nested games) with optional filter parameters.
-  Future<PaginatedResponse<PublicationListItemModel>> getPublications({
+  Future<List<PublicationListItemModel>> getPublications({
     String? query,
     String? category,
     String? players,
@@ -40,13 +40,20 @@ abstract class GameRemoteDatasource {
   });
 
   /// Fetches paginated publication listings from /api/publications.
-  Future<PaginatedResponse<PublicationListingModel>> getPublicationListings({
+  Future<List<PublicationListingModel>> getPublicationListings({
     String? query,
     int page = 1,
     int limit = 20,
   });
 
   Future<GameModel> getGameById(String id);
+
+  /// Fetches all games from the games catalog.
+  Future<List<GameModel>> getAllGames({
+    String? query,
+    int page = 1,
+    int limit = 50,
+  });
 }
 
 /// Default implementation backed by [DioClient].
@@ -58,7 +65,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
   final DioClient _dioClient;
 
   @override
-  Future<PaginatedResponse<PublicationListItemModel>> getPublications({
+  Future<List<PublicationListItemModel>> getPublications({
     String? query,
     String? category,
     String? players,
@@ -86,15 +93,21 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
       if (endDate != null) queryParams['end_date'] = endDate;
       if (sortBy != null) queryParams['sort_by'] = sortBy;
 
-      final response = await _dioClient.get<Map<String, dynamic>>(
+      final response = await _dioClient.get<dynamic>(
         ApiConstants.publications,
         queryParameters: queryParams,
       );
 
-      final data = response.data ?? const <String, dynamic>{};
+      final List<dynamic> itemsData;
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
 
-      // Parse items as publications with nested games
-      final itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
       final items = itemsData
           .map(
             (json) =>
@@ -102,13 +115,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
           )
           .toList();
 
-      return PaginatedResponse(
-        items: items,
-        total: data['total'] as int? ?? 0,
-        page: data['page'] as int? ?? page,
-        limit: data['limit'] as int? ?? limit,
-        pages: data['pages'] as int? ?? 0,
-      );
+      return items;
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -213,7 +220,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
   }
 
   @override
-  Future<PaginatedResponse<PublicationListingModel>> getPublicationListings({
+  Future<List<PublicationListingModel>> getPublicationListings({
     String? query,
     int page = 1,
     int limit = 20,
@@ -222,13 +229,20 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
       final queryParams = <String, dynamic>{'page': page, 'limit': limit};
       if (query != null && query.isNotEmpty) queryParams['q'] = query;
 
-      final response = await _dioClient.get<Map<String, dynamic>>(
+      final response = await _dioClient.get<dynamic>(
         ApiConstants.publications,
         queryParameters: queryParams,
       );
 
-      final data = response.data ?? const <String, dynamic>{};
-      final itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      final List<dynamic> itemsData;
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
       final items = itemsData
           .map(
             (json) =>
@@ -236,13 +250,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
           )
           .toList();
 
-      return PaginatedResponse(
-        items: items,
-        total: data['total'] as int? ?? 0,
-        page: data['page'] as int? ?? page,
-        limit: data['limit'] as int? ?? limit,
-        pages: data['pages'] as int? ?? 0,
-      );
+      return items;
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -257,6 +265,43 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
 
       final data = response.data ?? const <String, dynamic>{};
       return GameModel.fromJson(data);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  @override
+  Future<List<GameModel>> getAllGames({
+    String? query,
+    int page = 1,
+    int limit = 50,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
+      if (query != null && query.isNotEmpty) queryParams['q'] = query;
+
+      final response = await _dioClient.get<dynamic>(
+        ApiConstants.games,
+        queryParameters: queryParams,
+      );
+
+      final List<dynamic> itemsData;
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
+
+      final items = itemsData
+          .map(
+            (json) => GameModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+
+      return items;
     } on DioException catch (e) {
       throw _handleError(e);
     }

@@ -34,4 +34,14 @@ abstract class PublishEvent with _$PublishEvent {
 
   /// Updates the selected images.
   const factory PublishEvent.imagesChanged(List<String> value) = _ImagesChanged;
+
+  /// Loads the list of available games.
+  const factory PublishEvent.loadGames() = _LoadGames;
+
+  /// Filters the list of games by query.
+  const factory PublishEvent.searchGames(String query) = _SearchGames;
+
+  /// Updates the delivery methods.
+  const factory PublishEvent.deliveryMethodsChanged(
+      List<DeliveryMethod> value) = _DeliveryMethodsChanged;
 }

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
+
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
 part 'publication_model.freezed.dart';
@@ -123,6 +123,8 @@ sealed class PublicationCreateRequestModel
         price: entity.price,
         condition: entity.condition,
         images: entity.images.map((img) => img.url).toList(),
-        deliveryMethods: entity.deliveryMethods,
+        deliveryMethods: entity.deliveryMethods
+            .map((dm) => dm.deliveryType.displayName)
+            .toList(),
       );
 }

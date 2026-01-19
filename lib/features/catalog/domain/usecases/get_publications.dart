@@ -29,4 +29,9 @@ class GetPublications {
   Future<List<PublicationListing>> getAvailableToday({int limit = 10}) async {
     return _repository.getPublicationsAvailableToday(limit: limit);
   }
+
+  /// Gets the current user's publications.
+  Future<List<PublicationListing>> getMyPublications() async {
+    return _repository.getMyPublications();
+  }
 }

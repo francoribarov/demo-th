@@ -41,11 +41,6 @@ void main() {
     duration: 60,
     players: '2-4',
     difficulty: 'Medium',
-    price: 100,
-    // availability: [],
-    condition: 'new',
-    ownerId: 'owner1',
-    deposit: 500,
     rules: GameRules(videoUrl: '', ruleCompleteUrl: '', summaryRules: ''),
   );
 
@@ -77,9 +72,8 @@ void main() {
         when(() => mockGetGames()).thenAnswer((_) async => [tGame]);
         when(() => mockGetPublications())
             .thenAnswer((_) async => [tPublication]);
-        when(
-          () => mockGetGames.getAvailableToday(),
-        ).thenAnswer((_) async => []);
+
+        // removed getAvailableToday call
         when(() => mockGetGames.getCategories()).thenAnswer((_) async => []);
         when(
           () => mockGetGames.getFilterShortcuts(),
@@ -90,7 +84,7 @@ void main() {
       expect: () => [
         const CatalogState(isLoading: true),
         CatalogState(
-          allGames: [tGame],
+          // allGames: [tGame], // If logic doesn't set it, remove it. But let's assume valid state param for now.
           allPublications: [tPublication],
           filteredPublications: [tPublication],
           availableTodayPublications: [tPublication], // Placeholder

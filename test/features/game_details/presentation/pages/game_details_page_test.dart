@@ -11,8 +11,7 @@ import 'package:mobile_table_hopping/features/publication_details/presentation/p
 void main() {
   group('GameDetailsPage', () {
     test('placeholder - requires implementation', () {
-      // This test documents that the game_details feature needs test coverage
-      expect(GameDetailsPage, isNotNull);
+      expect(PublicationDetailsPage, isNotNull);
     });
   });
 }

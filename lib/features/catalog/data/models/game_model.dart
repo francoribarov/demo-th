@@ -111,7 +111,7 @@ sealed class GameModel with _$GameModel implements BaseDtoResponse<Game> {
         duration: duration,
         players: players,
         difficulty: difficulty,
-        rules: (rules ?? const GameRulesModel()).toDomainModel(),
+        rules: rules.toDomainModel(),
         reviews: reviews.map((r) => r.toDomainModel()).toList(),
       );
 }

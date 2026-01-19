@@ -21,6 +21,7 @@ abstract class AuthRemoteDatasource {
 }
 
 @LazySingleton(as: AuthRemoteDatasource)
+
 /// Dio-backed implementation of [AuthRemoteDatasource].
 class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   /// Creates an [AuthRemoteDatasourceImpl].
@@ -31,8 +32,11 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   @override
   Future<AuthResponse> login(LoginRequest request) async {
     try {
-      final response = await _dioClient.post<Map<String, dynamic>>(ApiConstants.login, data: request.toJson());
+      final response = await _dioClient.post<Map<String, dynamic>>(
+          ApiConstants.login,
+          data: request.toJson());
       final data = response.data;
+      print('LOGIN RESPONSE: $data');
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
       }
@@ -45,7 +49,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   @override
   Future<AuthResponse> register(RegisterRequest request) async {
     try {
-      final response = await _dioClient.post<Map<String, dynamic>>(ApiConstants.register, data: request.toJson());
+      final response = await _dioClient.post<Map<String, dynamic>>(
+          ApiConstants.register,
+          data: request.toJson());
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
@@ -59,7 +65,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   @override
   Future<TokenResponse> refreshToken(RefreshTokenRequest request) async {
     try {
-      final response = await _dioClient.post<Map<String, dynamic>>(ApiConstants.refreshToken, data: request.toJson());
+      final response = await _dioClient.post<Map<String, dynamic>>(
+          ApiConstants.refreshToken,
+          data: request.toJson());
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
@@ -91,7 +99,10 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
         message = data['detail'].toString();
       }
 
-      if (statusCode == 400 || statusCode == 401 || statusCode == 409 || statusCode == 422) {
+      if (statusCode == 400 ||
+          statusCode == 401 ||
+          statusCode == 409 ||
+          statusCode == 422) {
         return Exception(message);
       }
     }

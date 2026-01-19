@@ -20,6 +20,8 @@ import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bl
 import 'package:mobile_table_hopping/features/rental/presentation/pages/rental_confirm_page.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 
 /// Route paths for type-safe navigation.
 class AppRoutes {
@@ -78,6 +80,7 @@ class AppRouter {
       final isLogin = location == AppRoutes.login;
       final isRegister = location == AppRoutes.register;
       final isProtected = location == AppRoutes.publish ||
+          location == AppRoutes.myGames ||
           RegExp(r'^/publications/[^/]+/rental$').hasMatch(location);
 
       final authBloc = getIt<AuthBloc>();
@@ -128,10 +131,10 @@ class AppRouter {
             path: AppRoutes.myGames,
             name: 'my-games',
             pageBuilder: (context, state) => NoTransitionPage(
-              child: Scaffold(
-                appBar: AppBar(title: const Text('Mis Juegos')),
-                body: const Center(
-                    child: Text('Tus juegos publicados aparecerán aquí.')),
+              child: BlocProvider<MyPublicationsBloc>(
+                create: (_) => getIt<MyPublicationsBloc>()
+                  ..add(const MyPublicationsEvent.started()),
+                child: const MyPublicationsPage(),
               ),
             ),
           ),
@@ -141,7 +144,27 @@ class AppRouter {
             pageBuilder: (context, state) => NoTransitionPage(
               child: Scaffold(
                 appBar: AppBar(title: const Text('Mi Perfil')),
-                body: const Center(child: Text('Configuración de tu perfil.')),
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Configuración de tu perfil.'),
+                      const SizedBox(height: 32),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          getIt<AuthBloc>()
+                              .add(const AuthEvent.logoutRequested());
+                        },
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Cerrar Sesión'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

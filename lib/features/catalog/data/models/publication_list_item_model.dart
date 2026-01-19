@@ -132,7 +132,7 @@ sealed class PublicationListItemModel
         duration: game.duration,
         players: game.players,
         difficulty: game.difficulty,
-        rules: game.rules?.toDomainModel(),
+        rules: game.rules.toDomainModel(),
       );
 }
 
@@ -168,6 +168,6 @@ sealed class PublicationDetailModel
         duration: game.duration,
         players: game.players,
         difficulty: game.difficulty,
-        rules: game.rules?.toDomainModel(),
+        rules: game.rules.toDomainModel(),
       );
 }

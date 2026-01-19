@@ -61,7 +61,7 @@ class PublicationCard extends StatelessWidget {
             Stack(
               children: [
                 AspectRatio(
-                  aspectRatio: 16 / 10,
+                  aspectRatio: 16 / 9,
                   child: CachedNetworkImage(
                     imageUrl: publication.heroImage,
                     fit: BoxFit.cover,
@@ -138,7 +138,7 @@ class PublicationCard extends StatelessWidget {
 
             // Content
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

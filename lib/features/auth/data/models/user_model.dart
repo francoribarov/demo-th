@@ -17,10 +17,10 @@ sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
     required String id,
     required String email,
     required String username,
-    @JsonKey(name: 'image_url') String? imageUrl,
-    @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
+    String? imageUrl,
+    DateTime? dateOfBirth,
     UserAddressModel? address,
-    @JsonKey(name: 'delivery_zone') List<String>? deliveryZone,
+    List<String>? deliveryZone,
     @JsonKey(name: 'preferences')
     @Default([])
     List<GameCategoryModel> preferences,
@@ -31,7 +31,7 @@ sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
     @Default(0.0) double rating,
     @JsonKey(name: 'total_reviews') @Default(0) int totalReviews,
     @JsonKey(name: 'is_active') @Default(true) bool isActive,
-    @JsonKey(name: 'created_at') DateTime? createdAt,
+    DateTime? createdAt,
   }) = _UserModel;
 
   const UserModel._();
@@ -90,9 +90,9 @@ sealed class UserAddressModel
     implements BaseDtoResponse<UserAddress> {
   const factory UserAddressModel({
     required String address,
-    @JsonKey(name: 'address_name') required String addressName,
+    required String addressName,
     required String number,
-    @JsonKey(name: 'additional_notes') String? additionalNotes,
+    String? additionalNotes,
   }) = _UserAddressModel;
 
   const UserAddressModel._();

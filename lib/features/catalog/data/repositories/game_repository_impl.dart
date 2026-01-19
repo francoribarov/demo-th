@@ -24,8 +24,10 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
 
   @override
   Future<List<Game>> getGames() async {
-    final response = await _gameDatasource.getPublications();
-    return response.items.map((m) => m.toGameEntity()).toList();
+    final response = await _gameDatasource.getAllGames();
+    // ignore: avoid_print
+    print('DEBUG: getGames fetched ${response.length} items from /api/games');
+    return response.map((m) => m.toDomainModel()).toList();
   }
 
   @override
@@ -99,7 +101,7 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
       sortBy: sortByParam,
     );
 
-    return response.items.map((m) => m.toGameEntity()).toList();
+    return response.map((m) => m.toGameEntity()).toList();
   }
 
   @override
@@ -127,6 +129,6 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
     String? query,
   }) async {
     final response = await _gameDatasource.getPublicationListings(query: query);
-    return response.items.map((m) => m.toDomainModel()).toList();
+    return response.map((m) => m.toDomainModel()).toList();
   }
 }

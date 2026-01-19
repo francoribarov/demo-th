@@ -32,7 +32,7 @@ class AvailabilityDateSelector extends StatelessWidget {
   Future<void> _showRangePicker(BuildContext context) async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final ranges = _normalizedRanges();
+    final booked = _normalizedBookedDates();
 
     final initialStart = DateTime.tryParse(startDate ?? '');
     final initialEnd = DateTime.tryParse(endDate ?? '');
@@ -42,10 +42,9 @@ class AvailabilityDateSelector extends StatelessWidget {
       initialRange = DateTimeRange(start: initialStart, end: initialEnd);
     }
 
+    // Allow booking up to a year in advance
     final firstDate = today;
-    final lastDate = ranges.isNotEmpty
-        ? ranges.last.$2
-        : today.add(const Duration(days: 365));
+    final lastDate = today.add(const Duration(days: 365));
 
     final picked = await showDateRangePicker(
       context: context,
@@ -56,9 +55,8 @@ class AvailabilityDateSelector extends StatelessWidget {
       helpText: 'Seleccioná el rango (mínimo 3 días)',
       selectableDayPredicate: (day, start, end) {
         if (day.isBefore(today)) return false;
-        if (ranges.isEmpty) return true;
-        // Day must be in at least one available range
-        return ranges.any(
+        // Day is available if it is NOT in any booked range
+        return !booked.any(
           (range) => !day.isBefore(range.$1) && !day.isAfter(range.$2),
         );
       },
@@ -98,11 +96,11 @@ class AvailabilityDateSelector extends StatelessWidget {
     }
   }
 
-  List<(DateTime, DateTime)> _normalizedRanges() {
-    final ranges = publication.availability;
-    if (ranges == null || ranges.isEmpty) return const [];
+  List<(DateTime, DateTime)> _normalizedBookedDates() {
+    final booked = publication.bookedDates;
+    if (booked.isEmpty) return const [];
 
-    return ranges
+    return booked
         .map((range) {
           final from = DateTime.tryParse(range.from);
           final to = DateTime.tryParse(range.to);
@@ -110,8 +108,7 @@ class AvailabilityDateSelector extends StatelessWidget {
           return (from, to);
         })
         .whereType<(DateTime, DateTime)>()
-        .toList()
-      ..sort((a, b) => a.$1.compareTo(b.$1));
+        .toList();
   }
 
   @override

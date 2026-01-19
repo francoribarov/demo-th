@@ -10,11 +10,14 @@ sealed class DeliveryMethodModel
     with _$DeliveryMethodModel
     implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodModel({
-    required int id,
-    required String deliveryType,
-    required int price,
+    int? id,
+    String? publicationId,
+    required DeliveryType deliveryType,
+    @Default(0) int price,
     String? initPickupTime,
     String? finishPickupTime,
+    String? createdAt,
+    String? updatedAt,
   }) = _DeliveryMethodModel;
 
   const DeliveryMethodModel._();
@@ -25,18 +28,27 @@ sealed class DeliveryMethodModel
   factory DeliveryMethodModel.fromEntity(DeliveryMethod entity) =>
       DeliveryMethodModel(
         id: entity.id,
+        publicationId: entity.publicationId,
         deliveryType: entity.deliveryType,
         price: entity.price,
-        initPickupTime: entity.initPickupTime,
-        finishPickupTime: entity.finishPickupTime,
+        initPickupTime: entity.initPickupTime?.toIso8601String(),
+        finishPickupTime: entity.finishPickupTime?.toIso8601String(),
+        createdAt: entity.createdAt?.toIso8601String(),
+        updatedAt: entity.updatedAt?.toIso8601String(),
       );
 
   @override
   DeliveryMethod toDomainModel() => DeliveryMethod(
         id: id,
+        publicationId: publicationId,
         deliveryType: deliveryType,
         price: price,
-        initPickupTime: initPickupTime,
-        finishPickupTime: finishPickupTime,
+        initPickupTime:
+            initPickupTime != null ? DateTime.tryParse(initPickupTime!) : null,
+        finishPickupTime: finishPickupTime != null
+            ? DateTime.tryParse(finishPickupTime!)
+            : null,
+        createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
+        updatedAt: updatedAt != null ? DateTime.tryParse(updatedAt!) : null,
       );
 }
