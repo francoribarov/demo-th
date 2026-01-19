@@ -25,7 +25,9 @@ class _GameRulesPageState extends State<GameRulesPage> {
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator(color: AppColors.gameRust)),
+            body: Center(
+              child: CircularProgressIndicator(color: AppColors.gameRust),
+            ),
           );
         }
 
@@ -35,10 +37,13 @@ class _GameRulesPageState extends State<GameRulesPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/game/${widget.gameId}'),
+                onPressed: () =>
+                    context.popOrGo('/publication/${widget.gameId}'),
               ),
             ),
-            body: Center(child: Text(state.errorMessage ?? 'Juego no encontrado')),
+            body: Center(
+              child: Text(state.errorMessage ?? 'Juego no encontrado'),
+            ),
           );
         }
 
@@ -46,7 +51,7 @@ class _GameRulesPageState extends State<GameRulesPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/game/${widget.gameId}'),
+              onPressed: () => context.popOrGo('/publication/${widget.gameId}'),
             ),
             title: Text('Reglas de ${game.title}'),
           ),
@@ -65,7 +70,10 @@ class _GameRulesPageState extends State<GameRulesPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _InfoChip(icon: Icons.timer, label: game.duration),
+                      _InfoChip(
+                        icon: Icons.timer,
+                        label: '${game.duration} min',
+                      ),
                       _InfoChip(icon: Icons.people, label: game.players),
                       _InfoChip(icon: Icons.psychology, label: game.difficulty),
                     ],
@@ -87,17 +95,35 @@ class _GameRulesPageState extends State<GameRulesPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.play_circle_outline, size: 48, color: AppColors.gameBrown.withOpacityValue(0.5)),
+                        Icon(
+                          Icons.play_circle_outline,
+                          size: 48,
+                          color: AppColors.gameBrown.withOpacityValue(0.5),
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           'Video tutorial de YouTube',
-                          style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: AppColors.gameBrown.withOpacityValue(0.7),
+                          ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          '(próximamente)',
-                          style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.5)),
-                        ),
+                        if (game.rules.videoUrl.isEmpty)
+                          Text(
+                            '(próximamente)',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.gameBrown.withOpacityValue(0.5),
+                            ),
+                          )
+                        else
+                          Text(
+                            game.rules.videoUrl,
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.gameBrown.withOpacityValue(0.5),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                       ],
                     ),
                   ),
@@ -113,9 +139,14 @@ class _GameRulesPageState extends State<GameRulesPage> {
                   decoration: BoxDecoration(
                     color: AppColors.card,
                     borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                    border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+                    border: Border.all(
+                      color: AppColors.gameBrown.withOpacityValue(0.1),
+                    ),
                   ),
-                  child: Text(game.rules.text, style: AppTypography.bodyLarge),
+                  child: Text(
+                    game.rules.summaryRules,
+                    style: AppTypography.bodyLarge,
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -123,9 +154,18 @@ class _GameRulesPageState extends State<GameRulesPage> {
                 // Cheat sheet
                 Text('CHEAT SHEET', style: AppTypography.sectionHeader),
                 const SizedBox(height: 12),
-                _CheatSheetSection(title: 'Cómo se gana', content: _generateCheatSheetContent(game.title, 'win')),
-                _CheatSheetSection(title: 'Lo básico', content: _generateCheatSheetContent(game.title, 'basics')),
-                _CheatSheetSection(title: 'Avanzado', content: _generateCheatSheetContent(game.title, 'advanced')),
+                _CheatSheetSection(
+                  title: 'Cómo se gana',
+                  content: _generateCheatSheetContent(game.title, 'win'),
+                ),
+                _CheatSheetSection(
+                  title: 'Lo básico',
+                  content: _generateCheatSheetContent(game.title, 'basics'),
+                ),
+                _CheatSheetSection(
+                  title: 'Avanzado',
+                  content: _generateCheatSheetContent(game.title, 'advanced'),
+                ),
 
                 const SizedBox(height: 24),
 
@@ -134,11 +174,17 @@ class _GameRulesPageState extends State<GameRulesPage> {
                   onPressed: () {
                     ScaffoldMessenger.of(
                       context,
-                    ).showSnackBar(const SnackBar(content: Text('Descarga de PDF próximamente')));
+                    ).showSnackBar(
+                      const SnackBar(
+                        content: Text('Descarga de PDF próximamente'),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.picture_as_pdf),
                   label: const Text('Descargar manual completo (PDF)'),
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(double.infinity, 48)),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 48),
+                  ),
                 ),
 
                 const SizedBox(height: 100),

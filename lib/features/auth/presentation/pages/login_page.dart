@@ -8,7 +8,7 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 
 /// Login screen for email/password authentication.
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   /// Creates the login page.
   const LoginPage({super.key, this.from});
 
@@ -16,12 +16,27 @@ class LoginPage extends StatelessWidget {
   final String? from;
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthBloc>().add(const AuthEvent.clearErrors());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listenWhen: (previous, current) => previous.status != current.status && current.isAuthenticated,
+      listenWhen: (previous, current) =>
+          previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
-        final redirectTo = from;
-        if (redirectTo != null && redirectTo.trim().isNotEmpty) {
+        final redirectTo = widget.from;
+        if (redirectTo != null &&
+            redirectTo.trim().isNotEmpty &&
+            !redirectTo.contains(AppRoutes.login) &&
+            !redirectTo.contains(AppRoutes.register)) {
           context.go(redirectTo);
         } else {
           context.goHome();
@@ -30,38 +45,77 @@ class LoginPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Iniciar sesión'),
-          leading: IconButton(icon: const Icon(Icons.close), onPressed: () => context.goHome()),
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => context.popOrGo(AppRoutes.home),
+          ),
         ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
-                final isBusy = state.isSubmittingLogin || state.isCheckingStatus;
+                final isSubmitting = state.isSubmittingLogin;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text('Bienvenido/a', style: AppTypography.headlineMedium, textAlign: TextAlign.center),
+                    Text(
+                      'Bienvenido/a',
+                      style: AppTypography.headlineMedium,
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Ingresá tus datos para continuar.',
-                      style: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.gameBrown.withOpacityValue(0.7),
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
-                    TextField(
-                      enabled: !isBusy,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(labelText: 'Email', hintText: 'tu@email.com'),
-                      onChanged: (v) => context.read<AuthBloc>().add(AuthEvent.loginEmailChanged(v)),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      enabled: !isBusy,
-                      obscureText: true,
-                      decoration: const InputDecoration(labelText: 'Contraseña'),
-                      onChanged: (v) => context.read<AuthBloc>().add(AuthEvent.loginPasswordChanged(v)),
+                    AutofillGroup(
+                      child: Column(
+                        children: [
+                          TextField(
+                            enabled: !isSubmitting,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            autofillHints: const [AutofillHints.email],
+                            autocorrect: false,
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              hintText: 'tu@email.com',
+                            ),
+                            onChanged: (email) => context.read<AuthBloc>().add(
+                              AuthEvent.loginEmailChanged(email),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          TextField(
+                            enabled: !isSubmitting,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            autofillHints: const [AutofillHints.password],
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            decoration: const InputDecoration(
+                              labelText: 'Contraseña',
+                            ),
+                            onChanged: (password) =>
+                                context.read<AuthBloc>().add(
+                                  AuthEvent.loginPasswordChanged(password),
+                                ),
+                            onSubmitted: (_) {
+                              if (!isSubmitting) {
+                                context.read<AuthBloc>().add(
+                                  const AuthEvent.loginSubmitted(),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                     if (state.loginErrorMessage != null) ...[
                       const SizedBox(height: 12),
@@ -85,22 +139,34 @@ class LoginPage extends StatelessWidget {
                     ],
                     const Spacer(),
                     ElevatedButton(
-                      onPressed: isBusy ? null : () => context.read<AuthBloc>().add(const AuthEvent.loginSubmitted()),
-                      child: isBusy
+                      onPressed: isSubmitting
+                          ? null
+                          : () => context.read<AuthBloc>().add(
+                              const AuthEvent.loginSubmitted(),
+                            ),
+                      child: isSubmitting
                           ? const SizedBox(
                               height: 18,
                               width: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
                             )
                           : const Text('Ingresar'),
                     ),
                     const SizedBox(height: 12),
                     OutlinedButton(
-                      onPressed: isBusy
+                      onPressed: isSubmitting
                           ? null
                           : () {
-                              final encodedFrom = from != null ? Uri.encodeComponent(from!) : null;
-                              final query = encodedFrom != null ? '?from=$encodedFrom' : '';
+                              final from = widget.from;
+                              final encodedFrom = from != null
+                                  ? Uri.encodeComponent(from)
+                                  : null;
+                              final query = encodedFrom != null
+                                  ? '?from=$encodedFrom'
+                                  : '';
                               context.go('${AppRoutes.register}$query');
                             },
                       child: const Text('Crear cuenta'),

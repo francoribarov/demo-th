@@ -29,8 +29,11 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
+.metadata
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
@@ -53,5 +56,14 @@ ios/.symlinks/
 # FVM Version Cache
 .fvm/
 
+# Editor / local env
+.vscode/
+*.env
+*.env.*
+
 # Local agent guide (generated per workspace)
 AGENTS.md
+.freezed.dart
+**/*.freezed.dart
+*.g.dart
+**/*.g.dart

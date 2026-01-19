@@ -1,0 +1,205 @@
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
+import 'package:mobile_table_hopping/features/auth/domain/usecases/get_auth_status.dart';
+import 'package:mobile_table_hopping/features/auth/domain/usecases/login.dart';
+import 'package:mobile_table_hopping/features/auth/domain/usecases/logout.dart';
+import 'package:mobile_table_hopping/features/auth/domain/usecases/refresh_token.dart';
+import 'package:mobile_table_hopping/features/auth/domain/usecases/register.dart';
+import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockGetAuthStatus extends Mock implements GetAuthStatus {}
+
+class MockLogin extends Mock implements Login {}
+
+class MockRegister extends Mock implements Register {}
+
+class MockLogout extends Mock implements Logout {}
+
+class MockRefreshToken extends Mock implements RefreshToken {}
+
+void main() {
+  late GetAuthStatus getAuthStatus;
+  late Login login;
+  late Register register;
+  late Logout logout;
+  late RefreshToken refreshToken;
+
+  const session = AuthSession(
+    tokens: AuthTokens(
+      accessToken: 'access-token',
+      refreshToken: 'refresh-token',
+    ),
+    user: User(id: 'user-1', email: 'user@example.com', username: 'User One'),
+  );
+
+  setUp(() {
+    getAuthStatus = MockGetAuthStatus();
+    login = MockLogin();
+    register = MockRegister();
+    logout = MockLogout();
+    refreshToken = MockRefreshToken();
+
+    when(() => getAuthStatus()).thenAnswer((_) async => null);
+  });
+
+  AuthBloc buildBloc() => AuthBloc(
+    getAuthStatus: getAuthStatus,
+    login: login,
+    register: register,
+    logout: logout,
+    refreshToken: refreshToken,
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'emits authenticated state on login success',
+    build: () {
+      when(
+        () => login(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => session);
+      return buildBloc();
+    },
+    act: (bloc) => bloc
+      ..add(const AuthEvent.loginEmailChanged('user@example.com'))
+      ..add(const AuthEvent.loginPasswordChanged('password123'))
+      ..add(const AuthEvent.loginSubmitted()),
+    skip: 4,
+    expect: () => [
+      isA<AuthState>().having(
+        (state) => state.isSubmittingLogin,
+        'isSubmittingLogin',
+        true,
+      ),
+      isA<AuthState>()
+          .having(
+            (state) => state.isSubmittingLogin,
+            'isSubmittingLogin',
+            false,
+          )
+          .having((state) => state.status, 'status', AuthStatus.authenticated)
+          .having((state) => state.session, 'session', session),
+    ],
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'emits error on login failure',
+    build: () {
+      when(
+        () => login(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenThrow(Exception('Invalid'));
+      return buildBloc();
+    },
+    act: (bloc) => bloc
+      ..add(const AuthEvent.loginEmailChanged('user@example.com'))
+      ..add(const AuthEvent.loginPasswordChanged('password123'))
+      ..add(const AuthEvent.loginSubmitted()),
+    skip: 4,
+    expect: () => [
+      isA<AuthState>().having(
+        (state) => state.isSubmittingLogin,
+        'isSubmittingLogin',
+        true,
+      ),
+      isA<AuthState>()
+          .having(
+            (state) => state.isSubmittingLogin,
+            'isSubmittingLogin',
+            false,
+          )
+          .having(
+            (state) => state.loginErrorMessage,
+            'loginErrorMessage',
+            contains('Invalid'),
+          ),
+    ],
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'emits authenticated state on register success',
+    build: () {
+      when(
+        () => register(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+          username: any(named: 'username'),
+          location: any(named: 'location'),
+        ),
+      ).thenAnswer((_) async => session);
+      return buildBloc();
+    },
+    act: (bloc) => bloc
+      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
+      ..add(const AuthEvent.registerPasswordChanged('password123'))
+      ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
+      ..add(const AuthEvent.registerUsernameChanged('User One'))
+      ..add(const AuthEvent.registerLocationChanged('Montevideo'))
+      ..add(const AuthEvent.registerSubmitted()),
+    skip: 7,
+    expect: () => [
+      isA<AuthState>().having(
+        (state) => state.isSubmittingRegister,
+        'isSubmittingRegister',
+        true,
+      ),
+      isA<AuthState>()
+          .having(
+            (state) => state.isSubmittingRegister,
+            'isSubmittingRegister',
+            false,
+          )
+          .having((state) => state.status, 'status', AuthStatus.authenticated)
+          .having((state) => state.session, 'session', session)
+          .having((state) => state.registerPassword, 'registerPassword', ''),
+    ],
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'emits error on register failure',
+    build: () {
+      when(
+        () => register(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+          username: any(named: 'username'),
+          location: any(named: 'location'),
+        ),
+      ).thenThrow(Exception('Register failed'));
+      return buildBloc();
+    },
+    act: (bloc) => bloc
+      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
+      ..add(const AuthEvent.registerPasswordChanged('password123'))
+      ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
+      ..add(const AuthEvent.registerUsernameChanged('User One'))
+      ..add(const AuthEvent.registerLocationChanged('Montevideo'))
+      ..add(const AuthEvent.registerSubmitted()),
+    skip: 7,
+    expect: () => [
+      isA<AuthState>().having(
+        (state) => state.isSubmittingRegister,
+        'isSubmittingRegister',
+        true,
+      ),
+      isA<AuthState>()
+          .having(
+            (state) => state.isSubmittingRegister,
+            'isSubmittingRegister',
+            false,
+          )
+          .having(
+            (state) => state.registerErrorMessage,
+            'registerErrorMessage',
+            contains('Register failed'),
+          ),
+    ],
+  );
+}

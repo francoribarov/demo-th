@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
 
@@ -57,19 +57,25 @@ class _FiltersSheetState {
   final int version;
 
   _FiltersSheetState copyWith({FiltersState? filters, int? version}) {
-    return _FiltersSheetState(filters: filters ?? this.filters, version: version ?? this.version);
+    return _FiltersSheetState(
+      filters: filters ?? this.filters,
+      version: version ?? this.version,
+    );
   }
 }
 
 class _FiltersSheetCubit extends Cubit<_FiltersSheetState> {
-  _FiltersSheetCubit(FiltersState initialFilters) : super(_FiltersSheetState(filters: initialFilters, version: 0));
+  _FiltersSheetCubit(FiltersState initialFilters)
+    : super(_FiltersSheetState(filters: initialFilters, version: 0));
 
   void updateFilters(FiltersState Function(FiltersState) update) {
     emit(state.copyWith(filters: update(state.filters)));
   }
 
   void clearAll() {
-    emit(state.copyWith(filters: const FiltersState(), version: state.version + 1));
+    emit(
+      state.copyWith(filters: const FiltersState(), version: state.version + 1),
+    );
   }
 }
 
@@ -115,7 +121,9 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
               return Container(
                 decoration: const BoxDecoration(
                   color: AppColors.card,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radius3xl)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(AppTheme.radius3xl),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -123,7 +131,11 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.1))),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: AppColors.gameBrown.withOpacityValue(0.1),
+                          ),
+                        ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -173,7 +185,9 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                                 return _SelectableChip(
                                   label: option.label,
                                   isSelected: _filters.playersRange == option,
-                                  onTap: () => _updateFilters((f) => f.copyWith(playersRange: option)),
+                                  onTap: () => _updateFilters(
+                                    (f) => f.copyWith(playersRange: option),
+                                  ),
                                 );
                               }).toList(),
                             ),
@@ -186,11 +200,15 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             Wrap(
                               spacing: 8,
                               runSpacing: 8,
-                              children: DurationRangeOption.values.map((option) {
+                              children: DurationRangeOption.values.map((
+                                option,
+                              ) {
                                 return _SelectableChip(
                                   label: option.label,
                                   isSelected: _filters.durationRange == option,
-                                  onTap: () => _updateFilters((f) => f.copyWith(durationRange: option)),
+                                  onTap: () => _updateFilters(
+                                    (f) => f.copyWith(durationRange: option),
+                                  ),
                                 );
                               }).toList(),
                             ),
@@ -200,7 +218,8 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             // Price section
                             _SectionHeader(
                               title: 'Precio por día',
-                              description: 'Filtrá por precio de alquiler por día.',
+                              description:
+                                  'Filtrá por precio de alquiler por día.',
                             ),
                             const SizedBox(height: 12),
                             Row(
@@ -210,7 +229,9 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                                     label: 'Mínimo (UYU)',
                                     value: _filters.priceMin,
                                     version: _version,
-                                    onChanged: (value) => _updateFilters((f) => f.copyWith(priceMin: value)),
+                                    onChanged: (value) => _updateFilters(
+                                      (f) => f.copyWith(priceMin: value),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 16),
@@ -219,7 +240,9 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                                     label: 'Máximo (UYU)',
                                     value: _filters.priceMax,
                                     version: _version,
-                                    onChanged: (value) => _updateFilters((f) => f.copyWith(priceMax: value)),
+                                    onChanged: (value) => _updateFilters(
+                                      (f) => f.copyWith(priceMax: value),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -237,7 +260,9 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                                 return _SelectableChip(
                                   label: option.label,
                                   isSelected: _filters.difficulty == option,
-                                  onTap: () => _updateFilters((f) => f.copyWith(difficulty: option)),
+                                  onTap: () => _updateFilters(
+                                    (f) => f.copyWith(difficulty: option),
+                                  ),
                                 );
                               }).toList(),
                             ),
@@ -251,14 +276,17 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                               spacing: 8,
                               runSpacing: 8,
                               children: ExperienceTypes.all.map((type) {
-                                final isSelected = _filters.experienceTypes.contains(type);
+                                final isSelected = _filters.experienceTypes
+                                    .contains(type);
                                 return _SelectableChip(
                                   label: type,
                                   isSelected: isSelected,
                                   variant: _SelectableChipVariant.outline,
                                   onTap: () {
                                     _updateFilters((f) {
-                                      final types = List<String>.from(f.experienceTypes);
+                                      final types = List<String>.from(
+                                        f.experienceTypes,
+                                      );
                                       if (isSelected) {
                                         types.remove(type);
                                       } else {
@@ -281,33 +309,53 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: AppColors.gameCream.withOpacityValue(0.6),
-                                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                                border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+                                color: AppColors.gameCream.withOpacityValue(
+                                  0.6,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusLg,
+                                ),
+                                border: Border.all(
+                                  color: AppColors.gameBrown.withOpacityValue(
+                                    0.1,
+                                  ),
+                                ),
                               ),
                               child: Row(
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text('Solo disponibles en mis fechas', style: AppTypography.labelLarge),
+                                        Text(
+                                          'Solo disponibles en mis fechas',
+                                          style: AppTypography.labelLarge,
+                                        ),
                                         const SizedBox(height: 4),
                                         Text(
                                           widget.hasDateFilter
                                               ? 'Mostramos únicamente los juegos con cupo libre.'
                                               : 'Agregá fechas para activar este filtro.',
-                                          style: AppTypography.bodySmall.copyWith(
-                                            color: AppColors.gameBrown.withOpacityValue(0.7),
-                                          ),
+                                          style: AppTypography.bodySmall
+                                              .copyWith(
+                                                color: AppColors.gameBrown
+                                                    .withOpacityValue(0.7),
+                                              ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   Switch(
-                                    value: _filters.onlyAvailableInDates && widget.hasDateFilter,
+                                    value:
+                                        _filters.onlyAvailableInDates &&
+                                        widget.hasDateFilter,
                                     onChanged: widget.hasDateFilter
-                                        ? (value) => _updateFilters((f) => f.copyWith(onlyAvailableInDates: value))
+                                        ? (value) => _updateFilters(
+                                            (f) => f.copyWith(
+                                              onlyAvailableInDates: value,
+                                            ),
+                                          )
                                         : null,
                                   ),
                                 ],
@@ -320,18 +368,28 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                                border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.radiusLg,
+                                ),
+                                border: Border.all(
+                                  color: AppColors.gameBrown.withOpacityValue(
+                                    0.1,
+                                  ),
+                                ),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Valoración mínima', style: AppTypography.labelLarge),
+                                  Text(
+                                    'Valoración mínima',
+                                    style: AppTypography.labelLarge,
+                                  ),
                                   const SizedBox(height: 4),
                                   Text(
                                     'Mostramos juegos con puntaje igual o superior al seleccionado.',
                                     style: AppTypography.bodySmall.copyWith(
-                                      color: AppColors.gameBrown.withOpacityValue(0.7),
+                                      color: AppColors.gameBrown
+                                          .withOpacityValue(0.7),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -341,8 +399,12 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                                     children: RatingOptions.all.map((option) {
                                       return _SelectableChip(
                                         label: option.$2,
-                                        isSelected: _filters.minRating == option.$1,
-                                        onTap: () => _updateFilters((f) => f.copyWith(minRating: option.$1)),
+                                        isSelected:
+                                            _filters.minRating == option.$1,
+                                        onTap: () => _updateFilters(
+                                          (f) =>
+                                              f.copyWith(minRating: option.$1),
+                                        ),
                                       );
                                     }).toList(),
                                   ),
@@ -361,7 +423,11 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacityValue(0.9),
-                        border: Border(top: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.1))),
+                        border: Border(
+                          top: BorderSide(
+                            color: AppColors.gameBrown.withOpacityValue(0.1),
+                          ),
+                        ),
                       ),
                       child: SafeArea(
                         top: false,
@@ -369,8 +435,14 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              previewCount == 1 ? 'Se encontró 1 juego' : 'Se encontraron $previewCount juegos',
-                              style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                              previewCount == 1
+                                  ? 'Se encontró 1 juego'
+                                  : 'Se encontraron $previewCount juegos',
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppColors.gameBrown.withOpacityValue(
+                                  0.7,
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 12),
                             ElevatedButton(
@@ -406,7 +478,12 @@ class _SectionHeader extends StatelessWidget {
         Text(title, style: AppTypography.titleMedium),
         if (description != null) ...[
           const SizedBox(height: 4),
-          Text(description!, style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7))),
+          Text(
+            description!,
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.gameBrown.withOpacityValue(0.7),
+            ),
+          ),
         ],
       ],
     );
@@ -451,7 +528,9 @@ class _SelectableChip extends StatelessWidget {
         child: Text(
           label,
           style: AppTypography.labelMedium.copyWith(
-            color: isSelected ? AppColors.gameBrown : AppColors.gameBrown.withOpacityValue(0.7),
+            color: isSelected
+                ? AppColors.gameBrown
+                : AppColors.gameBrown.withOpacityValue(0.7),
           ),
         ),
       ),
@@ -460,7 +539,12 @@ class _SelectableChip extends StatelessWidget {
 }
 
 class _PriceInput extends StatelessWidget {
-  const _PriceInput({required this.label, required this.value, required this.version, required this.onChanged});
+  const _PriceInput({
+    required this.label,
+    required this.value,
+    required this.version,
+    required this.onChanged,
+  });
 
   final String label;
   final int? value;
@@ -472,7 +556,10 @@ class _PriceInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown)),
+        Text(
+          label,
+          style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           key: ValueKey('$label-$version'),
@@ -480,7 +567,10 @@ class _PriceInput extends StatelessWidget {
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             isDense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
           ),
           onChanged: (text) {
             final parsed = int.tryParse(text.trim());

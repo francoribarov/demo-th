@@ -17,7 +17,9 @@ class AppScaffold extends StatelessWidget {
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     if (location == AppRoutes.home) return 0;
+    if (location == AppRoutes.myGames) return 1;
     if (location == AppRoutes.publish) return 2;
+    if (location == AppRoutes.profile) return 3;
     return 0;
   }
 
@@ -25,14 +27,16 @@ class AppScaffold extends StatelessWidget {
     switch (index) {
       case 0:
         context.go(AppRoutes.home);
+        return;
       case 1:
-        // My Games - TODO: implement
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Mis Juegos - próximamente')));
+        context.go(AppRoutes.myGames);
+        return;
       case 2:
         context.go(AppRoutes.publish);
+        return;
       case 3:
-        // Profile - TODO: implement
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Perfil - próximamente')));
+        context.go(AppRoutes.profile);
+        return;
     }
   }
 
@@ -45,9 +49,15 @@ class AppScaffold extends StatelessWidget {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.card,
-          border: const Border(top: BorderSide(color: AppColors.gameRust, width: 4)),
+          border: const Border(
+            top: BorderSide(color: AppColors.gameRust, width: 4),
+          ),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacityValue(0.1), blurRadius: 10, offset: const Offset(0, -4)),
+            BoxShadow(
+              color: Colors.black.withOpacityValue(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -4),
+            ),
           ],
         ),
         child: SafeArea(

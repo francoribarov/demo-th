@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+//
 
 import 'package:flutter/material.dart';
 
@@ -30,7 +30,10 @@ class CategoryChips extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 12),
-          child: Text('EXPLORÁ POR CATEGORÍA', style: AppTypography.sectionHeader),
+          child: Text(
+            'EXPLORÁ POR CATEGORÍA',
+            style: AppTypography.sectionHeader,
+          ),
         ),
         SizedBox(
           height: 110,
@@ -45,15 +48,20 @@ class CategoryChips extends StatelessWidget {
                 return _CategoryChip(
                   name: category.name,
                   icon: category.icon,
-                  gradient: AppColors.gradientPalette[index % AppColors.gradientPalette.length],
-                  onTap: () => onCategorySelected(category.query ?? category.name),
+                  gradient:
+                      AppColors.gradientPalette[index %
+                          AppColors.gradientPalette.length],
+                  onTap: () =>
+                      onCategorySelected(category.query ?? category.name),
                 );
               } else {
                 final shortcut = filterShortcuts[index - categories.length];
                 return _CategoryChip(
                   name: shortcut.name,
                   icon: shortcut.icon,
-                  gradient: AppColors.gradientPalette[index % AppColors.gradientPalette.length],
+                  gradient:
+                      AppColors.gradientPalette[index %
+                          AppColors.gradientPalette.length],
                   onTap: () => onShortcutSelected(shortcut),
                 );
               }
@@ -66,7 +74,12 @@ class CategoryChips extends StatelessWidget {
 }
 
 class _CategoryChip extends StatelessWidget {
-  const _CategoryChip({required this.name, required this.icon, required this.gradient, required this.onTap});
+  const _CategoryChip({
+    required this.name,
+    required this.icon,
+    required this.gradient,
+    required this.onTap,
+  });
 
   final String name;
   final String icon;
@@ -81,10 +94,20 @@ class _CategoryChip extends StatelessWidget {
         width: 100,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: gradient, begin: Alignment.topLeft, end: Alignment.bottomRight),
+          gradient: LinearGradient(
+            colors: gradient,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(color: Colors.white.withOpacityValue(0.6)),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacityValue(0.05), blurRadius: 8, offset: const Offset(0, 2))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacityValue(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -96,10 +119,16 @@ class _CategoryChip extends StatelessWidget {
                 color: Colors.white.withOpacityValue(0.8),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacityValue(0.05), blurRadius: 4, offset: const Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black.withOpacityValue(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
-              child: Center(child: Text(icon, style: const TextStyle(fontSize: 24))),
+              child: Center(
+                child: Text(icon, style: const TextStyle(fontSize: 24)),
+              ),
             ),
             const SizedBox(height: 4),
             Text(

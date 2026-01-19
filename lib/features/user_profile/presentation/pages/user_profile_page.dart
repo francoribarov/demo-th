@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/widgets/review_widgets.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 
 /// User profile page matching UserProfile.tsx
@@ -21,7 +22,9 @@ class UserProfilePage extends StatelessWidget {
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator(color: AppColors.gameRust)),
+            body: Center(
+              child: CircularProgressIndicator(color: AppColors.gameRust),
+            ),
           );
         }
 
@@ -29,7 +32,9 @@ class UserProfilePage extends StatelessWidget {
         if (game == null) {
           return Scaffold(
             appBar: AppBar(title: const Text('Propietario')),
-            body: Center(child: Text(state.errorMessage ?? 'No se encontró el juego')),
+            body: Center(
+              child: Text(state.errorMessage ?? 'No se encontró el juego'),
+            ),
           );
         }
 
@@ -57,20 +62,25 @@ class UserProfilePage extends StatelessWidget {
           (
             name: 'Diego M.',
             rating: 5.0,
-            comment: 'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
+            comment:
+                'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
             date: 'hace 1 mes',
           ),
           (
             name: 'Camila S.',
             rating: 4.0,
-            comment: 'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
+            comment:
+                'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
             date: 'hace 1 mes',
           ),
         ];
 
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.popOrGo('/game/$gameId')),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.popOrGo('/publication/$gameId'),
+            ),
             title: const Text('Perfil del dueño'),
           ),
           body: SingleChildScrollView(
@@ -90,23 +100,37 @@ class UserProfilePage extends StatelessWidget {
                       CircleAvatar(
                         radius: 40,
                         backgroundColor: AppColors.gameBrown,
-                        child: Text(ownerName[0], style: AppTypography.displayMedium.copyWith(color: Colors.white)),
+                        child: Text(
+                          ownerName[0],
+                          style: AppTypography.displayMedium.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(ownerName, style: AppTypography.headlineMedium),
+                            Text(
+                              ownerName,
+                              style: AppTypography.headlineMedium,
+                            ),
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.location_on, size: 16, color: AppColors.gameBrown),
+                                const Icon(
+                                  Icons.location_on,
+                                  size: 16,
+                                  color: AppColors.gameBrown,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   location,
                                   style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.gameBrown.withOpacityValue(0.7),
+                                    color: AppColors.gameBrown.withOpacityValue(
+                                      0.7,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -114,12 +138,18 @@ class UserProfilePage extends StatelessWidget {
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.access_time, size: 16, color: AppColors.gameBrown),
+                                const Icon(
+                                  Icons.access_time,
+                                  size: 16,
+                                  color: AppColors.gameBrown,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   'Responde en $responseTime',
                                   style: AppTypography.bodySmall.copyWith(
-                                    color: AppColors.gameBrown.withOpacityValue(0.7),
+                                    color: AppColors.gameBrown.withOpacityValue(
+                                      0.7,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -137,7 +167,11 @@ class UserProfilePage extends StatelessWidget {
                 Row(
                   children: [
                     const Expanded(
-                      child: _StatCard(icon: Icons.calendar_today, value: memberSince, label: 'Miembro desde'),
+                      child: _StatCard(
+                        icon: Icons.calendar_today,
+                        value: memberSince,
+                        label: 'Miembro desde',
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -160,18 +194,25 @@ class UserProfilePage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.card,
                     borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                    border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+                    border: Border.all(
+                      color: AppColors.gameBrown.withOpacityValue(0.1),
+                    ),
                   ),
                   child: Row(
                     children: [
                       // Overall rating
                       Column(
                         children: [
-                          Text(rating.toStringAsFixed(1), style: AppTypography.displayLarge),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            style: AppTypography.displayLarge,
+                          ),
                           Row(
                             children: List.generate(5, (i) {
                               return Icon(
-                                i < rating.floor() ? Icons.star : Icons.star_border,
+                                i < rating.floor()
+                                    ? Icons.star
+                                    : Icons.star_border,
                                 color: AppColors.gameGold,
                                 size: 20,
                               );
@@ -180,7 +221,9 @@ class UserProfilePage extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             '$totalReviews reseñas',
-                            style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.gameBrown.withOpacityValue(0.7),
+                            ),
                           ),
                         ],
                       ),
@@ -191,8 +234,14 @@ class UserProfilePage extends StatelessWidget {
                           children: List.generate(5, (i) {
                             final stars = 5 - i;
                             final count = ratingBreakdown[stars] ?? 0;
-                            final percentage = totalReviews > 0 ? count / totalReviews : 0.0;
-                            return _RatingBar(stars: stars, percentage: percentage, count: count);
+                            final percentage = totalReviews > 0
+                                ? count / totalReviews
+                                : 0.0;
+                            return ReviewRatingBar(
+                              stars: stars,
+                              percentage: percentage,
+                              count: count,
+                            );
                           }),
                         ),
                       ),
@@ -206,8 +255,12 @@ class UserProfilePage extends StatelessWidget {
                 Text('RESEÑAS', style: AppTypography.sectionHeader),
                 const SizedBox(height: 12),
                 ...reviews.map(
-                  (review) =>
-                      _ReviewCard(name: review.name, rating: review.rating, comment: review.comment, date: review.date),
+                  (review) => ReviewCard(
+                    name: review.name,
+                    rating: review.rating,
+                    comment: review.comment,
+                    dateOrRole: review.date,
+                  ),
                 ),
 
                 const SizedBox(height: 100),
@@ -221,7 +274,11 @@ class UserProfilePage extends StatelessWidget {
 }
 
 class _StatCard extends StatelessWidget {
-  const _StatCard({required this.icon, required this.value, required this.label});
+  const _StatCard({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
   final IconData icon;
   final String value;
   final String label;
@@ -243,108 +300,11 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             label,
-            style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.gameBrown.withOpacityValue(0.7),
+            ),
             textAlign: TextAlign.center,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RatingBar extends StatelessWidget {
-  const _RatingBar({required this.stars, required this.percentage, required this.count});
-  final int stars;
-  final double percentage;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Text('$stars', style: AppTypography.labelSmall),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              height: 8,
-              decoration: BoxDecoration(
-                color: AppColors.gameBrown.withOpacityValue(0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: percentage,
-                child: Container(
-                  decoration: BoxDecoration(color: AppColors.gameGold, borderRadius: BorderRadius.circular(4)),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 24,
-            child: Text(
-              '$count',
-              style: AppTypography.labelSmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ReviewCard extends StatelessWidget {
-  const _ReviewCard({required this.name, required this.rating, required this.comment, required this.date});
-  final String name;
-  final double rating;
-  final String comment;
-  final String date;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: AppColors.gameCream,
-                child: Text(name[0].toUpperCase(), style: AppTypography.labelMedium),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(name, style: AppTypography.titleSmall),
-                    Text(
-                      date,
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                children: List.generate(5, (i) {
-                  return Icon(i < rating ? Icons.star : Icons.star_border, color: AppColors.gameGold, size: 14);
-                }),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(comment, style: AppTypography.bodyMedium),
         ],
       ),
     );

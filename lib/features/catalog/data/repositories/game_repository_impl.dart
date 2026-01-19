@@ -1,17 +1,20 @@
 // Public members in this file are self-explanatory within the data layer.
-// ignore_for_file: public_member_api_docs
+//
 
 import 'package:injectable/injectable.dart';
 
+import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/features/catalog/data/datasources/category_remote_datasource.dart';
 import 'package:mobile_table_hopping/features/catalog/data/datasources/game_remote_datasource.dart';
+import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
+
 import 'package:mobile_table_hopping/features/catalog/domain/entities/filters.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/repositories/game_repository.dart';
 
 /// Implementation of GameRepository using remote datasource
 @LazySingleton(as: GameRepository)
-class GameRepositoryImpl implements GameRepository {
+class GameRepositoryImpl extends BaseRepository implements GameRepository {
   GameRepositoryImpl(this._gameDatasource, this._categoryDatasource);
 
   final GameRemoteDatasource _gameDatasource;
@@ -19,18 +22,14 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<List<Game>> getGames() async {
-    final response = await _gameDatasource.getGames();
-    return response.items.map((m) => m.toEntity()).toList();
+    final response = await _gameDatasource.getPublications();
+    return response.items.map((m) => m.toGameEntity()).toList();
   }
 
   @override
-  Future<Game?> getGameById(int id) async {
-    try {
-      final model = await _gameDatasource.getGameById(id);
-      return model.toEntity();
-    } on Exception {
-      return null;
-    }
+  Future<Game?> getGameById(String id) async {
+    final response = await _gameDatasource.getGameById(id);
+    return response.toGameEntity();
   }
 
   @override
@@ -67,7 +66,8 @@ class GameRepositoryImpl implements GameRepository {
     }
 
     String? difficultyParam;
-    if (filters?.difficulty != null && filters!.difficulty != DifficultyOption.any) {
+    if (filters?.difficulty != null &&
+        filters!.difficulty != DifficultyOption.any) {
       difficultyParam = filters.difficulty.label;
     }
 
@@ -84,7 +84,7 @@ class GameRepositoryImpl implements GameRepository {
       SortOption.duration => 'duration',
     };
 
-    final response = await _gameDatasource.getGames(
+    final response = await _gameDatasource.getPublications(
       query: query,
       category: categoryParam,
       players: playersParam,
@@ -97,30 +97,34 @@ class GameRepositoryImpl implements GameRepository {
       sortBy: sortByParam,
     );
 
-    return response.items.map((m) => m.toEntity()).toList();
+    return response.items.map((m) => m.toGameEntity()).toList();
   }
 
   @override
   Future<List<Game>> getGamesAvailableToday() async {
-    final models = await _gameDatasource.getGamesAvailableToday();
-    return models.map((m) => m.toEntity()).toList();
+    return executeDataSourceList<GameModel, Game>(
+      function: _gameDatasource.getGamesAvailableToday,
+    );
   }
 
   @override
-  Future<List<Game>> getRecommendedGames(int gameId) async {
-    final models = await _gameDatasource.getGameRecommendations(gameId);
-    return models.map((m) => m.toEntity()).toList();
+  Future<List<Game>> getRecommendedGames(String gameId) async {
+    return executeDataSourceList<GameModel, Game>(
+      function: () => _gameDatasource.getGameRecommendations(gameId),
+    );
   }
 
   @override
   Future<List<GameCategory>> getCategories() async {
-    final models = await _categoryDatasource.getCategories();
-    return models.map((m) => m.toEntity()).toList();
+    return executeDataSourceList<GameCategoryModel, GameCategory>(
+      function: _categoryDatasource.getCategories,
+    );
   }
 
   @override
   Future<List<FilterShortcut>> getFilterShortcuts() async {
-    final models = await _categoryDatasource.getFilterShortcuts();
-    return models.map((m) => m.toEntity()).toList();
+    return executeDataSourceList<FilterShortcutModel, FilterShortcut>(
+      function: _categoryDatasource.getFilterShortcuts,
+    );
   }
 }

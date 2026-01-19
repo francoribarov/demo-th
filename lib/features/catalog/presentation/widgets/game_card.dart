@@ -1,5 +1,5 @@
 // UI widgets are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+//
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 
 /// Game card widget matching the Vite.js prototype GameCard component
@@ -31,10 +31,16 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showRangeMessage = highlightAvailability && startDate != null && endDate != null;
-    final availableForRange = showRangeMessage ? game.isAvailableFor(startDate, endDate) : null;
+    final showRangeMessage =
+        highlightAvailability && startDate != null && endDate != null;
+    final availableForRange = showRangeMessage
+        ? game.isAvailableFor(startDate, endDate)
+        : null;
     final isAvailableForRange = availableForRange ?? false;
-    final rangeInfo = game.getAvailabilityLabel(searchStart: startDate, searchEnd: endDate);
+    final rangeInfo = game.getAvailabilityLabel(
+      searchStart: startDate,
+      searchEnd: endDate,
+    );
 
     return GestureDetector(
       onTap: onTap,
@@ -44,7 +50,11 @@ class GameCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppTheme.radius3xl),
           border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacityValue(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+            BoxShadow(
+              color: Colors.black.withOpacityValue(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
         clipBehavior: Clip.antiAlias,
@@ -57,15 +67,23 @@ class GameCard extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 16 / 10,
                   child: CachedNetworkImage(
-                    imageUrl: game.image,
+                    imageUrl: game.images.isNotEmpty ? game.images.first : '',
                     fit: BoxFit.cover,
                     placeholder: (context, url) => const ColoredBox(
                       color: AppColors.gameCream,
-                      child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.gameRust)),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.gameRust,
+                        ),
+                      ),
                     ),
                     errorWidget: (context, url, error) => const ColoredBox(
                       color: AppColors.gameCream,
-                      child: Icon(Icons.image_not_supported_outlined, color: AppColors.gameBrown),
+                      child: Icon(
+                        Icons.image_not_supported_outlined,
+                        color: AppColors.gameBrown,
+                      ),
                     ),
                   ),
                 ),
@@ -75,13 +93,26 @@ class GameCard extends StatelessWidget {
                   child: GestureDetector(
                     onTap: onCategoryTap,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacityValue(0.9),
                         borderRadius: BorderRadius.circular(AppTheme.radius2xl),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacityValue(0.1), blurRadius: 4)],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacityValue(0.1),
+                            blurRadius: 4,
+                          ),
+                        ],
                       ),
-                      child: Text(game.category, style: AppTypography.categoryChip),
+                      child: Text(
+                        game.categories.isNotEmpty
+                            ? game.categories.first.name
+                            : 'Varios',
+                        style: AppTypography.categoryChip,
+                      ),
                     ),
                   ),
                 ),
@@ -111,7 +142,11 @@ class GameCard extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               game.description,
-                              style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppColors.gameBrown.withOpacityValue(
+                                  0.7,
+                                ),
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -121,9 +156,7 @@ class GameCard extends StatelessWidget {
                       const SizedBox(width: 12),
                       Row(
                         children: [
-                          Icon(Icons.star, size: 16, color: Colors.amber[400]),
-                          const SizedBox(width: 4),
-                          Text(game.rating.toStringAsFixed(1), style: AppTypography.labelLarge),
+                          GameRatingBadge(rating: game.rating),
                         ],
                       ),
                     ],
@@ -137,23 +170,33 @@ class GameCard extends StatelessWidget {
                     children: [
                       Text(
                         game.players,
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
                       ),
                       Text(
                         '•',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
                       ),
                       Text(
-                        game.duration,
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                        '${game.duration} min',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
                       ),
                       Text(
                         '•',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
                       ),
                       Text(
                         game.difficulty,
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
                       ),
                     ],
                   ),
@@ -164,40 +207,21 @@ class GameCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Desde',
-                            style: AppTypography.labelSmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.6),
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(CurrencyFormatter.formatUYU(game.price), style: AppTypography.price),
-                              const SizedBox(width: 4),
-                              Text(
-                                '/ día',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.gameBrown.withOpacityValue(0.7),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      GamePriceLabel(price: game.price),
                       Row(
                         children: [
                           Text(
                             'Ver detalles y alquilar',
-                            style: AppTypography.labelMedium.copyWith(color: AppColors.gameRust),
+                            style: AppTypography.labelMedium.copyWith(
+                              color: AppColors.gameRust,
+                            ),
                           ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.chevron_right, size: 16, color: AppColors.gameRust),
+                          const Icon(
+                            Icons.chevron_right,
+                            size: 16,
+                            color: AppColors.gameRust,
+                          ),
                         ],
                       ),
                     ],
@@ -207,9 +231,14 @@ class GameCard extends StatelessWidget {
                   if (showRangeMessage) ...[
                     const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
-                        color: isAvailableForRange ? Colors.green[50] : Colors.red[50],
+                        color: isAvailableForRange
+                            ? Colors.green[50]
+                            : Colors.red[50],
                         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                       ),
                       child: Column(
@@ -218,15 +247,23 @@ class GameCard extends StatelessWidget {
                           Row(
                             children: [
                               Icon(
-                                isAvailableForRange ? Icons.check_circle : Icons.cancel,
+                                isAvailableForRange
+                                    ? Icons.check_circle
+                                    : Icons.cancel,
                                 size: 16,
-                                color: isAvailableForRange ? Colors.green[700] : Colors.red[600],
+                                color: isAvailableForRange
+                                    ? Colors.green[700]
+                                    : Colors.red[600],
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                isAvailableForRange ? 'Disponible en tus fechas' : 'No disponible en tus fechas',
+                                isAvailableForRange
+                                    ? 'Disponible en tus fechas'
+                                    : 'No disponible en tus fechas',
                                 style: AppTypography.labelMedium.copyWith(
-                                  color: isAvailableForRange ? Colors.green[700] : Colors.red[600],
+                                  color: isAvailableForRange
+                                      ? Colors.green[700]
+                                      : Colors.red[600],
                                 ),
                               ),
                             ],
@@ -234,7 +271,9 @@ class GameCard extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             rangeInfo,
-                            style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.gameBrown.withOpacityValue(0.7),
+                            ),
                           ),
                         ],
                       ),
@@ -243,7 +282,9 @@ class GameCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       rangeInfo,
-                      style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.gameBrown.withOpacityValue(0.6),
+                      ),
                     ),
                   ],
                 ],
@@ -282,7 +323,7 @@ class GameCardHorizontal extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               child: CachedNetworkImage(
-                imageUrl: game.image,
+                imageUrl: game.images.isNotEmpty ? game.images.first : '',
                 width: 110,
                 height: 150,
                 fit: BoxFit.cover,
@@ -308,23 +349,41 @@ class GameCardHorizontal extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(game.title, style: AppTypography.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(
+                    game.title,
+                    style: AppTypography.titleSmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   const SizedBox(height: 4),
                   Text(
-                    game.category,
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+                    game.categories.isNotEmpty
+                        ? game.categories.first.name
+                        : 'Varios',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.gameBrown.withOpacityValue(0.7),
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.star, size: 14, color: AppColors.gameGold),
+                      const Icon(
+                        Icons.star,
+                        size: 14,
+                        color: AppColors.gameGold,
+                      ),
                       const SizedBox(width: 4),
-                      Text(game.rating.toStringAsFixed(1), style: AppTypography.labelSmall),
+                      Text(
+                        game.rating.toStringAsFixed(1),
+                        style: AppTypography.labelSmall,
+                      ),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
                           '· ${game.players}',
-                          style: AppTypography.bodySmall.copyWith(color: AppColors.gameBrown.withOpacityValue(0.6)),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.gameBrown.withOpacityValue(0.6),
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           softWrap: false,

@@ -2,13 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
-import 'package:mobile_table_hopping/features/publish/data/models/listing_model.dart';
+import 'package:mobile_table_hopping/features/publish/data/models/publication_model.dart';
 
-/// Remote datasource contract for publishing listings.
+/// Remote datasource contract for publishing publications.
 // ignore: one_member_abstracts
 abstract class PublishRemoteDatasource {
-  /// Creates a listing on the backend.
-  Future<ListingModel> createListing(ListingCreateRequestModel request);
+  /// Creates a publication on the backend.
+  Future<PublicationModel> createPublication(
+    PublicationCreateRequestModel request,
+  );
 }
 
 @LazySingleton(as: PublishRemoteDatasource)
@@ -19,15 +21,17 @@ class PublishRemoteDatasourceImpl implements PublishRemoteDatasource {
   final DioClient _dioClient;
 
   @override
-  Future<ListingModel> createListing(ListingCreateRequestModel request) async {
+  Future<PublicationModel> createPublication(
+    PublicationCreateRequestModel request,
+  ) async {
     try {
       final response = await _dioClient.post<Map<String, dynamic>>(
-        ApiConstants.listings,
+        ApiConstants.publications,
         data: request.toJson(),
       );
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        return ListingModel.fromJson(data);
+        return PublicationModel.fromJson(data);
       }
       throw Exception('Respuesta inválida del servidor.');
     } on DioException catch (e) {

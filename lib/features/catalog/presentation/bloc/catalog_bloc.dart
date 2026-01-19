@@ -1,5 +1,5 @@
 // Bloc events/states are documented at a higher level; omit per-member docs.
-// ignore_for_file: public_member_api_docs
+//
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -11,48 +11,8 @@ import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/search_games.dart';
 
 part 'catalog_bloc.freezed.dart';
-
-// Events
-@freezed
-class CatalogEvent with _$CatalogEvent {
-  const factory CatalogEvent.loadGames() = LoadGames;
-  const factory CatalogEvent.search({String? query, String? startDate, String? endDate}) = SearchCatalog;
-  const factory CatalogEvent.applyFilters(FiltersState filters) = ApplyFilters;
-  const factory CatalogEvent.updateSort(SortOption sortOption) = UpdateSort;
-  const factory CatalogEvent.selectCategory(String category) = SelectCategory;
-  const factory CatalogEvent.clearSearch() = ClearSearch;
-  const factory CatalogEvent.setDates({String? startDate, String? endDate}) = SetDates;
-}
-
-// State
-@freezed
-class CatalogState with _$CatalogState {
-  const factory CatalogState({
-    @Default([]) List<Game> allGames,
-    @Default([]) List<Game> filteredGames,
-    @Default([]) List<Game> availableTodayGames,
-    @Default([]) List<GameCategory> categories,
-    @Default([]) List<FilterShortcut> filterShortcuts,
-    @Default('') String query,
-    String? startDate,
-    String? endDate,
-    String? selectedCategory,
-    @Default(FiltersState()) FiltersState filters,
-    @Default(SortOption.availability) SortOption sortOption,
-    @Default(false) bool isLoading,
-    String? errorMessage,
-  }) = _CatalogState;
-
-  const CatalogState._();
-
-  bool get isSearchMode =>
-      query.trim().isNotEmpty ||
-      (startDate != null && endDate != null) ||
-      selectedCategory != null ||
-      filters.hasActiveFilters;
-
-  bool get hasDateFilter => startDate != null && endDate != null;
-}
+part 'catalog_event.dart';
+part 'catalog_state.dart';
 
 @injectable
 class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
@@ -92,16 +52,32 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
         ),
       );
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al cargar los juegos: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al cargar los juegos: $e',
+        ),
+      );
     }
   }
 
-  Future<void> _onSearch(SearchCatalog event, Emitter<CatalogState> emit) async {
+  Future<void> _onSearch(
+    SearchCatalog event,
+    Emitter<CatalogState> emit,
+  ) async {
     final query = event.query ?? state.query;
     final startDate = event.startDate ?? state.startDate;
     final endDate = event.endDate ?? state.endDate;
 
-    emit(state.copyWith(isLoading: true, query: query, startDate: startDate, endDate: endDate, selectedCategory: null));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        query: query,
+        startDate: startDate,
+        endDate: endDate,
+        selectedCategory: null,
+      ),
+    );
 
     try {
       final results = await _searchGames(
@@ -114,11 +90,19 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
 
       emit(state.copyWith(isLoading: false, filteredGames: results));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error en la búsqueda: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error en la búsqueda: $e',
+        ),
+      );
     }
   }
 
-  Future<void> _onApplyFilters(ApplyFilters event, Emitter<CatalogState> emit) async {
+  Future<void> _onApplyFilters(
+    ApplyFilters event,
+    Emitter<CatalogState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true, filters: event.filters));
 
     try {
@@ -132,11 +116,19 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
 
       emit(state.copyWith(isLoading: false, filteredGames: results));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al aplicar filtros: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al aplicar filtros: $e',
+        ),
+      );
     }
   }
 
-  Future<void> _onUpdateSort(UpdateSort event, Emitter<CatalogState> emit) async {
+  Future<void> _onUpdateSort(
+    UpdateSort event,
+    Emitter<CatalogState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true, sortOption: event.sortOption));
 
     try {
@@ -150,12 +142,23 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
 
       emit(state.copyWith(isLoading: false, filteredGames: results));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al ordenar: $e'));
+      emit(
+        state.copyWith(isLoading: false, errorMessage: 'Error al ordenar: $e'),
+      );
     }
   }
 
-  Future<void> _onSelectCategory(SelectCategory event, Emitter<CatalogState> emit) async {
-    emit(state.copyWith(isLoading: true, query: event.category, selectedCategory: event.category));
+  Future<void> _onSelectCategory(
+    SelectCategory event,
+    Emitter<CatalogState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isLoading: true,
+        query: event.category,
+        selectedCategory: event.category,
+      ),
+    );
 
     try {
       final results = await _searchGames(
@@ -168,7 +171,12 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
 
       emit(state.copyWith(isLoading: false, filteredGames: results));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al filtrar categoría: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al filtrar categoría: $e',
+        ),
+      );
     }
   }
 
@@ -196,7 +204,14 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
       filters = filters.copyWith(onlyAvailableInDates: false);
     }
 
-    emit(state.copyWith(startDate: startDate, endDate: endDate, filters: filters, isLoading: true));
+    emit(
+      state.copyWith(
+        startDate: startDate,
+        endDate: endDate,
+        filters: filters,
+        isLoading: true,
+      ),
+    );
 
     try {
       final results = await _searchGames(
@@ -209,7 +224,12 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
 
       emit(state.copyWith(isLoading: false, filteredGames: results));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al filtrar por fechas: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al filtrar por fechas: $e',
+        ),
+      );
     }
   }
 }

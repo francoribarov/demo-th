@@ -1,138 +1,38 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/listing.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_listing.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
+import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
 
 part 'publish_bloc.freezed.dart';
-
-@freezed
-/// Publish flow actions.
-class PublishEvent with _$PublishEvent {
-  /// Initializes the publish flow.
-  const factory PublishEvent.started() = _Started;
-
-  /// Advances to the next step.
-  const factory PublishEvent.nextStep() = _NextStep;
-
-  /// Returns to the previous step.
-  const factory PublishEvent.previousStep() = _PreviousStep;
-
-  /// Submits the current listing.
-  const factory PublishEvent.submit() = _Submit;
-
-  /// Resets the form to publish another game.
-  const factory PublishEvent.publishAnother() = _PublishAnother;
-
-  /// Updates the title input.
-  const factory PublishEvent.titleChanged(String value) = _TitleChanged;
-
-  /// Updates the publisher input.
-  const factory PublishEvent.publisherChanged(String value) = _PublisherChanged;
-
-  /// Updates the category input.
-  const factory PublishEvent.categoryChanged(String value) = _CategoryChanged;
-
-  /// Updates the description input.
-  const factory PublishEvent.descriptionChanged(String value) = _DescriptionChanged;
-
-  /// Updates the duration input.
-  const factory PublishEvent.durationChanged(String value) = _DurationChanged;
-
-  /// Updates the players input.
-  const factory PublishEvent.playersChanged(String value) = _PlayersChanged;
-
-  /// Updates the difficulty input.
-  const factory PublishEvent.difficultyChanged(String value) = _DifficultyChanged;
-
-  /// Updates the daily price input.
-  const factory PublishEvent.pricePerDayChanged(int value) = _PricePerDayChanged;
-
-  /// Updates the deposit input.
-  const factory PublishEvent.depositChanged(int value) = _DepositChanged;
-
-  /// Updates the condition input.
-  const factory PublishEvent.conditionChanged(String value) = _ConditionChanged;
-
-  /// Updates the visibility input.
-  const factory PublishEvent.visibilityChanged(String value) = _VisibilityChanged;
-
-  /// Updates the selected images.
-  const factory PublishEvent.imagesChanged(List<String> value) = _ImagesChanged;
-}
-
-@freezed
-/// State for the publish flow.
-class PublishState with _$PublishState {
-  /// Creates a publish state snapshot.
-  const factory PublishState({
-    @Default(0) int formVersion,
-    @Default(0) int currentStep,
-    @Default(false) bool success,
-    @Default(false) bool isSubmitting,
-    String? errorMessage,
-
-    @Default('') String title,
-    @Default('') String publisher,
-    @Default('Estrategia') String category,
-    @Default('') String description,
-    @Default('') String duration,
-    @Default('') String players,
-    @Default('Medio') String difficulty,
-    @Default(50) int pricePerDay,
-    @Default(500) int deposit,
-    @Default('like_new') String condition,
-    @Default('public') String visibility,
-    @Default([]) List<String> images,
-  }) = _PublishState;
-  const PublishState._();
-
-  /// Returns whether the current step is valid to advance.
-  bool get canProceed {
-    switch (currentStep) {
-      case 0:
-        return title.trim().isNotEmpty && description.trim().isNotEmpty;
-      case 1:
-        return true;
-      case 2:
-        return pricePerDay > 0;
-      case 3:
-        return true;
-      default:
-        return false;
-    }
-  }
-}
+part 'publish_event.dart';
+part 'publish_state.dart';
 
 @injectable
 /// Coordinates publish flow actions and side effects.
 class PublishBloc extends Bloc<PublishEvent, PublishState> {
-  /// Creates a publish bloc wired to the create listing use case.
-  PublishBloc({required CreateListing createListing}) : _createListing = createListing, super(const PublishState()) {
+  /// Creates a publish bloc wired to the create publication use case.
+  PublishBloc({required CreatePublication createPublication})
+    : _createPublication = createPublication,
+      super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
     on<_PreviousStep>(_onPreviousStep);
     on<_Submit>(_onSubmit);
     on<_PublishAnother>(_onPublishAnother);
-
-    on<_TitleChanged>(_onTitleChanged);
-    on<_PublisherChanged>(_onPublisherChanged);
-    on<_CategoryChanged>(_onCategoryChanged);
+    on<_GameIdChanged>(_onGameIdChanged);
     on<_DescriptionChanged>(_onDescriptionChanged);
-    on<_DurationChanged>(_onDurationChanged);
-    on<_PlayersChanged>(_onPlayersChanged);
-    on<_DifficultyChanged>(_onDifficultyChanged);
-    on<_PricePerDayChanged>(_onPricePerDayChanged);
-    on<_DepositChanged>(_onDepositChanged);
+    on<_PriceChanged>(_onPriceChanged);
     on<_ConditionChanged>(_onConditionChanged);
-    on<_VisibilityChanged>(_onVisibilityChanged);
     on<_ImagesChanged>(_onImagesChanged);
+    on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
   }
-  static const _defaultImageUrl =
-      'https://images.vexels.com/media/users/3/189702/isolated/preview/'
-      '0909c4a72562b45eb247012f1606c4c6-icono-de-juguete-de-dados.png';
 
-  final CreateListing _createListing;
+  final CreatePublication _createPublication;
+  static const _defaultImageUrl =
+      'https://via.placeholder.com/300'; // Temporary placeholder
 
   void _onStarted(_Started event, Emitter<PublishState> emit) {
     emit(const PublishState());
@@ -140,7 +40,6 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
 
   void _onNextStep(_NextStep event, Emitter<PublishState> emit) {
     if (!state.canProceed) return;
-
     if (state.currentStep < 3) {
       emit(state.copyWith(currentStep: state.currentStep + 1));
     } else {
@@ -153,88 +52,79 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(state.copyWith(currentStep: state.currentStep - 1));
   }
 
+  void _onPublishAnother(_PublishAnother event, Emitter<PublishState> emit) {
+    emit(PublishState(formVersion: state.formVersion + 1));
+  }
+
   Future<void> _onSubmit(_Submit event, Emitter<PublishState> emit) async {
     if (state.isSubmitting) return;
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
     try {
-      final images = state.images.isNotEmpty ? state.images : [_defaultImageUrl];
-      await _createListing(
-        ListingDraft(
-          title: state.title.trim(),
-          publisher: state.publisher.trim().isEmpty ? null : state.publisher.trim(),
-          category: state.category,
+      final images = state.images.isNotEmpty
+          ? state.images
+          : [_defaultImageUrl];
+      await _createPublication(
+        PublicationDraft(
+          gameId: state.gameId,
           description: state.description.trim(),
-          duration: state.duration.trim().isEmpty ? null : state.duration.trim(),
-          players: state.players.trim().isEmpty ? null : state.players.trim(),
-          difficulty: state.difficulty,
-          pricePerDay: state.pricePerDay,
-          deposit: state.deposit,
+          price: state.price,
           condition: state.condition,
-          visibility: state.visibility,
           images: images
               .asMap()
               .entries
-              .map((entry) => ListingImage(url: entry.value, type: entry.key == 0 ? 'hero' : 'gallery'))
+              .map(
+                (entry) => PublicationImage(
+                  url: entry.value,
+                  type: entry.key == 0 ? 'hero' : 'gallery',
+                ),
+              )
               .toList(),
+          deliveryMethods: state.deliveryMethods,
         ),
       );
 
       emit(state.copyWith(isSubmitting: false, success: true));
     } on Exception catch (error) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: 'No se pudo publicar: $error'));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          errorMessage: 'No se pudo publicar: $error',
+        ),
+      );
     }
   }
 
-  void _onPublishAnother(_PublishAnother event, Emitter<PublishState> emit) {
-    emit(PublishState(formVersion: state.formVersion + 1));
+  void _onGameIdChanged(_GameIdChanged event, Emitter<PublishState> emit) {
+    emit(state.copyWith(gameId: event.value));
   }
 
-  void _onTitleChanged(_TitleChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(title: event.value));
-  }
-
-  void _onPublisherChanged(_PublisherChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(publisher: event.value));
-  }
-
-  void _onCategoryChanged(_CategoryChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(category: event.value));
-  }
-
-  void _onDescriptionChanged(_DescriptionChanged event, Emitter<PublishState> emit) {
+  void _onDescriptionChanged(
+    _DescriptionChanged event,
+    Emitter<PublishState> emit,
+  ) {
     emit(state.copyWith(description: event.value));
   }
 
-  void _onDurationChanged(_DurationChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(duration: event.value));
+  void _onPriceChanged(_PriceChanged event, Emitter<PublishState> emit) {
+    emit(state.copyWith(price: event.value));
   }
 
-  void _onPlayersChanged(_PlayersChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(players: event.value));
-  }
-
-  void _onDifficultyChanged(_DifficultyChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(difficulty: event.value));
-  }
-
-  void _onPricePerDayChanged(_PricePerDayChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(pricePerDay: event.value));
-  }
-
-  void _onDepositChanged(_DepositChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(deposit: event.value));
-  }
-
-  void _onConditionChanged(_ConditionChanged event, Emitter<PublishState> emit) {
+  void _onConditionChanged(
+    _ConditionChanged event,
+    Emitter<PublishState> emit,
+  ) {
     emit(state.copyWith(condition: event.value));
-  }
-
-  void _onVisibilityChanged(_VisibilityChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(visibility: event.value));
   }
 
   void _onImagesChanged(_ImagesChanged event, Emitter<PublishState> emit) {
     emit(state.copyWith(images: event.value));
+  }
+
+  void _onDeliveryMethodsChanged(
+    _DeliveryMethodsChanged event,
+    Emitter<PublishState> emit,
+  ) {
+    emit(state.copyWith(deliveryMethods: event.value));
   }
 }

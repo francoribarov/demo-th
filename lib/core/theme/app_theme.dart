@@ -62,13 +62,34 @@ class AppTheme {
       // Color scheme
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
+        primaryContainer: AppColors.gameCream,
+        onPrimaryContainer: AppColors.gameBrown,
         secondary: AppColors.secondary,
         onSecondary: AppColors.secondaryForeground,
+        secondaryContainer: AppColors.gameCream,
+        onSecondaryContainer: AppColors.gameBrown,
         tertiary: AppColors.accent,
         onTertiary: AppColors.accentForeground,
         onSurface: AppColors.cardForeground,
         error: AppColors.destructive,
         onError: AppColors.destructiveForeground,
+      ),
+
+      // Date Picker Theme
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: Colors.white,
+        headerBackgroundColor: AppColors.gameRust,
+        headerForegroundColor: Colors.white,
+        rangeSelectionBackgroundColor: AppColors.gameCream,
+        rangeSelectionOverlayColor: WidgetStateProperty.all(
+          AppColors.gameRust.withOpacityValue(0.1),
+        ),
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return Colors.white;
+          return AppColors.gameBrown;
+        }),
+        todayForegroundColor: WidgetStateProperty.all(AppColors.gameRust),
+        surfaceTintColor: Colors.transparent,
       ),
 
       // Scaffold
@@ -114,7 +135,9 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius2xl)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius2xl),
+          ),
           textStyle: AppTypography.labelLarge.copyWith(color: Colors.white),
         ),
       ),
@@ -124,7 +147,9 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.gameBrown,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius2xl)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius2xl),
+          ),
           side: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.3)),
           textStyle: AppTypography.labelLarge,
         ),
@@ -145,14 +170,21 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.card,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius2xl),
-          borderSide: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.2)),
+          borderSide: BorderSide(
+            color: AppColors.gameBrown.withOpacityValue(0.2),
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius2xl),
-          borderSide: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.2)),
+          borderSide: BorderSide(
+            color: AppColors.gameBrown.withOpacityValue(0.2),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius2xl),
@@ -162,7 +194,9 @@ class AppTheme {
           borderRadius: BorderRadius.circular(radius2xl),
           borderSide: const BorderSide(color: AppColors.destructive),
         ),
-        hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.gameBrown.withOpacityValue(0.5)),
+        hintStyle: AppTypography.bodyMedium.copyWith(
+          color: AppColors.gameBrown.withOpacityValue(0.5),
+        ),
         labelStyle: AppTypography.bodyMedium,
       ),
 
@@ -185,12 +219,19 @@ class AppTheme {
         unselectedLabelColor: AppColors.gameBrown,
         labelStyle: AppTypography.labelLarge,
         unselectedLabelStyle: AppTypography.labelLarge,
-        indicator: BoxDecoration(color: AppColors.gameRust, borderRadius: BorderRadius.circular(radius2xl)),
+        indicator: BoxDecoration(
+          color: AppColors.gameRust,
+          borderRadius: BorderRadius.circular(radius2xl),
+        ),
         indicatorSize: TabBarIndicatorSize.tab,
       ),
 
       // Divider theme
-      dividerTheme: DividerThemeData(color: AppColors.gameBrown.withOpacityValue(0.1), thickness: 1, space: 1),
+      dividerTheme: DividerThemeData(
+        color: AppColors.gameBrown.withOpacityValue(0.1),
+        thickness: 1,
+        space: 1,
+      ),
 
       // Text theme
       textTheme: TextTheme(
@@ -230,7 +271,9 @@ class AppTheme {
       // Bottom sheet theme
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.card,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(radius3xl))),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radius3xl)),
+        ),
         showDragHandle: true,
         dragHandleColor: AppColors.muted,
       ),
@@ -238,7 +281,9 @@ class AppTheme {
       // Dialog theme
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.card,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius3xl)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius3xl),
+        ),
         titleTextStyle: AppTypography.headlineMedium,
         contentTextStyle: AppTypography.bodyMedium,
       ),
@@ -246,8 +291,12 @@ class AppTheme {
       // Snackbar theme
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.gameBrown,
-        contentTextStyle: AppTypography.bodyMedium.copyWith(color: Colors.white),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiusMd)),
+        contentTextStyle: AppTypography.bodyMedium.copyWith(
+          color: Colors.white,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+        ),
         behavior: SnackBarBehavior.floating,
       ),
     );

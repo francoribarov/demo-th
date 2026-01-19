@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
@@ -25,19 +26,37 @@ class TableHoppingApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>.value(value: getIt<AuthBloc>()),
-        BlocProvider<CatalogBloc>(create: (_) => getIt<CatalogBloc>()..add(const LoadGames())),
+        BlocProvider<CatalogBloc>(
+          create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
+        ),
       ],
       child: MaterialApp.router(
         title: 'Table Hopping',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         routerConfig: AppRouter.router,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('es', 'UY'),
+          Locale('es', 'ES'),
+          Locale('en', 'US'),
+        ],
+        locale: const Locale('es', 'UY'),
         builder: (context, child) {
           // Apply global text scale factor limit for accessibility
           return MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(textScaler: TextScaler.linear(MediaQuery.of(context).textScaler.scale(1).clamp(0.8, 1.3))),
+            data:
+                MediaQuery.of(
+                  context,
+                ).copyWith(
+                  textScaler: TextScaler.linear(
+                    MediaQuery.of(context).textScaler.scale(1).clamp(0.8, 1.3),
+                  ),
+                ),
             child: child ?? const SizedBox.shrink(),
           );
         },

@@ -6,8 +6,8 @@ abstract class GameRepository {
   /// Get all games
   Future<List<Game>> getGames();
 
-  /// Get a single game by ID
-  Future<Game?> getGameById(int id);
+  /// Get a single game by ID (Publication ID)
+  Future<Game?> getGameById(String id);
 
   /// Search games by query with optional filters
   Future<List<Game>> searchGames({
@@ -21,8 +21,8 @@ abstract class GameRepository {
   /// Get games available today
   Future<List<Game>> getGamesAvailableToday();
 
-  /// Get recommended games for a specific game
-  Future<List<Game>> getRecommendedGames(int gameId);
+  /// Get recommended games for a specific game (Publication ID)
+  Future<List<Game>> getRecommendedGames(String gameId);
 
   /// Get all categories
   Future<List<GameCategory>> getCategories();

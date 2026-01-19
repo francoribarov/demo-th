@@ -25,10 +25,17 @@ class CategoryRemoteDatasourceImpl implements CategoryRemoteDatasource {
   @override
   Future<List<GameCategoryModel>> getCategories() async {
     try {
-      final response = await _dioClient.get<Map<String, dynamic>>(ApiConstants.categories);
+      final response = await _dioClient.get<Map<String, dynamic>>(
+        ApiConstants.categories,
+      );
       final data = response.data ?? const <String, dynamic>{};
-      final categories = data['categories'] as List<dynamic>? ?? const <dynamic>[];
-      return categories.map((json) => GameCategoryModel.fromJson(json as Map<String, dynamic>)).toList();
+      final categories =
+          data['categories'] as List<dynamic>? ?? const <dynamic>[];
+      return categories
+          .map(
+            (json) => GameCategoryModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -37,10 +44,18 @@ class CategoryRemoteDatasourceImpl implements CategoryRemoteDatasource {
   @override
   Future<List<FilterShortcutModel>> getFilterShortcuts() async {
     try {
-      final response = await _dioClient.get<Map<String, dynamic>>(ApiConstants.filterShortcuts);
+      final response = await _dioClient.get<Map<String, dynamic>>(
+        ApiConstants.filterShortcuts,
+      );
       final data = response.data ?? const <String, dynamic>{};
-      final shortcuts = data['shortcuts'] as List<dynamic>? ?? const <dynamic>[];
-      return shortcuts.map((json) => FilterShortcutModel.fromJson(json as Map<String, dynamic>)).toList();
+      final shortcuts =
+          data['shortcuts'] as List<dynamic>? ?? const <dynamic>[];
+      return shortcuts
+          .map(
+            (json) =>
+                FilterShortcutModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
     } on DioException catch (e) {
       throw _handleError(e);
     }

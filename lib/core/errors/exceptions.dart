@@ -24,7 +24,8 @@ class ServerException extends AppException {
 
   /// Returns a debug-friendly representation of the exception.
   @override
-  String toString() => 'ServerException: $message (statusCode: $statusCode, code: $code)';
+  String toString() =>
+      'ServerException: $message (statusCode: $statusCode, code: $code)';
 }
 
 /// Exception thrown for cache-related errors.
@@ -40,7 +41,10 @@ class CacheException extends AppException {
 /// Exception thrown for network connectivity errors.
 class NetworkException extends AppException {
   /// Creates a [NetworkException] with a default offline message.
-  const NetworkException({super.message = 'No hay conexión a internet', super.code});
+  const NetworkException({
+    super.message = 'No hay conexión a internet',
+    super.code,
+  });
 
   /// Returns a debug-friendly representation of the exception.
   @override
@@ -50,20 +54,28 @@ class NetworkException extends AppException {
 /// Exception thrown for validation errors.
 class ValidationException extends AppException {
   /// Creates a [ValidationException] with optional field errors.
-  const ValidationException({required super.message, super.code, this.fieldErrors});
+  const ValidationException({
+    required super.message,
+    super.code,
+    this.fieldErrors,
+  });
 
   /// Per-field validation errors when available.
   final Map<String, String>? fieldErrors;
 
   /// Returns a debug-friendly representation of the exception.
   @override
-  String toString() => 'ValidationException: $message (fieldErrors: $fieldErrors)';
+  String toString() =>
+      'ValidationException: $message (fieldErrors: $fieldErrors)';
 }
 
 /// Exception thrown when a resource is not found.
 class NotFoundException extends AppException {
   /// Creates a [NotFoundException] with a default message.
-  const NotFoundException({super.message = 'Recurso no encontrado', super.code});
+  const NotFoundException({
+    super.message = 'Recurso no encontrado',
+    super.code,
+  });
 
   /// Returns a debug-friendly representation of the exception.
   @override

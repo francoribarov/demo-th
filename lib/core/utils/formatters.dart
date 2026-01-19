@@ -4,7 +4,11 @@ import 'package:intl/intl.dart';
 class CurrencyFormatter {
   CurrencyFormatter._();
 
-  static final _uyuFormat = NumberFormat.currency(locale: 'es_UY', symbol: r'$', decimalDigits: 0);
+  static final _uyuFormat = NumberFormat.currency(
+    locale: 'es_UY',
+    symbol: r'$',
+    decimalDigits: 0,
+  );
 
   /// Formats a number as UYU currency (e.g., "$45").
   static String formatUYU(num value) {
@@ -82,7 +86,10 @@ class DurationParser {
   /// Parses duration string (e.g., "60-90 min") to average minutes.
   static int? parseMinutes(String duration) {
     final matches = RegExp(r'\d+').allMatches(duration);
-    final numbers = matches.map((m) => int.tryParse(m.group(0) ?? '')).whereType<int>().toList();
+    final numbers = matches
+        .map((m) => int.tryParse(m.group(0) ?? ''))
+        .whereType<int>()
+        .toList();
 
     if (numbers.isEmpty) return null;
     if (numbers.length == 1) return numbers.first;
@@ -99,11 +106,17 @@ class PlayersParser {
   /// Parses players string (e.g., "2-4 jugadores") to min/max range.
   static ({int? min, int? max}) parseRange(String players) {
     final matches = RegExp(r'\d+').allMatches(players);
-    final numbers = matches.map((m) => int.tryParse(m.group(0) ?? '')).whereType<int>().toList();
+    final numbers = matches
+        .map((m) => int.tryParse(m.group(0) ?? ''))
+        .whereType<int>()
+        .toList();
 
     if (numbers.isEmpty) return (min: null, max: null);
     if (numbers.length == 1) return (min: numbers.first, max: numbers.first);
 
-    return (min: numbers.reduce((a, b) => a < b ? a : b), max: numbers.reduce((a, b) => a > b ? a : b));
+    return (
+      min: numbers.reduce((a, b) => a < b ? a : b),
+      max: numbers.reduce((a, b) => a > b ? a : b),
+    );
   }
 }

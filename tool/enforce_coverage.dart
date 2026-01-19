@@ -12,7 +12,12 @@ Future<void> main(List<String> args) async {
   final threshold = await _loadLineThreshold(thresholdsPath);
   final coverage = await _readLineCoverage(coveragePath);
 
-  _printSummary(coverage: coverage, threshold: threshold, coveragePath: coveragePath, thresholdsPath: thresholdsPath);
+  _printSummary(
+    coverage: coverage,
+    threshold: threshold,
+    coveragePath: coveragePath,
+    thresholdsPath: thresholdsPath,
+  );
 
   if (!coverage.meetsThreshold(threshold)) {
     stderr.writeln(
@@ -34,12 +39,16 @@ Future<double> _loadLineThreshold(String thresholdsPath) async {
   final data = jsonDecode(await thresholdsFile.readAsString());
   final threshold = _extractLineThreshold(data);
   if (threshold == null) {
-    stderr.writeln('WARN: No line threshold found in $thresholdsPath. Defaulting to 0%.');
+    stderr.writeln(
+      'WARN: No line threshold found in $thresholdsPath. Defaulting to 0%.',
+    );
     return 0;
   }
 
   if (threshold < 0 || threshold > 100) {
-    stderr.writeln('ERROR: Line threshold must be between 0 and 100; got $threshold.');
+    stderr.writeln(
+      'ERROR: Line threshold must be between 0 and 100; got $threshold.',
+    );
     exitCode = 2;
   }
 
@@ -62,7 +71,14 @@ double? _extractLineThreshold(dynamic data) {
 }
 
 double? _extractLineValue(Map<String, dynamic> map) {
-  for (final key in const ['lines', 'line', 'line_coverage', 'lineCoverage', 'min_lines', 'minimum_lines']) {
+  for (final key in const [
+    'lines',
+    'line',
+    'line_coverage',
+    'lineCoverage',
+    'min_lines',
+    'minimum_lines',
+  ]) {
     final value = map[key];
     if (value is num) {
       return value.toDouble();
@@ -149,7 +165,9 @@ Map<String, String> _parseArgs(List<String> args) {
     final trimmed = arg.substring(2);
     final equalsIndex = trimmed.indexOf('=');
     if (equalsIndex != -1) {
-      parsed[trimmed.substring(0, equalsIndex)] = trimmed.substring(equalsIndex + 1);
+      parsed[trimmed.substring(0, equalsIndex)] = trimmed.substring(
+        equalsIndex + 1,
+      );
       continue;
     }
 

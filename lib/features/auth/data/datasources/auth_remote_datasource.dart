@@ -31,7 +31,10 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   @override
   Future<AuthResponse> login(LoginRequest request) async {
     try {
-      final response = await _dioClient.post<Map<String, dynamic>>(ApiConstants.login, data: request.toJson());
+      final response = await _dioClient.post<Map<String, dynamic>>(
+        ApiConstants.login,
+        data: request.toJson(),
+      );
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
@@ -45,7 +48,10 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   @override
   Future<AuthResponse> register(RegisterRequest request) async {
     try {
-      final response = await _dioClient.post<Map<String, dynamic>>(ApiConstants.register, data: request.toJson());
+      final response = await _dioClient.post<Map<String, dynamic>>(
+        ApiConstants.register,
+        data: request.toJson(),
+      );
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
@@ -59,7 +65,10 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   @override
   Future<TokenResponse> refreshToken(RefreshTokenRequest request) async {
     try {
-      final response = await _dioClient.post<Map<String, dynamic>>(ApiConstants.refreshToken, data: request.toJson());
+      final response = await _dioClient.post<Map<String, dynamic>>(
+        ApiConstants.refreshToken,
+        data: request.toJson(),
+      );
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
@@ -85,18 +94,17 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       final data = error.response!.data;
 
       var message = 'Error de autenticación';
-      if (data is Map && data['detail'] != null) {
-        message = data['detail'].toString();
-      } else if (data is Map && data['message'] != null) {
+      if (data is Map && data['message'] != null) {
         message = data['message'].toString();
+      } else if (data is Map && data['detail'] != null) {
+        message = data['detail'].toString();
       }
 
-      if (statusCode == 401) {
-        return Exception('Credenciales inválidas');
-      } else if (statusCode == 400) {
+      if (statusCode == 400 ||
+          statusCode == 401 ||
+          statusCode == 409 ||
+          statusCode == 422) {
         return Exception(message);
-      } else if (statusCode == 409) {
-        return Exception('El usuario ya existe');
       }
     }
     return Exception('Error de conexión. Intente nuevamente.');

@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -11,73 +11,72 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:shared_preferences/shared_preferences.dart' as _i460;
-
+import 'package:mobile_table_hopping/core/auth/token_storage.dart' as _i717;
+import 'package:mobile_table_hopping/core/di/register_module.dart' as _i704;
+import 'package:mobile_table_hopping/core/network/dio_client.dart' as _i737;
 import 'package:mobile_table_hopping/features/auth/data/datasources/auth_remote_datasource.dart'
-    as _i161;
+    as _i930;
 import 'package:mobile_table_hopping/features/auth/data/repositories/auth_repository_impl.dart'
-    as _i153;
+    as _i187;
 import 'package:mobile_table_hopping/features/auth/domain/repositories/auth_repository.dart'
-    as _i787;
+    as _i198;
 import 'package:mobile_table_hopping/features/auth/domain/usecases/get_auth_status.dart'
-    as _i103;
+    as _i257;
 import 'package:mobile_table_hopping/features/auth/domain/usecases/login.dart'
-    as _i428;
+    as _i304;
 import 'package:mobile_table_hopping/features/auth/domain/usecases/logout.dart'
-    as _i597;
+    as _i252;
 import 'package:mobile_table_hopping/features/auth/domain/usecases/refresh_token.dart'
-    as _i209;
+    as _i1028;
 import 'package:mobile_table_hopping/features/auth/domain/usecases/register.dart'
-    as _i480;
+    as _i918;
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart'
-    as _i797;
+    as _i701;
 import 'package:mobile_table_hopping/features/catalog/data/datasources/category_remote_datasource.dart'
-    as _i126;
-import 'package:mobile_table_hopping/features/catalog/data/datasources/game_local_datasource.dart'
-    as _i76;
+    as _i460;
 import 'package:mobile_table_hopping/features/catalog/data/datasources/game_remote_datasource.dart'
-    as _i609;
+    as _i349;
 import 'package:mobile_table_hopping/features/catalog/data/repositories/game_repository_impl.dart'
-    as _i816;
+    as _i61;
 import 'package:mobile_table_hopping/features/catalog/domain/repositories/game_repository.dart'
-    as _i842;
+    as _i305;
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_categories.dart'
-    as _i363;
+    as _i249;
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart'
-    as _i276;
+    as _i499;
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/search_games.dart'
-    as _i588;
+    as _i144;
 import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart'
-    as _i773;
+    as _i896;
 import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_details_bloc.dart'
-    as _i986;
+    as _i878;
 import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_reviews_bloc.dart'
-    as _i478;
+    as _i59;
 import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_rules_bloc.dart'
-    as _i18;
+    as _i311;
 import 'package:mobile_table_hopping/features/publish/data/datasources/publish_remote_datasource.dart'
-    as _i263;
+    as _i599;
 import 'package:mobile_table_hopping/features/publish/data/repositories/publish_repository_impl.dart'
-    as _i278;
+    as _i327;
 import 'package:mobile_table_hopping/features/publish/domain/repositories/publish_repository.dart'
-    as _i134;
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_listing.dart'
-    as _i103;
+    as _i374;
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart'
+    as _i692;
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart'
-    as _i391;
+    as _i530;
+import 'package:mobile_table_hopping/features/rental/data/datasources/rental_remote_datasource.dart'
+    as _i579;
 import 'package:mobile_table_hopping/features/rental/data/repositories/rental_repository_impl.dart'
-    as _i303;
+    as _i472;
 import 'package:mobile_table_hopping/features/rental/domain/repositories/rental_repository.dart'
-    as _i301;
+    as _i996;
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart'
-    as _i724;
+    as _i649;
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart'
-    as _i851;
+    as _i675;
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart'
-    as _i989;
-import 'package:mobile_table_hopping/core/auth/token_storage.dart' as _i1002;
-import 'package:mobile_table_hopping/core/network/dio_client.dart' as _i667;
-import 'package:mobile_table_hopping/core/di/register_module.dart' as _i291;
+    as _i809;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -91,113 +90,113 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.sharedPreferences,
       preResolve: true,
     );
-    gh.lazySingleton<_i1002.TokenStorage>(
+    gh.lazySingleton<_i717.TokenStorage>(
       () => registerModule.tokenStorage(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i667.DioClient>(
-      () => _i667.DioClient(gh<_i1002.TokenStorage>()),
+    gh.lazySingleton<_i737.DioClient>(
+      () => _i737.DioClient(gh<_i717.TokenStorage>()),
     );
-    gh.lazySingleton<_i76.GameLocalDatasource>(
-      () => _i76.GameLocalDatasourceImpl(),
+    gh.lazySingleton<_i599.PublishRemoteDatasource>(
+      () => _i599.PublishRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
-    gh.lazySingleton<_i301.RentalRepository>(
-      () => _i303.RentalRepositoryImpl(),
+    gh.lazySingleton<_i579.RentalRemoteDatasource>(
+      () => _i579.RentalRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
-    gh.lazySingleton<_i263.PublishRemoteDatasource>(
-      () => _i263.PublishRemoteDatasourceImpl(gh<_i667.DioClient>()),
+    gh.lazySingleton<_i930.AuthRemoteDatasource>(
+      () => _i930.AuthRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
-    gh.lazySingleton<_i161.AuthRemoteDatasource>(
-      () => _i161.AuthRemoteDatasourceImpl(gh<_i667.DioClient>()),
+    gh.lazySingleton<_i374.PublishRepository>(
+      () => _i327.PublishRepositoryImpl(gh<_i599.PublishRemoteDatasource>()),
     );
-    gh.lazySingleton<_i134.PublishRepository>(
-      () => _i278.PublishRepositoryImpl(gh<_i263.PublishRemoteDatasource>()),
+    gh.lazySingleton<_i460.CategoryRemoteDatasource>(
+      () => _i460.CategoryRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
-    gh.lazySingleton<_i126.CategoryRemoteDatasource>(
-      () => _i126.CategoryRemoteDatasourceImpl(gh<_i667.DioClient>()),
+    gh.lazySingleton<_i349.GameRemoteDatasource>(
+      () => _i349.GameRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
-    gh.lazySingleton<_i609.GameRemoteDatasource>(
-      () => _i609.GameRemoteDatasourceImpl(gh<_i667.DioClient>()),
-    );
-    gh.lazySingleton<_i842.GameRepository>(
-      () => _i816.GameRepositoryImpl(
-        gh<_i609.GameRemoteDatasource>(),
-        gh<_i126.CategoryRemoteDatasource>(),
+    gh.lazySingleton<_i305.GameRepository>(
+      () => _i61.GameRepositoryImpl(
+        gh<_i349.GameRemoteDatasource>(),
+        gh<_i460.CategoryRemoteDatasource>(),
       ),
     );
-    gh.factory<_i724.ConfirmRental>(
-      () => _i724.ConfirmRental(gh<_i301.RentalRepository>()),
+    gh.lazySingleton<_i996.RentalRepository>(
+      () => _i472.RentalRepositoryImpl(gh<_i579.RentalRemoteDatasource>()),
     );
-    gh.lazySingleton<_i787.AuthRepository>(
-      () => _i153.AuthRepositoryImpl(
-        gh<_i161.AuthRemoteDatasource>(),
-        gh<_i1002.TokenStorage>(),
+    gh.lazySingleton<_i198.AuthRepository>(
+      () => _i187.AuthRepositoryImpl(
+        gh<_i930.AuthRemoteDatasource>(),
+        gh<_i717.TokenStorage>(),
         gh<_i460.SharedPreferences>(),
       ),
     );
-    gh.factory<_i103.CreateListing>(
-      () => _i103.CreateListing(gh<_i134.PublishRepository>()),
+    gh.factory<_i692.CreatePublication>(
+      () => _i692.CreatePublication(gh<_i374.PublishRepository>()),
     );
-    gh.factory<_i428.Login>(() => _i428.Login(gh<_i787.AuthRepository>()));
-    gh.factory<_i480.Register>(
-      () => _i480.Register(gh<_i787.AuthRepository>()),
+    gh.factory<_i257.GetAuthStatus>(
+      () => _i257.GetAuthStatus(gh<_i198.AuthRepository>()),
     );
-    gh.factory<_i597.Logout>(() => _i597.Logout(gh<_i787.AuthRepository>()));
-    gh.factory<_i103.GetAuthStatus>(
-      () => _i103.GetAuthStatus(gh<_i787.AuthRepository>()),
+    gh.factory<_i304.Login>(() => _i304.Login(gh<_i198.AuthRepository>()));
+    gh.factory<_i252.Logout>(() => _i252.Logout(gh<_i198.AuthRepository>()));
+    gh.factory<_i1028.RefreshToken>(
+      () => _i1028.RefreshToken(gh<_i198.AuthRepository>()),
     );
-    gh.factory<_i209.RefreshToken>(
-      () => _i209.RefreshToken(gh<_i787.AuthRepository>()),
+    gh.factory<_i918.Register>(
+      () => _i918.Register(gh<_i198.AuthRepository>()),
     );
-    gh.lazySingleton<_i797.AuthBloc>(
-      () => _i797.AuthBloc(
-        getAuthStatus: gh<_i103.GetAuthStatus>(),
-        login: gh<_i428.Login>(),
-        register: gh<_i480.Register>(),
-        logout: gh<_i597.Logout>(),
-        refreshToken: gh<_i209.RefreshToken>(),
+    gh.lazySingleton<_i701.AuthBloc>(
+      () => _i701.AuthBloc(
+        getAuthStatus: gh<_i257.GetAuthStatus>(),
+        login: gh<_i304.Login>(),
+        register: gh<_i918.Register>(),
+        logout: gh<_i252.Logout>(),
+        refreshToken: gh<_i1028.RefreshToken>(),
       ),
     );
-    gh.factory<_i391.PublishBloc>(
-      () => _i391.PublishBloc(createListing: gh<_i103.CreateListing>()),
+    gh.factory<_i249.GetCategories>(
+      () => _i249.GetCategories(gh<_i305.GameRepository>()),
     );
-    gh.factory<_i588.SearchGames>(
-      () => _i588.SearchGames(gh<_i842.GameRepository>()),
+    gh.factory<_i249.GetFilterShortcuts>(
+      () => _i249.GetFilterShortcuts(gh<_i305.GameRepository>()),
     );
-    gh.factory<_i276.GetGames>(
-      () => _i276.GetGames(gh<_i842.GameRepository>()),
+    gh.factory<_i499.GetGames>(
+      () => _i499.GetGames(gh<_i305.GameRepository>()),
     );
-    gh.factory<_i363.GetCategories>(
-      () => _i363.GetCategories(gh<_i842.GameRepository>()),
+    gh.factory<_i144.SearchGames>(
+      () => _i144.SearchGames(gh<_i305.GameRepository>()),
     );
-    gh.factory<_i363.GetFilterShortcuts>(
-      () => _i363.GetFilterShortcuts(gh<_i842.GameRepository>()),
-    );
-    gh.factory<_i773.CatalogBloc>(
-      () => _i773.CatalogBloc(
-        getGames: gh<_i276.GetGames>(),
-        searchGames: gh<_i588.SearchGames>(),
+    gh.factory<_i896.CatalogBloc>(
+      () => _i896.CatalogBloc(
+        getGames: gh<_i499.GetGames>(),
+        searchGames: gh<_i144.SearchGames>(),
       ),
     );
-    gh.factory<_i851.RentalBloc>(
-      () => _i851.RentalBloc(
-        getGames: gh<_i276.GetGames>(),
-        confirmRental: gh<_i724.ConfirmRental>(),
+    gh.factory<_i649.ConfirmRental>(
+      () => _i649.ConfirmRental(gh<_i996.RentalRepository>()),
+    );
+    gh.factory<_i675.RentalBloc>(
+      () => _i675.RentalBloc(
+        getGames: gh<_i499.GetGames>(),
+        confirmRental: gh<_i649.ConfirmRental>(),
       ),
     );
-    gh.factory<_i986.GameDetailsBloc>(
-      () => _i986.GameDetailsBloc(getGames: gh<_i276.GetGames>()),
+    gh.factory<_i530.PublishBloc>(
+      () => _i530.PublishBloc(createPublication: gh<_i692.CreatePublication>()),
     );
-    gh.factory<_i18.GameRulesBloc>(
-      () => _i18.GameRulesBloc(getGames: gh<_i276.GetGames>()),
+    gh.factory<_i878.GameDetailsBloc>(
+      () => _i878.GameDetailsBloc(getGames: gh<_i499.GetGames>()),
     );
-    gh.factory<_i478.GameReviewsBloc>(
-      () => _i478.GameReviewsBloc(getGames: gh<_i276.GetGames>()),
+    gh.factory<_i59.GameReviewsBloc>(
+      () => _i59.GameReviewsBloc(getGames: gh<_i499.GetGames>()),
     );
-    gh.factory<_i989.UserProfileBloc>(
-      () => _i989.UserProfileBloc(getGames: gh<_i276.GetGames>()),
+    gh.factory<_i311.GameRulesBloc>(
+      () => _i311.GameRulesBloc(getGames: gh<_i499.GetGames>()),
+    );
+    gh.factory<_i809.UserProfileBloc>(
+      () => _i809.UserProfileBloc(getGames: gh<_i499.GetGames>()),
     );
     return this;
   }
 }
 
-class _$RegisterModule extends _i291.RegisterModule {}
+class _$RegisterModule extends _i704.RegisterModule {}

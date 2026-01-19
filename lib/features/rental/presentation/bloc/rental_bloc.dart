@@ -2,101 +2,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/rental/domain/entities/rental_draft.dart';
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
+import 'package:mobile_table_hopping/features/rental/domain/validators/rental_date_validator.dart';
 
 part 'rental_bloc.freezed.dart';
-
-@freezed
-/// Events for creating and submitting a rental draft.
-class RentalEvent with _$RentalEvent {
-  /// Loads the game and initializes dates for the rental flow.
-  const factory RentalEvent.started({required String gameId, String? startDate, String? endDate}) = _Started;
-
-  /// Updates the rental start date.
-  const factory RentalEvent.startDateChanged(String? value) = _StartDateChanged;
-
-  /// Updates the rental end date.
-  const factory RentalEvent.endDateChanged(String? value) = _EndDateChanged;
-
-  /// Toggles delivery for the current rental draft.
-  const factory RentalEvent.deliveryChanged({required bool isDelivery}) = _DeliveryChanged;
-
-  /// Updates the delivery address.
-  const factory RentalEvent.deliveryAddressChanged(String value) = _DeliveryAddressChanged;
-
-  /// Updates delivery comments/notes.
-  const factory RentalEvent.deliveryCommentsChanged(String value) = _DeliveryCommentsChanged;
-
-  /// Updates the selected payment method.
-  const factory RentalEvent.paymentMethodChanged(String value) = _PaymentMethodChanged;
-
-  /// Updates the selected food bundle identifiers.
-  const factory RentalEvent.foodBundlesChanged(List<String> value) = _FoodBundlesChanged;
-
-  /// Submits the current rental draft.
-  const factory RentalEvent.submitted() = _Submitted;
-
-  /// Clears the last snackbar message after it is shown.
-  const factory RentalEvent.messageShown() = _MessageShown;
-
-  /// Resets the flow to publish another rental.
-  const factory RentalEvent.publishAnother() = _PublishAnother;
-}
-
-@freezed
-/// State for the rental confirmation flow.
-class RentalState with _$RentalState {
-  /// Creates a new rental state instance.
-  const factory RentalState({
-    @Default(false) bool isLoading,
-    Game? game,
-    String? errorMessage,
-    @Default(false) bool success,
-
-    String? startDate,
-    String? endDate,
-    @Default(false) bool isDelivery,
-    @Default('') String deliveryAddress,
-    @Default('') String deliveryComments,
-    @Default('mercadopago') String paymentMethod,
-    @Default([]) List<String> selectedFoodBundles,
-
-    @Default(false) bool isSubmitting,
-    String? snackbarMessage,
-  }) = _RentalState;
-  const RentalState._();
-
-  /// Number of days between start and end dates, inclusive.
-  int get rentalDays {
-    final startStr = startDate;
-    final endStr = endDate;
-    if (startStr == null || endStr == null) return 1;
-
-    final start = DateTime.tryParse(startStr);
-    final end = DateTime.tryParse(endStr);
-    if (start == null || end == null) return 1;
-
-    return end.difference(start).inDays + 1;
-  }
-
-  /// Subtotal for the rental without fees.
-  int get subtotal => (game?.price ?? 0) * rentalDays;
-
-  /// Service fee applied to the subtotal.
-  int get serviceFee => (subtotal * 0.1).round();
-
-  /// Delivery fee based on delivery selection.
-  int get deliveryFee => isDelivery ? 150 : 0;
-
-  /// Total price for selected food bundles.
-  int get foodTotal => selectedFoodBundles.length * 250;
-
-  /// Total price including fees and add-ons.
-  int get total => subtotal + serviceFee + deliveryFee + foodTotal;
-}
+part 'rental_event.dart';
+part 'rental_state.dart';
 
 @injectable
 /// Bloc coordinating rental confirmation state and side effects.
@@ -109,6 +24,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     on<_Started>(_onStarted);
     on<_StartDateChanged>(_onStartDateChanged);
     on<_EndDateChanged>(_onEndDateChanged);
+    on<_DateRangeChanged>(_onDateRangeChanged);
     on<_DeliveryChanged>(_onDeliveryChanged);
     on<_DeliveryAddressChanged>(_onDeliveryAddressChanged);
     on<_DeliveryCommentsChanged>(_onDeliveryCommentsChanged);
@@ -122,52 +38,169 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   final ConfirmRental _confirmRental;
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null, startDate: event.startDate, endDate: event.endDate));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        errorMessage: null,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        ownerId: event.ownerId,
+        deposit: event.deposit,
+      ),
+    );
 
-    final id = int.tryParse(event.gameId);
-    if (id == null) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'ID inválido'));
-      return;
-    }
+    final id = event.publicationId;
 
     try {
       final game = await _getGames.getById(id);
       if (game == null) {
-        emit(state.copyWith(isLoading: false, errorMessage: 'Juego no encontrado'));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: AppStrings.errorGameNotFound,
+          ),
+        );
         return;
       }
       emit(state.copyWith(isLoading: false, game: game));
     } on Exception catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'Error al cargar el juego: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: '${AppStrings.errorLoadingGame}: $e',
+        ),
+      );
     }
   }
 
   void _onStartDateChanged(_StartDateChanged event, Emitter<RentalState> emit) {
-    emit(state.copyWith(startDate: event.value, snackbarMessage: null));
+    final newStart = event.startDate;
+    var newEnd = state.endDate;
+
+    if (newStart == null) {
+      emit(state.copyWith(startDate: null, endDate: null));
+      return;
+    }
+
+    final start = DateTime.tryParse(newStart);
+    final end = DateTime.tryParse(newEnd ?? '');
+
+    String? snackbar;
+
+    // If start date is moved past end date, clear end date
+    if (start != null && end != null && !end.isAfter(start)) {
+      newEnd = null;
+      snackbar = AppStrings.rentalChooseLaterEnd;
+    }
+
+    final result = RentalDateValidator.validate(
+      game: state.game,
+      startDate: newStart,
+      endDate: newEnd,
+    );
+
+    // If we newly set a start date but it makes the 3-day window unavailable
+    if (newEnd == null && state.game != null) {
+      final startDate = DateTime.tryParse(newStart);
+      if (startDate != null) {
+        final minEndDate = startDate.add(const Duration(days: 2));
+        if (!state.game!.isAvailableFor(
+          newStart,
+          minEndDate.toIso8601String(),
+        )) {
+          return emit(
+            state.copyWith(
+              startDate: null,
+              endDate: null,
+              snackbarMessage: AppStrings.rentalMinAvailability,
+            ),
+          );
+        }
+      }
+    }
+
+    emit(
+      state.copyWith(
+        startDate: newStart,
+        endDate: result.isValid ? newEnd : null,
+        snackbarMessage: snackbar ?? (result.isValid ? null : result.message),
+      ),
+    );
   }
 
   void _onEndDateChanged(_EndDateChanged event, Emitter<RentalState> emit) {
-    emit(state.copyWith(endDate: event.value, snackbarMessage: null));
+    final newEnd = event.endDate;
+
+    final result = RentalDateValidator.validate(
+      game: state.game,
+      startDate: state.startDate,
+      endDate: newEnd,
+    );
+
+    emit(
+      state.copyWith(
+        endDate: result.isValid ? newEnd : null,
+        snackbarMessage: result.isValid ? null : result.message,
+      ),
+    );
+  }
+
+  void _onDateRangeChanged(_DateRangeChanged event, Emitter<RentalState> emit) {
+    final startStr = event.startDate;
+    final endStr = event.endDate;
+
+    if (startStr == null || endStr == null) {
+      emit(
+        state.copyWith(startDate: null, endDate: null, snackbarMessage: null),
+      );
+      return;
+    }
+
+    final result = RentalDateValidator.validate(
+      game: state.game,
+      startDate: startStr,
+      endDate: endStr,
+    );
+
+    emit(
+      state.copyWith(
+        startDate: result.isValid ? startStr : null,
+        endDate: result.isValid ? endStr : null,
+        snackbarMessage: result.isValid ? null : result.message,
+      ),
+    );
   }
 
   void _onDeliveryChanged(_DeliveryChanged event, Emitter<RentalState> emit) {
     emit(state.copyWith(isDelivery: event.isDelivery));
   }
 
-  void _onDeliveryAddressChanged(_DeliveryAddressChanged event, Emitter<RentalState> emit) {
-    emit(state.copyWith(deliveryAddress: event.value));
+  void _onDeliveryAddressChanged(
+    _DeliveryAddressChanged event,
+    Emitter<RentalState> emit,
+  ) {
+    emit(state.copyWith(deliveryAddress: event.address));
   }
 
-  void _onDeliveryCommentsChanged(_DeliveryCommentsChanged event, Emitter<RentalState> emit) {
-    emit(state.copyWith(deliveryComments: event.value));
+  void _onDeliveryCommentsChanged(
+    _DeliveryCommentsChanged event,
+    Emitter<RentalState> emit,
+  ) {
+    emit(state.copyWith(deliveryComments: event.comments));
   }
 
-  void _onPaymentMethodChanged(_PaymentMethodChanged event, Emitter<RentalState> emit) {
-    emit(state.copyWith(paymentMethod: event.value));
+  void _onPaymentMethodChanged(
+    _PaymentMethodChanged event,
+    Emitter<RentalState> emit,
+  ) {
+    emit(state.copyWith(paymentMethod: event.paymentMethod));
   }
 
-  void _onFoodBundlesChanged(_FoodBundlesChanged event, Emitter<RentalState> emit) {
-    emit(state.copyWith(selectedFoodBundles: event.value));
+  void _onFoodBundlesChanged(
+    _FoodBundlesChanged event,
+    Emitter<RentalState> emit,
+  ) {
+    emit(state.copyWith(selectedFoodBundles: event.foodBundles));
   }
 
   Future<void> _onSubmitted(_Submitted event, Emitter<RentalState> emit) async {
@@ -176,8 +209,28 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final game = state.game;
 
     if (game == null) return;
+
+    final ownerId = game.ownerId ?? state.ownerId;
+    if (ownerId == null || ownerId.isEmpty) {
+      emit(
+        state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError),
+      );
+      return;
+    }
+
     if (start == null || end == null) {
-      emit(state.copyWith(snackbarMessage: 'Seleccioná las fechas del alquiler'));
+      emit(state.copyWith(snackbarMessage: AppStrings.rentalSelectDates));
+      return;
+    }
+
+    final result = RentalDateValidator.validate(
+      game: game,
+      startDate: start,
+      endDate: end,
+    );
+
+    if (!result.isValid) {
+      emit(state.copyWith(snackbarMessage: result.message));
       return;
     }
 
@@ -186,9 +239,11 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     try {
       await _confirmRental(
         RentalDraft(
-          gameId: game.id,
+          publicationId: game.id,
+          ownerId: ownerId,
           startDate: start,
           endDate: end,
+          deposit: (game.deposit ?? state.deposit) ?? 0,
           isDelivery: state.isDelivery,
           deliveryAddress: state.deliveryAddress,
           deliveryComments: state.deliveryComments,
@@ -199,7 +254,12 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       );
       emit(state.copyWith(isSubmitting: false, success: true));
     } on Exception catch (e) {
-      emit(state.copyWith(isSubmitting: false, errorMessage: 'No se pudo confirmar el alquiler: $e'));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          errorMessage: '${AppStrings.rentalConfirmError}: $e',
+        ),
+      );
     }
   }
 
