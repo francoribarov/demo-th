@@ -17,7 +17,7 @@ class AppScaffold extends StatelessWidget {
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     if (location == AppRoutes.home) return 0;
-    if (location == AppRoutes.myGames) return 1;
+    if (location == AppRoutes.myPublications) return 1;
     if (location == AppRoutes.publish) return 2;
     if (location == AppRoutes.profile) return 3;
     return 0;
@@ -29,7 +29,7 @@ class AppScaffold extends StatelessWidget {
         context.go(AppRoutes.home);
         return;
       case 1:
-        context.go(AppRoutes.myGames);
+        context.go(AppRoutes.myPublications);
         return;
       case 2:
         context.go(AppRoutes.publish);

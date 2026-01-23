@@ -125,7 +125,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
   Future<PublicationDetailModel> getPublicationById(String id) async {
     try {
       final response = await _dioClient.get<Map<String, dynamic>>(
-        ApiConstants.publicationById(id),
+        '${ApiConstants.publications}/$id',
       );
 
       final data = response.data ?? const <String, dynamic>{};
@@ -184,7 +184,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
   }) async {
     try {
       final response = await _dioClient.get<List<dynamic>>(
-        ApiConstants.publicationRecommendations(gameId),
+        '${ApiConstants.publications}/$gameId/recommendations',
         queryParameters: <String, dynamic>{'limit': limit},
       );
 

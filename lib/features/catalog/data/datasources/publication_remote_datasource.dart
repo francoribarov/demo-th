@@ -263,7 +263,7 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
   Future<List<PublicationListingModel>> getMyPublications() async {
     try {
       final response = await _dioClient.get<dynamic>(
-        ApiConstants.myPublications,
+        '${ApiConstants.publications}/my-publications',
       );
 
       final data = response.data;

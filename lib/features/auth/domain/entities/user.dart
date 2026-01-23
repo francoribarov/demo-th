@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/user_address.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/address.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 
 part 'user.freezed.dart';
@@ -14,7 +14,7 @@ abstract class User with _$User {
     required String username,
     String? imageUrl,
     DateTime? dateOfBirth,
-    UserAddress? address,
+    Address? address,
     List<String>? deliveryZone,
     @Default([]) List<GameCategory> preferences,
     String?

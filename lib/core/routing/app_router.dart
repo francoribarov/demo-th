@@ -39,20 +39,20 @@ class AppRoutes {
   /// Publish game route.
   static const String publish = '/publish';
 
-  /// My games route.
-  static const String myGames = '/my-games';
+  /// My PUBLICATIONS route.
+  static const String myPublications = '/my-publications';
 
   /// Personal profile route.
   static const String profile = '/profile';
 
-  /// Game details route template.
-  static const String gameDetails = '/publications/:id';
+  /// Publication details route template.
+  static const String publicationDetails = '/publications/:id';
 
   /// Game rules route template.
-  static const String gameRules = '/publications/:id/rules';
+  static const String gameRules = '/games/:id/rules';
 
   /// Game reviews route template.
-  static const String gameReviews = '/publications/:id/reviews';
+  static const String gameReviews = '/games/:id/reviews';
 
   /// Game owner route template.
   static const String gameOwner = '/publications/:id/owner';
@@ -80,7 +80,7 @@ class AppRouter {
       final isLogin = location == AppRoutes.login;
       final isRegister = location == AppRoutes.register;
       final isProtected = location == AppRoutes.publish ||
-          location == AppRoutes.myGames ||
+          location == AppRoutes.myPublications ||
           RegExp(r'^/publications/[^/]+/rental$').hasMatch(location);
 
       final authBloc = getIt<AuthBloc>();
@@ -128,8 +128,8 @@ class AppRouter {
             ),
           ),
           GoRoute(
-            path: AppRoutes.myGames,
-            name: 'my-games',
+            path: AppRoutes.myPublications,
+            name: 'my-publications',
             pageBuilder: (context, state) => NoTransitionPage(
               child: BlocProvider<MyPublicationsBloc>(
                 create: (_) => getIt<MyPublicationsBloc>()
@@ -190,8 +190,8 @@ class AppRouter {
       ),
       // Routes outside of shell (no bottom nav)
       GoRoute(
-        path: '/publications/:id',
-        name: AppRoutes.gameDetails,
+        path: AppRoutes.publicationDetails,
+        name: AppRoutes.publicationDetails,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final id = state.pathParameters['id']!;

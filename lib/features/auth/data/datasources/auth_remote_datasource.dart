@@ -36,7 +36,6 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
           ApiConstants.login,
           data: request.toJson());
       final data = response.data;
-      print('LOGIN RESPONSE: $data');
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
       }

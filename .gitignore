@@ -21,6 +21,9 @@ migrate_working_dir/
 **/DerivedData/
 **/*.xcuserstate
 
+injection.config.dart
+
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
@@ -67,3 +70,5 @@ AGENTS.md
 **/*.freezed.dart
 *.g.dart
 **/*.g.dart
+lib/core/di/injection.config.dart
+lib/core/di/injection.config.dart

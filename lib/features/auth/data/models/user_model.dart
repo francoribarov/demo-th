@@ -3,7 +3,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/user_address.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/address.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
 
 part 'user_model.freezed.dart';
@@ -87,7 +87,7 @@ sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
 @freezed
 sealed class UserAddressModel
     with _$UserAddressModel
-    implements BaseDtoResponse<UserAddress> {
+    implements BaseDtoResponse<Address> {
   const factory UserAddressModel({
     required String address,
     required String addressName,
@@ -100,7 +100,7 @@ sealed class UserAddressModel
   factory UserAddressModel.fromJson(Map<String, dynamic> json) =>
       _$UserAddressModelFromJson(json);
 
-  factory UserAddressModel.fromEntity(UserAddress entity) => UserAddressModel(
+  factory UserAddressModel.fromEntity(Address entity) => UserAddressModel(
         address: entity.address,
         addressName: entity.addressName,
         number: entity.number,
@@ -108,7 +108,7 @@ sealed class UserAddressModel
       );
 
   @override
-  UserAddress toDomainModel() => UserAddress(
+  Address toDomainModel() => Address(
         address: address,
         addressName: addressName,
         number: number,
