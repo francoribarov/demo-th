@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/my_publications/data/datasources/rental_requests_datasource.dart';
 import 'package:mobile_table_hopping/features/my_publications/domain/entities/rental_request.dart';
 import 'package:mobile_table_hopping/features/my_publications/domain/repositories/my_publications_repository.dart';
@@ -22,5 +23,10 @@ class MyPublicationsRepositoryImpl implements MyPublicationsRepository {
   @override
   Future<void> rejectRentalRequest(String requestId) {
     return _dataSource.rejectRentalRequest(requestId);
+  }
+
+  @override
+  Future<List<Game>> getMyGames() {
+    return _dataSource.getMyGames();
   }
 }

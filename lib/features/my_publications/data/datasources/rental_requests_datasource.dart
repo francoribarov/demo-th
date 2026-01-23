@@ -7,6 +7,7 @@ abstract class RentalRequestsDataSource {
   Future<List<RentalRequest>> getRentalRequests();
   Future<void> acceptRentalRequest(String id);
   Future<void> rejectRentalRequest(String id);
+  Future<List<Game>> getMyGames();
 }
 
 @LazySingleton(as: RentalRequestsDataSource)
@@ -106,5 +107,52 @@ class MockRentalRequestsDataSource implements RentalRequestsDataSource {
         status: RentalRequestStatus.rejected,
       );
     }
+  }
+
+  @override
+  Future<List<Game>> getMyGames() async {
+    await Future<void>.delayed(const Duration(seconds: 1));
+    return [
+      const Game(
+        id: 'game-1',
+        title: 'Catan',
+        categories: [],
+        images: [
+          'https://m.media-amazon.com/images/I/81xHeEaXlML._AC_SL1500_.jpg',
+        ],
+        rating: 4.5,
+        reviewsCount: 120,
+        description: 'Trade, build and settle',
+        duration: 90,
+        players: '3-4',
+        difficulty: 'Medium',
+        price: 50,
+        rules: GameRules(
+          videoUrl: '',
+          ruleCompleteUrl: '',
+          summaryRules: '',
+        ),
+      ),
+      const Game(
+        id: 'game-3',
+        title: 'Pandemic',
+        categories: [],
+        images: [
+          'https://m.media-amazon.com/images/I/81YQ8C3-kDL._AC_SL1500_.jpg',
+        ],
+        rating: 4.7,
+        reviewsCount: 200,
+        description: 'Save the world from diseases',
+        duration: 45,
+        players: '2-4',
+        difficulty: 'Hard',
+        price: 40,
+        rules: GameRules(
+          videoUrl: '',
+          ruleCompleteUrl: '',
+          summaryRules: '',
+        ),
+      ),
+    ];
   }
 }

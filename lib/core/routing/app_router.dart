@@ -14,6 +14,7 @@ import 'package:mobile_table_hopping/features/game_details/presentation/bloc/gam
 import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_details_page.dart';
 import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_reviews_page.dart';
 import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_rules_page.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
@@ -131,10 +132,19 @@ class AppRouter {
             path: AppRoutes.myGames,
             name: 'my-games',
             pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider<RentalRequestsBloc>(
-                create: (_) =>
-                    getIt<RentalRequestsBloc>()
-                      ..add(const RentalRequestsEvent.started()),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider<RentalRequestsBloc>(
+                    create: (_) =>
+                        getIt<RentalRequestsBloc>()
+                          ..add(const RentalRequestsEvent.started()),
+                  ),
+                  BlocProvider<MyPublicationsBloc>(
+                    create: (_) =>
+                        getIt<MyPublicationsBloc>()
+                          ..add(const MyPublicationsEvent.started()),
+                  ),
+                ],
                 child: const MyPublicationsPage(),
               ),
             ),
