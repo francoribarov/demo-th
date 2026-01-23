@@ -54,6 +54,20 @@ import 'package:mobile_table_hopping/features/game_details/presentation/bloc/gam
     as _i59;
 import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_rules_bloc.dart'
     as _i311;
+import 'package:mobile_table_hopping/features/my_publications/data/datasources/rental_requests_datasource.dart'
+    as _i86;
+import 'package:mobile_table_hopping/features/my_publications/data/repositories/my_publications_repository_impl.dart'
+    as _i869;
+import 'package:mobile_table_hopping/features/my_publications/domain/repositories/my_publications_repository.dart'
+    as _i941;
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/accept_rental_request_usecase.dart'
+    as _i313;
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/get_rental_requests_usecase.dart'
+    as _i474;
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/reject_rental_request_usecase.dart'
+    as _i44;
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart'
+    as _i600;
 import 'package:mobile_table_hopping/features/publish/data/datasources/publish_remote_datasource.dart'
     as _i599;
 import 'package:mobile_table_hopping/features/publish/data/repositories/publish_repository_impl.dart'
@@ -96,6 +110,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i737.DioClient>(
       () => _i737.DioClient(gh<_i717.TokenStorage>()),
     );
+    gh.lazySingleton<_i86.RentalRequestsDataSource>(
+      () => _i86.MockRentalRequestsDataSource(),
+    );
+    gh.lazySingleton<_i941.MyPublicationsRepository>(
+      () => _i869.MyPublicationsRepositoryImpl(
+        gh<_i86.RentalRequestsDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i599.PublishRemoteDatasource>(
       () => _i599.PublishRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
@@ -114,10 +136,30 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i349.GameRemoteDatasource>(
       () => _i349.GameRemoteDatasourceImpl(gh<_i737.DioClient>()),
     );
+    gh.factory<_i313.AcceptRentalRequestUseCase>(
+      () => _i313.AcceptRentalRequestUseCase(
+        gh<_i941.MyPublicationsRepository>(),
+      ),
+    );
+    gh.factory<_i474.GetRentalRequestsUseCase>(
+      () =>
+          _i474.GetRentalRequestsUseCase(gh<_i941.MyPublicationsRepository>()),
+    );
+    gh.factory<_i44.RejectRentalRequestUseCase>(
+      () =>
+          _i44.RejectRentalRequestUseCase(gh<_i941.MyPublicationsRepository>()),
+    );
     gh.lazySingleton<_i305.GameRepository>(
       () => _i61.GameRepositoryImpl(
         gh<_i349.GameRemoteDatasource>(),
         gh<_i460.CategoryRemoteDatasource>(),
+      ),
+    );
+    gh.factory<_i600.RentalRequestsBloc>(
+      () => _i600.RentalRequestsBloc(
+        gh<_i474.GetRentalRequestsUseCase>(),
+        gh<_i313.AcceptRentalRequestUseCase>(),
+        gh<_i44.RejectRentalRequestUseCase>(),
       ),
     );
     gh.lazySingleton<_i996.RentalRepository>(
