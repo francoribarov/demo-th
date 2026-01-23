@@ -67,3 +67,4 @@ AGENTS.md
 **/*.freezed.dart
 *.g.dart
 **/*.g.dart
+**/injection.config.dart
