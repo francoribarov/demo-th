@@ -8,7 +8,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Set preferred orientations
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // Initialize date formatting for Spanish locale
   await initializeDateFormatting('es_UY');

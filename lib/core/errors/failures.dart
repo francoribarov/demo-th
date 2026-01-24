@@ -15,7 +15,10 @@ abstract class Failure {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Failure && runtimeType == other.runtimeType && other.message == message && other.code == code;
+    return other is Failure &&
+        runtimeType == other.runtimeType &&
+        other.message == message &&
+        other.code == code;
   }
 
   @override
@@ -34,7 +37,9 @@ class ServerFailure extends Failure {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is ServerFailure && super == other && other.statusCode == statusCode;
+    return other is ServerFailure &&
+        super == other &&
+        other.statusCode == statusCode;
   }
 
   @override
@@ -72,7 +77,9 @@ class ValidationFailure extends Failure {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is ValidationFailure && super == other && _mapEquals(fieldErrors, other.fieldErrors);
+    return other is ValidationFailure &&
+        super == other &&
+        _mapEquals(fieldErrors, other.fieldErrors);
   }
 
   @override
@@ -103,7 +110,8 @@ bool _mapEquals(Map<String, String>? a, Map<String, String>? b) {
 
 int _mapHash(Map<String, String>? map) {
   if (map == null) return 0;
-  final sortedEntries = map.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
+  final sortedEntries = map.entries.toList()
+    ..sort((a, b) => a.key.compareTo(b.key));
   return Object.hashAll(
     sortedEntries.map((entry) => Object.hash(entry.key, entry.value)),
   );

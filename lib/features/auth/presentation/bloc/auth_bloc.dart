@@ -70,7 +70,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(
         state.copyWith(
           isCheckingStatus: false,
-          status: session != null ? AuthStatus.authenticated : AuthStatus.unauthenticated,
+          status: session != null
+              ? AuthStatus.authenticated
+              : AuthStatus.unauthenticated,
           session: session,
         ),
       );
@@ -261,7 +263,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final usernameError = _validateUsername(username);
     if (usernameError != null) {
-      emit(state.copyWith(registerErrorMessage: usernameError, errorMessage: null));
+      emit(
+        state.copyWith(registerErrorMessage: usernameError, errorMessage: null),
+      );
       return;
     }
 

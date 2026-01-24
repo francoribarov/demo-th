@@ -18,6 +18,11 @@ class Register {
     required String username,
     String? location,
   }) {
-    return _repository.register(email: email, password: password, username: username, location: location);
+    return _repository.register(
+      email: email,
+      password: password,
+      username: username,
+      location: location,
+    );
   }
 }

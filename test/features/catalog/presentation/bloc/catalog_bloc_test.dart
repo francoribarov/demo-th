@@ -26,10 +26,6 @@ void main() {
     );
   });
 
-  tearDown(() async {
-    await catalogBloc.close();
-  });
-
   const tGame = Game(
     id: '1',
     title: 'Test Game',

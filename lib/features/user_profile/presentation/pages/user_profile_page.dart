@@ -62,13 +62,15 @@ class UserProfilePage extends StatelessWidget {
           (
             name: 'Diego M.',
             rating: 5.0,
-            comment: 'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
+            comment:
+                'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
             date: 'hace 1 mes',
           ),
           (
             name: 'Camila S.',
             rating: 4.0,
-            comment: 'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
+            comment:
+                'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
             date: 'hace 1 mes',
           ),
         ];
@@ -77,7 +79,7 @@ class UserProfilePage extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/publications/$gameId'),
+              onPressed: () => context.popOrGo('/publication/$gameId'),
             ),
             title: const Text('Perfil del dueño'),
           ),
@@ -208,7 +210,9 @@ class UserProfilePage extends StatelessWidget {
                           Row(
                             children: List.generate(5, (i) {
                               return Icon(
-                                i < rating.floor() ? Icons.star : Icons.star_border,
+                                i < rating.floor()
+                                    ? Icons.star
+                                    : Icons.star_border,
                                 color: AppColors.gameGold,
                                 size: 20,
                               );
@@ -230,7 +234,9 @@ class UserProfilePage extends StatelessWidget {
                           children: List.generate(5, (i) {
                             final stars = 5 - i;
                             final count = ratingBreakdown[stars] ?? 0;
-                            final percentage = totalReviews > 0 ? count / totalReviews : 0.0;
+                            final percentage = totalReviews > 0
+                                ? count / totalReviews
+                                : 0.0;
                             return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,

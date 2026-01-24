@@ -26,7 +26,9 @@ class TableHoppingApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>.value(value: getIt<AuthBloc>()),
-        BlocProvider<CatalogBloc>(create: (_) => getIt<CatalogBloc>()..add(const LoadGames())),
+        BlocProvider<CatalogBloc>(
+          create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
+        ),
       ],
       child: MaterialApp.router(
         title: 'Table Hopping',
@@ -47,9 +49,14 @@ class TableHoppingApp extends StatelessWidget {
         builder: (context, child) {
           // Apply global text scale factor limit for accessibility
           return MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(textScaler: TextScaler.linear(MediaQuery.of(context).textScaler.scale(1).clamp(0.8, 1.3))),
+            data:
+                MediaQuery.of(
+                  context,
+                ).copyWith(
+                  textScaler: TextScaler.linear(
+                    MediaQuery.of(context).textScaler.scale(1).clamp(0.8, 1.3),
+                  ),
+                ),
             child: child ?? const SizedBox.shrink(),
           );
         },

@@ -71,7 +71,9 @@ class _GameRulesPageState extends State<GameRulesPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _InfoChip(
-                          icon: Icons.timer, label: '${game.duration} min'),
+                        icon: Icons.timer,
+                        label: '${game.duration} min',
+                      ),
                       _InfoChip(icon: Icons.people, label: game.players),
                       _InfoChip(icon: Icons.psychology, label: game.difficulty),
                     ],

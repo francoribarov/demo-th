@@ -22,7 +22,10 @@ class TokenStorage {
 
   /// Save both tokens
   Future<void> saveTokens(String accessToken, String refreshToken) async {
-    await Future.wait([saveAccessToken(accessToken), saveRefreshToken(refreshToken)]);
+    await Future.wait([
+      saveAccessToken(accessToken),
+      saveRefreshToken(refreshToken),
+    ]);
   }
 
   /// Get access token
@@ -42,6 +45,9 @@ class TokenStorage {
 
   /// Clear all tokens (logout)
   Future<void> clearTokens() async {
-    await Future.wait([_prefs.remove(_accessTokenKey), _prefs.remove(_refreshTokenKey)]);
+    await Future.wait([
+      _prefs.remove(_accessTokenKey),
+      _prefs.remove(_refreshTokenKey),
+    ]);
   }
 }

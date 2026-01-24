@@ -29,7 +29,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listenWhen: (previous, current) => previous.status != current.status && current.isAuthenticated,
+      listenWhen: (previous, current) =>
+          previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
         final redirectTo = widget.from;
         if (redirectTo != null &&
@@ -101,9 +102,10 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: const InputDecoration(
                               labelText: 'Contraseña',
                             ),
-                            onChanged: (password) => context.read<AuthBloc>().add(
-                              AuthEvent.loginPasswordChanged(password),
-                            ),
+                            onChanged: (password) =>
+                                context.read<AuthBloc>().add(
+                                  AuthEvent.loginPasswordChanged(password),
+                                ),
                             onSubmitted: (_) {
                               if (!isSubmitting) {
                                 context.read<AuthBloc>().add(
@@ -159,8 +161,12 @@ class _LoginPageState extends State<LoginPage> {
                           ? null
                           : () {
                               final from = widget.from;
-                              final encodedFrom = from != null ? Uri.encodeComponent(from) : null;
-                              final query = encodedFrom != null ? '?from=$encodedFrom' : '';
+                              final encodedFrom = from != null
+                                  ? Uri.encodeComponent(from)
+                                  : null;
+                              final query = encodedFrom != null
+                                  ? '?from=$encodedFrom'
+                                  : '';
                               context.go('${AppRoutes.register}$query');
                             },
                       child: const Text('Crear cuenta'),

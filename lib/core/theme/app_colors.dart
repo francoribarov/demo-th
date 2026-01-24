@@ -81,16 +81,37 @@ class AppColors {
 
   // Opacity variations for gameBrown
   /// Returns [gameBrown] with the provided opacity.
-  static Color gameBrownWithOpacity(double opacity) => gameBrown.withOpacityValue(opacity);
+  static Color gameBrownWithOpacity(double opacity) =>
+      gameBrown.withOpacityValue(opacity);
 
   // Gradient palette for category cards (from Home.tsx)
   /// Gradient palette for category cards.
   static const List<List<Color>> gradientPalette = [
-    [Color(0xFFFEF3C7), Color(0xFFFFF7ED), Color(0xFFFEF9C3)], // amber-orange-yellow
-    [Color(0xFFFFE4E6), Color(0xFFFCE7F3), Color(0xFFF5D0FE)], // rose-pink-fuchsia
-    [Color(0xFFE0F2FE), Color(0xFFEFF6FF), Color(0xFFE0E7FF)], // sky-blue-indigo
-    [Color(0xFFD1FAE5), Color(0xFFDCFCE7), Color(0xFFECFCCB)], // emerald-green-lime
-    [Color(0xFFF3E8FF), Color(0xFFEDE9FE), Color(0xFFFFE4E6)], // purple-violet-rose
+    [
+      Color(0xFFFEF3C7),
+      Color(0xFFFFF7ED),
+      Color(0xFFFEF9C3),
+    ], // amber-orange-yellow
+    [
+      Color(0xFFFFE4E6),
+      Color(0xFFFCE7F3),
+      Color(0xFFF5D0FE),
+    ], // rose-pink-fuchsia
+    [
+      Color(0xFFE0F2FE),
+      Color(0xFFEFF6FF),
+      Color(0xFFE0E7FF),
+    ], // sky-blue-indigo
+    [
+      Color(0xFFD1FAE5),
+      Color(0xFFDCFCE7),
+      Color(0xFFECFCCB),
+    ], // emerald-green-lime
+    [
+      Color(0xFFF3E8FF),
+      Color(0xFFEDE9FE),
+      Color(0xFFFFE4E6),
+    ], // purple-violet-rose
     [Color(0xFFCFFAFE), Color(0xFFCCFBF1), Color(0xFFDBEAFE)], // cyan-teal-blue
   ];
 }

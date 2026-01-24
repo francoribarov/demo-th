@@ -66,6 +66,10 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     }
   }
 
+  void _onPublishAnother(_PublishAnother event, Emitter<PublishState> emit) {
+    emit(PublishState(formVersion: state.formVersion + 1));
+  }
+
   Future<void> _onSubmit(_Submit event, Emitter<PublishState> emit) async {
     if (!state.canProceed) return;
 

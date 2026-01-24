@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
-
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
 part 'publication_model.freezed.dart';

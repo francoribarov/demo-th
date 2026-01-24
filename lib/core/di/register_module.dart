@@ -7,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class RegisterModule {
   /// Lazily resolves the shared preferences instance.
   @preResolve
-  Future<SharedPreferences> get sharedPreferences => SharedPreferences.getInstance();
+  Future<SharedPreferences> get sharedPreferences =>
+      SharedPreferences.getInstance();
 
   /// Provides a token storage backed by shared preferences.
   @lazySingleton

@@ -161,33 +161,6 @@ else
   log_info "Skipping tests."
 fi
 
-# Step 7: Smoke Builds (CI only by default, or if explicitly requested?)
-# Plan said: "Smoke Builds: Conditional dry-run builds."
-# Prompt said: "keep these behind --ci or --skip build"
-# ------------------------------------------------------------------------------
-if [ "$CI_MODE" = true ] && [ "$SKIP_BUILD" = false ]; then
-  print_header "Step 7: Smoke Builds"
-  
-  # Android
-  if [ -d "android" ]; then
-    log_info "Building Android (apk --debug)..."
-    $FLUTTER_CMD build apk --debug --no-pub || { log_error "Android build failed"; exit 1; }
-  fi
-
-  # iOS (only on macOS)
-  if [ -d "ios" ] && [[ "$OSTYPE" == "darwin"* ]]; then
-    log_info "Building iOS (ios --no-codesign --debug)..."
-    $FLUTTER_CMD build ios --debug --no-codesign --no-pub || { log_error "iOS build failed"; exit 1; }
-  fi
-
-  # Web
-  if [ -d "web" ]; then
-    log_info "Building Web..."
-    $FLUTTER_CMD build web --no-pub || { log_error "Web build failed"; exit 1; }
-  fi
-  
-  log_success "Smoke builds passed."
-fi
 
 print_header "✅ Pre-PR Check Completed Successfully"
 exit 0

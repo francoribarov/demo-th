@@ -22,6 +22,66 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
+class _PasswordField extends StatelessWidget {
+  const _PasswordField({
+    required this.label,
+    required this.enabled,
+    required this.autofillHint,
+    required this.onChanged,
+    this.onSubmitted,
+    this.visibleNotifier,
+  });
+
+  final String label;
+  final bool enabled;
+  final String autofillHint;
+  final ValueNotifier<bool>? visibleNotifier;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onSubmitted;
+
+  @override
+  Widget build(BuildContext context) {
+    final notifier = visibleNotifier;
+
+    return notifier == null
+        ? TextField(
+            enabled: enabled,
+            obscureText: true,
+            textInputAction: TextInputAction.next,
+            autofillHints: [autofillHint],
+            autocorrect: false,
+            enableSuggestions: false,
+            decoration: InputDecoration(labelText: label),
+            onChanged: onChanged,
+            onSubmitted: onSubmitted,
+          )
+        : ValueListenableBuilder<bool>(
+            valueListenable: notifier,
+            builder: (context, visible, _) {
+              return TextField(
+                enabled: enabled,
+                obscureText: !visible,
+                textInputAction: TextInputAction.next,
+                autofillHints: [autofillHint],
+                autocorrect: false,
+                enableSuggestions: false,
+                decoration: InputDecoration(
+                  labelText: label,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      visible ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () => notifier.value = !visible,
+                  ),
+                ),
+                onChanged: onChanged,
+                onSubmitted: onSubmitted,
+              );
+            },
+          );
+  }
+}
+
 class _RegisterPageState extends State<RegisterPage> {
   late final ValueNotifier<bool> _passwordVisible;
 
@@ -36,17 +96,6 @@ class _RegisterPageState extends State<RegisterPage> {
   void dispose() {
     _passwordVisible.dispose();
     super.dispose();
-  }
-
-  void _onSubmit() {
-    context.read<AuthBloc>().add(const AuthEvent.registerSubmitted());
-  }
-
-  void _navigateToLogin() {
-    final from = widget.from;
-    final encodedFrom = from != null ? Uri.encodeComponent(from) : null;
-    final query = encodedFrom != null ? '?from=$encodedFrom' : '';
-    context.go('${AppRoutes.login}$query');
   }
 
   @override
@@ -81,11 +130,166 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: IntrinsicHeight(
-                      child: _RegisterForm(
-                    passwordVisible: _passwordVisible,
-                    onSubmit: _onSubmit,
-                    onNavigateToLogin: _navigateToLogin,
-                  )),
+                    child: BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        final isSubmitting = state.isSubmittingRegister;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Empecemos',
+                              style: AppTypography.headlineMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Creá tu cuenta para publicar y alquilar juegos.',
+                              style: AppTypography.bodyMedium.copyWith(
+                                color: AppColors.gameBrown.withOpacityValue(
+                                  0.7,
+                                ),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+                            AutofillGroup(
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    enabled: !isSubmitting,
+                                    textInputAction: TextInputAction.next,
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    autofillHints: const [AutofillHints.name],
+                                    decoration: const InputDecoration(
+                                      labelText: 'Nombre',
+                                    ),
+                                    onChanged: (name) =>
+                                        context.read<AuthBloc>().add(
+                                          AuthEvent.registerUsernameChanged(
+                                            name,
+                                          ),
+                                        ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  TextField(
+                                    enabled: !isSubmitting,
+                                    keyboardType: TextInputType.emailAddress,
+                                    textInputAction: TextInputAction.next,
+                                    autocorrect: false,
+                                    autofillHints: const [AutofillHints.email],
+                                    decoration: const InputDecoration(
+                                      labelText: 'Email',
+                                      hintText: 'tu@email.com',
+                                    ),
+                                    onChanged: (email) =>
+                                        context.read<AuthBloc>().add(
+                                          AuthEvent.registerEmailChanged(email),
+                                        ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  _PasswordField(
+                                    label: 'Contraseña',
+                                    enabled: !isSubmitting,
+                                    autofillHint: AutofillHints.newPassword,
+                                    visibleNotifier: _passwordVisible,
+                                    onChanged: (password) =>
+                                        context.read<AuthBloc>().add(
+                                          AuthEvent.registerPasswordChanged(
+                                            password,
+                                          ),
+                                        ),
+                                    onSubmitted: (_) {
+                                      if (!isSubmitting) {
+                                        context.read<AuthBloc>().add(
+                                          const AuthEvent.registerSubmitted(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(height: 12),
+                                  _PasswordField(
+                                    label: 'Repetí la contraseña',
+                                    enabled: !isSubmitting,
+                                    autofillHint: AutofillHints.newPassword,
+                                    visibleNotifier: _passwordVisible,
+                                    onChanged: (confirmPassword) =>
+                                        context.read<AuthBloc>().add(
+                                          AuthEvent.registerPasswordConfirmChanged(
+                                            confirmPassword,
+                                          ),
+                                        ),
+                                    onSubmitted: (_) {
+                                      if (!isSubmitting) {
+                                        context.read<AuthBloc>().add(
+                                          const AuthEvent.registerSubmitted(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (state.registerErrorMessage != null) ...[
+                              const SizedBox(height: 12),
+                              Text(
+                                state.registerErrorMessage!,
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.destructive,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                            if (state.errorMessage != null) ...[
+                              const SizedBox(height: 12),
+                              Text(
+                                state.errorMessage!,
+                                style: AppTypography.bodySmall.copyWith(
+                                  color: AppColors.destructive,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                            const Spacer(),
+                            ElevatedButton(
+                              onPressed: isSubmitting
+                                  ? null
+                                  : () => context.read<AuthBloc>().add(
+                                      const AuthEvent.registerSubmitted(),
+                                    ),
+                              child: isSubmitting
+                                  ? const SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text('Crear cuenta'),
+                            ),
+                            const SizedBox(height: 12),
+                            TextButton(
+                              onPressed: isSubmitting
+                                  ? null
+                                  : () {
+                                      final from = widget.from;
+                                      final encodedFrom = from != null
+                                          ? Uri.encodeComponent(from)
+                                          : null;
+                                      final query = encodedFrom != null
+                                          ? '?from=$encodedFrom'
+                                          : '';
+                                      context.go('${AppRoutes.login}$query');
+                                    },
+                              child: const Text('Ya tengo cuenta'),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
               );
             },

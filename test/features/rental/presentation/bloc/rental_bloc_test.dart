@@ -81,13 +81,15 @@ void main() {
           bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
       expect: () => [
         isA<RentalState>().having((s) => s.startDate, 'startDate', null).having(
+        isA<RentalState>()
+            .having((s) => s.startDate, 'startDate', null)
+            .having(
               (s) => s.snackbarMessage,
               'message',
               AppStrings.rentalMinAvailability,
             ),
       ],
     );
-
     blocTest<RentalBloc, RentalState>(
       'should emit snackbar error when dates are not within availability',
       build: () => rentalBloc,

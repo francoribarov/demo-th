@@ -56,7 +56,13 @@ extension PlayersRangeOptionX on PlayersRangeOption {
 }
 
 /// Duration range filter options
-enum DurationRangeOption { any, lte30, thirtyToSixty, sixtyToNinety, ninetyPlus }
+enum DurationRangeOption {
+  any,
+  lte30,
+  thirtyToSixty,
+  sixtyToNinety,
+  ninetyPlus,
+}
 
 extension DurationRangeOptionX on DurationRangeOption {
   String get label {
@@ -204,12 +210,22 @@ abstract class FiltersState with _$FiltersState {
 class ExperienceTypes {
   ExperienceTypes._();
 
-  static const List<String> all = ['Familiar', 'Fiesta', 'Cooperativo', 'Estrategia', 'Abstracto'];
+  static const List<String> all = [
+    'Familiar',
+    'Fiesta',
+    'Cooperativo',
+    'Estrategia',
+    'Abstracto',
+  ];
 }
 
 /// Rating filter options
 class RatingOptions {
   RatingOptions._();
 
-  static const List<(double?, String)> all = [(null, 'Cualquiera'), (4.0, '≥ 4.0'), (4.5, '≥ 4.5')];
+  static const List<(double?, String)> all = [
+    (null, 'Cualquiera'),
+    (4.0, '≥ 4.0'),
+    (4.5, '≥ 4.5'),
+  ];
 }

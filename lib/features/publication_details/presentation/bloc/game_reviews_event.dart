@@ -7,5 +7,6 @@ abstract class GameReviewsEvent with _$GameReviewsEvent {
   const factory GameReviewsEvent.started({required String gameId}) = _Started;
 
   /// Updates the active rating filter.
-  const factory GameReviewsEvent.filterRatingChanged(int? value) = _FilterRatingChanged;
+  const factory GameReviewsEvent.filterRatingChanged(int? value) =
+      _FilterRatingChanged;
 }

@@ -69,7 +69,6 @@ class GamePriceLabel extends StatelessWidget {
                 style: AppTypography.price),
             const SizedBox(width: 4),
             Text(
-              perUnit,
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.gameBrown.withOpacityValue(0.7),
               ),

@@ -74,4 +74,3 @@ AGENTS.md
 *.g.dart
 **/*.g.dart
 lib/core/di/injection.config.dart
-lib/core/di/injection.config.dart
