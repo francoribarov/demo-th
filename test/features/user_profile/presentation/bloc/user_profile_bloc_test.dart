@@ -3,7 +3,6 @@ import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/use
 
 /// Placeholder tests for user_profile feature.
 
-// TODO(antigravity): Implement comprehensive tests for:
 // - User profile state management
 // - Profile data display
 // - User session handling

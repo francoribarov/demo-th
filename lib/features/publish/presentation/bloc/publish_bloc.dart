@@ -106,7 +106,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
           success: true,
         ),
       );
-    } catch (e) {
+    } on Object catch (e) {
       emit(
         state.copyWith(
           isSubmitting: false,
@@ -163,7 +163,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
           filteredGames: games,
         ),
       );
-    } catch (_) {
+    } on Object catch (_) {
       // Silently fail or handling error depending on UX requirements
       emit(state.copyWith(isLoadingGames: false));
     }

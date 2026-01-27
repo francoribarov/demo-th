@@ -3,7 +3,6 @@ import 'package:mobile_table_hopping/features/publication_details/presentation/p
 
 /// Placeholder tests for game_details feature.
 
-// TODO(antigravity): Implement comprehensive tests for:
 // - Game details display
 // - Availability calendar
 // - Rental flow integration
