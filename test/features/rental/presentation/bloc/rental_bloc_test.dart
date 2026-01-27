@@ -95,10 +95,10 @@ void main() {
             AvailabilityRange(from: '2026-06-01', to: '2026-06-01'),
           ],
         ),
-        startDate: '2026-01-10',
+        startDate: '2026-05-25',
       ),
       act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2027-02-05')),
+          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-06-05')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
