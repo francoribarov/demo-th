@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 class AuthSubmitButton extends StatelessWidget {
   /// Creates an auth submit button.
   const AuthSubmitButton({
-    super.key,
     required this.label,
     required this.onPressed,
+    super.key,
     this.isLoading = false,
   });
 

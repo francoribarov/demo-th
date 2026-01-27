@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
-import 'package:mobile_table_hopping/core/network/paginated_response.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/publication_listing_model.dart';
 
 /// Remote datasource for publications API calls.
@@ -46,7 +45,8 @@ abstract class PublicationRemoteDatasource {
   /// Fetches recommended publications based on a game ID.
   /// GET /api/publications?game_id={gameId}
   Future<List<PublicationListingModel>> getRecommendedPublications(
-      String gameId);
+    String gameId,
+  );
 
   /// Fetches the current user's publications.
   /// GET /api/publications/my-publications
@@ -124,30 +124,14 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
       );
 
       List<dynamic> itemsData;
-      int total;
-      int pages;
-      int currentPage = page;
-      int currentLimit = limit;
-
       if (response.data is List) {
         itemsData = response.data as List<dynamic>;
-        total = itemsData.length;
-        pages = 1;
       } else if (response.data is Map<String, dynamic>) {
         final data = response.data as Map<String, dynamic>;
         itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
-        total = data['total'] as int? ?? 0;
-        pages = data['pages'] as int? ?? 0;
-        currentPage = data['page'] as int? ?? page;
-        currentLimit = data['limit'] as int? ?? limit;
       } else {
         itemsData = const <dynamic>[];
-        total = 0;
-        pages = 0;
       }
-
-      // ignore: avoid_print
-      print('DEBUG: getPublications response data: $itemsData');
 
       final items = itemsData
           .map(

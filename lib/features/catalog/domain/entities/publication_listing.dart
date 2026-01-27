@@ -50,6 +50,12 @@ abstract class PublicationListing with _$PublicationListing {
 
     /// Rental price per day.
     required double price,
+    required DateTime createdAt,
+
+    /// When the publication was created.
+
+    /// Nested game data from the catalog.
+    required PublicationGameData game,
 
     /// Deposit amount required.
     @Default(0.0) double deposit,
@@ -62,12 +68,6 @@ abstract class PublicationListing with _$PublicationListing {
 
     /// Date ranges when the publication is booked/unavailable.
     @Default([]) List<AvailabilityRange> bookedDates,
-
-    /// When the publication was created.
-    required DateTime createdAt,
-
-    /// Nested game data from the catalog.
-    required PublicationGameData game,
   }) = _PublicationListing;
 
   const PublicationListing._();

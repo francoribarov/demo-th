@@ -8,20 +8,20 @@ import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.d
 import 'package:mobile_table_hopping/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/pages/register_page.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/pages/home_page.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_rules_bloc.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_reviews_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_rules_page.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/pages/rental_confirm_page.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 
 /// Route paths for type-safe navigation.
 class AppRoutes {
@@ -77,8 +77,6 @@ class AppRouter {
     redirect: (context, state) {
       final location = state.uri.path;
 
-      final isLogin = location == AppRoutes.login;
-      final isRegister = location == AppRoutes.register;
       final isProtected = location == AppRoutes.publish ||
           location == AppRoutes.myPublications ||
           RegExp(r'^/publications/[^/]+/rental$').hasMatch(location);

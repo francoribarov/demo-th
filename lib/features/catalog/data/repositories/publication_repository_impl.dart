@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/features/catalog/data/datasources/publication_remote_datasource.dart';
@@ -49,7 +50,9 @@ class PublicationRepositoryImpl implements PublicationRepository {
       final model = await _datasource.getPublicationById(id);
       return model.toDomainModel();
     } on Exception catch (e) {
-      print('ERROR getPublicationById: $e');
+      if (kDebugMode) {
+        print('ERROR getPublicationById: $e');
+      }
       return null;
     }
   }
@@ -65,9 +68,8 @@ class PublicationRepositoryImpl implements PublicationRepository {
 
   @override
   Future<List<PublicationListing>> getRecommendedPublications(
-      String gameId) async {
-    // For now, we fetch publications with similar categories
-    // This could be enhanced with a proper recommendation endpoint
+    String gameId,
+  ) async {
     final models = await _datasource.getRecommendedPublications(gameId);
     return models.map((m) => m.toDomainModel()).toList();
   }
@@ -76,13 +78,15 @@ class PublicationRepositoryImpl implements PublicationRepository {
   Future<List<GameCategory>> getCategories() async {
     final models = await _datasource.getCategories();
     return models
-        .map((m) => GameCategory(
-              id: m.id,
-              name: m.name,
-              icon: m.icon,
-              query: m.query,
-              description: m.description,
-            ))
+        .map(
+          (m) => GameCategory(
+            id: m.id,
+            name: m.name,
+            icon: m.icon,
+            query: m.query,
+            description: m.description,
+          ),
+        )
         .toList();
   }
 
@@ -90,14 +94,16 @@ class PublicationRepositoryImpl implements PublicationRepository {
   Future<List<FilterShortcut>> getFilterShortcuts() async {
     final models = await _datasource.getFilterShortcuts();
     return models
-        .map((m) => FilterShortcut(
-              id: m.id,
-              name: m.name,
-              icon: m.icon,
-              type: m.type,
-              query: m.query,
-              value: m.value,
-            ))
+        .map(
+          (m) => FilterShortcut(
+            id: m.id,
+            name: m.name,
+            icon: m.icon,
+            type: m.type,
+            query: m.query,
+            value: m.value,
+          ),
+        )
         .toList();
   }
 

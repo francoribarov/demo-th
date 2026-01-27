@@ -7,7 +7,6 @@ import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/features/catalog/data/datasources/category_remote_datasource.dart';
 import 'package:mobile_table_hopping/features/catalog/data/datasources/game_remote_datasource.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
-import 'package:mobile_table_hopping/features/catalog/data/models/publication_listing_model.dart';
 
 import 'package:mobile_table_hopping/features/catalog/domain/entities/filters.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
@@ -25,8 +24,6 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
   @override
   Future<List<Game>> getGames() async {
     final response = await _gameDatasource.getAllGames();
-    // ignore: avoid_print
-    print('DEBUG: getGames fetched ${response.length} items from /api/games');
     return response.map((m) => m.toDomainModel()).toList();
   }
 

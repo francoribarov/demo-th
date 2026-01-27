@@ -18,10 +18,10 @@ part 'rental_state.dart';
 /// Bloc coordinating rental confirmation state and side effects.
 class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
-  RentalBloc(
-      {required GetPublications getPublications,
-      required ConfirmRental confirmRental})
-      : _getPublications = getPublications,
+  RentalBloc({
+    required GetPublications getPublications,
+    required ConfirmRental confirmRental,
+  })  : _getPublications = getPublications,
         _confirmRental = confirmRental,
         super(const RentalState()) {
     on<_Started>(_onStarted);
@@ -59,7 +59,9 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       if (publication == null) {
         emit(
           state.copyWith(
-              isLoading: false, errorMessage: AppStrings.errorGameNotFound),
+            isLoading: false,
+            errorMessage: AppStrings.errorGameNotFound,
+          ),
         );
         return;
       }
@@ -149,8 +151,13 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final endStr = event.endDate;
 
     if (startStr == null || endStr == null) {
-      emit(state.copyWith(
-          startDate: null, endDate: null, snackbarMessage: null));
+      emit(
+        state.copyWith(
+          startDate: null,
+          endDate: null,
+          snackbarMessage: null,
+        ),
+      );
       return;
     }
 
@@ -211,7 +218,8 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final ownerId = publication.ownerId;
     if (ownerId.isEmpty) {
       emit(
-          state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError));
+        state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError),
+      );
       return;
     }
 

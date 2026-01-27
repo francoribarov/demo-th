@@ -89,13 +89,13 @@ sealed class PublicationListingModel
     required String title,
     required String condition,
     required double price,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
     @Default(0.0) double deposit,
     @Default([]) List<String> images,
     @JsonKey(name: 'is_active') @Default(true) bool isActive,
     @JsonKey(name: 'booked_ranges')
     @Default([])
     List<AvailabilityRangeModel> bookedRanges,
-    @JsonKey(name: 'created_at') required DateTime createdAt,
     PublicationGameDataModel? game,
   }) = _PublicationListingModel;
 
@@ -136,8 +136,8 @@ sealed class PublicationListingModel
         summaryRules: '',
       ),
       images: images,
-      rating: 0.0,
-      reviewsCount: 0,
+      rating: gameData.rating,
+      reviewsCount: gameData.reviewsCount,
     );
   }
 }

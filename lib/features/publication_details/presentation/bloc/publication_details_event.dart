@@ -5,8 +5,9 @@ part of 'publication_details_bloc.dart';
 /// Events for [PublicationDetailsBloc].
 abstract class PublicationDetailsEvent with _$PublicationDetailsEvent {
   /// Starts loading the publication details.
-  const factory PublicationDetailsEvent.started(
-      {required String publicationId}) = _Started;
+  const factory PublicationDetailsEvent.started({
+    required String publicationId,
+  }) = _Started;
 
   /// Toggles the wishlist status.
   const factory PublicationDetailsEvent.toggleWishlist() = _ToggleWishlist;
@@ -21,7 +22,9 @@ abstract class PublicationDetailsEvent with _$PublicationDetailsEvent {
 
   /// Updates both dates in the availability form.
   const factory PublicationDetailsEvent.checkDateRangeChanged(
-      String start, String end) = _CheckDateRangeChanged;
+    String start,
+    String end,
+  ) = _CheckDateRangeChanged;
 
   /// Triggers the availability check.
   const factory PublicationDetailsEvent.checkAvailabilityPressed() =

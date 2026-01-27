@@ -64,7 +64,10 @@ class HomePage extends StatelessWidget {
       onSearch: (query, startDate, endDate) {
         context.read<CatalogBloc>().add(
               SearchCatalog(
-                  query: query, startDate: startDate, endDate: endDate),
+                query: query,
+                startDate: startDate,
+                endDate: endDate,
+              ),
             );
       },
       onClear: () {

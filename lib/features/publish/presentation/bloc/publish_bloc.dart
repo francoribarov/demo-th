@@ -88,25 +88,31 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
         price: state.price,
         condition: state.condition,
         images: state.images
-            .map((url) => PublicationImage(
-                  url: url,
-                  type: 'image',
-                ))
+            .map(
+              (url) => PublicationImage(
+                url: url,
+                type: 'image',
+              ),
+            )
             .toList(),
         deliveryMethods: state.deliveryMethods,
       );
 
       await _createPublication(draft, ownerId: userId);
 
-      emit(state.copyWith(
-        isSubmitting: false,
-        success: true,
-      ));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          success: true,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
@@ -115,7 +121,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   }
 
   void _onDescriptionChanged(
-      _DescriptionChanged event, Emitter<PublishState> emit) {
+    _DescriptionChanged event,
+    Emitter<PublishState> emit,
+  ) {
     emit(state.copyWith(description: event.value));
   }
 
@@ -124,7 +132,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   }
 
   void _onConditionChanged(
-      _ConditionChanged event, Emitter<PublishState> emit) {
+    _ConditionChanged event,
+    Emitter<PublishState> emit,
+  ) {
     emit(state.copyWith(condition: event.value));
   }
 
@@ -133,20 +143,26 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   }
 
   void _onDeliveryMethodsChanged(
-      _DeliveryMethodsChanged event, Emitter<PublishState> emit) {
+    _DeliveryMethodsChanged event,
+    Emitter<PublishState> emit,
+  ) {
     emit(state.copyWith(deliveryMethods: event.value));
   }
 
   Future<void> _onLoadGames(
-      _LoadGames event, Emitter<PublishState> emit) async {
+    _LoadGames event,
+    Emitter<PublishState> emit,
+  ) async {
     emit(state.copyWith(isLoadingGames: true));
     try {
       final games = await _getGames();
-      emit(state.copyWith(
-        isLoadingGames: false,
-        allGames: games,
-        filteredGames: games,
-      ));
+      emit(
+        state.copyWith(
+          isLoadingGames: false,
+          allGames: games,
+          filteredGames: games,
+        ),
+      );
     } catch (_) {
       // Silently fail or handling error depending on UX requirements
       emit(state.copyWith(isLoadingGames: false));

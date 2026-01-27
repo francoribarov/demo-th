@@ -33,8 +33,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   Future<AuthResponse> login(LoginRequest request) async {
     try {
       final response = await _dioClient.post<Map<String, dynamic>>(
-          ApiConstants.login,
-          data: request.toJson());
+        ApiConstants.login,
+        data: request.toJson(),
+      );
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
@@ -49,8 +50,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   Future<AuthResponse> register(RegisterRequest request) async {
     try {
       final response = await _dioClient.post<Map<String, dynamic>>(
-          ApiConstants.register,
-          data: request.toJson());
+        ApiConstants.register,
+        data: request.toJson(),
+      );
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');
@@ -65,8 +67,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   Future<TokenResponse> refreshToken(RefreshTokenRequest request) async {
     try {
       final response = await _dioClient.post<Map<String, dynamic>>(
-          ApiConstants.refreshToken,
-          data: request.toJson());
+        ApiConstants.refreshToken,
+        data: request.toJson(),
+      );
       final data = response.data;
       if (data == null) {
         throw Exception('Respuesta inválida del servidor');

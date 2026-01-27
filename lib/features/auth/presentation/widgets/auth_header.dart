@@ -7,9 +7,9 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 class AuthHeader extends StatelessWidget {
   /// Creates an auth header.
   const AuthHeader({
-    super.key,
     required this.title,
     required this.subtitle,
+    super.key,
   });
 
   /// Main title text.

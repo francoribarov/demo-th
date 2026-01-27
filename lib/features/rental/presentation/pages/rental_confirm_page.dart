@@ -67,7 +67,9 @@ class RentalConfirmPage extends StatelessWidget {
 
         if (state.success) {
           return _SuccessView(
-              publication: publication, onBackHome: () => context.go('/'));
+            publication: publication,
+            onBackHome: () => context.go('/'),
+          );
         }
 
         return Scaffold(

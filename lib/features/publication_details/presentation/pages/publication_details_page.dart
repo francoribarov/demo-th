@@ -8,10 +8,10 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/availability_checker.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_detail_row.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_bottom_bar.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/game_recommendation_card.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/game_review_card.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_detail_row.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_bottom_bar.dart';
 
 /// Game details page matching ProductDetail.tsx
 class PublicationDetailsPage extends StatefulWidget {
@@ -486,10 +486,10 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
                                       onRangeSelected: (start, end) => context
                                           .read<PublicationDetailsBloc>()
                                           .add(
-                                            PublicationDetailsEvent
+                                            const PublicationDetailsEvent
                                                 .checkDateRangeChanged(
-                                              "start",
-                                              "end",
+                                              'start',
+                                              'end',
                                             ),
                                           ),
                                       onCheck: () => context

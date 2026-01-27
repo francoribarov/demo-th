@@ -194,7 +194,8 @@ class _GameSelectorState extends State<GameSelector> {
                                         ),
                                         errorWidget: (_, url, error) =>
                                             const Icon(
-                                                Icons.image_not_supported),
+                                          Icons.image_not_supported,
+                                        ),
                                       ),
                                     ),
                                     title: Text(

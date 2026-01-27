@@ -82,7 +82,8 @@ class ResultsView extends StatelessWidget {
                     if (publication.game.categories.isNotEmpty) {
                       context.read<CatalogBloc>().add(
                             SelectCategory(
-                                publication.game.categories.first.name),
+                              publication.game.categories.first.name,
+                            ),
                           );
                     }
                   },
@@ -104,7 +105,10 @@ class ResultsView extends StatelessWidget {
       onSearch: (query, startDate, endDate) {
         context.read<CatalogBloc>().add(
               SearchCatalog(
-                  query: query, startDate: startDate, endDate: endDate),
+                query: query,
+                startDate: startDate,
+                endDate: endDate,
+              ),
             );
       },
       onClear: () {
@@ -119,8 +123,7 @@ class ResultsView extends StatelessWidget {
       initialFilters: state.filters,
       hasDateFilter: state.hasDateFilter,
       getPreviewCount: (filters) {
-        return state.filteredPublications
-            .length; // TODO: Implement filtering logic preview for publications
+        return state.filteredPublications.length;
       },
     );
 

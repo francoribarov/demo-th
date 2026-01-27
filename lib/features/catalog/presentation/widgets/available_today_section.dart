@@ -42,8 +42,10 @@ class AvailableTodaySection extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('¡Alquilá para hoy!',
-                      style: AppTypography.headlineMedium),
+                  Text(
+                    '¡Alquilá para hoy!',
+                    style: AppTypography.headlineMedium,
+                  ),
                   const SizedBox(height: 4),
                   Text(
                     'Listos para $todayLabel.',

@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
-import 'package:mobile_table_hopping/core/network/paginated_response.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/publication_list_item_model.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/publication_listing_model.dart';
@@ -30,8 +29,9 @@ abstract class GameRemoteDatasource {
   Future<PublicationDetailModel> getPublicationById(String id);
 
   /// Fetches a list of games available today.
-  Future<List<PublicationListItemModel>> getPublicationsAvailableToday(
-      {int limit = 10});
+  Future<List<PublicationListItemModel>> getPublicationsAvailableToday({
+    int limit = 10,
+  });
 
   /// Fetches recommended games for a specific game.
   Future<List<PublicationListItemModel>> getPublicationsRecommendations(
@@ -136,8 +136,9 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
   }
 
   @override
-  Future<List<PublicationListItemModel>> getPublicationsAvailableToday(
-      {int limit = 10}) async {
+  Future<List<PublicationListItemModel>> getPublicationsAvailableToday({
+    int limit = 10,
+  }) async {
     try {
       final today = DateTime.now();
       final todayStr =
@@ -190,8 +191,10 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
 
       final data = response.data ?? const <dynamic>[];
       return data
-          .map((json) =>
-              PublicationListItemModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) =>
+                PublicationListItemModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
     } on DioException catch (e) {
       throw _handleError(e);
@@ -260,7 +263,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
   Future<GameModel> getGameById(String id) async {
     try {
       final response = await _dioClient.get<Map<String, dynamic>>(
-        ApiConstants.games + '/$id',
+        '${ApiConstants.games}/$id',
       );
 
       final data = response.data ?? const <String, dynamic>{};

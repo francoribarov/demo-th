@@ -34,7 +34,9 @@ class PublicationDetailsBloc
   final GetGames _getGames;
 
   Future<void> _onStarted(
-      _Started event, Emitter<PublicationDetailsState> emit) async {
+    _Started event,
+    Emitter<PublicationDetailsState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
 // ... (logic remains same, just ensuring references are updated implicitly by context if needed, but here only method signatures needed change if they used explicit types. They use `_Started` which is fine, but Emitter<State> needs update)
@@ -45,53 +47,80 @@ class PublicationDetailsBloc
       final publication = await _getPublications.getById(id);
 
       if (publication == null) {
-        emit(state.copyWith(
-            isLoading: false, errorMessage: 'Publicación no encontrada'));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: 'Publicación no encontrada',
+          ),
+        );
         return;
       }
 
       // Fetch game details using gameId from publication
-      final game = await _getGames.getById(publication.gameId.toString());
+      final game = await _getGames.getById(
+        publication.gameId,
+      );
 
       // Load recommendations based on game categories
-      final recs =
-          await _getPublications.getRecommended(publication.gameId.toString());
+      final recs = await _getPublications.getRecommended(
+        publication.gameId,
+      );
 
-      emit(state.copyWith(
-        isLoading: false,
-        publication: publication,
-        gameDetail: game,
-        recommendations: recs,
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          publication: publication,
+          gameDetail: game,
+          recommendations: recs,
+        ),
+      );
     } on Exception catch (e) {
-      emit(state.copyWith(
-          isLoading: false, errorMessage: 'Error al cargar los detalles: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al cargar los detalles: $e',
+        ),
+      );
     }
   }
 
   void _onToggleWishlist(
-      _ToggleWishlist event, Emitter<PublicationDetailsState> emit) {
+    _ToggleWishlist event,
+    Emitter<PublicationDetailsState> emit,
+  ) {
     emit(state.copyWith(isWishlisted: !state.isWishlisted));
   }
 
   void _onCheckStartDateChanged(
-      _CheckStartDateChanged event, Emitter<PublicationDetailsState> emit) {
-    emit(state.copyWith(
+    _CheckStartDateChanged event,
+    Emitter<PublicationDetailsState> emit,
+  ) {
+    emit(
+      state.copyWith(
         checkStartDate: event.value,
         availabilityResult: null,
-        errorMessage: null));
+        errorMessage: null,
+      ),
+    );
   }
 
   void _onCheckEndDateChanged(
-      _CheckEndDateChanged event, Emitter<PublicationDetailsState> emit) {
-    emit(state.copyWith(
+    _CheckEndDateChanged event,
+    Emitter<PublicationDetailsState> emit,
+  ) {
+    emit(
+      state.copyWith(
         checkEndDate: event.value,
         availabilityResult: null,
-        errorMessage: null));
+        errorMessage: null,
+      ),
+    );
   }
 
   void _onCheckDateRangeChanged(
-      _CheckDateRangeChanged event, Emitter<PublicationDetailsState> emit) {
+    _CheckDateRangeChanged event,
+    Emitter<PublicationDetailsState> emit,
+  ) {
     emit(
       state.copyWith(
         checkStartDate: event.start,
@@ -103,14 +132,19 @@ class PublicationDetailsBloc
   }
 
   void _onCheckAvailabilityPressed(
-      _CheckAvailabilityPressed event, Emitter<PublicationDetailsState> emit) {
+    _CheckAvailabilityPressed event,
+    Emitter<PublicationDetailsState> emit,
+  ) {
     final publication = state.publication;
     if (publication == null) return;
     final startDate = state.checkStartDate;
     final endDate = state.checkEndDate;
     if (startDate.isEmpty || endDate.isEmpty) return;
 
-    emit(state.copyWith(
-        availabilityResult: publication.isAvailableFor(startDate, endDate)));
+    emit(
+      state.copyWith(
+        availabilityResult: publication.isAvailableFor(startDate, endDate),
+      ),
+    );
   }
 }

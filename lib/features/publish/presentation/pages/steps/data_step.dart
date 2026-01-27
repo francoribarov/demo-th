@@ -83,7 +83,7 @@ class DataStep extends StatelessWidget {
         Text('Estado del juego', style: AppTypography.titleMedium),
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
-          value: condition,
+          initialValue: condition,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),

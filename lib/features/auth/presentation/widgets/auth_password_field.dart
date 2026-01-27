@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 class AuthPasswordField extends StatelessWidget {
   /// Creates an auth password field.
   const AuthPasswordField({
-    super.key,
     required this.label,
     required this.onChanged,
+    super.key,
     this.enabled = true,
     this.autofillHint = AutofillHints.password,
     this.visibleNotifier,
@@ -36,7 +36,7 @@ class AuthPasswordField extends StatelessWidget {
     final notifier = visibleNotifier;
 
     if (notifier == null) {
-      return _buildField(obscure: true, toggleButton: null);
+      return _buildField(obscure: true);
     }
 
     return ValueListenableBuilder<bool>(

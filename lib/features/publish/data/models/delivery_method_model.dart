@@ -10,9 +10,9 @@ sealed class DeliveryMethodModel
     with _$DeliveryMethodModel
     implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodModel({
+    required DeliveryType deliveryType,
     int? id,
     String? publicationId,
-    required DeliveryType deliveryType,
     @Default(0) int price,
     String? initPickupTime,
     String? finishPickupTime,

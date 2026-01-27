@@ -64,7 +64,7 @@ class AvailabilityChecker extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           ElevatedButton(
-            onPressed: startDate != null && endDate != null ? onCheck : null,
+            onPressed: onCheck,
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 48),
             ),

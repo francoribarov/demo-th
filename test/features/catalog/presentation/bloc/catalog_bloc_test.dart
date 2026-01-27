@@ -48,8 +48,7 @@ void main() {
     condition: 'new',
     price: 100,
     images: ['image.jpg'],
-    isActive: true,
-    createdAt: DateTime(2023, 1, 1),
+    createdAt: DateTime(2023),
     game: const PublicationGameData(
       players: '2-4',
       duration: 60,

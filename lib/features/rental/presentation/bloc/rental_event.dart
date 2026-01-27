@@ -35,16 +35,19 @@ abstract class RentalEvent with _$RentalEvent {
       _DeliveryAddressChanged;
 
   /// Updates delivery comments/notes.
-  const factory RentalEvent.deliveryCommentsChanged(
-      {required String comments}) = _DeliveryCommentsChanged;
+  const factory RentalEvent.deliveryCommentsChanged({
+    required String comments,
+  }) = _DeliveryCommentsChanged;
 
   /// Updates the selected payment method.
-  const factory RentalEvent.paymentMethodChanged(
-      {required String paymentMethod}) = _PaymentMethodChanged;
+  const factory RentalEvent.paymentMethodChanged({
+    required String paymentMethod,
+  }) = _PaymentMethodChanged;
 
   /// Updates the selected food bundle identifiers.
-  const factory RentalEvent.foodBundlesChanged(
-      {required List<String> foodBundles}) = _FoodBundlesChanged;
+  const factory RentalEvent.foodBundlesChanged({
+    required List<String> foodBundles,
+  }) = _FoodBundlesChanged;
 
   /// Submits the current rental draft.
   const factory RentalEvent.submitted() = _Submitted;

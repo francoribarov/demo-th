@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 class AuthTextField extends StatelessWidget {
   /// Creates an auth text field.
   const AuthTextField({
-    super.key,
     required this.label,
     required this.onChanged,
+    super.key,
     this.enabled = true,
     this.hintText,
     this.keyboardType,

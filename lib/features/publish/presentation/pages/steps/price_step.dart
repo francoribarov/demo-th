@@ -175,8 +175,8 @@ class _PriceStepState extends State<PriceStep> {
     );
   }
 
-  void _addDeliveryMethod() {
-    showModalBottomSheet<void>(
+  Future<void> _addDeliveryMethod() async {
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (context) => _AddDeliveryMethodSheet(
@@ -189,8 +189,7 @@ class _PriceStepState extends State<PriceStep> {
   }
 
   void _removeDeliveryMethod(int index) {
-    final updated = [...widget.deliveryMethods];
-    updated.removeAt(index);
+    final updated = [...widget.deliveryMethods]..removeAt(index);
     widget.onDeliveryMethodsChanged(updated);
   }
 }

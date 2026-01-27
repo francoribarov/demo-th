@@ -4,11 +4,10 @@ import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
-
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 
 class MockCreatePublication extends Mock implements CreatePublication {}
 
@@ -29,12 +28,15 @@ void main() {
 
     // Mock authenticated state
     when(() => mockAuthBloc.state).thenReturn(
-      AuthState(
+      const AuthState(
         status: AuthStatus.authenticated,
         session: AuthSession(
-          tokens: const AuthTokens(accessToken: 'test', refreshToken: 'test'),
-          user: const User(
-              id: 'user-123', email: 'test@test.com', username: 'testuser'),
+          tokens: AuthTokens(accessToken: 'test', refreshToken: 'test'),
+          user: User(
+            id: 'user-123',
+            email: 'test@test.com',
+            username: 'testuser',
+          ),
         ),
       ),
     );
@@ -77,8 +79,11 @@ void main() {
       act: (bloc) {
         bloc
           ..add(const PublishEvent.gameIdChanged('game-uuid-123'))
-          ..add(const PublishEvent.descriptionChanged(
-              'A very long and descriptive text for the game.'))
+          ..add(
+            const PublishEvent.descriptionChanged(
+              'A very long and descriptive text for the game.',
+            ),
+          )
           ..add(const PublishEvent.priceChanged(100));
       },
       skip: 2,

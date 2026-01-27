@@ -41,13 +41,12 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
     try {
       // Load publications from /api/publications
       final publications = await _getPublications();
-
-      List<GameCategory> categories = [];
-      List<FilterShortcut> shortcuts = [];
+      var categories = <GameCategory>[];
+      var shortcuts = <FilterShortcut>[];
       try {
         categories = await _getGames.getCategories();
         shortcuts = await _getGames.getFilterShortcuts();
-      } catch (_) {
+      } on Exception catch (_) {
         // Categories/shortcuts not available, continue without them
       }
 
@@ -62,8 +61,12 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
         ),
       );
     } on Exception catch (e) {
-      emit(state.copyWith(
-          isLoading: false, errorMessage: 'Error al cargar datos: $e'));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al cargar datos: $e',
+        ),
+      );
     }
   }
 
@@ -72,13 +75,15 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
     final startDate = event.startDate ?? state.startDate;
     final endDate = event.endDate ?? state.endDate;
 
-    emit(state.copyWith(
-      isLoading: true,
-      query: query,
-      startDate: startDate,
-      endDate: endDate,
-      selectedCategory: null,
-    ));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        query: query,
+        startDate: startDate,
+        endDate: endDate,
+        selectedCategory: null,
+      ),
+    );
 
     _applyFilters(emit);
   }
@@ -94,24 +99,28 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
   }
 
   void _onSelectCategory(SelectCategory event, Emitter<CatalogState> emit) {
-    emit(state.copyWith(
-      isLoading: true,
-      query: event.category,
-      selectedCategory: event.category,
-    ));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        query: event.category,
+        selectedCategory: event.category,
+      ),
+    );
     _applyFilters(emit);
   }
 
   void _onClearSearch(ClearSearch event, Emitter<CatalogState> emit) {
-    emit(state.copyWith(
-      query: '',
-      startDate: null,
-      endDate: null,
-      selectedCategory: null,
-      filters: const FiltersState(),
-      sortOption: SortOption.availability,
-      filteredPublications: state.allPublications,
-    ));
+    emit(
+      state.copyWith(
+        query: '',
+        startDate: null,
+        endDate: null,
+        selectedCategory: null,
+        filters: const FiltersState(),
+        sortOption: SortOption.availability,
+        filteredPublications: state.allPublications,
+      ),
+    );
   }
 
   void _onSetDates(SetDates event, Emitter<CatalogState> emit) {
@@ -123,12 +132,14 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
       filters = filters.copyWith(onlyAvailableInDates: false);
     }
 
-    emit(state.copyWith(
-      startDate: startDate,
-      endDate: endDate,
-      filters: filters,
-      isLoading: true,
-    ));
+    emit(
+      state.copyWith(
+        startDate: startDate,
+        endDate: endDate,
+        filters: filters,
+        isLoading: true,
+      ),
+    );
 
     _applyFilters(emit);
   }
@@ -140,17 +151,21 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
     if (state.query.isNotEmpty) {
       final q = state.query.toLowerCase();
       filtered = filtered
-          .where((p) =>
-              p.title.toLowerCase().contains(q) ||
-              p.game.categories.any((c) => c.name.toLowerCase().contains(q)))
+          .where(
+            (p) =>
+                p.title.toLowerCase().contains(q) ||
+                p.game.categories.any((c) => c.name.toLowerCase().contains(q)),
+          )
           .toList();
     }
 
     // 2. Category
     if (state.selectedCategory != null) {
       filtered = filtered
-          .where((p) =>
-              p.game.categories.any((c) => c.name == state.selectedCategory))
+          .where(
+            (p) =>
+                p.game.categories.any((c) => c.name == state.selectedCategory),
+          )
           .toList();
     }
 
@@ -159,12 +174,6 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
       filtered =
           filtered.where((p) => p.price <= state.filters.priceMax!).toList();
     }
-
-    // 4. Players Filter (Simple approximation)
-    // TODO: Implement proper players range check parsing string '2-4'
-
-    // Sort
-    // TODO: Implement sorting if needed
 
     emit(state.copyWith(isLoading: false, filteredPublications: filtered));
   }

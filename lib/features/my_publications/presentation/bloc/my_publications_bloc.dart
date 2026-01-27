@@ -31,15 +31,19 @@ class MyPublicationsBloc
 
     try {
       final publications = await _getPublications.getMyPublications();
-      emit(state.copyWith(
-        isLoading: false,
-        publications: publications,
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          publications: publications,
+        ),
+      );
     } on Exception catch (e) {
-      emit(state.copyWith(
-        isLoading: false,
-        errorMessage: 'Error al cargar tus publicaciones: $e',
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al cargar tus publicaciones: $e',
+        ),
+      );
     }
   }
 
@@ -51,15 +55,19 @@ class MyPublicationsBloc
 
     try {
       final publications = await _getPublications.getMyPublications();
-      emit(state.copyWith(
-        isRefreshing: false,
-        publications: publications,
-      ));
+      emit(
+        state.copyWith(
+          isRefreshing: false,
+          publications: publications,
+        ),
+      );
     } on Exception catch (e) {
-      emit(state.copyWith(
-        isRefreshing: false,
-        errorMessage: 'Error al actualizar: $e',
-      ));
+      emit(
+        state.copyWith(
+          isRefreshing: false,
+          errorMessage: 'Error al actualizar: $e',
+        ),
+      );
     }
   }
 }

@@ -7,8 +7,8 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 class AuthErrorText extends StatelessWidget {
   /// Creates an auth error text widget.
   const AuthErrorText({
-    super.key,
     required this.message,
+    super.key,
   });
 
   /// The error message to display.

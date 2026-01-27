@@ -39,8 +39,11 @@ class GameRatingBadge extends StatelessWidget {
 /// A consistent label for showing game prices.
 class GamePriceLabel extends StatelessWidget {
   /// Creates a price label.
-  const GamePriceLabel(
-      {required this.price, this.perUnit = '/ día', super.key});
+  const GamePriceLabel({
+    required this.price,
+    this.perUnit = '/ día',
+    super.key,
+  });
 
   /// The price value.
   final num price;
@@ -65,8 +68,10 @@ class GamePriceLabel extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(CurrencyFormatter.formatUYU(price),
-                style: AppTypography.price),
+            Text(
+              CurrencyFormatter.formatUYU(price),
+              style: AppTypography.price,
+            ),
             const SizedBox(width: 4),
             Text(
               perUnit,

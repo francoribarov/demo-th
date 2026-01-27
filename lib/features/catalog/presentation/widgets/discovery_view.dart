@@ -69,10 +69,6 @@ class DiscoveryView extends StatelessWidget {
             ),
             const SizedBox(height: 32),
           ],
-
-          // TODO: Available today section needs to be updated for publications
-          // Available today section (Temporarily hidden or needs update)
-
           if (state.availableTodayPublications.isNotEmpty) ...[
             AvailableTodaySection(
               publications: state.availableTodayPublications,
@@ -94,8 +90,10 @@ class DiscoveryView extends StatelessWidget {
             title: 'Cooperativos populares',
             description: 'Perfectos para ganar (o perder) todos juntos.',
             publications: state.filteredPublications
-                .where((p) => p.game.categories
-                    .any((c) => c.name.toLowerCase().contains('cooper')))
+                .where(
+                  (p) => p.game.categories
+                      .any((c) => c.name.toLowerCase().contains('cooper')),
+                )
                 .take(4)
                 .toList(),
             variant: PublicationSectionVariant.carousel,
@@ -108,8 +106,10 @@ class DiscoveryView extends StatelessWidget {
             description:
                 'Reglas simples y partidas ágiles para todas las edades.',
             publications: state.filteredPublications
-                .where((p) => p.game.categories
-                    .any((c) => c.name.toLowerCase().contains('familiar')))
+                .where(
+                  (p) => p.game.categories
+                      .any((c) => c.name.toLowerCase().contains('familiar')),
+                )
                 .take(4)
                 .toList(),
             variant: PublicationSectionVariant.grid,
@@ -121,8 +121,10 @@ class DiscoveryView extends StatelessWidget {
             title: 'Fiesta y party games',
             description: 'Animá tu reunión con risas y creatividad.',
             publications: state.filteredPublications
-                .where((p) => p.game.categories
-                    .any((c) => c.name.toLowerCase().contains('fiesta')))
+                .where(
+                  (p) => p.game.categories
+                      .any((c) => c.name.toLowerCase().contains('fiesta')),
+                )
                 .take(4)
                 .toList(),
             variant: PublicationSectionVariant.carousel,
@@ -207,8 +209,11 @@ class DiscoveryView extends StatelessWidget {
           '7+' => PlayersRangeOption.sevenPlus,
           _ => PlayersRangeOption.any,
         };
-        bloc.add(ApplyFilters(
-            bloc.state.filters.copyWith(playersRange: playerOption)));
+        bloc.add(
+          ApplyFilters(
+            bloc.state.filters.copyWith(playersRange: playerOption),
+          ),
+        );
         return;
       case 'duration':
         final durationOption = switch (shortcut.value) {
@@ -218,8 +223,11 @@ class DiscoveryView extends StatelessWidget {
           '90+' => DurationRangeOption.ninetyPlus,
           _ => DurationRangeOption.any,
         };
-        bloc.add(ApplyFilters(
-            bloc.state.filters.copyWith(durationRange: durationOption)));
+        bloc.add(
+          ApplyFilters(
+            bloc.state.filters.copyWith(durationRange: durationOption),
+          ),
+        );
         return;
       case 'price':
         final max = int.tryParse(shortcut.value ?? '');

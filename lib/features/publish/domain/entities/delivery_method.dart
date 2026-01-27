@@ -33,9 +33,9 @@ enum DeliveryType {
 @freezed
 abstract class DeliveryMethod with _$DeliveryMethod {
   const factory DeliveryMethod({
+    required DeliveryType deliveryType,
     int? id,
     String? publicationId,
-    required DeliveryType deliveryType,
     @Default(0) int price,
     DateTime? initPickupTime,
     DateTime? finishPickupTime,

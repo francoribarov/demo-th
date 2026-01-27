@@ -6,11 +6,6 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/widgets/auth_error_text.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/widgets/auth_header.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/widgets/auth_password_field.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/widgets/auth_submit_button.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/widgets/auth_text_field.dart';
 
 /// Registration screen for new users.
 class RegisterPage extends StatefulWidget {
@@ -302,104 +297,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _RegisterForm extends StatelessWidget {
-  const _RegisterForm({
-    required this.passwordVisible,
-    required this.onSubmit,
-    required this.onNavigateToLogin,
-  });
-
-  final ValueNotifier<bool> passwordVisible;
-  final VoidCallback onSubmit;
-  final VoidCallback onNavigateToLogin;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        final isSubmitting = state.isSubmittingRegister;
-        final authBloc = context.read<AuthBloc>();
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const AuthHeader(
-              title: 'Empecemos',
-              subtitle: 'Creá tu cuenta para publicar y alquilar juegos.',
-            ),
-            const SizedBox(height: 24),
-            AutofillGroup(
-              child: Column(
-                children: [
-                  AuthTextField(
-                    label: 'Nombre',
-                    enabled: !isSubmitting,
-                    textCapitalization: TextCapitalization.words,
-                    autofillHints: const [AutofillHints.name],
-                    onChanged: (name) =>
-                        authBloc.add(AuthEvent.registerUsernameChanged(name)),
-                  ),
-                  const SizedBox(height: 12),
-                  AuthTextField(
-                    label: 'Email',
-                    hintText: 'tu@email.com',
-                    enabled: !isSubmitting,
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    autofillHints: const [AutofillHints.email],
-                    onChanged: (email) =>
-                        authBloc.add(AuthEvent.registerEmailChanged(email)),
-                  ),
-                  const SizedBox(height: 12),
-                  AuthPasswordField(
-                    label: 'Contraseña',
-                    enabled: !isSubmitting,
-                    autofillHint: AutofillHints.newPassword,
-                    visibleNotifier: passwordVisible,
-                    onChanged: (password) => authBloc
-                        .add(AuthEvent.registerPasswordChanged(password)),
-                    onSubmitted: (_) {
-                      if (!isSubmitting) onSubmit();
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  AuthPasswordField(
-                    label: 'Repetí la contraseña',
-                    enabled: !isSubmitting,
-                    autofillHint: AutofillHints.newPassword,
-                    visibleNotifier: passwordVisible,
-                    onChanged: (confirmPassword) => authBloc.add(
-                      AuthEvent.registerPasswordConfirmChanged(confirmPassword),
-                    ),
-                    onSubmitted: (_) {
-                      if (!isSubmitting) onSubmit();
-                    },
-                  ),
-                ],
-              ),
-            ),
-            if (state.registerErrorMessage != null)
-              AuthErrorText(message: state.registerErrorMessage!),
-            if (state.errorMessage != null)
-              AuthErrorText(message: state.errorMessage!),
-            const Spacer(),
-            AuthSubmitButton(
-              label: 'Crear cuenta',
-              isLoading: isSubmitting,
-              onPressed: onSubmit,
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: isSubmitting ? null : onNavigateToLogin,
-              child: const Text('Ya tengo cuenta'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

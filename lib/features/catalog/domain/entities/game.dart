@@ -43,6 +43,12 @@ abstract class Game with _$Game {
     /// Game description.
     required String description,
 
+    /// Duration in minutes.
+    required int duration,
+
+    /// Player count range (e.g., "2-4").
+    required String players,
+
     /// Categories this game belongs to.
     @Default([]) List<GameCategory> categories,
 
@@ -54,12 +60,6 @@ abstract class Game with _$Game {
 
     /// Number of reviews.
     @Default(0) int reviewsCount,
-
-    /// Duration in minutes.
-    required int duration,
-
-    /// Player count range (e.g., "2-4").
-    required String players,
 
     /// Difficulty level (e.g., "Fácil", "Medio", "Difícil").
     @Default('') String difficulty,

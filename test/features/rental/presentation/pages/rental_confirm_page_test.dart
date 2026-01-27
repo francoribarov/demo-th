@@ -30,13 +30,12 @@ void main() {
     condition: 'like_new',
     price: 100,
     deposit: 50,
-    createdAt: DateTime(2026, 1, 1),
+    createdAt: DateTime(2026),
     game: const PublicationGameData(
       players: '2-4',
       duration: 60,
       categories: [GameCategory(id: 1, name: 'Strategy', icon: 'img')],
     ),
-    bookedDates: const [],
   );
 
   setUp(() {
