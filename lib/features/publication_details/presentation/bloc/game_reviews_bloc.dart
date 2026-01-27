@@ -9,10 +9,13 @@ part 'game_reviews_event.dart';
 part 'game_reviews_state.dart';
 
 @injectable
+
 /// Bloc for loading and presenting game reviews.
 class GameReviewsBloc extends Bloc<GameReviewsEvent, GameReviewsState> {
   /// Creates a [GameReviewsBloc].
-  GameReviewsBloc({required GetGames getGames}) : _getGames = getGames, super(const GameReviewsState()) {
+  GameReviewsBloc({required GetGames getGames})
+      : _getGames = getGames,
+        super(const GameReviewsState()) {
     on<_Started>(_onStarted);
     on<_FilterRatingChanged>(_onFilterRatingChanged);
   }

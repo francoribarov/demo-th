@@ -68,7 +68,9 @@ class SearchHeader extends StatelessWidget {
             placeholder: (context, url) => Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(color: AppColors.gameRust, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(
+                  color: AppColors.gameRust,
+                  borderRadius: BorderRadius.circular(8)),
               child: const Icon(Icons.casino, color: Colors.white, size: 24),
             ),
             errorWidget: (context, url, error) => Container(
@@ -168,14 +170,14 @@ class SearchSheet extends StatefulWidget {
   final String? initialStartDate;
   final String? initialEndDate;
   final void Function(String query, String? startDate, String? endDate)
-  onSearch;
+      onSearch;
   final VoidCallback onClear;
   final VoidCallback? onSurprise;
 
   static Future<void> show({
     required BuildContext context,
     required void Function(String query, String? startDate, String? endDate)
-    onSearch,
+        onSearch,
     required VoidCallback onClear,
     String initialQuery = '',
     String? initialStartDate,
@@ -245,12 +247,12 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
     String? initialStartDate,
     String? initialEndDate,
   }) : super(
-         _SearchSheetFormState(
-           query: initialQuery,
-           startDate: initialStartDate,
-           endDate: initialEndDate,
-         ),
-       );
+          _SearchSheetFormState(
+            query: initialQuery,
+            startDate: initialStartDate,
+            endDate: initialEndDate,
+          ),
+        );
 
   void queryChanged(String value) {
     emit(state.copyWith(query: value, dateError: null));
@@ -354,13 +356,13 @@ class _SearchSheetState extends State<SearchSheet> {
     final now = DateTime.now();
     final initialDate = isStart
         ? (cubit.state.startDate != null
-                  ? DateTime.tryParse(cubit.state.startDate!)
-                  : now) ??
-              now
+                ? DateTime.tryParse(cubit.state.startDate!)
+                : now) ??
+            now
         : (cubit.state.endDate != null
-                  ? DateTime.tryParse(cubit.state.endDate!)
-                  : now) ??
-              now;
+                ? DateTime.tryParse(cubit.state.endDate!)
+                : now) ??
+            now;
 
     final picked = await showDatePicker(
       context: context,
@@ -460,8 +462,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Cooperativo';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                'Cooperativo',
-                              );
+                                    'Cooperativo',
+                                  );
                               _handleSearch();
                             },
                           ),
@@ -470,8 +472,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Familiar';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                'Familiar',
-                              );
+                                    'Familiar',
+                                  );
                               _handleSearch();
                             },
                           ),
@@ -480,8 +482,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Fiesta';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                'Fiesta',
-                              );
+                                    'Fiesta',
+                                  );
                               _handleSearch();
                             },
                           ),
@@ -490,8 +492,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Experto';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                'Experto',
-                              );
+                                    'Experto',
+                                  );
                               _handleSearch();
                             },
                           ),

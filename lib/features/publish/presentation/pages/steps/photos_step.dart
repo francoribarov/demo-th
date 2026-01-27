@@ -35,8 +35,11 @@ class PhotosStep extends StatelessWidget {
         // Photo upload placeholder
         GestureDetector(
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Carga de imágenes próximamente'),),);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Carga de imágenes próximamente'),
+              ),
+            );
           },
           child: Container(
             height: 200,
@@ -49,19 +52,24 @@ class PhotosStep extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.add_photo_alternate_outlined,
-                    size: 48, color: AppColors.gameBrown.withOpacityValue(0.5),),
+                Icon(
+                  Icons.add_photo_alternate_outlined,
+                  size: 48,
+                  color: AppColors.gameBrown.withOpacityValue(0.5),
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'Tocá para agregar fotos',
                   style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.gameBrown.withOpacityValue(0.7),),
+                    color: AppColors.gameBrown.withOpacityValue(0.7),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'La primera foto será la portada',
                   style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.gameBrown.withOpacityValue(0.5),),
+                    color: AppColors.gameBrown.withOpacityValue(0.5),
+                  ),
                 ),
               ],
             ),
@@ -104,9 +112,14 @@ class PhotosStep extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: const BoxDecoration(
-                            color: Colors.black54, shape: BoxShape.circle,),
-                        child: const Icon(Icons.close,
-                            size: 16, color: Colors.white,),
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          size: 16,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

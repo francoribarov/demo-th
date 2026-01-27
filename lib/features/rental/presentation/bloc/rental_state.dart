@@ -1,6 +1,7 @@
 part of 'rental_bloc.dart';
 
 @freezed
+
 /// State for the rental confirmation flow.
 abstract class RentalState with _$RentalState {
   /// Creates a new rental state instance.

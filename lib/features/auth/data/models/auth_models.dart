@@ -51,15 +51,16 @@ abstract class RegisterRequest with _$RegisterRequest {
 
   /// Serializes the request payload.
   Map<String, dynamic> toJson() => {
-    'email': email,
-    'password': password,
-    'username': username,
-    if (dateOfBirth != null) 'date_of_birth': dateOfBirth!.toIso8601String(),
-    if (imageUrl != null) 'image_url': imageUrl,
-    if (address != null) 'address': address!.toJson(),
-    if (deliveryZone != null) 'delivery_zone': deliveryZone,
-    if (location != null) 'location': location,
-  };
+        'email': email,
+        'password': password,
+        'username': username,
+        if (dateOfBirth != null)
+          'date_of_birth': dateOfBirth!.toIso8601String(),
+        if (imageUrl != null) 'image_url': imageUrl,
+        if (address != null) 'address': address!.toJson(),
+        if (deliveryZone != null) 'delivery_zone': deliveryZone,
+        if (location != null) 'location': location,
+      };
 }
 
 /// Token response model
@@ -82,10 +83,10 @@ sealed class TokenResponse
 
   @override
   AuthTokens toDomainModel() => AuthTokens(
-    accessToken: accessToken,
-    refreshToken: refreshToken,
-    tokenType: tokenType,
-  );
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        tokenType: tokenType,
+      );
 }
 
 /// Authentication response model
@@ -109,13 +110,13 @@ sealed class AuthResponse
 
   @override
   AuthSession toDomainModel() => AuthSession(
-    user: user.toDomainModel(),
-    tokens: AuthTokens(
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      tokenType: tokenType,
-    ),
-  );
+        user: user.toDomainModel(),
+        tokens: AuthTokens(
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          tokenType: tokenType,
+        ),
+      );
 }
 
 /// Refresh token request model

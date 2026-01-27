@@ -1,6 +1,7 @@
 part of 'publish_bloc.dart';
 
 @freezed
+
 /// Publish flow actions.
 abstract class PublishEvent with _$PublishEvent {
   /// Initializes the publish flow.

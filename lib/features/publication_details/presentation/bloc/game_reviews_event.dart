@@ -1,6 +1,7 @@
 part of 'game_reviews_bloc.dart';
 
 @freezed
+
 /// Events for [GameReviewsBloc].
 abstract class GameReviewsEvent with _$GameReviewsEvent {
   /// Starts loading the game reviews.

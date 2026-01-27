@@ -73,8 +73,12 @@ class ReviewStep extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 child: const Center(
-                    child: Icon(Icons.image,
-                        size: 48, color: AppColors.gameBrown,),),
+                  child: Icon(
+                    Icons.image,
+                    size: 48,
+                    color: AppColors.gameBrown,
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -99,10 +103,13 @@ class ReviewStep extends StatelessWidget {
                       Text(
                         'Precio',
                         style: AppTypography.labelSmall.copyWith(
-                            color: AppColors.gameBrown.withOpacityValue(0.6),),
+                          color: AppColors.gameBrown.withOpacityValue(0.6),
+                        ),
                       ),
-                      Text(CurrencyFormatter.formatUYU(price),
-                          style: AppTypography.price,),
+                      Text(
+                        CurrencyFormatter.formatUYU(price),
+                        style: AppTypography.price,
+                      ),
                     ],
                   ),
                 ],

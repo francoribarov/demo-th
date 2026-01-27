@@ -1,6 +1,7 @@
 part of 'game_rules_bloc.dart';
 
 @freezed
+
 /// Events for [GameRulesBloc].
 abstract class GameRulesEvent with _$GameRulesEvent {
   /// Starts loading the game rules.

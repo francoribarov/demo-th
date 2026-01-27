@@ -28,7 +28,8 @@ class EmptyResultsState extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius: BorderRadius.circular(AppTheme.radius3xl),
-            border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.4)),
+            border:
+                Border.all(color: AppColors.gameBrown.withOpacityValue(0.4)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

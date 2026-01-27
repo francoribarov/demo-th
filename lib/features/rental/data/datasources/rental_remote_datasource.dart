@@ -12,6 +12,7 @@ abstract class RentalRemoteDatasource {
 }
 
 @LazySingleton(as: RentalRemoteDatasource)
+
 /// Remote datasource implementation using Dio.
 class RentalRemoteDatasourceImpl implements RentalRemoteDatasource {
   /// Creates a datasource backed by the shared Dio client.

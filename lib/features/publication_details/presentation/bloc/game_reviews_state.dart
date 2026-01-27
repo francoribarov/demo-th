@@ -1,6 +1,7 @@
 part of 'game_reviews_bloc.dart';
 
 @freezed
+
 /// State for [GameReviewsBloc].
 abstract class GameReviewsState with _$GameReviewsState {
   /// Creates a [GameReviewsState].

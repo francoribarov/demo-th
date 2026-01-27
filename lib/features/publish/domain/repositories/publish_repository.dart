@@ -5,6 +5,8 @@ import 'package:mobile_table_hopping/features/publish/domain/entities/publicatio
 abstract class PublishRepository {
   /// Creates a publication from the provided draft.
   /// [ownerId] is the ID of the authenticated user creating the publication.
-  Future<Publication> createPublication(PublicationDraft draft,
-      {required String ownerId,});
+  Future<Publication> createPublication(
+    PublicationDraft draft, {
+    required String ownerId,
+  });
 }

@@ -5,8 +5,11 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 /// A progress indicator showing steps in a wizard flow.
 class StepIndicator extends StatelessWidget {
   /// Creates a [StepIndicator].
-  const StepIndicator(
-      {required this.currentStep, required this.steps, super.key,});
+  const StepIndicator({
+    required this.currentStep,
+    required this.steps,
+    super.key,
+  });
 
   /// The 0-based index of the currently active step.
   final int currentStep;
@@ -53,7 +56,8 @@ class StepIndicator extends StatelessWidget {
               child: Text(
                 '${stepIndex + 1}',
                 style: AppTypography.labelMedium.copyWith(
-                    color: isActive ? Colors.white : AppColors.gameBrown,),
+                  color: isActive ? Colors.white : AppColors.gameBrown,
+                ),
               ),
             ),
           );

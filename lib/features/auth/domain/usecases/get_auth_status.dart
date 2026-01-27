@@ -4,6 +4,7 @@ import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.
 import 'package:mobile_table_hopping/features/auth/domain/repositories/auth_repository.dart';
 
 @injectable
+
 /// Use case for retrieving the cached auth session.
 class GetAuthStatus {
   /// Creates a [GetAuthStatus] use case.

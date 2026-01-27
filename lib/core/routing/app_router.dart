@@ -229,9 +229,8 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<UserProfileBloc>(
-                create: (_) =>
-                    getIt<UserProfileBloc>()
-                      ..add(UserProfileEvent.started(gameId: id)),
+                create: (_) => getIt<UserProfileBloc>()
+                  ..add(UserProfileEvent.started(gameId: id)),
                 child: UserProfilePage(gameId: id),
               );
             },

@@ -9,12 +9,13 @@ part 'game_rules_event.dart';
 part 'game_rules_state.dart';
 
 @injectable
+
 /// Bloc for loading and presenting game rules.
 class GameRulesBloc extends Bloc<GameRulesEvent, GameRulesState> {
   /// Creates a [GameRulesBloc].
   GameRulesBloc({required GetGames getGames})
-    : _getGames = getGames,
-      super(const GameRulesState()) {
+      : _getGames = getGames,
+        super(const GameRulesState()) {
     on<_Started>(_onStarted);
   }
   final GetGames _getGames;

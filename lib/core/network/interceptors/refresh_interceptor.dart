@@ -35,7 +35,8 @@ class RefreshInterceptor extends Interceptor {
       final retryOptions = err.requestOptions.copyWith(
         headers: Map<String, dynamic>.from(err.requestOptions.headers)
           ..['Authorization'] = 'Bearer ${tokens.accessToken}',
-        extra: Map<String, dynamic>.from(err.requestOptions.extra)..[_retryKey] = true,
+        extra: Map<String, dynamic>.from(err.requestOptions.extra)
+          ..[_retryKey] = true,
       );
 
       final response = await _dio.fetch<dynamic>(retryOptions);

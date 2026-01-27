@@ -61,8 +61,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () =>
-                  context.popOrGo('/games/${widget.gameId}'),
+              onPressed: () => context.popOrGo('/games/${widget.gameId}'),
             ),
             title: Text('Reseñas de ${game.title}'),
           ),

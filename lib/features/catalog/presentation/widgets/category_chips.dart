@@ -48,9 +48,8 @@ class CategoryChips extends StatelessWidget {
                 return _CategoryChip(
                   name: category.name,
                   icon: category.icon,
-                  gradient:
-                      AppColors.gradientPalette[index %
-                          AppColors.gradientPalette.length],
+                  gradient: AppColors.gradientPalette[
+                      index % AppColors.gradientPalette.length],
                   onTap: () =>
                       onCategorySelected(category.query ?? category.name),
                 );
@@ -59,9 +58,8 @@ class CategoryChips extends StatelessWidget {
                 return _CategoryChip(
                   name: shortcut.name,
                   icon: shortcut.icon,
-                  gradient:
-                      AppColors.gradientPalette[index %
-                          AppColors.gradientPalette.length],
+                  gradient: AppColors.gradientPalette[
+                      index % AppColors.gradientPalette.length],
                   onTap: () => onShortcutSelected(shortcut),
                 );
               }

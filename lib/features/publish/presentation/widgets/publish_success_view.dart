@@ -30,14 +30,21 @@ class PublishSuccessView extends StatelessWidget {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                    color: Colors.green[50], shape: BoxShape.circle,),
-                child: Icon(Icons.check_circle,
-                    size: 64, color: Colors.green[600],),
+                  color: Colors.green[50],
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.check_circle,
+                  size: 64,
+                  color: Colors.green[600],
+                ),
               ),
               const SizedBox(height: 32),
-              Text('¡Juego publicado!',
-                  style: AppTypography.displaySmall,
-                  textAlign: TextAlign.center,),
+              Text(
+                '¡Juego publicado!',
+                style: AppTypography.displaySmall,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 16),
               Text(
                 'Tu publicación ya está disponible para alquilar.',
@@ -49,14 +56,16 @@ class PublishSuccessView extends StatelessWidget {
               ElevatedButton(
                 onPressed: onBackHome,
                 style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),),
+                  minimumSize: const Size(double.infinity, 56),
+                ),
                 child: const Text('Volver al inicio'),
               ),
               const SizedBox(height: 16),
               OutlinedButton(
                 onPressed: onPublishAnother,
                 style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),),
+                  minimumSize: const Size(double.infinity, 56),
+                ),
                 child: const Text('Publicar otro juego'),
               ),
             ],
