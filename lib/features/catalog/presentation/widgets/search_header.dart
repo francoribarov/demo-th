@@ -80,15 +80,6 @@ class SearchHeader extends StatelessWidget {
               ),
               child: const Icon(Icons.casino, color: Colors.white, size: 24),
             ),
-            errorWidget: (context, url, error) => Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.gameRust,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.casino, color: Colors.white, size: 24),
-            ),
           ),
           const SizedBox(width: 12),
 

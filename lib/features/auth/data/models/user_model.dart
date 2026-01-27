@@ -90,9 +90,9 @@ sealed class UserAddressModel
     implements BaseDtoResponse<Address> {
   const factory UserAddressModel({
     required String address,
-    required String addressName,
+    @JsonKey(name: 'address_name') required String addressName,
     required String number,
-    String? additionalNotes,
+    @JsonKey(name: 'additional_notes') String? additionalNotes,
   }) = _UserAddressModel;
 
   const UserAddressModel._();
@@ -114,36 +114,4 @@ sealed class UserAddressModel
         number: number,
         additionalNotes: additionalNotes,
       );
-}
-
-@freezed
-sealed class UserAddressModel
-    with _$UserAddressModel
-    implements BaseDtoResponse<UserAddress> {
-  const factory UserAddressModel({
-    required String address,
-    @JsonKey(name: 'address_name') required String addressName,
-    required String number,
-    @JsonKey(name: 'additional_notes') String? additionalNotes,
-  }) = _UserAddressModel;
-
-  const UserAddressModel._();
-
-  factory UserAddressModel.fromJson(Map<String, dynamic> json) =>
-      _$UserAddressModelFromJson(json);
-
-  factory UserAddressModel.fromEntity(UserAddress entity) => UserAddressModel(
-    address: entity.address,
-    addressName: entity.addressName,
-    number: entity.number,
-    additionalNotes: entity.additionalNotes,
-  );
-
-  @override
-  UserAddress toDomainModel() => UserAddress(
-    address: address,
-    addressName: addressName,
-    number: number,
-    additionalNotes: additionalNotes,
-  );
 }

@@ -110,13 +110,6 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     }
   }
 
-  void _onPublishAnother(_PublishAnother event, Emitter<PublishState> emit) {
-    emit(const PublishState().copyWith(
-      allGames: state.allGames,
-      filteredGames: state.allGames,
-    ));
-  }
-
   void _onGameIdChanged(_GameIdChanged event, Emitter<PublishState> emit) {
     emit(state.copyWith(gameId: event.value));
   }

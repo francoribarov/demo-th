@@ -139,6 +139,7 @@ class AppRouter {
               child: Scaffold(
                 appBar: AppBar(title: const Text('Mi Perfil')),
                 body: Center(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text('Configuración de tu perfil.'),
@@ -146,6 +147,16 @@ class AppRouter {
                       ElevatedButton.icon(
                         onPressed: () {
                           getIt<AuthBloc>()
+                              .add(const AuthEvent.logoutRequested());
+                        },
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Cerrar Sesión'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -218,8 +229,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<UserProfileBloc>(
-                create: (_) => getIt<UserProfileBloc>()
-                  ..add(UserProfileEvent.started(publicationId: id)),
+                create: (_) =>
+                    getIt<UserProfileBloc>()
+                      ..add(UserProfileEvent.started(gameId: id)),
                 child: UserProfilePage(gameId: id),
               );
             },
@@ -234,7 +246,7 @@ class AppRouter {
               final startDate = extra?['startDate'] as String?;
               final endDate = extra?['endDate'] as String?;
               final ownerId = extra?['ownerId'] as String?;
-              final deposit = extra?['deposit'] as int?;
+              final deposit = extra?['deposit'] as double?;
               return BlocProvider<RentalBloc>(
                 create: (_) => getIt<RentalBloc>()
                   ..add(
