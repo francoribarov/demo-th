@@ -3,6 +3,8 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/widgets/game_selector.dart';
 
+import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
+
 /// Step in the publish flow for entering basic game data.
 class DataStep extends StatelessWidget {
   /// Creates a [DataStep].
@@ -61,14 +63,13 @@ class DataStep extends StatelessWidget {
           selectedGameId: gameId.isEmpty ? null : gameId,
           onGameSelected: (game) {
             onGameIdChanged(game.id);
-            onDescriptionChanged(game.description);
           },
         ),
         const SizedBox(height: 16),
 
         // Description
         TextFormField(
-          key: ValueKey('publish_description_$formVersion'),
+          key: ValueKey('publish_description_${formVersion}_$gameId'),
           initialValue: description,
           maxLines: 3,
           decoration: const InputDecoration(
@@ -76,6 +77,12 @@ class DataStep extends StatelessWidget {
             hintText: 'Contanos qué hace especial a este juego...',
           ),
           onChanged: onDescriptionChanged,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (value) {
+            final result =
+                PublicationValidator.validateDescription(value ?? '');
+            return result.isValid ? null : result.message;
+          },
         ),
         const SizedBox(height: 24),
 
@@ -135,6 +142,13 @@ class DataStep extends StatelessWidget {
             return conditions.map((c) {
               return Text(c.$2, style: AppTypography.bodyMedium);
             }).toList();
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Debes seleccionar el estado del juego';
+            }
+            return null;
           },
         ),
       ],
