@@ -4,7 +4,6 @@ import 'package:mobile_table_hopping/features/publish/domain/repositories/delive
 
 @injectable
 class GetDeliveryMethods {
-
   GetDeliveryMethods(this._repository);
   final DeliveryMethodRepository _repository;
 

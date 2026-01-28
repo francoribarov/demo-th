@@ -4,7 +4,6 @@ import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_m
 
 @injectable
 class DeliveryMethodDataSource {
-
   DeliveryMethodDataSource(this._dioClient);
   final DioClient _dioClient;
 

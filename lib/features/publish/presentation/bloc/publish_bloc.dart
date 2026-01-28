@@ -219,10 +219,12 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
         ),
       );
     } on Object catch (e) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        errorMessage: 'Error al crear método de entrega: $e',
-      ),);
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          errorMessage: 'Error al crear método de entrega: $e',
+        ),
+      );
     }
   }
 
