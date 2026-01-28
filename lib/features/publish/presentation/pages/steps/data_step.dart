@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/widgets/game_selector.dart';
-
 import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/widgets/game_selector.dart';
 
 /// Step in the publish flow for entering basic game data.
 class DataStep extends StatelessWidget {
@@ -90,7 +89,7 @@ class DataStep extends StatelessWidget {
         Text('Estado del juego', style: AppTypography.titleMedium),
         const SizedBox(height: 12),
         DropdownButtonFormField<String>(
-          value: condition.isEmpty ? null : condition,
+          initialValue: condition.isEmpty ? null : condition,
           decoration: InputDecoration(
             hintText: 'Seleccioná el estado',
             border: OutlineInputBorder(

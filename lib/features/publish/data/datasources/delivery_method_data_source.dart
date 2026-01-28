@@ -4,9 +4,9 @@ import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_m
 
 @injectable
 class DeliveryMethodDataSource {
-  final DioClient _dioClient;
 
   DeliveryMethodDataSource(this._dioClient);
+  final DioClient _dioClient;
 
   Future<DeliveryMethod> createDeliveryMethod(DeliveryMethod method) async {
     final data = method.toJson();

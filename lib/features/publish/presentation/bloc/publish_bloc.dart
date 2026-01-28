@@ -6,14 +6,14 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
 
+part 'publish_bloc.freezed.dart';
 part 'publish_event.dart';
 part 'publish_state.dart';
-part 'publish_bloc.freezed.dart';
 
 @injectable
 
@@ -129,10 +129,12 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   }
 
   void _onGameIdChanged(_GameIdChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(
-      gameId: event.value,
-      condition: '', // Reset condition when game changes
-    ));
+    emit(
+      state.copyWith(
+        gameId: event.value,
+        condition: '', // Reset condition when game changes
+      ),
+    );
   }
 
   void _onDescriptionChanged(
@@ -197,7 +199,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   }
 
   Future<void> _onAddDeliveryMethod(
-      _AddDeliveryMethod event, Emitter<PublishState> emit) async {
+    _AddDeliveryMethod event,
+    Emitter<PublishState> emit,
+  ) async {
     // Optimistically add to list or show loading?
     // For now, let's just make the call and then update.
     // Ideally we should have a loading state for this specific action or generic.
@@ -207,16 +211,18 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
       final newMethod = await _createDeliveryMethod(event.method);
       final updatedMethods = [...state.availableDeliveryMethods, newMethod];
       final selectedMethods = [...state.deliveryMethods, newMethod];
+      emit(
+        state.copyWith(
+          availableDeliveryMethods: updatedMethods,
+          deliveryMethods: selectedMethods, // Auto-select new method
+          isSubmitting: false,
+        ),
+      );
+    } on Object catch (e) {
       emit(state.copyWith(
-        availableDeliveryMethods: updatedMethods,
-        deliveryMethods: selectedMethods, // Auto-select new method
         isSubmitting: false,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        errorMessage: 'Error al crear método de entrega: ${e.toString()}',
-      ));
+        errorMessage: 'Error al crear método de entrega: $e',
+      ),);
     }
   }
 

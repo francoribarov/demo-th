@@ -5,9 +5,9 @@ import 'package:mobile_table_hopping/features/publish/domain/repositories/delive
 
 @LazySingleton(as: DeliveryMethodRepository)
 class DeliveryMethodRepositoryImpl implements DeliveryMethodRepository {
-  final DeliveryMethodDataSource _dataSource;
 
   DeliveryMethodRepositoryImpl(this._dataSource);
+  final DeliveryMethodDataSource _dataSource;
 
   @override
   Future<DeliveryMethod> createDeliveryMethod(DeliveryMethod method) async {

@@ -150,25 +150,23 @@ class _PriceStepState extends State<PriceStep> {
   }
 
   void _getDeliveryMethods() {
-    final publishBloc = context.read<PublishBloc>();
-    publishBloc.add(const PublishEvent.getDeliveryMethods());
+    context.read<PublishBloc>()
+    .add(const PublishEvent.getDeliveryMethods());
   }
 
-  void _addDeliveryMethod() {
-    final publishBloc = context.read<PublishBloc>();
-    showModalBottomSheet<void>(
+  Future<void> _addDeliveryMethod() async {
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (_) => DeliveryMethodSheet(
         onAdd: (method) {
-          publishBloc.add(PublishEvent.addDeliveryMethod(method));
+          context.read<PublishBloc>().add(PublishEvent.addDeliveryMethod(method));
         },
       ),
     );
   }
 
   void _toggleDeliveryMethod(DeliveryMethod method) {
-    final publishBloc = context.read<PublishBloc>();
-    publishBloc.add(PublishEvent.toggleDeliveryMethod(method));
+    context.read<PublishBloc>().add(PublishEvent.toggleDeliveryMethod(method));
   }
 }

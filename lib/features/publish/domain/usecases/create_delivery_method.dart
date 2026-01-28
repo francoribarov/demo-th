@@ -4,9 +4,9 @@ import 'package:mobile_table_hopping/features/publish/domain/repositories/delive
 
 @injectable
 class CreateDeliveryMethod {
-  final DeliveryMethodRepository _repository;
 
   CreateDeliveryMethod(this._repository);
+  final DeliveryMethodRepository _repository;
 
   Future<DeliveryMethod> call(DeliveryMethod method) async {
     return _repository.createDeliveryMethod(method);
