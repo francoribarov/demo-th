@@ -12,12 +12,10 @@ class DeliveryMethodDataSource {
     final data = method.toJson();
     // Backend expects date only (YYYY-MM-DD), remove time component to avoid 422
     if (method.initPickupTime != null) {
-      data['initPickupTime'] =
-          method.initPickupTime!.toIso8601String().split('T').first;
+      data['initPickupTime'] = method.initPickupTime;
     }
     if (method.finishPickupTime != null) {
-      data['finishPickupTime'] =
-          method.finishPickupTime!.toIso8601String().split('T').first;
+      data['finishPickupTime'] = method.finishPickupTime;
     }
 
     final response = await _dioClient.post<Map<String, dynamic>>(

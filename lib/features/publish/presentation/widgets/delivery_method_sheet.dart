@@ -16,8 +16,8 @@ class DeliveryMethodSheet extends StatefulWidget {
 class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
   DeliveryType _selectedType = DeliveryType.pickupInPerson;
   int _price = 0;
-  DateTime? _initPickupTime;
-  DateTime? _finishPickupTime;
+  String? _initPickupTime;
+  String? _finishPickupTime;
 
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _addressNameController = TextEditingController();
@@ -153,18 +153,19 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
             Row(
               children: [
                 Expanded(
-                  child: _DateTimePickerTile(
+                  child: _TimePickerTile(
                     label: 'Desde',
                     value: _initPickupTime,
-                    onChanged: (dt) => setState(() => _initPickupTime = dt),
+                    onChanged: (time) => setState(() => _initPickupTime = time),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _DateTimePickerTile(
+                  child: _TimePickerTile(
                     label: 'Hasta',
                     value: _finishPickupTime,
-                    onChanged: (dt) => setState(() => _finishPickupTime = dt),
+                    onChanged: (time) =>
+                        setState(() => _finishPickupTime = time),
                   ),
                 ),
               ],
@@ -199,43 +200,37 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
   }
 }
 
-class _DateTimePickerTile extends StatelessWidget {
-  const _DateTimePickerTile({
+class _TimePickerTile extends StatelessWidget {
+  const _TimePickerTile({
     required this.label,
     required this.value,
     required this.onChanged,
   });
 
   final String label;
-  final DateTime? value;
-  final void Function(DateTime?) onChanged;
+  final String? value;
+  final void Function(String?) onChanged;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final date = await showDatePicker(
+        final initialTime = value != null
+            ? TimeOfDay(
+                hour: int.parse(value!.split(':')[0]),
+                minute: int.parse(value!.split(':')[1]),
+              )
+            : TimeOfDay.now();
+
+        final time = await showTimePicker(
           context: context,
-          initialDate: value ?? DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 365)),
+          initialTime: initialTime,
         );
-        if (date != null && context.mounted) {
-          final time = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(value ?? DateTime.now()),
-          );
-          if (time != null) {
-            onChanged(
-              DateTime(
-                date.year,
-                date.month,
-                date.day,
-                time.hour,
-                time.minute,
-              ),
-            );
-          }
+
+        if (time != null) {
+          final formatted =
+              '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+          onChanged(formatted);
         }
       },
       child: Container(
@@ -258,9 +253,7 @@ class _DateTimePickerTile extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              value != null
-                  ? '${value!.day}/${value!.month} ${value!.hour.toString().padLeft(2, '0')}:${value!.minute.toString().padLeft(2, '0')}'
-                  : 'Seleccionar',
+              value ?? 'Seleccionar',
               style: AppTypography.bodyMedium,
             ),
           ],

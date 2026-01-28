@@ -17,6 +17,7 @@ abstract class PublishState with _$PublishState {
     @Default(0) int price,
     @Default([]) List<String> images,
     @Default([]) List<DeliveryMethod> deliveryMethods,
+    @Default([]) List<DeliveryMethod> availableDeliveryMethods,
     @Default([]) List<Game> allGames,
     @Default([]) List<Game> filteredGames,
     @Default(false) bool isLoadingGames,

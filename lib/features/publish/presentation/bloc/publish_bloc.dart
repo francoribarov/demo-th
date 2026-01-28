@@ -47,6 +47,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
     on<_AddDeliveryMethod>(_onAddDeliveryMethod);
     on<_GetDeliveryMethods>(_onGetDeliveryMethods);
+    on<_ToggleDeliveryMethod>(_onToggleDeliveryMethod);
   }
 
   final CreatePublication _createPublication;
@@ -204,9 +205,11 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
 
     try {
       final newMethod = await _createDeliveryMethod(event.method);
-      final updatedMethods = [...state.deliveryMethods, newMethod];
+      final updatedMethods = [...state.availableDeliveryMethods, newMethod];
+      final selectedMethods = [...state.deliveryMethods, newMethod];
       emit(state.copyWith(
-        deliveryMethods: updatedMethods,
+        availableDeliveryMethods: updatedMethods,
+        deliveryMethods: selectedMethods, // Auto-select new method
         isSubmitting: false,
       ));
     } catch (e) {
@@ -227,12 +230,41 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
       emit(
         state.copyWith(
           isLoadingDeliveryMethods: false,
-          deliveryMethods: methods,
+          deliveryMethods: [], // Reset selection? Or default to all?
+          // Let's default to empty so user chooses, or all.
+          // User request: "Select methods". Usually explicit selection is better.
+          // IF editing, we should keep existing. But this is fresh publish.
+          // If we want to be nice, maybe pre-select all if it's the first load?
+          // Let's keep selection empty or existing if re-entering step.
+          // BUT if we reload, we might lose selection if we reset.
+          // Better: keep state.deliveryMethods, just update available.
+
+          availableDeliveryMethods: methods,
         ),
       );
     } on Object catch (_) {
       // Silently fail or handling error depending on UX requirements
       emit(state.copyWith(isLoadingDeliveryMethods: false));
     }
+  }
+
+  void _onToggleDeliveryMethod(
+    _ToggleDeliveryMethod event,
+    Emitter<PublishState> emit,
+  ) {
+    // Check if method is currently selected
+    // We compare by ID assuming ID is unique and present.
+    // If ID is null (optimistic?), use object equality or index? String ID is safe.
+    final exists = state.deliveryMethods
+        .any((m) => m.id == event.method.id && m.id != null);
+
+    List<DeliveryMethod> updated;
+    if (exists) {
+      updated =
+          state.deliveryMethods.where((m) => m.id != event.method.id).toList();
+    } else {
+      updated = [...state.deliveryMethods, event.method];
+    }
+    emit(state.copyWith(deliveryMethods: updated));
   }
 }

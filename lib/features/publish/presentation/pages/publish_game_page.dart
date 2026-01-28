@@ -86,6 +86,8 @@ class PublishGamePage extends StatelessWidget {
                         formVersion: state.formVersion,
                         price: state.price,
                         deliveryMethods: state.deliveryMethods,
+                        availableDeliveryMethods:
+                            state.availableDeliveryMethods,
                         onPriceChanged: (v) => context
                             .read<PublishBloc>()
                             .add(PublishEvent.priceChanged(v)),

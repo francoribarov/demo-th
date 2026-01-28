@@ -40,8 +40,8 @@ abstract class DeliveryMethod with _$DeliveryMethod {
     String? addressName,
     String? addressNumber,
     String? additionalNotes,
-    DateTime? initPickupTime,
-    DateTime? finishPickupTime,
+    String? initPickupTime,
+    String? finishPickupTime,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _DeliveryMethod;

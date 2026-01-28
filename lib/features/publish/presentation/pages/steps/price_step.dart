@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/widgets/delivery_method_card.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/widgets/delivery_method_sheet.dart';
 
 /// Step in the publish flow for setting price and delivery methods.
@@ -14,6 +15,7 @@ class PriceStep extends StatefulWidget {
     required this.formVersion,
     required this.price,
     required this.deliveryMethods,
+    required this.availableDeliveryMethods,
     required this.onPriceChanged,
     required this.onDeliveryMethodsChanged,
     super.key,
@@ -25,8 +27,11 @@ class PriceStep extends StatefulWidget {
   /// Current price.
   final int price;
 
-  /// Current delivery methods.
+  /// Current delivery methods (selected for publication).
   final List<DeliveryMethod> deliveryMethods;
+
+  /// All available delivery methods for the user.
+  final List<DeliveryMethod> availableDeliveryMethods;
 
   /// Callback when price changes.
   final void Function(int) onPriceChanged;
@@ -91,7 +96,7 @@ class _PriceStepState extends State<PriceStep> {
         ),
         const SizedBox(height: 12),
 
-        if (widget.deliveryMethods.isEmpty)
+        if (widget.availableDeliveryMethods.isEmpty)
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -129,58 +134,13 @@ class _PriceStepState extends State<PriceStep> {
             ),
           )
         else
-          ...widget.deliveryMethods.asMap().entries.map((entry) {
-            final index = entry.key;
-            final method = entry.value;
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                border: Border.all(
-                  color: AppColors.gameBrown.withOpacityValue(0.2),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    method.deliveryType.icon,
-                    style: const TextStyle(fontSize: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          method.deliveryType.displayName,
-                          style: AppTypography.titleSmall,
-                        ),
-                        if (method.price > 0)
-                          Text(
-                            'Costo: \$${method.price}',
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.7),
-                            ),
-                          )
-                        else
-                          Text(
-                            'Gratis',
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameSage,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    color: AppColors.destructive,
-                    onPressed: () => _removeDeliveryMethod(index),
-                  ),
-                ],
-              ),
+          ...widget.availableDeliveryMethods.map((method) {
+            final isSelected = widget.deliveryMethods
+                .any((m) => m.id == method.id && m.id != null);
+            return DeliveryMethodCard(
+              method: method,
+              isSelected: isSelected,
+              onTap: () => _toggleDeliveryMethod(method),
             );
           }),
 
@@ -207,8 +167,8 @@ class _PriceStepState extends State<PriceStep> {
     );
   }
 
-  void _removeDeliveryMethod(int index) {
-    final updated = [...widget.deliveryMethods]..removeAt(index);
-    widget.onDeliveryMethodsChanged(updated);
+  void _toggleDeliveryMethod(DeliveryMethod method) {
+    final publishBloc = context.read<PublishBloc>();
+    publishBloc.add(PublishEvent.toggleDeliveryMethod(method));
   }
 }

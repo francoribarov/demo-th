@@ -37,8 +37,8 @@ sealed class DeliveryMethodModel
         addressName: entity.addressName,
         addressNumber: entity.addressNumber,
         additionalNotes: entity.additionalNotes,
-        initPickupTime: entity.initPickupTime?.toIso8601String(),
-        finishPickupTime: entity.finishPickupTime?.toIso8601String(),
+        initPickupTime: entity.initPickupTime,
+        finishPickupTime: entity.finishPickupTime,
         createdAt: entity.createdAt?.toIso8601String(),
         updatedAt: entity.updatedAt?.toIso8601String(),
       );
@@ -48,11 +48,8 @@ sealed class DeliveryMethodModel
         id: id,
         deliveryType: deliveryType,
         price: price,
-        initPickupTime:
-            initPickupTime != null ? DateTime.tryParse(initPickupTime!) : null,
-        finishPickupTime: finishPickupTime != null
-            ? DateTime.tryParse(finishPickupTime!)
-            : null,
+        initPickupTime: initPickupTime,
+        finishPickupTime: finishPickupTime,
         createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
         updatedAt: updatedAt != null ? DateTime.tryParse(updatedAt!) : null,
       );
