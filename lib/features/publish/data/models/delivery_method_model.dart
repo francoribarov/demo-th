@@ -11,9 +11,12 @@ sealed class DeliveryMethodModel
     implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodModel({
     required DeliveryType deliveryType,
-    int? id,
-    String? publicationId,
+    String? id,
     @Default(0) int price,
+    String? address,
+    String? addressName,
+    String? addressNumber,
+    String? additionalNotes,
     String? initPickupTime,
     String? finishPickupTime,
     String? createdAt,
@@ -28,9 +31,12 @@ sealed class DeliveryMethodModel
   factory DeliveryMethodModel.fromEntity(DeliveryMethod entity) =>
       DeliveryMethodModel(
         id: entity.id,
-        publicationId: entity.publicationId,
         deliveryType: entity.deliveryType,
         price: entity.price,
+        address: entity.address,
+        addressName: entity.addressName,
+        addressNumber: entity.addressNumber,
+        additionalNotes: entity.additionalNotes,
         initPickupTime: entity.initPickupTime?.toIso8601String(),
         finishPickupTime: entity.finishPickupTime?.toIso8601String(),
         createdAt: entity.createdAt?.toIso8601String(),
@@ -40,7 +46,6 @@ sealed class DeliveryMethodModel
   @override
   DeliveryMethod toDomainModel() => DeliveryMethod(
         id: id,
-        publicationId: publicationId,
         deliveryType: deliveryType,
         price: price,
         initPickupTime:

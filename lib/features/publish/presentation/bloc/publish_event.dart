@@ -43,6 +43,13 @@ abstract class PublishEvent with _$PublishEvent {
 
   /// Updates the delivery methods.
   const factory PublishEvent.deliveryMethodsChanged(
-    List<DeliveryMethod> value,
-  ) = _DeliveryMethodsChanged;
+      List<DeliveryMethod> value,
+      ) = _DeliveryMethodsChanged;
+
+  /// Creates a new delivery method.
+  const factory PublishEvent.addDeliveryMethod(DeliveryMethod method) =
+      _AddDeliveryMethod;
+  
+  /// Loads the delivery methods.
+  const factory PublishEvent.getDeliveryMethods() = _GetDeliveryMethods;
 }

@@ -7,6 +7,8 @@ import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
 
 part 'publish_event.dart';
@@ -22,9 +24,13 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     required CreatePublication createPublication,
     required AuthBloc authBloc,
     required GetGames getGames,
+    required CreateDeliveryMethod createDeliveryMethod,
+    required GetDeliveryMethods getDeliveryMethods,
   })  : _createPublication = createPublication,
         _authBloc = authBloc,
         _getGames = getGames,
+        _createDeliveryMethod = createDeliveryMethod,
+        _getDeliveryMethods = getDeliveryMethods,
         super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
@@ -39,15 +45,20 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     on<_LoadGames>(_onLoadGames);
     on<_SearchGames>(_onSearchGames);
     on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
+    on<_AddDeliveryMethod>(_onAddDeliveryMethod);
+    on<_GetDeliveryMethods>(_onGetDeliveryMethods);
   }
 
   final CreatePublication _createPublication;
   final AuthBloc _authBloc;
   final GetGames _getGames;
+  final CreateDeliveryMethod _createDeliveryMethod;
+  final GetDeliveryMethods _getDeliveryMethods;
 
   void _onStarted(_Started event, Emitter<PublishState> emit) {
     emit(const PublishState());
     add(const PublishEvent.loadGames());
+    add(const PublishEvent.getDeliveryMethods());
   }
 
   void _onNextStep(_NextStep event, Emitter<PublishState> emit) {
@@ -117,7 +128,10 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   }
 
   void _onGameIdChanged(_GameIdChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(gameId: event.value));
+    emit(state.copyWith(
+      gameId: event.value,
+      condition: '', // Reset condition when game changes
+    ));
   }
 
   void _onDescriptionChanged(
@@ -181,5 +195,44 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     }
   }
 
-  // ... (rest of the file if any)
+  Future<void> _onAddDeliveryMethod(
+      _AddDeliveryMethod event, Emitter<PublishState> emit) async {
+    // Optimistically add to list or show loading?
+    // For now, let's just make the call and then update.
+    // Ideally we should have a loading state for this specific action or generic.
+    emit(state.copyWith(isSubmitting: true));
+
+    try {
+      final newMethod = await _createDeliveryMethod(event.method);
+      final updatedMethods = [...state.deliveryMethods, newMethod];
+      emit(state.copyWith(
+        deliveryMethods: updatedMethods,
+        isSubmitting: false,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        isSubmitting: false,
+        errorMessage: 'Error al crear método de entrega: ${e.toString()}',
+      ));
+    }
+  }
+
+  Future<void> _onGetDeliveryMethods(
+    _GetDeliveryMethods event,
+    Emitter<PublishState> emit,
+  ) async {
+    emit(state.copyWith(isLoadingDeliveryMethods: true));
+    try {
+      final methods = await _getDeliveryMethods();
+      emit(
+        state.copyWith(
+          isLoadingDeliveryMethods: false,
+          deliveryMethods: methods,
+        ),
+      );
+    } on Object catch (_) {
+      // Silently fail or handling error depending on UX requirements
+      emit(state.copyWith(isLoadingDeliveryMethods: false));
+    }
+  }
 }

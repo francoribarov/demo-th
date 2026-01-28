@@ -13,13 +13,14 @@ abstract class PublishState with _$PublishState {
     String? errorMessage,
     @Default('') String gameId,
     @Default('') String description,
+    @Default('') String condition,
     @Default(0) int price,
-    @Default('like_new') String condition,
     @Default([]) List<String> images,
     @Default([]) List<DeliveryMethod> deliveryMethods,
     @Default([]) List<Game> allGames,
     @Default([]) List<Game> filteredGames,
     @Default(false) bool isLoadingGames,
+    @Default(false) bool isLoadingDeliveryMethods,
   }) = _PublishState;
 
   const PublishState._();
@@ -29,7 +30,8 @@ abstract class PublishState with _$PublishState {
     switch (currentStep) {
       case 0: // Data step: game and description
         return gameId.isNotEmpty &&
-            PublicationValidator.validateDescription(description).isValid;
+            PublicationValidator.validateDescription(description).isValid &&
+            condition.isNotEmpty;
       case 1: // Photos step: no validation required (optional)
         return true;
       case 2: // Price step: price must be valid

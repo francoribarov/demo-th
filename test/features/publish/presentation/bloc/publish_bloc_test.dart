@@ -6,6 +6,8 @@ import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -15,16 +17,24 @@ class MockAuthBloc extends Mock implements AuthBloc {}
 
 class MockGetGames extends Mock implements GetGames {}
 
+class MockCreateDeliveryMethod extends Mock implements CreateDeliveryMethod {}
+
+class MockGetDeliveryMethods extends Mock implements GetDeliveryMethods {}
+
 void main() {
   late MockCreatePublication mockCreatePublication;
   late MockAuthBloc mockAuthBloc;
   late MockGetGames mockGetGames;
+  late MockCreateDeliveryMethod mockCreateDeliveryMethod;
+  late MockGetDeliveryMethods mockGetDeliveryMethods;
   late PublishBloc publishBloc;
 
   setUp(() {
     mockCreatePublication = MockCreatePublication();
     mockAuthBloc = MockAuthBloc();
     mockGetGames = MockGetGames();
+    mockCreateDeliveryMethod = MockCreateDeliveryMethod();
+    mockGetDeliveryMethods = MockGetDeliveryMethods();
 
     // Mock authenticated state
     when(() => mockAuthBloc.state).thenReturn(
@@ -43,11 +53,14 @@ void main() {
 
     // Stub GetGames call since it might be called
     when(() => mockGetGames()).thenAnswer((_) async => []);
+    when(() => mockGetDeliveryMethods()).thenAnswer((_) async => []);
 
     publishBloc = PublishBloc(
       createPublication: mockCreatePublication,
       authBloc: mockAuthBloc,
       getGames: mockGetGames,
+      createDeliveryMethod: mockCreateDeliveryMethod,
+      getDeliveryMethods: mockGetDeliveryMethods,
     );
   });
 

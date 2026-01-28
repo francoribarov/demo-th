@@ -34,9 +34,12 @@ enum DeliveryType {
 abstract class DeliveryMethod with _$DeliveryMethod {
   const factory DeliveryMethod({
     required DeliveryType deliveryType,
-    int? id,
-    String? publicationId,
+    String? id,
     @Default(0) int price,
+    String? address,
+    String? addressName,
+    String? addressNumber,
+    String? additionalNotes,
     DateTime? initPickupTime,
     DateTime? finishPickupTime,
     DateTime? createdAt,

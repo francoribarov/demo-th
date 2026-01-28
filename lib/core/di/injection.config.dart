@@ -64,14 +64,24 @@ import 'package:mobile_table_hopping/features/publication_details/presentation/b
     as _i372;
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart'
     as _i828;
+import 'package:mobile_table_hopping/features/publish/data/datasources/delivery_method_data_source.dart'
+    as _i917;
 import 'package:mobile_table_hopping/features/publish/data/datasources/publish_remote_datasource.dart'
     as _i599;
+import 'package:mobile_table_hopping/features/publish/data/repositories/delivery_method_repository_impl.dart'
+    as _i70;
 import 'package:mobile_table_hopping/features/publish/data/repositories/publish_repository_impl.dart'
     as _i327;
+import 'package:mobile_table_hopping/features/publish/domain/repositories/delivery_method_repository.dart'
+    as _i918;
 import 'package:mobile_table_hopping/features/publish/domain/repositories/publish_repository.dart'
     as _i374;
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart'
+    as _i546;
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart'
     as _i692;
+import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart'
+    as _i504;
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart'
     as _i530;
 import 'package:mobile_table_hopping/features/rental/data/datasources/rental_remote_datasource.dart'
@@ -108,6 +118,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => registerModule.tokenStorage(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i737.DioClient>(
         () => _i737.DioClient(gh<_i717.TokenStorage>()));
+    gh.factory<_i917.DeliveryMethodDataSource>(
+        () => _i917.DeliveryMethodDataSource(gh<_i737.DioClient>()));
     gh.lazySingleton<_i599.PublishRemoteDatasource>(
         () => _i599.PublishRemoteDatasourceImpl(gh<_i737.DioClient>()));
     gh.lazySingleton<_i887.PublicationRemoteDatasource>(
@@ -129,8 +141,15 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i349.GameRemoteDatasource>(),
           gh<_i460.CategoryRemoteDatasource>(),
         ));
+    gh.lazySingleton<_i918.DeliveryMethodRepository>(() =>
+        _i70.DeliveryMethodRepositoryImpl(
+            gh<_i917.DeliveryMethodDataSource>()));
     gh.lazySingleton<_i996.RentalRepository>(
         () => _i472.RentalRepositoryImpl(gh<_i579.RentalRemoteDatasource>()));
+    gh.factory<_i546.CreateDeliveryMethod>(
+        () => _i546.CreateDeliveryMethod(gh<_i918.DeliveryMethodRepository>()));
+    gh.factory<_i504.GetDeliveryMethods>(
+        () => _i504.GetDeliveryMethods(gh<_i918.DeliveryMethodRepository>()));
     gh.lazySingleton<_i198.AuthRepository>(() => _i187.AuthRepositoryImpl(
           gh<_i930.AuthRemoteDatasource>(),
           gh<_i717.TokenStorage>(),
@@ -171,14 +190,16 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i649.ConfirmRental>(
         () => _i649.ConfirmRental(gh<_i996.RentalRepository>()));
+    gh.factory<_i896.CatalogBloc>(() => _i896.CatalogBloc(
+          getGames: gh<_i499.GetGames>(),
+          getPublications: gh<_i829.GetPublications>(),
+        ));
     gh.factory<_i530.PublishBloc>(() => _i530.PublishBloc(
           createPublication: gh<_i692.CreatePublication>(),
           authBloc: gh<_i701.AuthBloc>(),
           getGames: gh<_i499.GetGames>(),
-        ));
-    gh.factory<_i896.CatalogBloc>(() => _i896.CatalogBloc(
-          getGames: gh<_i499.GetGames>(),
-          getPublications: gh<_i829.GetPublications>(),
+          createDeliveryMethod: gh<_i546.CreateDeliveryMethod>(),
+          getDeliveryMethods: gh<_i504.GetDeliveryMethods>(),
         ));
     gh.factory<_i643.GameReviewsBloc>(
         () => _i643.GameReviewsBloc(getGames: gh<_i499.GetGames>()));
