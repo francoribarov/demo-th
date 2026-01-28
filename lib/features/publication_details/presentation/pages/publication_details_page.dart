@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/game_atoms.dart';
@@ -639,13 +640,22 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
           ),
           bottomNavigationBar: PublicationDetailsBottomBar(
             publication: publication,
-            onRent: () => context.goToRental(
-              widget.publicationId,
-              startDate: state.checkStartDate,
-              endDate: state.checkEndDate,
-              ownerId: publication.ownerId,
-              deposit: publication.deposit,
-            ),
+            onRent: () {
+              final authBloc = context.read<AuthBloc>();
+              if (!authBloc.state.isAuthenticated) {
+                final currentPath = '/publications/${widget.publicationId}';
+                context.goToLogin(from: currentPath);
+                return;
+              }
+
+              context.goToRental(
+                widget.publicationId,
+                startDate: state.checkStartDate,
+                endDate: state.checkEndDate,
+                ownerId: publication.ownerId,
+                deposit: publication.deposit,
+              );
+            },
           ),
         );
       },

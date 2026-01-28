@@ -5,13 +5,14 @@ import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/address.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
+import 'package:mobile_table_hopping/features/publish/data/models/delivery_method_model.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
 /// User model matching backend UserSchema
 @freezed
-sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
+abstract class UserModel with _$UserModel implements BaseDtoResponse<User> {
   /// Creates a [UserModel] instance from backend fields.
   const factory UserModel({
     required String id,
@@ -21,6 +22,7 @@ sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
     DateTime? dateOfBirth,
     UserAddressModel? address,
     List<String>? deliveryZone,
+    List<DeliveryMethodModel>? deliveryMethods,
     @JsonKey(name: 'preferences')
     @Default([])
     List<GameCategoryModel> preferences,
@@ -85,14 +87,14 @@ sealed class UserModel with _$UserModel implements BaseDtoResponse<User> {
 }
 
 @freezed
-sealed class UserAddressModel
+abstract class UserAddressModel
     with _$UserAddressModel
     implements BaseDtoResponse<Address> {
   const factory UserAddressModel({
     required String address,
-    @JsonKey(name: 'address_name') required String addressName,
+    required String addressName,
     required String number,
-    @JsonKey(name: 'additional_notes') String? additionalNotes,
+    String? additionalNotes,
   }) = _UserAddressModel;
 
   const UserAddressModel._();

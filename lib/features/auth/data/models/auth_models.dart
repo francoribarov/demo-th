@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/auth/data/models/user_model.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
+import 'package:mobile_table_hopping/features/publish/data/models/delivery_method_model.dart';
 
 part 'auth_models.freezed.dart';
 part 'auth_models.g.dart';
@@ -40,6 +41,7 @@ abstract class RegisterRequest with _$RegisterRequest {
     @JsonKey(name: 'image_url') String? imageUrl,
     UserAddressModel? address,
     @JsonKey(name: 'delivery_zone') List<String>? deliveryZone,
+    List<DeliveryMethodModel>? deliveryMethods,
     String? location,
   }) = _RegisterRequest;
 
