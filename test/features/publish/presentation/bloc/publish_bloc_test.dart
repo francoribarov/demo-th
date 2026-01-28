@@ -97,14 +97,16 @@ void main() {
               'A very long and descriptive text for the game.',
             ),
           )
-          ..add(const PublishEvent.priceChanged(100));
+          ..add(const PublishEvent.priceChanged(100))
+          ..add(const PublishEvent.conditionChanged('new'));
       },
-      skip: 2,
+      skip: 3,
       expect: () => [
         const PublishState(
           gameId: 'game-uuid-123',
           description: 'A very long and descriptive text for the game.',
           price: 100,
+          condition: 'new',
         ),
       ],
       verify: (bloc) {
