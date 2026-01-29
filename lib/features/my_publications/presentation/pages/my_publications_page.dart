@@ -291,7 +291,7 @@ class _PublicationsGrid extends StatelessWidget {
                 final publication = publications[index];
                 return PublicationCard(
                   publication: publication,
-                  onTap: () => context.goToPublication(publication.id),
+                  onTap: () => context.goToEditPublication(publication.id),
                 );
               },
               childCount: publications.length,
