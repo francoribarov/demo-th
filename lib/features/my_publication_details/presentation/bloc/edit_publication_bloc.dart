@@ -35,21 +35,22 @@ class EditPublicationBloc
         _getDeliveryMethods = getDeliveryMethods,
         _imageUploadService = imageUploadService,
         super(const EditPublicationState()) {
-    on<_Started>(_onStarted);
-    on<_DescriptionChanged>(_onDescriptionChanged);
-    on<_PriceChanged>(_onPriceChanged);
-    on<_ConditionChanged>(_onConditionChanged);
-    on<_ImagesChanged>(_onImagesChanged);
-    on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
-    on<_ToggleDeliveryMethod>(_onToggleDeliveryMethod);
-    on<_Submit>(_onSubmit);
-    on<_Delete>(_onDelete);
-    on<_NextStep>(_onNextStep);
-    on<_PreviousStep>(_onPreviousStep);
-    on<_PickImage>(_onPickImage);
-    on<_PickMultipleImages>(_onPickMultipleImages);
-    on<_RemoveImage>(_onRemoveImage);
+    _registerEventHandlers();
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Constants
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Maximum step index in the edit flow (0-indexed).
+  static const int maxStep = 3;
+
+  /// Minimum step index in the edit flow.
+  static const int minStep = 0;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Dependencies
+  // ─────────────────────────────────────────────────────────────────────────
 
   final GetPublicationDetail _getPublicationDetail;
   final UpdatePublication _updatePublication;
@@ -57,6 +58,36 @@ class EditPublicationBloc
   final GetGames _getGames;
   final GetDeliveryMethods _getDeliveryMethods;
   final ImageUploadService _imageUploadService;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Event Registration
+  // ─────────────────────────────────────────────────────────────────────────
+
+  void _registerEventHandlers() {
+    // Initialization
+    on<_Started>(_onStarted);
+    on<_DescriptionChanged>(_onDescriptionChanged);
+    on<_PriceChanged>(_onPriceChanged);
+    on<_ConditionChanged>(_onConditionChanged);
+    on<_ImagesChanged>(_onImagesChanged);
+    on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
+    on<_ToggleDeliveryMethod>(_onToggleDeliveryMethod);
+
+    // Navigation
+    on<_NextStep>(_onNextStep);
+    on<_PreviousStep>(_onPreviousStep);
+    on<_PickImage>(_onPickImage);
+    on<_PickMultipleImages>(_onPickMultipleImages);
+    on<_RemoveImage>(_onRemoveImage);
+
+    // Actions
+    on<_Submit>(_onSubmit);
+    on<_Delete>(_onDelete);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Initialization Handler
+  // ─────────────────────────────────────────────────────────────────────────
 
   Future<void> _onStarted(
     _Started event,
@@ -153,14 +184,16 @@ class EditPublicationBloc
   }
 
   void _onNextStep(_NextStep event, Emitter<EditPublicationState> emit) {
-    if (state.currentStep < 3) {
+    if (state.currentStep < maxStep) {
       emit(state.copyWith(currentStep: state.currentStep + 1));
     }
   }
 
   void _onPreviousStep(
-      _PreviousStep event, Emitter<EditPublicationState> emit) {
-    if (state.currentStep > 0) {
+    _PreviousStep event,
+    Emitter<EditPublicationState> emit,
+  ) {
+    if (state.currentStep > minStep) {
       emit(state.copyWith(currentStep: state.currentStep - 1));
     }
   }
@@ -229,26 +262,9 @@ class EditPublicationBloc
     _PickImage event,
     Emitter<EditPublicationState> emit,
   ) async {
-    try {
-      final imagePath = await _imageUploadService.pickImageFromGallery();
-      if (imagePath != null) {
-        emit(state.copyWith(isUploadingImage: true));
-        final imageUrl = await _imageUploadService.uploadImage(imagePath);
-        emit(
-          state.copyWith(
-            images: [...state.images, imageUrl],
-            hasChanges: true,
-            isUploadingImage: false,
-          ),
-        );
-      }
-    } catch (e) {
-      emit(
-        state.copyWith(
-          isUploadingImage: false,
-          errorMessage: 'Error al subir imagen: $e',
-        ),
-      );
+    final imagePath = await _imageUploadService.pickImageFromGallery();
+    if (imagePath != null) {
+      await _uploadAndAddImages([imagePath], emit);
     }
   }
 
@@ -256,20 +272,27 @@ class EditPublicationBloc
     _PickMultipleImages event,
     Emitter<EditPublicationState> emit,
   ) async {
+    final imagePaths = await _imageUploadService.pickMultipleImages();
+    if (imagePaths.isNotEmpty) {
+      await _uploadAndAddImages(imagePaths, emit);
+    }
+  }
+
+  Future<void> _uploadAndAddImages(
+    List<String> imagePaths,
+    Emitter<EditPublicationState> emit,
+  ) async {
     try {
-      final imagePaths = await _imageUploadService.pickMultipleImages();
-      if (imagePaths.isNotEmpty) {
-        emit(state.copyWith(isUploadingImage: true));
-        final imageUrls = await _imageUploadService.uploadImages(imagePaths);
-        emit(
-          state.copyWith(
-            images: [...state.images, ...imageUrls],
-            hasChanges: true,
-            isUploadingImage: false,
-          ),
-        );
-      }
-    } catch (e) {
+      emit(state.copyWith(isUploadingImage: true));
+      final imageUrls = await _imageUploadService.uploadImages(imagePaths);
+      emit(
+        state.copyWith(
+          images: [...state.images, ...imageUrls],
+          hasChanges: true,
+          isUploadingImage: false,
+        ),
+      );
+    } on Object catch (e) {
       emit(
         state.copyWith(
           isUploadingImage: false,
@@ -283,7 +306,8 @@ class EditPublicationBloc
     _RemoveImage event,
     Emitter<EditPublicationState> emit,
   ) {
-    if (event.index >= 0 && event.index < state.images.length) {
+    final isValidIndex = event.index >= 0 && event.index < state.images.length;
+    if (isValidIndex) {
       final updatedImages = [...state.images]..removeAt(event.index);
       emit(state.copyWith(images: updatedImages, hasChanges: true));
     }

@@ -33,19 +33,17 @@ abstract class EditPublicationState with _$EditPublicationState {
   /// The game associated with this publication.
   Game? get selectedGame => allGames.where((g) => g.id == gameId).firstOrNull;
 
-  /// Returns whether the current step is valid.
+  /// Returns whether the current step is valid for proceeding.
   bool get canProceed {
-    switch (currentStep) {
-      case 0: // Data step
-        return description.isNotEmpty && condition.isNotEmpty;
-      case 1: // Photos step
-        return true;
-      case 2: // Price step
-        return price > 0;
-      case 3: // Review step
-        return description.isNotEmpty && condition.isNotEmpty && price > 0;
-      default:
-        return false;
-    }
+    final hasValidData = description.isNotEmpty && condition.isNotEmpty;
+    final hasValidPrice = price > 0;
+
+    return switch (currentStep) {
+      0 => hasValidData, // Data step
+      1 => true, // Photos step (optional)
+      2 => hasValidPrice, // Price step
+      EditPublicationBloc.maxStep => hasValidData && hasValidPrice, // Review
+      _ => false,
+    };
   }
 }

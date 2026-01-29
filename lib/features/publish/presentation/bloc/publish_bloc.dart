@@ -297,7 +297,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
           ),
         );
       }
-    } catch (e) {
+    } on Object catch (e) {
       emit(
         state.copyWith(
           isUploadingImage: false,

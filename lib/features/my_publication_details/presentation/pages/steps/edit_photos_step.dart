@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/presentation/bloc/edit_publication_bloc.dart';
 
 /// Step for editing publication photos.
 class EditPhotosStep extends StatelessWidget {
@@ -119,7 +117,7 @@ class EditPhotosStep extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.info_outline,
                 size: 16,
                 color: AppColors.mutedForeground,
@@ -143,7 +141,7 @@ class EditPhotosStep extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Icon(
+                const Icon(
                   Icons.photo_library_outlined,
                   size: 48,
                   color: AppColors.mutedForeground,
@@ -186,9 +184,9 @@ class _PhotoTile extends StatelessWidget {
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
-            errorBuilder: (_, __, ___) => Container(
+            errorBuilder: (_, __, ___) => ColoredBox(
               color: AppColors.muted.withOpacityValue(0.2),
-              child: Center(
+              child: const Center(
                 child: Icon(
                   Icons.broken_image,
                   color: AppColors.mutedForeground,
@@ -204,16 +202,18 @@ class _PhotoTile extends StatelessWidget {
           right: 4,
           child: GestureDetector(
             onTap: onRemove,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: Colors.black54,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.close,
-                size: 16,
-                color: Colors.white,
+            child: ColoredBox(
+              color: Colors.black54,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.close,
+                  size: 16,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

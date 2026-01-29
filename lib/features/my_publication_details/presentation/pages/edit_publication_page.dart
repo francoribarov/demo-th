@@ -105,21 +105,21 @@ class EditPublicationPage extends StatelessWidget {
                         selectedGame: state.selectedGame,
                         onDescriptionChanged: (v) => context
                             .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.descriptionChanged(v)),
+                            .add(EditPublicationEvent.descriptionChanged(v),),
                         onConditionChanged: (v) => context
                             .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.conditionChanged(v)),
+                            .add(EditPublicationEvent.conditionChanged(v),),
                       ),
                       EditPhotosStep(
                         images: state.images,
                         isUploading: state.isUploadingImage,
                         onImagesChanged: (v) => context
                             .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.imagesChanged(v)),
+                            .add(EditPublicationEvent.imagesChanged(v),),
                         onAddImage: () => context
                             .read<EditPublicationBloc>()
                             .add(const EditPublicationEvent
-                                .pickMultipleImages()),
+                                .pickMultipleImages(),),
                       ),
                       EditPriceStep(
                         price: state.price,
@@ -128,11 +128,11 @@ class EditPublicationPage extends StatelessWidget {
                             state.availableDeliveryMethods,
                         onPriceChanged: (v) => context
                             .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.priceChanged(v)),
+                            .add(EditPublicationEvent.priceChanged(v),),
                         onDeliveryMethodsChanged: (v) => context
                             .read<EditPublicationBloc>()
                             .add(
-                                EditPublicationEvent.deliveryMethodsChanged(v)),
+                                EditPublicationEvent.deliveryMethodsChanged(v),),
                       ),
                       EditReviewStep(
                         selectedGame: state.selectedGame,
@@ -169,9 +169,9 @@ class EditPublicationPage extends StatelessWidget {
     );
   }
 
-  void _handleBack(BuildContext context, EditPublicationState state) {
+  Future<void> _handleBack(BuildContext context, EditPublicationState state) async {
     if (state.hasChanges) {
-      showDialog<bool>(
+      await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('¿Descartar cambios?'),
@@ -201,8 +201,8 @@ class EditPublicationPage extends StatelessWidget {
     }
   }
 
-  void _showDeleteConfirmation(BuildContext context) {
-    showDialog<void>(
+  Future<void> _showDeleteConfirmation(BuildContext context) async {
+    await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('¿Eliminar publicación?'),

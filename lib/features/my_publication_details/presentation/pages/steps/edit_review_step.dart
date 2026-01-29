@@ -81,7 +81,7 @@ class EditReviewStep extends StatelessWidget {
             children: [
               // Hero image
               ClipRRect(
-                borderRadius: BorderRadius.vertical(
+                borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(AppTheme.radiusLg),
                 ),
                 child: AspectRatio(
@@ -181,9 +181,9 @@ class EditReviewStep extends StatelessWidget {
 
   Widget _buildHeroImage() {
     if (images.isEmpty) {
-      return Container(
+      return ColoredBox(
         color: AppColors.muted.withOpacityValue(0.2),
-        child: Center(
+        child: const Center(
           child: Icon(
             Icons.image_outlined,
             size: 48,
@@ -275,9 +275,9 @@ class _InfoRow extends StatelessWidget {
 class _ImagePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return ColoredBox(
       color: AppColors.muted.withOpacityValue(0.2),
-      child: Center(
+      child: const Center(
         child: Icon(
           Icons.broken_image,
           size: 48,
@@ -291,11 +291,9 @@ class _ImagePlaceholder extends StatelessWidget {
 class _SmallPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 80,
-      height: 80,
+    return ColoredBox(
       color: AppColors.muted.withOpacityValue(0.2),
-      child: Icon(
+      child: const Icon(
         Icons.broken_image,
         color: AppColors.mutedForeground,
       ),

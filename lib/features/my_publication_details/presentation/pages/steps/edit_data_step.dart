@@ -91,7 +91,7 @@ class EditDataStep extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.lock_outline,
                   color: AppColors.mutedForeground,
                   size: 20,
@@ -128,15 +128,15 @@ class EditDataStep extends StatelessWidget {
             fillColor: AppColors.background,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: BorderSide(color: AppColors.border),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: BorderSide(color: AppColors.border),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: BorderSide(color: AppColors.gameRust, width: 2),
+              borderSide: const BorderSide(color: AppColors.gameRust, width: 2),
             ),
           ),
           onChanged: onDescriptionChanged,
@@ -178,7 +178,7 @@ class _GamePlaceholder extends StatelessWidget {
         color: AppColors.muted.withOpacityValue(0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
-      child: Icon(
+      child: const Icon(
         Icons.extension,
         color: AppColors.mutedForeground,
         size: 30,

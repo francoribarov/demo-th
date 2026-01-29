@@ -60,7 +60,7 @@ class EditSuccessView extends StatelessWidget {
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColors.success,
                       shape: BoxShape.circle,
                     ),
@@ -133,7 +133,7 @@ class EditSuccessView extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
-                    side: BorderSide(color: AppColors.gameRust),
+                    side: const BorderSide(color: AppColors.gameRust),
                   ),
                   child: const Text(
                     'Volver a mis publicaciones',

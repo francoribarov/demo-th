@@ -60,7 +60,7 @@ class EditPriceStep extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly,
           ],
           decoration: InputDecoration(
-            prefixText: '\$ ',
+            prefixText: r'\$ ',
             prefixStyle: AppTypography.titleMedium.copyWith(
               color: AppColors.foreground,
             ),
@@ -73,15 +73,15 @@ class EditPriceStep extends StatelessWidget {
             fillColor: AppColors.background,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: BorderSide(color: AppColors.border),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: BorderSide(color: AppColors.border),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: BorderSide(color: AppColors.gameRust, width: 2),
+              borderSide: const BorderSide(color: AppColors.gameRust, width: 2),
             ),
           ),
           onChanged: (value) {
@@ -118,7 +118,7 @@ class EditPriceStep extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Icon(
+                const Icon(
                   Icons.local_shipping_outlined,
                   size: 48,
                   color: AppColors.mutedForeground,
