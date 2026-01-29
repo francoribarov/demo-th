@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
@@ -26,11 +27,13 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     required GetGames getGames,
     required CreateDeliveryMethod createDeliveryMethod,
     required GetDeliveryMethods getDeliveryMethods,
+    required ImageUploadService imageUploadService,
   })  : _createPublication = createPublication,
         _authBloc = authBloc,
         _getGames = getGames,
         _createDeliveryMethod = createDeliveryMethod,
         _getDeliveryMethods = getDeliveryMethods,
+        _imageUploadService = imageUploadService,
         super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
@@ -48,6 +51,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     on<_AddDeliveryMethod>(_onAddDeliveryMethod);
     on<_GetDeliveryMethods>(_onGetDeliveryMethods);
     on<_ToggleDeliveryMethod>(_onToggleDeliveryMethod);
+    on<_PickMultipleImages>(_onPickMultipleImages);
   }
 
   final CreatePublication _createPublication;
@@ -55,6 +59,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   final GetGames _getGames;
   final CreateDeliveryMethod _createDeliveryMethod;
   final GetDeliveryMethods _getDeliveryMethods;
+  final ImageUploadService _imageUploadService;
 
   void _onStarted(_Started event, Emitter<PublishState> emit) {
     emit(const PublishState());
@@ -274,5 +279,31 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
       updated = [...state.deliveryMethods, event.method];
     }
     emit(state.copyWith(deliveryMethods: updated));
+  }
+
+  Future<void> _onPickMultipleImages(
+    _PickMultipleImages event,
+    Emitter<PublishState> emit,
+  ) async {
+    try {
+      final imagePaths = await _imageUploadService.pickMultipleImages();
+      if (imagePaths.isNotEmpty) {
+        emit(state.copyWith(isUploadingImage: true));
+        final imageUrls = await _imageUploadService.uploadImages(imagePaths);
+        emit(
+          state.copyWith(
+            images: [...state.images, ...imageUrls],
+            isUploadingImage: false,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isUploadingImage: false,
+          errorMessage: 'Error al subir imágenes: $e',
+        ),
+      );
+    }
   }
 }

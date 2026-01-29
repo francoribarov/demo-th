@@ -9,6 +9,7 @@ class PhotosStep extends StatelessWidget {
   const PhotosStep({
     required this.images,
     required this.onImagesChanged,
+    required this.onAddImage,
     super.key,
   });
 
@@ -17,6 +18,9 @@ class PhotosStep extends StatelessWidget {
 
   /// Callback when the image list is updated.
   final void Function(List<String>) onImagesChanged;
+
+  /// Callback to add new images.
+  final VoidCallback onAddImage;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +38,7 @@ class PhotosStep extends StatelessWidget {
 
         // Photo upload placeholder
         GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Carga de imágenes próximamente'),
-              ),
-            );
-          },
+          onTap: onAddImage,
           child: Container(
             height: 200,
             decoration: BoxDecoration(

@@ -22,6 +22,7 @@ abstract class PublishState with _$PublishState {
     @Default([]) List<Game> filteredGames,
     @Default(false) bool isLoadingGames,
     @Default(false) bool isLoadingDeliveryMethods,
+    @Default(false) bool isUploadingImage,
   }) = _PublishState;
 
   const PublishState._();

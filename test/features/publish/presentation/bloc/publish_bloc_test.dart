@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
+import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart';
@@ -21,12 +22,15 @@ class MockCreateDeliveryMethod extends Mock implements CreateDeliveryMethod {}
 
 class MockGetDeliveryMethods extends Mock implements GetDeliveryMethods {}
 
+class MockImageUploadService extends Mock implements ImageUploadService {}
+
 void main() {
   late MockCreatePublication mockCreatePublication;
   late MockAuthBloc mockAuthBloc;
   late MockGetGames mockGetGames;
   late MockCreateDeliveryMethod mockCreateDeliveryMethod;
   late MockGetDeliveryMethods mockGetDeliveryMethods;
+  late MockImageUploadService mockImageUploadService;
   late PublishBloc publishBloc;
 
   setUp(() {
@@ -35,6 +39,7 @@ void main() {
     mockGetGames = MockGetGames();
     mockCreateDeliveryMethod = MockCreateDeliveryMethod();
     mockGetDeliveryMethods = MockGetDeliveryMethods();
+    mockImageUploadService = MockImageUploadService();
 
     // Mock authenticated state
     when(() => mockAuthBloc.state).thenReturn(
@@ -61,6 +66,7 @@ void main() {
       getGames: mockGetGames,
       createDeliveryMethod: mockCreateDeliveryMethod,
       getDeliveryMethods: mockGetDeliveryMethods,
+      imageUploadService: mockImageUploadService,
     );
   });
 

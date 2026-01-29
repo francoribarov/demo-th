@@ -56,4 +56,7 @@ abstract class PublishEvent with _$PublishEvent {
   /// Toggles selection of a delivery method.
   const factory PublishEvent.toggleDeliveryMethod(DeliveryMethod method) =
       _ToggleDeliveryMethod;
+
+  /// Pick multiple images from gallery.
+  const factory PublishEvent.pickMultipleImages() = _PickMultipleImages;
 }

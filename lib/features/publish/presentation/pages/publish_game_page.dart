@@ -81,6 +81,9 @@ class PublishGamePage extends StatelessWidget {
                         onImagesChanged: (v) => context
                             .read<PublishBloc>()
                             .add(PublishEvent.imagesChanged(v)),
+                        onAddImage: () => context
+                            .read<PublishBloc>()
+                            .add(const PublishEvent.pickMultipleImages()),
                       ),
                       PriceStep(
                         formVersion: state.formVersion,
