@@ -1,25 +1,24 @@
 part of 'rental_bloc.dart';
 
 @freezed
+
 /// State for the rental confirmation flow.
 abstract class RentalState with _$RentalState {
   /// Creates a new rental state instance.
   const factory RentalState({
     @Default(false) bool isLoading,
-    Game? game,
+    PublicationListing? publication,
     String? errorMessage,
     @Default(false) bool success,
-
     String? startDate,
     String? endDate,
     String? ownerId,
-    int? deposit,
+    double? deposit,
     @Default(false) bool isDelivery,
     @Default('') String deliveryAddress,
     @Default('') String deliveryComments,
     @Default('mercadopago') String paymentMethod,
     @Default([]) List<String> selectedFoodBundles,
-
     @Default(false) bool isSubmitting,
     String? snackbarMessage,
   }) = _RentalState;
@@ -40,7 +39,7 @@ abstract class RentalState with _$RentalState {
   }
 
   /// Subtotal for the rental without fees.
-  int get subtotal => (game?.price ?? 0) * rentalDays;
+  double get subtotal => (publication?.price ?? 0.0) * rentalDays;
 
   /// Service fee applied to the subtotal.
   int get serviceFee => (subtotal * 0.1).round();
@@ -52,5 +51,5 @@ abstract class RentalState with _$RentalState {
   int get foodTotal => selectedFoodBundles.length * 250;
 
   /// Total price including fees and add-ons.
-  int get total => subtotal + serviceFee + deliveryFee + foodTotal;
+  double get total => subtotal + serviceFee + deliveryFee + foodTotal;
 }

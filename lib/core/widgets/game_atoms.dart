@@ -46,7 +46,7 @@ class GamePriceLabel extends StatelessWidget {
   });
 
   /// The price value.
-  final int price;
+  final num price;
 
   /// The unit of the price (e.g., '/ día').
   final String perUnit;

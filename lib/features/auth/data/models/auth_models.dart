@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/auth/data/models/user_model.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
+import 'package:mobile_table_hopping/features/publish/data/models/delivery_method_model.dart';
 
 part 'auth_models.freezed.dart';
 part 'auth_models.g.dart';
@@ -40,6 +41,7 @@ abstract class RegisterRequest with _$RegisterRequest {
     @JsonKey(name: 'image_url') String? imageUrl,
     UserAddressModel? address,
     @JsonKey(name: 'delivery_zone') List<String>? deliveryZone,
+    List<DeliveryMethodModel>? deliveryMethods,
     String? location,
   }) = _RegisterRequest;
 
@@ -51,15 +53,16 @@ abstract class RegisterRequest with _$RegisterRequest {
 
   /// Serializes the request payload.
   Map<String, dynamic> toJson() => {
-    'email': email,
-    'password': password,
-    'username': username,
-    if (dateOfBirth != null) 'date_of_birth': dateOfBirth!.toIso8601String(),
-    if (imageUrl != null) 'image_url': imageUrl,
-    if (address != null) 'address': address!.toJson(),
-    if (deliveryZone != null) 'delivery_zone': deliveryZone,
-    if (location != null) 'location': location,
-  };
+        'email': email,
+        'password': password,
+        'username': username,
+        if (dateOfBirth != null)
+          'date_of_birth': dateOfBirth!.toIso8601String(),
+        if (imageUrl != null) 'image_url': imageUrl,
+        if (address != null) 'address': address!.toJson(),
+        if (deliveryZone != null) 'delivery_zone': deliveryZone,
+        if (location != null) 'location': location,
+      };
 }
 
 /// Token response model
@@ -82,10 +85,10 @@ sealed class TokenResponse
 
   @override
   AuthTokens toDomainModel() => AuthTokens(
-    accessToken: accessToken,
-    refreshToken: refreshToken,
-    tokenType: tokenType,
-  );
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        tokenType: tokenType,
+      );
 }
 
 /// Authentication response model
@@ -109,13 +112,13 @@ sealed class AuthResponse
 
   @override
   AuthSession toDomainModel() => AuthSession(
-    user: user.toDomainModel(),
-    tokens: AuthTokens(
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      tokenType: tokenType,
-    ),
-  );
+        user: user.toDomainModel(),
+        tokens: AuthTokens(
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          tokenType: tokenType,
+        ),
+      );
 }
 
 /// Refresh token request model

@@ -2,50 +2,47 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetGames extends Mock implements GetGames {}
+class MockGetPublications extends Mock implements GetPublications {}
 
 class MockConfirmRental extends Mock implements ConfirmRental {}
 
 void main() {
-  late MockGetGames mockGetGames;
+  late MockGetPublications mockGetPublications;
   late MockConfirmRental mockConfirmRental;
   late RentalBloc rentalBloc;
 
-  const tGame = Game(
+  final tPublication = PublicationListing(
     id: '123',
-    catalogId: 123,
+    ownerId: 'owner-1',
+    gameId: '1',
     title: 'Test Game',
-    categories: [GameCategory(id: 1, name: 'Strategy', icon: 'img')],
-    images: ['image1.jpg'],
-    rating: 4.5,
-    reviewsCount: 10,
-    description: '',
-    duration: 60,
-    players: '2-4',
-    difficulty: 'Medium',
+    condition: 'like_new',
     price: 100,
-    ownerId: 'owner123',
-    availability: [
-      AvailabilityRange(from: '2026-01-01', to: '2026-01-31'),
-    ],
-    rules: GameRules(videoUrl: '', ruleCompleteUrl: '', summaryRules: ''),
+    deposit: 50,
+    createdAt: DateTime(2026),
+    game: const PublicationGameData(
+      players: '2-4',
+      duration: 60,
+      categories: [GameCategory(id: 1, name: 'Strategy', icon: 'img')],
+    ),
   );
 
   setUp(() {
-    mockGetGames = MockGetGames();
+    mockGetPublications = MockGetPublications();
     mockConfirmRental = MockConfirmRental();
     rentalBloc = RentalBloc(
-      getGames: mockGetGames,
+      getPublications: mockGetPublications,
       confirmRental: mockConfirmRental,
     );
 
-    when(() => mockGetGames.getById(any())).thenAnswer((_) async => tGame);
+    when(() => mockGetPublications.getById(any()))
+        .thenAnswer((_) async => tPublication);
   });
 
   tearDown(() async {
@@ -56,13 +53,12 @@ void main() {
     blocTest<RentalBloc, RentalState>(
       'should emit snackbar error when duration is less than 3 days',
       build: () => rentalBloc,
-      seed: () => const RentalState(game: tGame, startDate: '2026-01-10'),
+      seed: () =>
+          RentalState(publication: tPublication, startDate: '2026-01-10'),
       act: (bloc) =>
           bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
       expect: () => [
-        isA<RentalState>()
-            .having((s) => s.endDate, 'endDate', null)
-            .having(
+        isA<RentalState>().having((s) => s.endDate, 'endDate', null).having(
               (s) => s.snackbarMessage,
               'message',
               AppStrings.rentalMinDays,
@@ -74,31 +70,35 @@ void main() {
       'should emit snackbar error if start date chosen has less than 3 days availability',
       build: () => rentalBloc,
       seed: () => RentalState(
-        game: tGame.copyWith(
-          availability: [
-            const AvailabilityRange(from: '2026-01-01', to: '2026-01-02'),
+        publication: tPublication.copyWith(
+          bookedDates: const [
+            AvailabilityRange(from: '2026-01-03', to: '2026-01-03'),
           ],
         ),
       ),
       act: (bloc) =>
           bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
       expect: () => [
-        isA<RentalState>()
-            .having((s) => s.startDate, 'startDate', null)
-            .having(
+        isA<RentalState>().having((s) => s.startDate, 'startDate', null).having(
               (s) => s.snackbarMessage,
               'message',
               AppStrings.rentalMinAvailability,
             ),
       ],
     );
-
     blocTest<RentalBloc, RentalState>(
       'should emit snackbar error when dates are not within availability',
       build: () => rentalBloc,
-      seed: () => const RentalState(game: tGame, startDate: '2026-01-10'),
+      seed: () => RentalState(
+        publication: tPublication.copyWith(
+          bookedDates: const [
+            AvailabilityRange(from: '2026-06-01', to: '2026-06-01'),
+          ],
+        ),
+        startDate: '2026-05-25',
+      ),
       act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-05')),
+          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-06-05')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
@@ -112,10 +112,8 @@ void main() {
       'should emit snackbar error when duration exceeds 30 days',
       build: () => rentalBloc,
       seed: () => RentalState(
-        game: tGame.copyWith(
-          availability: [
-            const AvailabilityRange(from: '2026-01-01', to: '2026-03-01'),
-          ],
+        publication: tPublication.copyWith(
+          bookedDates: const [],
         ),
         startDate: '2026-01-01',
       ),
@@ -133,8 +131,8 @@ void main() {
     blocTest<RentalBloc, RentalState>(
       'should clear end date if start date is changed to after end date',
       build: () => rentalBloc,
-      seed: () => const RentalState(
-        game: tGame,
+      seed: () => RentalState(
+        publication: tPublication,
         startDate: '2026-01-05',
         endDate: '2026-01-10',
       ),

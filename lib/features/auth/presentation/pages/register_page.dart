@@ -164,10 +164,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                     onChanged: (name) =>
                                         context.read<AuthBloc>().add(
-                                          AuthEvent.registerUsernameChanged(
-                                            name,
-                                          ),
-                                        ),
+                                              AuthEvent.registerUsernameChanged(
+                                                name,
+                                              ),
+                                            ),
                                   ),
                                   const SizedBox(height: 12),
                                   TextField(
@@ -180,8 +180,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                       labelText: 'Email',
                                       hintText: 'tu@email.com',
                                     ),
-                                    onChanged: (email) =>
-                                        context.read<AuthBloc>().add(
+                                    onChanged: (email) => context
+                                        .read<AuthBloc>()
+                                        .add(
                                           AuthEvent.registerEmailChanged(email),
                                         ),
                                   ),
@@ -193,15 +194,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                     visibleNotifier: _passwordVisible,
                                     onChanged: (password) =>
                                         context.read<AuthBloc>().add(
-                                          AuthEvent.registerPasswordChanged(
-                                            password,
-                                          ),
-                                        ),
+                                              AuthEvent.registerPasswordChanged(
+                                                password,
+                                              ),
+                                            ),
                                     onSubmitted: (_) {
                                       if (!isSubmitting) {
                                         context.read<AuthBloc>().add(
-                                          const AuthEvent.registerSubmitted(),
-                                        );
+                                              const AuthEvent
+                                                  .registerSubmitted(),
+                                            );
                                       }
                                     },
                                   ),
@@ -213,15 +215,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                     visibleNotifier: _passwordVisible,
                                     onChanged: (confirmPassword) =>
                                         context.read<AuthBloc>().add(
-                                          AuthEvent.registerPasswordConfirmChanged(
-                                            confirmPassword,
-                                          ),
-                                        ),
+                                              AuthEvent
+                                                  .registerPasswordConfirmChanged(
+                                                confirmPassword,
+                                              ),
+                                            ),
                                     onSubmitted: (_) {
                                       if (!isSubmitting) {
                                         context.read<AuthBloc>().add(
-                                          const AuthEvent.registerSubmitted(),
-                                        );
+                                              const AuthEvent
+                                                  .registerSubmitted(),
+                                            );
                                       }
                                     },
                                   ),
@@ -253,8 +257,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               onPressed: isSubmitting
                                   ? null
                                   : () => context.read<AuthBloc>().add(
-                                      const AuthEvent.registerSubmitted(),
-                                    ),
+                                        const AuthEvent.registerSubmitted(),
+                                      ),
                               child: isSubmitting
                                   ? const SizedBox(
                                       height: 18,

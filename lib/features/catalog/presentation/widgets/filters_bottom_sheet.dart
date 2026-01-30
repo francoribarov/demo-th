@@ -66,7 +66,7 @@ class _FiltersSheetState {
 
 class _FiltersSheetCubit extends Cubit<_FiltersSheetState> {
   _FiltersSheetCubit(FiltersState initialFilters)
-    : super(_FiltersSheetState(filters: initialFilters, version: 0));
+      : super(_FiltersSheetState(filters: initialFilters, version: 0));
 
   void updateFilters(FiltersState Function(FiltersState) update) {
     emit(state.copyWith(filters: update(state.filters)));
@@ -276,8 +276,8 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                               spacing: 8,
                               runSpacing: 8,
                               children: ExperienceTypes.all.map((type) {
-                                final isSelected = _filters.experienceTypes
-                                    .contains(type);
+                                final isSelected =
+                                    _filters.experienceTypes.contains(type);
                                 return _SelectableChip(
                                   label: type,
                                   isSelected: isSelected,
@@ -337,25 +337,24 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                                           widget.hasDateFilter
                                               ? 'Mostramos únicamente los juegos con cupo libre.'
                                               : 'Agregá fechas para activar este filtro.',
-                                          style: AppTypography.bodySmall
-                                              .copyWith(
-                                                color: AppColors.gameBrown
-                                                    .withOpacityValue(0.7),
-                                              ),
+                                          style:
+                                              AppTypography.bodySmall.copyWith(
+                                            color: AppColors.gameBrown
+                                                .withOpacityValue(0.7),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   Switch(
-                                    value:
-                                        _filters.onlyAvailableInDates &&
+                                    value: _filters.onlyAvailableInDates &&
                                         widget.hasDateFilter,
                                     onChanged: widget.hasDateFilter
                                         ? (value) => _updateFilters(
-                                            (f) => f.copyWith(
-                                              onlyAvailableInDates: value,
-                                            ),
-                                          )
+                                              (f) => f.copyWith(
+                                                onlyAvailableInDates: value,
+                                              ),
+                                            )
                                         : null,
                                   ),
                                 ],
@@ -520,8 +519,8 @@ class _SelectableChip extends StatelessWidget {
             color: isSelected
                 ? AppColors.gameRust
                 : isOutline
-                ? AppColors.gameBrown.withOpacityValue(0.3)
-                : AppColors.gameBrown.withOpacityValue(0.2),
+                    ? AppColors.gameBrown.withOpacityValue(0.3)
+                    : AppColors.gameBrown.withOpacityValue(0.2),
             width: isSelected ? 2 : 1,
           ),
         ),

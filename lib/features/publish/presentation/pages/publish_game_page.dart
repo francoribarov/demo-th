@@ -31,9 +31,9 @@ class PublishGamePage extends StatelessWidget {
         if (state.success) {
           return PublishSuccessView(
             onBackHome: () => context.go('/'),
-            onPublishAnother: () => context.read<PublishBloc>().add(
-              const PublishEvent.publishAnother(),
-            ),
+            onPublishAnother: () => context
+                .read<PublishBloc>()
+                .add(const PublishEvent.publishAnother()),
           );
         }
 
@@ -64,32 +64,36 @@ class PublishGamePage extends StatelessWidget {
                         formVersion: state.formVersion,
                         gameId: state.gameId,
                         description: state.description,
-                        onGameIdChanged: (v) => context.read<PublishBloc>().add(
-                          PublishEvent.gameIdChanged(v),
-                        ),
+                        condition: state.condition,
+                        conditions: _conditions,
+                        onGameIdChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.gameIdChanged(v)),
                         onDescriptionChanged: (v) => context
                             .read<PublishBloc>()
                             .add(PublishEvent.descriptionChanged(v)),
+                        onConditionChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.conditionChanged(v)),
                       ),
                       PhotosStep(
                         images: state.images,
-                        onImagesChanged: (v) => context.read<PublishBloc>().add(
-                          PublishEvent.imagesChanged(v),
-                        ),
+                        onImagesChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.imagesChanged(v)),
+                        onAddImage: () => context
+                            .read<PublishBloc>()
+                            .add(const PublishEvent.pickMultipleImages()),
                       ),
                       PriceStep(
                         formVersion: state.formVersion,
                         price: state.price,
-                        condition: state.condition,
-                        // visibility removed
-                        conditions: _conditions,
                         deliveryMethods: state.deliveryMethods,
-                        onPriceChanged: (v) => context.read<PublishBloc>().add(
-                          PublishEvent.priceChanged(v),
-                        ),
-                        onConditionChanged: (v) => context
+                        availableDeliveryMethods:
+                            state.availableDeliveryMethods,
+                        onPriceChanged: (v) => context
                             .read<PublishBloc>()
-                            .add(PublishEvent.conditionChanged(v)),
+                            .add(PublishEvent.priceChanged(v)),
                         onDeliveryMethodsChanged: (v) => context
                             .read<PublishBloc>()
                             .add(PublishEvent.deliveryMethodsChanged(v)),
@@ -139,9 +143,9 @@ class PublishGamePage extends StatelessWidget {
                           child: OutlinedButton(
                             onPressed: state.isSubmitting
                                 ? null
-                                : () => context.read<PublishBloc>().add(
-                                    const PublishEvent.previousStep(),
-                                  ),
+                                : () => context
+                                    .read<PublishBloc>()
+                                    .add(const PublishEvent.previousStep()),
                             child: const Text('Anterior'),
                           ),
                         ),
@@ -151,9 +155,9 @@ class PublishGamePage extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: (!state.canProceed || state.isSubmitting)
                               ? null
-                              : () => context.read<PublishBloc>().add(
-                                  const PublishEvent.nextStep(),
-                                ),
+                              : () => context
+                                  .read<PublishBloc>()
+                                  .add(const PublishEvent.nextStep()),
                           child: state.isSubmitting
                               ? const SizedBox(
                                   height: 18,

@@ -10,12 +10,13 @@ part 'user_profile_event.dart';
 part 'user_profile_state.dart';
 
 @injectable
+
 /// BLoC that loads game data to drive the user profile screen.
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   /// Creates a [UserProfileBloc].
   UserProfileBloc({required GetGames getGames})
-    : _getGames = getGames,
-      super(const UserProfileState()) {
+      : _getGames = getGames,
+        super(const UserProfileState()) {
     on<_Started>(_onStarted);
   }
 

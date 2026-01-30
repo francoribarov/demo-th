@@ -13,6 +13,7 @@ import 'package:mobile_table_hopping/features/auth/domain/repositories/auth_repo
 import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: AuthRepository)
+
 /// Default implementation of [AuthRepository].
 class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   /// Creates an [AuthRepositoryImpl].

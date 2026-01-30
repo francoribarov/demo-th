@@ -44,3 +44,20 @@ jobs:
       # Run the robust gate script
       - name: Run Pre-PR Check
         run: ./scripts/pre_pr.sh --ci
+
+  security_scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    # Only run on PRs or schedule to save resources, or if meaningful changes happen.
+    if: github.event_name == 'pull_request' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run OSV Scanner
+        uses: google/osv-scanner-action@v2.3.2
+        with:
+          # Scan the lockfile
+          scan-args: |-
+            --lockfile=pubspec.lock
+

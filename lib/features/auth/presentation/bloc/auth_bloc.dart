@@ -18,6 +18,7 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 @lazySingleton
+
 /// BLoC orchestrating authentication state and form submissions.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   /// Creates an [AuthBloc] wired with auth use cases.
@@ -27,12 +28,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required Register register,
     required Logout logout,
     required RefreshToken refreshToken,
-  }) : _getAuthStatus = getAuthStatus,
-       _login = login,
-       _register = register,
-       _logout = logout,
-       _refreshToken = refreshToken,
-       super(const AuthState()) {
+  })  : _getAuthStatus = getAuthStatus,
+        _login = login,
+        _register = register,
+        _logout = logout,
+        _refreshToken = refreshToken,
+        super(const AuthState()) {
     on<_Started>(_onStarted);
     on<_LoginEmailChanged>(_onLoginEmailChanged);
     on<_LoginPasswordChanged>(_onLoginPasswordChanged);

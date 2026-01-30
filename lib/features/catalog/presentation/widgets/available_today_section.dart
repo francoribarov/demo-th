@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/presentation/widgets/game_card.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/features/catalog/presentation/widgets/publication_card.dart';
 
-/// Section displaying games available for rent today.
+/// Section displaying publications available for rent today.
 class AvailableTodaySection extends StatelessWidget {
   /// Creates an [AvailableTodaySection].
   const AvailableTodaySection({
-    required this.games,
+    required this.publications,
     required this.onSeeMore,
-    required this.onGameTap,
+    required this.onPublicationTap,
     super.key,
   });
 
-  /// List of games available today.
-  final List<Game> games;
+  /// List of publications available today.
+  final List<PublicationListing> publications;
 
   /// Callback when "See more" is pressed.
   final VoidCallback onSeeMore;
 
-  /// Callback when a game is tapped.
-  final void Function(Game) onGameTap;
+  /// Callback when a publication is tapped.
+  final void Function(PublicationListing) onPublicationTap;
 
   @override
   Widget build(BuildContext context) {
-    if (games.isEmpty) return const SizedBox.shrink();
+    if (publications.isEmpty) return const SizedBox.shrink();
 
     final now = DateTime.now();
     final todayLabel = DateFormatter.formatFullDate(now);
@@ -69,15 +69,15 @@ class AvailableTodaySection extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: games.take(8).length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            itemCount: publications.take(8).length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
-              final game = games[index];
+              final publication = publications[index];
               return SizedBox(
                 width: 280,
-                child: GameCardHorizontal(
-                  game: game,
-                  onTap: () => onGameTap(game),
+                child: PublicationCardHorizontal(
+                  publication: publication,
+                  onTap: () => onPublicationTap(publication),
                 ),
               );
             },

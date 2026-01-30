@@ -10,11 +10,17 @@ sealed class DeliveryMethodModel
     with _$DeliveryMethodModel
     implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodModel({
-    required int id,
-    required String deliveryType,
-    required int price,
+    required DeliveryType deliveryType,
+    String? id,
+    @Default(0) int price,
+    String? address,
+    String? addressName,
+    String? addressNumber,
+    String? additionalNotes,
     String? initPickupTime,
     String? finishPickupTime,
+    String? createdAt,
+    String? updatedAt,
   }) = _DeliveryMethodModel;
 
   const DeliveryMethodModel._();
@@ -27,16 +33,24 @@ sealed class DeliveryMethodModel
         id: entity.id,
         deliveryType: entity.deliveryType,
         price: entity.price,
+        address: entity.address,
+        addressName: entity.addressName,
+        addressNumber: entity.addressNumber,
+        additionalNotes: entity.additionalNotes,
         initPickupTime: entity.initPickupTime,
         finishPickupTime: entity.finishPickupTime,
+        createdAt: entity.createdAt?.toIso8601String(),
+        updatedAt: entity.updatedAt?.toIso8601String(),
       );
 
   @override
   DeliveryMethod toDomainModel() => DeliveryMethod(
-    id: id,
-    deliveryType: deliveryType,
-    price: price,
-    initPickupTime: initPickupTime,
-    finishPickupTime: finishPickupTime,
-  );
+        id: id,
+        deliveryType: deliveryType,
+        price: price,
+        initPickupTime: initPickupTime,
+        finishPickupTime: finishPickupTime,
+        createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
+        updatedAt: updatedAt != null ? DateTime.tryParse(updatedAt!) : null,
+      );
 }

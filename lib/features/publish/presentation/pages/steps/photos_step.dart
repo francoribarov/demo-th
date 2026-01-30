@@ -9,6 +9,7 @@ class PhotosStep extends StatelessWidget {
   const PhotosStep({
     required this.images,
     required this.onImagesChanged,
+    required this.onAddImage,
     super.key,
   });
 
@@ -17,6 +18,9 @@ class PhotosStep extends StatelessWidget {
 
   /// Callback when the image list is updated.
   final void Function(List<String>) onImagesChanged;
+
+  /// Callback to add new images.
+  final VoidCallback onAddImage;
 
   @override
   Widget build(BuildContext context) {
@@ -27,27 +31,21 @@ class PhotosStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Agregá fotos del juego para que los inquilinos lo vean',
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
-          ),
+          style: AppTypography.bodyMedium
+              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
         ),
         const SizedBox(height: 24),
 
         // Photo upload placeholder
         GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Carga de imágenes próximamente')),
-            );
-          },
+          onTap: onAddImage,
           child: Container(
             height: 200,
             decoration: BoxDecoration(
               color: AppColors.gameCream.withOpacityValue(0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(
-                color: AppColors.gameBrown.withOpacityValue(0.3),
-              ),
+              border:
+                  Border.all(color: AppColors.gameBrown.withOpacityValue(0.3)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

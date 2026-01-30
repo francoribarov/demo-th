@@ -4,6 +4,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 part 'publication_list_item.freezed.dart';
 
@@ -35,13 +36,11 @@ abstract class GameInPublication with _$GameInPublication {
   const factory GameInPublication({
     required int id,
     required String title,
+    required GameRules rules,
     @Default(0) int duration,
     @Default('Medio') String difficulty,
     @Default('2-4') String players,
-    @Default(0.0) double rating,
-    @Default(0) int reviews,
     @Default([]) List<GameCategory> categories,
-    @Default([]) List<GameImage> images,
     @Default([]) List<AvailabilityRange> availability,
   }) = _GameInPublication;
 }
