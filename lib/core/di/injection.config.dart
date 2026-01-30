@@ -14,6 +14,8 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:mobile_table_hopping/core/auth/token_storage.dart' as _i717;
 import 'package:mobile_table_hopping/core/di/register_module.dart' as _i704;
 import 'package:mobile_table_hopping/core/network/dio_client.dart' as _i737;
+import 'package:mobile_table_hopping/core/services/image_upload_service.dart'
+    as _i812;
 import 'package:mobile_table_hopping/features/auth/data/datasources/auth_remote_datasource.dart'
     as _i930;
 import 'package:mobile_table_hopping/features/auth/data/repositories/auth_repository_impl.dart'
@@ -56,6 +58,20 @@ import 'package:mobile_table_hopping/features/catalog/domain/usecases/search_gam
     as _i144;
 import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart'
     as _i896;
+import 'package:mobile_table_hopping/features/my_publications/data/datasources/publication_detail_remote_datasource.dart'
+    as _i199;
+import 'package:mobile_table_hopping/features/my_publications/data/repositories/publication_detail_repository_impl.dart'
+    as _i170;
+import 'package:mobile_table_hopping/features/my_publications/domain/repositories/publication_detail_repository.dart'
+    as _i89;
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/delete_publication.dart'
+    as _i267;
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/get_publication_detail.dart'
+    as _i508;
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/update_publication.dart'
+    as _i297;
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart'
+    as _i383;
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart'
     as _i658;
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart'
@@ -118,10 +134,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => registerModule.tokenStorage(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i737.DioClient>(
         () => _i737.DioClient(gh<_i717.TokenStorage>()));
+    gh.factory<_i812.ImageUploadService>(
+        () => _i812.ImageUploadService(gh<_i737.DioClient>()));
     gh.factory<_i917.DeliveryMethodDataSource>(
         () => _i917.DeliveryMethodDataSource(gh<_i737.DioClient>()));
     gh.lazySingleton<_i599.PublishRemoteDatasource>(
         () => _i599.PublishRemoteDatasourceImpl(gh<_i737.DioClient>()));
+    gh.lazySingleton<_i199.PublicationDetailRemoteDatasource>(() =>
+        _i199.PublicationDetailRemoteDatasourceImpl(gh<_i737.DioClient>()));
     gh.lazySingleton<_i887.PublicationRemoteDatasource>(
         () => _i887.PublicationRemoteDatasourceImpl(gh<_i737.DioClient>()));
     gh.lazySingleton<_i579.RentalRemoteDatasource>(
@@ -157,6 +177,9 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i692.CreatePublication>(
         () => _i692.CreatePublication(gh<_i374.PublishRepository>()));
+    gh.lazySingleton<_i89.PublicationDetailRepository>(() =>
+        _i170.PublicationDetailRepositoryImpl(
+            gh<_i199.PublicationDetailRemoteDatasource>()));
     gh.factory<_i257.GetAuthStatus>(
         () => _i257.GetAuthStatus(gh<_i198.AuthRepository>()));
     gh.factory<_i304.Login>(() => _i304.Login(gh<_i198.AuthRepository>()));
@@ -176,6 +199,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i829.GetPublications(gh<_i977.PublicationRepository>()));
     gh.factory<_i658.MyPublicationsBloc>(() =>
         _i658.MyPublicationsBloc(getPublications: gh<_i829.GetPublications>()));
+    gh.factory<_i267.DeletePublication>(
+        () => _i267.DeletePublication(gh<_i89.PublicationDetailRepository>()));
+    gh.factory<_i508.GetPublicationDetail>(() =>
+        _i508.GetPublicationDetail(gh<_i89.PublicationDetailRepository>()));
+    gh.factory<_i297.UpdatePublication>(
+        () => _i297.UpdatePublication(gh<_i89.PublicationDetailRepository>()));
     gh.factory<_i249.GetCategories>(
         () => _i249.GetCategories(gh<_i305.GameRepository>()));
     gh.factory<_i249.GetFilterShortcuts>(
@@ -190,9 +219,13 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i649.ConfirmRental>(
         () => _i649.ConfirmRental(gh<_i996.RentalRepository>()));
-    gh.factory<_i896.CatalogBloc>(() => _i896.CatalogBloc(
+    gh.factory<_i383.EditPublicationBloc>(() => _i383.EditPublicationBloc(
+          getPublicationDetail: gh<_i508.GetPublicationDetail>(),
+          updatePublication: gh<_i297.UpdatePublication>(),
+          deletePublication: gh<_i267.DeletePublication>(),
           getGames: gh<_i499.GetGames>(),
-          getPublications: gh<_i829.GetPublications>(),
+          getDeliveryMethods: gh<_i504.GetDeliveryMethods>(),
+          imageUploadService: gh<_i812.ImageUploadService>(),
         ));
     gh.factory<_i530.PublishBloc>(() => _i530.PublishBloc(
           createPublication: gh<_i692.CreatePublication>(),
@@ -200,6 +233,11 @@ extension GetItInjectableX on _i174.GetIt {
           getGames: gh<_i499.GetGames>(),
           createDeliveryMethod: gh<_i546.CreateDeliveryMethod>(),
           getDeliveryMethods: gh<_i504.GetDeliveryMethods>(),
+          imageUploadService: gh<_i812.ImageUploadService>(),
+        ));
+    gh.factory<_i896.CatalogBloc>(() => _i896.CatalogBloc(
+          getGames: gh<_i499.GetGames>(),
+          getPublications: gh<_i829.GetPublications>(),
         ));
     gh.factory<_i643.GameReviewsBloc>(
         () => _i643.GameReviewsBloc(getGames: gh<_i499.GetGames>()));

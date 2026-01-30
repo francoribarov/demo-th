@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/entities/publication_detail.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/repositories/publication_detail_repository.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/entities/publication_detail.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/repositories/publication_detail_repository.dart';
 
 /// Use case to get a publication's detailed information.
 @injectable

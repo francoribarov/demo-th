@@ -4,10 +4,10 @@ import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/entities/publication_detail.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/usecases/delete_publication.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/usecases/get_publication_detail.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/usecases/update_publication.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/entities/publication_detail.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/delete_publication.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/get_publication_detail.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/usecases/update_publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 

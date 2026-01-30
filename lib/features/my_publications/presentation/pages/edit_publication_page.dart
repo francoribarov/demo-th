@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/presentation/bloc/edit_publication_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/presentation/pages/steps/edit_data_step.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/presentation/pages/steps/edit_photos_step.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/presentation/pages/steps/edit_price_step.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/presentation/pages/steps/edit_review_step.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/presentation/widgets/edit_success_view.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_data_step.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_photos_step.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_price_step.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_review_step.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/widgets/edit_success_view.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/widgets/step_indicator.dart';
 
 /// Page for editing an existing publication.

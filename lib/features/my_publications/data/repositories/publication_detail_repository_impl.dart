@@ -1,9 +1,9 @@
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/data/datasources/publication_detail_remote_datasource.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/data/models/publication_detail_model.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/entities/publication_detail.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/domain/repositories/publication_detail_repository.dart';
+import 'package:mobile_table_hopping/features/my_publications/data/datasources/publication_detail_remote_datasource.dart';
+import 'package:mobile_table_hopping/features/my_publications/data/models/publication_detail_model.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/entities/publication_detail.dart';
+import 'package:mobile_table_hopping/features/my_publications/domain/repositories/publication_detail_repository.dart';
 
 @LazySingleton(as: PublicationDetailRepository)
 

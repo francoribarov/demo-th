@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
-import 'package:mobile_table_hopping/features/my_publication_details/data/models/publication_detail_model.dart';
+import 'package:mobile_table_hopping/features/my_publications/data/models/publication_detail_model.dart';
 
 /// Remote datasource contract for publication details.
 abstract class PublicationDetailRemoteDatasource {
