@@ -109,12 +109,7 @@ class AppRouter {
       // Shell route for bottom navigation
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) => BlocProvider<RentalRequestsBloc>(
-          create: (_) =>
-              getIt<RentalRequestsBloc>()
-                ..add(const RentalRequestsEvent.started()),
-          child: AppScaffold(child: child),
-        ),
+        builder: (context, state, child) => AppScaffold(child: child),
         routes: [
           GoRoute(
             path: AppRoutes.home,
@@ -137,10 +132,19 @@ class AppRouter {
             path: AppRoutes.myGames,
             name: 'my-games',
             pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider<MyPublicationsBloc>(
-                create: (_) =>
-                    getIt<MyPublicationsBloc>()
-                      ..add(const MyPublicationsEvent.started()),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider<MyPublicationsBloc>(
+                    create: (_) =>
+                        getIt<MyPublicationsBloc>()
+                          ..add(const MyPublicationsEvent.started()),
+                  ),
+                  BlocProvider<RentalRequestsBloc>(
+                    create: (_) =>
+                        getIt<RentalRequestsBloc>()
+                          ..add(const RentalRequestsEvent.started()),
+                  ),
+                ],
                 child: const MyPublicationsPage(),
               ),
             ),

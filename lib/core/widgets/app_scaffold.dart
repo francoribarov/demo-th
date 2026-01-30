@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/my_publications/domain/entities/rental_request.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
 
 /// Main scaffold with bottom navigation.
 /// Matches the Layout component from the Vite.js prototype.
@@ -75,26 +73,13 @@ class AppScaffold extends StatelessWidget {
                   isSelected: selectedIndex == 0,
                   onTap: () => _onItemTapped(context, 0),
                 ),
-                BlocBuilder<RentalRequestsBloc, RentalRequestsState>(
-                  builder: (context, state) {
-                    final pendingCount = state.maybeWhen(
-                      success: (requests) => requests
-                          .where(
-                            (r) => r.status == RentalRequestStatus.pending,
-                          )
-                          .length,
-                      orElse: () => 0,
-                    );
-
-                    return _NavItem(
-                      icon: Icons.casino_outlined,
-                      activeIcon: Icons.casino,
-                      label: 'Mis Juegos',
-                      isSelected: selectedIndex == 1,
-                      badgeCount: pendingCount,
-                      onTap: () => _onItemTapped(context, 1),
-                    );
-                  },
+                _NavItem(
+                  icon: Icons.casino_outlined,
+                  activeIcon: Icons.casino,
+                  label: 'Mis Juegos',
+                  isSelected: selectedIndex == 1,
+                  badgeCount: 0,
+                  onTap: () => _onItemTapped(context, 1),
                 ),
                 _NavItem(
                   icon: Icons.add_circle_outline,

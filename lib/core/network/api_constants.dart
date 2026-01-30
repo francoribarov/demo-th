@@ -90,6 +90,9 @@ class ApiConstants {
 
   /// Rentals endpoints.
   static const String rentals = '$apiBasePath/rentals';
+  static const String rentalRequests = '$rentals/requests';
+  static String acceptRental(String id) => '$rentals/$id/accept';
+  static String rejectRental(String id) => '$rentals/$id/reject';
 
   /// Health check endpoint.
   static const String health = '/health';
