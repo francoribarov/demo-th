@@ -1,0 +1,61 @@
+trigger:
+  branches:
+    include:
+      - develop
+      - main
+
+pr:
+  branches:
+    include:
+      - develop
+      - main
+
+schedules:
+- cron: "0 0 * * 0"
+  displayName: "Weekly Sunday Security Scan"
+  branches:
+    include:
+      - main
+  always: true
+
+pool:
+  vmImage: 'ubuntu-latest' # Cámbialo a name: 'Default' si usas tu propia PC
+
+jobs:
+- job: QualityGate
+  displayName: 'Quality Gate'
+  steps:
+    - checkout: self
+
+    - bash: |
+        FLUTTER_VERSION=$(grep -o '"flutter": *"[^"]*"' .fvmrc | cut -d'"' -f4)
+        echo "##vso[task.setvariable variable=FLUTTER_VERSION]$FLUTTER_VERSION"
+      displayName: 'Read Flutter Version from .fvmrc'
+
+    - task: FlutterInstall@0
+      inputs:
+        mode: 'version'
+        channel: 'stable'
+        version: '$(FLUTTER_VERSION)'
+      displayName: 'Set up Flutter'
+
+    - script: flutter pub get
+      displayName: 'Install Dependencies'
+
+    - script: |
+        chmod +x ./scripts/pre_pr.sh
+        ./scripts/pre_pr.sh --ci
+      displayName: 'Run Pre-PR Check'
+
+- job: SecurityScan
+  displayName: 'Security Scan'
+  # Solo corre en PRs o por Schedule
+  condition: or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.Reason'], 'Schedule'))
+  steps:
+    - checkout: self
+
+    # OSV-Scanner no tiene una "Task" oficial en Azure como en GitHub, 
+    # así que lo ejecutamos vía script de Docker o Binario:
+    - script: |
+        docker run --rm -v $(pwd):/src ghcr.io/google/osv-scanner --lockfile=/src/pubspec.lock
+      displayName: 'Run OSV Scanner'
