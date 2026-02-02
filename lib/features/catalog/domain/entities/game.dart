@@ -1,18 +1,8 @@
-// Freezed entities are documented at a higher level; omit per-member docs.
-//
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'game.freezed.dart';
 
-/// Availability range for a game
-@freezed
-abstract class AvailabilityRange with _$AvailabilityRange {
-  const factory AvailabilityRange({required String from, required String to}) =
-      _AvailabilityRange;
-}
-
-/// Game rules information
+/// Game rules information (video, PDF, summary).
 @freezed
 abstract class GameRules with _$GameRules {
   const factory GameRules({
@@ -22,142 +12,67 @@ abstract class GameRules with _$GameRules {
   }) = _GameRules;
 }
 
-/// A review from a user
+/// A review from a user.
 @freezed
 abstract class GameReview with _$GameReview {
   const factory GameReview({
+    required String id,
     required String userId,
     required double rating,
     required String comment,
-    String? name, // Keeping name for UI convenience if backend sends it
+    String? userName,
+    DateTime? createdAt,
   }) = _GameReview;
+
+  const GameReview._();
+
+  String get name => userName ?? 'Anónimo';
 }
 
-/// Main Game entity
-/// Matches the Game interface from the Vite.js prototype
+/// Main Game entity - represents a game in the catalog.
+/// This is catalog/reference data, not a rental listing.
 @freezed
 abstract class Game with _$Game {
   const factory Game({
-    /// Unique game identifier (Publication ID)
+    /// Unique game identifier in the catalog.
     required String id,
 
-    /// Game title
+    /// Game title.
     required String title,
-    required List<GameCategory> categories,
-    required List<String> images,
-    required double rating,
-    required int reviewsCount,
+
+    /// Game description.
     required String description,
+
+    /// Duration in minutes.
     required int duration,
+
+    /// Player count range (e.g., "2-4").
     required String players,
-    required String difficulty,
-    required int price,
-    required GameRules rules,
 
-    /// Internal game identifier from Catalog (Int)
-    @Default(0) int catalogId,
+    /// Categories this game belongs to.
+    @Default([]) List<GameCategory> categories,
 
-    /// Condition of the publication (e.g., "Nuevo", "Usado")
-    @Default('') String? condition,
-    String? ownerId,
-    int? deposit,
-    List<AvailabilityRange>? availability,
-    @Default([]) List<GameReview> reviewsList,
+    /// Game images.
+    @Default([]) List<String> images,
+
+    /// Average rating (0-5).
+    @Default(0.0) double rating,
+
+    /// Number of reviews.
+    @Default(0) int reviewsCount,
+
+    /// Difficulty level (e.g., "Fácil", "Medio", "Difícil").
+    @Default('') String difficulty,
+
+    /// Game rules information.
+    GameRules? rules,
+
+    /// List of reviews.
+    @Default([]) List<GameReview> reviews,
   }) = _Game;
-
-  const Game._();
-
-  /// Check if the game is available for the given date range
-  bool isAvailableFor(String? startDate, String? endDate) {
-    if (startDate == null || endDate == null) return true;
-
-    final start = DateTime.tryParse(startDate);
-    final end = DateTime.tryParse(endDate);
-
-    if (start == null || end == null) return true;
-    if (start.isAfter(end)) return false;
-
-    final ranges = availability;
-    if (ranges == null || ranges.isEmpty) return true;
-
-    return ranges.any((range) {
-      final from = DateTime.tryParse(range.from);
-      final to = DateTime.tryParse(range.to);
-      if (from == null || to == null) return false;
-      return !from.isAfter(start) && !to.isBefore(end);
-    });
-  }
-
-  /// Get a formatted availability label
-  String getAvailabilityLabel({String? searchStart, String? searchEnd}) {
-    final ranges = availability;
-    if (ranges == null || ranges.isEmpty) return 'Calendario a coordinar';
-
-    if (searchStart != null && searchEnd != null) {
-      final start = DateTime.tryParse(searchStart);
-      final end = DateTime.tryParse(searchEnd);
-
-      if (start != null && end != null) {
-        // Check if there's a covering range
-        final covering = ranges.where((range) {
-          final from = DateTime.tryParse(range.from);
-          final to = DateTime.tryParse(range.to);
-          if (from == null || to == null) return false;
-          return !from.isAfter(start) && !to.isBefore(end);
-        }).firstOrNull;
-
-        if (covering != null) {
-          return 'Ventana disponible: ${_formatRange(covering.from, covering.to)}';
-        }
-
-        // Find next upcoming
-        final upcoming =
-            ranges
-                .map((range) {
-                  final from = DateTime.tryParse(range.from);
-                  return from != null ? (range, from) : null;
-                })
-                .whereType<(AvailabilityRange, DateTime)>()
-                .where((entry) => !entry.$2.isBefore(start))
-                .toList()
-              ..sort((a, b) => a.$2.compareTo(b.$2));
-
-        if (upcoming.isNotEmpty) {
-          final next = upcoming.first.$1;
-          return 'Próximo turno: ${_formatRange(next.from, next.to)}';
-        }
-      }
-    }
-
-    return 'Disponible del ${_formatRange(ranges[0].from, ranges[0].to)}';
-  }
-
-  String _formatRange(String from, String to) {
-    try {
-      final fromDate = DateTime.parse(from);
-      final toDate = DateTime.parse(to);
-      final months = [
-        'ene',
-        'feb',
-        'mar',
-        'abr',
-        'may',
-        'jun',
-        'jul',
-        'ago',
-        'sep',
-        'oct',
-        'nov',
-        'dic',
-      ];
-      return '${fromDate.day} ${months[fromDate.month - 1]} al ${toDate.day} ${months[toDate.month - 1]}';
-    } on FormatException {
-      return '$from - $to';
-    }
-  }
 }
 
-/// Category for filtering
+/// Category for filtering games.
 @freezed
 abstract class GameCategory with _$GameCategory {
   const factory GameCategory({
@@ -169,7 +84,7 @@ abstract class GameCategory with _$GameCategory {
   }) = _GameCategory;
 }
 
-/// Filter shortcut
+/// Filter shortcut for quick category/filter chips.
 @freezed
 abstract class FilterShortcut with _$FilterShortcut {
   const factory FilterShortcut({

@@ -18,7 +18,7 @@ class ReviewStep extends StatelessWidget {
   });
 
   /// The game ID.
-  final int gameId;
+  final String gameId;
 
   /// The game description.
   final String description;
@@ -48,9 +48,8 @@ class ReviewStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Revisá que todo esté correcto antes de publicar',
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
-          ),
+          style: AppTypography.bodyMedium
+              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
         ),
         const SizedBox(height: 24),
 
@@ -60,9 +59,8 @@ class ReviewStep extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-            border: Border.all(
-              color: AppColors.gameBrown.withOpacityValue(0.1),
-            ),
+            border:
+                Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

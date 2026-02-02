@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/game_summary.dart';
 
 part 'rental_request.freezed.dart';
 
@@ -11,7 +11,7 @@ abstract class RentalRequest with _$RentalRequest {
   const factory RentalRequest({
     required String id,
     // TODO(FRAN): Change this to a Publication when available
-    required Game game,
+    required GameSummary game,
     required User requester,
     required DateTime startDate,
     required DateTime endDate,

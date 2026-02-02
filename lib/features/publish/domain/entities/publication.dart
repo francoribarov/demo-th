@@ -3,8 +3,8 @@ import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_m
 
 part 'publication.freezed.dart';
 
-@freezed
 /// Image metadata used by publications.
+@freezed
 abstract class PublicationImage with _$PublicationImage {
   /// Creates an image reference for a publication.
   const factory PublicationImage({
@@ -15,12 +15,12 @@ abstract class PublicationImage with _$PublicationImage {
   }) = _PublicationImage;
 }
 
-@freezed
 /// Draft payload used to create a publication.
+@freezed
 abstract class PublicationDraft with _$PublicationDraft {
   /// Creates a draft for publishing.
   const factory PublicationDraft({
-    required int gameId,
+    required String gameId,
     required String description,
     required int price,
     required String condition, // "new"|"like_new"|"good"|"fair"|"worn"
@@ -29,13 +29,13 @@ abstract class PublicationDraft with _$PublicationDraft {
   }) = _PublicationDraft;
 }
 
-@freezed
 /// Published publication details returned by the backend.
+@freezed
 abstract class Publication with _$Publication {
   /// Creates a publication model from backend data.
   const factory Publication({
     required String id,
-    required int gameId,
+    required String gameId,
     required String ownerId,
     required String description,
     required String condition,

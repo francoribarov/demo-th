@@ -88,8 +88,8 @@ class _LoginPageState extends State<LoginPage> {
                               hintText: 'tu@email.com',
                             ),
                             onChanged: (email) => context.read<AuthBloc>().add(
-                              AuthEvent.loginEmailChanged(email),
-                            ),
+                                  AuthEvent.loginEmailChanged(email),
+                                ),
                           ),
                           const SizedBox(height: 12),
                           TextField(
@@ -104,13 +104,13 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             onChanged: (password) =>
                                 context.read<AuthBloc>().add(
-                                  AuthEvent.loginPasswordChanged(password),
-                                ),
+                                      AuthEvent.loginPasswordChanged(password),
+                                    ),
                             onSubmitted: (_) {
                               if (!isSubmitting) {
                                 context.read<AuthBloc>().add(
-                                  const AuthEvent.loginSubmitted(),
-                                );
+                                      const AuthEvent.loginSubmitted(),
+                                    );
                               }
                             },
                           ),
@@ -142,8 +142,8 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: isSubmitting
                           ? null
                           : () => context.read<AuthBloc>().add(
-                              const AuthEvent.loginSubmitted(),
-                            ),
+                                const AuthEvent.loginSubmitted(),
+                              ),
                       child: isSubmitting
                           ? const SizedBox(
                               height: 18,

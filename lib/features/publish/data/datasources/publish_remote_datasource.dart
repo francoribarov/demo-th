@@ -14,6 +14,7 @@ abstract class PublishRemoteDatasource {
 }
 
 @LazySingleton(as: PublishRemoteDatasource)
+
 /// Remote datasource implementation using Dio.
 class PublishRemoteDatasourceImpl implements PublishRemoteDatasource {
   /// Creates a datasource backed by the shared Dio client.

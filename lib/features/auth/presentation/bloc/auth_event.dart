@@ -1,6 +1,7 @@
 part of 'auth_bloc.dart';
 
 @freezed
+
 /// Events for authentication flows and session handling.
 abstract class AuthEvent with _$AuthEvent {
   /// Starts the authentication status check.

@@ -58,20 +58,8 @@ class ApiConstants {
   /// Logout endpoint.
   static const String logout = '$apiBasePath/auth/logout';
 
-  /// Games endpoints.
-  static const String games = '$apiBasePath/games';
-
-  /// Game detail endpoint.
-  static String gameById(dynamic id) => '$publications/$id';
-
-  /// Games available today endpoint.
-  static const String gamesAvailableToday = '$games/available-today';
-
-  /// Game reviews endpoint.
-  static String gameReviews(dynamic id) => '$publications/$id/reviews';
-
-  /// Game recommendations endpoint.
-  static String gameRecommendations(dynamic id) => '$games/$id/recommendations';
+  /// Publications endpoints.
+  static const String publications = '$apiBasePath/publications';
 
   /// Categories endpoints.
   static const String categories = '$apiBasePath/categories';
@@ -85,11 +73,17 @@ class ApiConstants {
   /// Current user endpoint.
   static const String currentUser = '$users/me';
 
-  /// Publications endpoints.
-  static const String publications = '$apiBasePath/publications';
+  /// Games endpoints.
+  static const String games = '$apiBasePath/games';
 
   /// Rentals endpoints.
   static const String rentals = '$apiBasePath/rentals';
+  static const String rentalRequests = '$rentals/requests';
+  static String acceptRental(String id) => '$rentals/$id/accept';
+  static String rejectRental(String id) => '$rentals/$id/reject';
+
+  /// Images upload endpoint.
+  static const String imageUpload = '$apiBasePath/images/upload';
 
   /// Health check endpoint.
   static const String health = '/health';

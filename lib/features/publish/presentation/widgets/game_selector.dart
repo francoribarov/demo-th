@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 
 /// Widget to search and select a game from the catalog.
 class GameSelector extends StatefulWidget {
@@ -51,148 +50,189 @@ class _GameSelectorState extends State<GameSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<CatalogBloc>()..add(const CatalogEvent.loadGames()),
-      child: BlocBuilder<CatalogBloc, CatalogState>(
-        builder: (context, state) {
-          final selectedGame = state.allGames
-              .where((g) => g.id == widget.selectedGameId)
-              .firstOrNull;
+    // We assume PublishBloc is provided by the parent page
+    return BlocBuilder<PublishBloc, PublishState>(
+      builder: (context, state) {
+        final selectedGame = state.allGames
+            .where((g) => g.id == widget.selectedGameId)
+            .firstOrNull;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (selectedGame != null) ...[
-                _SelectedGameCard(
-                  game: selectedGame,
-                  onClear: () {
-                    context.read<CatalogBloc>().add(
-                      const CatalogEvent.clearSearch(),
-                    );
-                    _searchController.clear();
-                    // We can't clear the parent state easily without a clear callback or passing null,
-                    // but the parent expects a Game object.
-                    // Ideally we should have onClear or allow null in onGameSelected.
-                    // For now, let's just show the search field again.
-                    // Actually, if selectedGameId is not null, we show the card.
-                    // If the user wants to change, they tap "Change".
-                  },
-                  onChange: () {
-                    // Just focus the search to show results again?
-                    // Or maybe we need a callback to clear selection in parent.
-                    // The requirement is to select a game.
-                    // Let's assume onGameSelected handles new selection.
-                    setState(() {
-                      _showResults = true;
-                    });
-                    _focusNode.requestFocus();
-                  },
-                ),
-                const SizedBox(height: 16),
-              ],
-
-              if (selectedGame == null || _showResults)
-                Column(
-                  children: [
-                    TextFormField(
-                      controller: _searchController,
-                      focusNode: _focusNode,
-                      decoration: InputDecoration(
-                        labelText: 'Buscar juego',
-                        hintText: 'Escribí el nombre del juego...',
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  context.read<CatalogBloc>().add(
-                                    const CatalogEvent.search(query: ''),
-                                  );
-                                },
-                              )
-                            : null,
-                      ),
-                      onChanged: (value) {
-                        context.read<CatalogBloc>().add(
-                          CatalogEvent.search(query: value),
-                        );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (selectedGame != null) ...[
+              _SelectedGameCard(
+                game: selectedGame,
+                onClear: () {
+                  context
+                      .read<PublishBloc>()
+                      .add(const PublishEvent.searchGames('')); // Reset search
+                  _searchController.clear();
+                  // Ideally notify parent to clear selection, but current contract
+                  // onGameSelected requires a Game. Parent handles logic.
+                  // For now, focusing search usually implies re-selecting.
+                },
+                onChange: () {
+                  setState(() {
+                    _showResults = true;
+                  });
+                  _focusNode.requestFocus();
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+            if (selectedGame == null || _showResults)
+              Column(
+                children: [
+                  TextFormField(
+                    controller: _searchController,
+                    focusNode: _focusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Buscar juego',
+                      hintText: 'Escribí el nombre del juego...',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                context.read<PublishBloc>().add(
+                                      const PublishEvent.searchGames(''),
+                                    );
+                              },
+                            )
+                          : null,
+                    ),
+                    onChanged: (value) {
+                      context
+                          .read<PublishBloc>()
+                          .add(PublishEvent.searchGames(value));
+                      setState(() {
+                        _showResults = true;
+                      });
+                    },
+                    onTap: () {
+                      if (!_showResults) {
                         setState(() {
                           _showResults = true;
                         });
-                      },
-                    ),
-                    if (_showResults && state.filteredGames.isNotEmpty)
-                      Container(
-                        constraints: const BoxConstraints(maxHeight: 300),
-                        margin: const EdgeInsets.only(top: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(
-                            AppTheme.radiusMd,
+                        context.read<PublishBloc>().add(
+                              const PublishEvent.searchGames(''),
+                            );
+                      }
+                    },
+                  ),
+                  if (_showResults)
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 300),
+                      margin: const EdgeInsets.only(top: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacityValue(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacityValue(0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (state.isLoadingGames)
+                            const Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (state.filteredGames.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                'No se encontraron juegos',
+                                style: AppTypography.bodyMedium.copyWith(
+                                  color:
+                                      AppColors.gameBrown.withOpacityValue(0.7),
+                                ),
+                              ),
+                            )
+                          else ...[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                              child: Text(
+                                _searchController.text.isEmpty
+                                    ? 'Sugerencias'
+                                    : 'Resultados',
+                                style: AppTypography.labelSmall.copyWith(
+                                  color: AppColors.gameRust,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                itemCount: state.filteredGames.length,
+                                separatorBuilder: (_, sepIndex) =>
+                                    const Divider(height: 1),
+                                itemBuilder: (context, index) {
+                                  final game = state.filteredGames[index];
+                                  return ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: CachedNetworkImage(
+                                        imageUrl: game.images.isNotEmpty
+                                            ? game.images.first
+                                            : '',
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                        placeholder: (_, url) =>
+                                            const ColoredBox(
+                                          color: AppColors.gameCream,
+                                        ),
+                                        errorWidget: (_, url, error) =>
+                                            const Icon(
+                                          Icons.image_not_supported,
+                                        ),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      game.title,
+                                      style: AppTypography.bodyMedium,
+                                    ),
+                                    subtitle: Text(
+                                      '${game.duration} min • ${game.players}',
+                                      style: AppTypography.bodySmall.copyWith(
+                                        color: AppColors.gameBrown
+                                            .withOpacityValue(0.7),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      widget.onGameSelected(game);
+                                      _searchController.text = '';
+                                      context.read<PublishBloc>().add(
+                                            const PublishEvent.searchGames(''),
+                                          );
+                                      setState(() {
+                                        _showResults = false;
+                                      });
+                                      _focusNode.unfocus();
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           ],
-                        ),
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemCount: state.filteredGames.length,
-                          separatorBuilder: (_, sepIndex) =>
-                              const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            final game = state.filteredGames[index];
-                            return ListTile(
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: CachedNetworkImage(
-                                  imageUrl: game.images.isNotEmpty
-                                      ? game.images.first
-                                      : '',
-                                  width: 40,
-                                  height: 40,
-                                  fit: BoxFit.cover,
-                                  placeholder: (_, url) => const ColoredBox(
-                                    color: AppColors.gameCream,
-                                  ),
-                                  errorWidget: (_, url, error) =>
-                                      const Icon(Icons.image_not_supported),
-                                ),
-                              ),
-                              title: Text(
-                                game.title,
-                                style: AppTypography.bodyMedium,
-                              ),
-                              subtitle: Text(
-                                '${game.duration} min • ${game.players}',
-                                style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.gameBrown.withOpacityValue(
-                                    0.7,
-                                  ),
-                                ),
-                              ),
-                              onTap: () {
-                                widget.onGameSelected(game);
-                                _searchController.text = ''; // Clear search
-                                setState(() {
-                                  _showResults = false;
-                                });
-                                _focusNode.unfocus();
-                              },
-                            );
-                          },
-                        ),
+                        ],
                       ),
-                  ],
-                ),
-            ],
-          );
-        },
-      ),
+                    ),
+                ],
+              ),
+          ],
+        );
+      },
     );
   }
 }
@@ -240,9 +280,8 @@ class _SelectedGameCard extends StatelessWidget {
                 Text(game.title, style: AppTypography.titleMedium),
                 Text(
                   'Juego seleccionado',
-                  style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.gameRust,
-                  ),
+                  style: AppTypography.labelSmall
+                      .copyWith(color: AppColors.gameRust),
                 ),
               ],
             ),

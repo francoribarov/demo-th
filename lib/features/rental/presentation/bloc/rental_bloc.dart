@@ -3,8 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
 import 'package:mobile_table_hopping/features/rental/domain/entities/rental_draft.dart';
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
 import 'package:mobile_table_hopping/features/rental/domain/validators/rental_date_validator.dart';
@@ -14,13 +14,16 @@ part 'rental_event.dart';
 part 'rental_state.dart';
 
 @injectable
+
 /// Bloc coordinating rental confirmation state and side effects.
 class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
-  RentalBloc({required GetGames getGames, required ConfirmRental confirmRental})
-    : _getGames = getGames,
-      _confirmRental = confirmRental,
-      super(const RentalState()) {
+  RentalBloc({
+    required GetPublications getPublications,
+    required ConfirmRental confirmRental,
+  })  : _getPublications = getPublications,
+        _confirmRental = confirmRental,
+        super(const RentalState()) {
     on<_Started>(_onStarted);
     on<_StartDateChanged>(_onStartDateChanged);
     on<_EndDateChanged>(_onEndDateChanged);
@@ -34,7 +37,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     on<_MessageShown>(_onMessageShown);
     on<_PublishAnother>(_onPublishAnother);
   }
-  final GetGames _getGames;
+  final GetPublications _getPublications;
   final ConfirmRental _confirmRental;
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
@@ -52,8 +55,8 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final id = event.publicationId;
 
     try {
-      final game = await _getGames.getById(id);
-      if (game == null) {
+      final publication = await _getPublications.getById(id);
+      if (publication == null) {
         emit(
           state.copyWith(
             isLoading: false,
@@ -62,7 +65,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         );
         return;
       }
-      emit(state.copyWith(isLoading: false, game: game));
+      emit(state.copyWith(isLoading: false, publication: publication));
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -94,20 +97,18 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     }
 
     final result = RentalDateValidator.validate(
-      game: state.game,
+      publication: state.publication,
       startDate: newStart,
       endDate: newEnd,
     );
 
     // If we newly set a start date but it makes the 3-day window unavailable
-    if (newEnd == null && state.game != null) {
+    if (newEnd == null && state.publication != null) {
       final startDate = DateTime.tryParse(newStart);
       if (startDate != null) {
         final minEndDate = startDate.add(const Duration(days: 2));
-        if (!state.game!.isAvailableFor(
-          newStart,
-          minEndDate.toIso8601String(),
-        )) {
+        if (!state.publication!
+            .isAvailableFor(newStart, minEndDate.toIso8601String())) {
           return emit(
             state.copyWith(
               startDate: null,
@@ -132,7 +133,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final newEnd = event.endDate;
 
     final result = RentalDateValidator.validate(
-      game: state.game,
+      publication: state.publication,
       startDate: state.startDate,
       endDate: newEnd,
     );
@@ -151,13 +152,17 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
 
     if (startStr == null || endStr == null) {
       emit(
-        state.copyWith(startDate: null, endDate: null, snackbarMessage: null),
+        state.copyWith(
+          startDate: null,
+          endDate: null,
+          snackbarMessage: null,
+        ),
       );
       return;
     }
 
     final result = RentalDateValidator.validate(
-      game: state.game,
+      publication: state.publication,
       startDate: startStr,
       endDate: endStr,
     );
@@ -206,12 +211,12 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   Future<void> _onSubmitted(_Submitted event, Emitter<RentalState> emit) async {
     final start = state.startDate;
     final end = state.endDate;
-    final game = state.game;
+    final publication = state.publication;
 
-    if (game == null) return;
+    if (publication == null) return;
 
-    final ownerId = game.ownerId ?? state.ownerId;
-    if (ownerId == null || ownerId.isEmpty) {
+    final ownerId = publication.ownerId;
+    if (ownerId.isEmpty) {
       emit(
         state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError),
       );
@@ -224,7 +229,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     }
 
     final result = RentalDateValidator.validate(
-      game: game,
+      publication: publication,
       startDate: start,
       endDate: end,
     );
@@ -239,17 +244,17 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     try {
       await _confirmRental(
         RentalDraft(
-          publicationId: game.id,
+          publicationId: publication.id,
           ownerId: ownerId,
           startDate: start,
           endDate: end,
-          deposit: (game.deposit ?? state.deposit) ?? 0,
+          deposit: publication.deposit,
           isDelivery: state.isDelivery,
           deliveryAddress: state.deliveryAddress,
           deliveryComments: state.deliveryComments,
           paymentMethod: state.paymentMethod,
           foodBundleIds: state.selectedFoodBundles,
-          pricePerDay: game.price,
+          pricePerDay: publication.price,
         ),
       );
       emit(state.copyWith(isSubmitting: false, success: true));

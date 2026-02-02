@@ -1,6 +1,7 @@
 part of 'publish_bloc.dart';
 
 @freezed
+
 /// Publish flow actions.
 abstract class PublishEvent with _$PublishEvent {
   /// Initializes the publish flow.
@@ -19,7 +20,7 @@ abstract class PublishEvent with _$PublishEvent {
   const factory PublishEvent.publishAnother() = _PublishAnother;
 
   /// Updates the game ID input.
-  const factory PublishEvent.gameIdChanged(int value) = _GameIdChanged;
+  const factory PublishEvent.gameIdChanged(String value) = _GameIdChanged;
 
   /// Updates the description input.
   const factory PublishEvent.descriptionChanged(String value) =
@@ -34,8 +35,28 @@ abstract class PublishEvent with _$PublishEvent {
   /// Updates the selected images.
   const factory PublishEvent.imagesChanged(List<String> value) = _ImagesChanged;
 
-  /// Updates delivery methods.
+  /// Loads the list of available games.
+  const factory PublishEvent.loadGames() = _LoadGames;
+
+  /// Filters the list of games by query.
+  const factory PublishEvent.searchGames(String query) = _SearchGames;
+
+  /// Updates the delivery methods.
   const factory PublishEvent.deliveryMethodsChanged(
     List<DeliveryMethod> value,
   ) = _DeliveryMethodsChanged;
+
+  /// Creates a new delivery method.
+  const factory PublishEvent.addDeliveryMethod(DeliveryMethod method) =
+      _AddDeliveryMethod;
+
+  /// Loads the delivery methods.
+  const factory PublishEvent.getDeliveryMethods() = _GetDeliveryMethods;
+
+  /// Toggles selection of a delivery method.
+  const factory PublishEvent.toggleDeliveryMethod(DeliveryMethod method) =
+      _ToggleDeliveryMethod;
+
+  /// Pick multiple images from gallery.
+  const factory PublishEvent.pickMultipleImages() = _PickMultipleImages;
 }

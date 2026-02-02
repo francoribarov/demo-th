@@ -1,18 +1,73 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
+import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
+import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockCreatePublication extends Mock implements CreatePublication {}
 
+class MockAuthBloc extends Mock implements AuthBloc {}
+
+class MockGetGames extends Mock implements GetGames {}
+
+class MockCreateDeliveryMethod extends Mock implements CreateDeliveryMethod {}
+
+class MockGetDeliveryMethods extends Mock implements GetDeliveryMethods {}
+
+class MockImageUploadService extends Mock implements ImageUploadService {}
+
 void main() {
   late MockCreatePublication mockCreatePublication;
+  late MockAuthBloc mockAuthBloc;
+  late MockGetGames mockGetGames;
+  late MockCreateDeliveryMethod mockCreateDeliveryMethod;
+  late MockGetDeliveryMethods mockGetDeliveryMethods;
+  late MockImageUploadService mockImageUploadService;
   late PublishBloc publishBloc;
 
   setUp(() {
     mockCreatePublication = MockCreatePublication();
-    publishBloc = PublishBloc(createPublication: mockCreatePublication);
+    mockAuthBloc = MockAuthBloc();
+    mockGetGames = MockGetGames();
+    mockCreateDeliveryMethod = MockCreateDeliveryMethod();
+    mockGetDeliveryMethods = MockGetDeliveryMethods();
+    mockImageUploadService = MockImageUploadService();
+
+    // Mock authenticated state
+    when(() => mockAuthBloc.state).thenReturn(
+      const AuthState(
+        status: AuthStatus.authenticated,
+        session: AuthSession(
+          tokens: AuthTokens(accessToken: 'test', refreshToken: 'test'),
+          user: User(
+            id: 'user-123',
+            email: 'test@test.com',
+            username: 'testuser',
+          ),
+        ),
+      ),
+    );
+
+    // Stub GetGames call since it might be called
+    when(() => mockGetGames()).thenAnswer((_) async => []);
+    when(() => mockGetDeliveryMethods()).thenAnswer((_) async => []);
+
+    publishBloc = PublishBloc(
+      createPublication: mockCreatePublication,
+      authBloc: mockAuthBloc,
+      getGames: mockGetGames,
+      createDeliveryMethod: mockCreateDeliveryMethod,
+      getDeliveryMethods: mockGetDeliveryMethods,
+      imageUploadService: mockImageUploadService,
+    );
   });
 
   tearDown(() async {
@@ -27,9 +82,10 @@ void main() {
     blocTest<PublishBloc, PublishState>(
       'updates gameId and canProceed status',
       build: () => publishBloc,
-      act: (bloc) => bloc.add(const PublishEvent.gameIdChanged(123)),
+      act: (bloc) =>
+          bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
       expect: () => [
-        const PublishState(gameId: 123),
+        const PublishState(gameId: 'game-uuid-123'),
       ],
       verify: (bloc) {
         expect(bloc.state.canProceed, false); // No description/price yet
@@ -41,20 +97,22 @@ void main() {
       build: () => publishBloc,
       act: (bloc) {
         bloc
-          ..add(const PublishEvent.gameIdChanged(123))
+          ..add(const PublishEvent.gameIdChanged('game-uuid-123'))
           ..add(
             const PublishEvent.descriptionChanged(
               'A very long and descriptive text for the game.',
             ),
           )
-          ..add(const PublishEvent.priceChanged(100));
+          ..add(const PublishEvent.priceChanged(100))
+          ..add(const PublishEvent.conditionChanged('new'));
       },
-      skip: 2,
+      skip: 3,
       expect: () => [
         const PublishState(
-          gameId: 123,
+          gameId: 'game-uuid-123',
           description: 'A very long and descriptive text for the game.',
           price: 100,
+          condition: 'new',
         ),
       ],
       verify: (bloc) {
