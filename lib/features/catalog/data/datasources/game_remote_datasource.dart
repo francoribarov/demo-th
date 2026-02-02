@@ -184,13 +184,22 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
     int limit = 6,
   }) async {
     try {
-      final response = await _dioClient.get<List<dynamic>>(
+      final response = await _dioClient.get<dynamic>(
         '${ApiConstants.publications}/$gameId/recommendations',
         queryParameters: <String, dynamic>{'limit': limit},
       );
 
-      final data = response.data ?? const <dynamic>[];
-      return data
+      final List<dynamic> itemsData;
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
+
+      return itemsData
           .map(
             (json) =>
                 PublicationListItemModel.fromJson(json as Map<String, dynamic>),
@@ -198,6 +207,8 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
           .toList();
     } on DioException catch (e) {
       throw _handleError(e);
+    } catch (e) {
+      throw Exception('Error al procesar recomendaciones: $e');
     }
   }
 
@@ -206,7 +217,7 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
       final statusCode = error.response!.statusCode;
       final data = error.response!.data;
 
-      var message = 'Error al obtener los juegos';
+      var message = 'Error del servidor';
       if (data is Map && data['detail'] != null) {
         message = data['detail'].toString();
       } else if (data is Map && data['message'] != null) {
@@ -214,12 +225,17 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
       }
 
       if (statusCode == 404) {
-        return Exception('Juego no encontrado');
-      } else if (statusCode == 400) {
-        return Exception(message);
+        return Exception('Recurso no encontrado');
       }
+      return Exception(message);
     }
-    return Exception('Error de conexión. Intente nuevamente.');
+
+    if (error.type == DioExceptionType.connectionError ||
+        error.type == DioExceptionType.connectionTimeout) {
+      return Exception('Error de conexión. Verifique su internet.');
+    }
+
+    return Exception('Error inesperado: ${error.error ?? error.message}');
   }
 
   @override

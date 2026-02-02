@@ -226,13 +226,22 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
     String gameId,
   ) async {
     try {
-      final response = await _dioClient.get<List<dynamic>>(
+      final response = await _dioClient.get<dynamic>(
         ApiConstants.publications,
-        queryParameters: {'game_id': gameId, 'limit': 10},
+        queryParameters: <String, dynamic>{'game_id': gameId, 'limit': 10},
       );
 
-      final data = response.data ?? const <dynamic>[];
-      return data
+      final List<dynamic> itemsData;
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
+
+      return itemsData
           .map(
             (json) =>
                 PublicationListingModel.fromJson(json as Map<String, dynamic>),
@@ -240,6 +249,8 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
           .toList();
     } on DioException catch (e) {
       throw _handleError(e);
+    } catch (e) {
+      throw Exception('Error al procesar recomendaciones: $e');
     }
   }
 
@@ -272,11 +283,16 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
   }
 
   Exception _handleError(DioException e) {
-    var message = e.message ?? 'Error de conexión';
-    final data = e.response?.data;
-    if (data is Map && data['detail'] != null) {
-      message = data['detail'].toString();
+    if (e.type == DioExceptionType.badResponse) {
+      final data = e.response?.data;
+      if (data is Map && data['detail'] != null) {
+        return Exception(data['detail'].toString());
+      }
     }
-    return Exception(message);
+    final error = e.error;
+    if (error != null) {
+      return Exception('Error de red: $error');
+    }
+    return Exception(e.message ?? 'Error de conexión');
   }
 }

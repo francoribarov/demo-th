@@ -14,9 +14,9 @@ sealed class GameRulesModel
     with _$GameRulesModel
     implements BaseDtoResponse<GameRules> {
   const factory GameRulesModel({
-    @Default('') String videoUrl,
-    @Default('') String ruleCompleteUrl,
-    @Default('') String summaryRules,
+    @JsonKey(name: 'video') @Default('') String videoUrl,
+    @JsonKey(name: 'complete_rules') @Default('') String ruleCompleteUrl,
+    @JsonKey(name: 'summary_rules') @Default('') String summaryRules,
   }) = _GameRulesModel;
 
   const GameRulesModel._();
