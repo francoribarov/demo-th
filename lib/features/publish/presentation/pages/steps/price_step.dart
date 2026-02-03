@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
-import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/widgets/delivery_method_card.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery_method_bloc.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/pages/steps/widgets/delivery_section.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/pages/steps/widgets/price_section.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/widgets/delivery_method_sheet.dart';
 
 /// Step in the publish flow for setting price and delivery methods.
@@ -17,7 +17,8 @@ class PriceStep extends StatefulWidget {
     required this.deliveryMethods,
     required this.availableDeliveryMethods,
     required this.onPriceChanged,
-    required this.onDeliveryMethodsChanged,
+    required this.onToggleDeliveryMethod,
+    required this.onAddDeliveryMethod,
     super.key,
   });
 
@@ -36,8 +37,11 @@ class PriceStep extends StatefulWidget {
   /// Callback when price changes.
   final void Function(int) onPriceChanged;
 
-  /// Callback when delivery methods change.
-  final void Function(List<DeliveryMethod>) onDeliveryMethodsChanged;
+  /// Callback when a delivery method is toggled.
+  final void Function(DeliveryMethod) onToggleDeliveryMethod;
+
+  /// Callback when a new delivery method is added.
+  final void Function(DeliveryMethod) onAddDeliveryMethod;
 
   @override
   State<PriceStep> createState() => _PriceStepState();
@@ -50,7 +54,9 @@ class _PriceStepState extends State<PriceStep> {
     // Load delivery methods when step is shown
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _getDeliveryMethods();
+        context
+            .read<DeliveryMethodBloc>()
+            .add(const DeliveryMethodEvent.started());
       }
     });
   }
@@ -70,87 +76,25 @@ class _PriceStepState extends State<PriceStep> {
         const SizedBox(height: 24),
 
         // Price
-        Text('Precio por día (UYU)', style: AppTypography.titleMedium),
-        const SizedBox(height: 12),
-        TextFormField(
-          key: ValueKey('publish_price_${widget.formVersion}'),
-          initialValue: widget.price > 0 ? widget.price.toString() : '',
-          decoration: const InputDecoration(prefixText: r'$ ', hintText: '150'),
-          keyboardType: TextInputType.number,
-          onChanged: (v) => widget.onPriceChanged(int.tryParse(v) ?? 0),
+        PriceSection(
+          formVersion: widget.formVersion,
+          price: widget.price,
+          onChanged: widget.onPriceChanged,
         ),
 
         const SizedBox(height: 32),
 
         // Delivery Methods
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Métodos de entrega', style: AppTypography.titleMedium),
-            TextButton.icon(
-              onPressed: _addDeliveryMethod,
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text('Agregar'),
-            ),
-          ],
+        DeliverySection(
+          selectedMethods: widget.deliveryMethods,
+          availableMethods: widget.availableDeliveryMethods,
+          onAdd: _addDeliveryMethod,
+          onToggle: widget.onToggleDeliveryMethod,
         ),
-        const SizedBox(height: 12),
-
-        if (widget.availableDeliveryMethods.isEmpty)
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.card,
-              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(
-                color: AppColors.gameBrown.withOpacityValue(0.2),
-              ),
-            ),
-            child: Center(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.local_shipping_outlined,
-                    size: 48,
-                    color: AppColors.gameBrown.withOpacityValue(0.3),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'No hay métodos de entrega configurados',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.gameBrown.withOpacityValue(0.7),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Agregá al menos un método para que los compradores puedan recibir el juego',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.gameBrown.withOpacityValue(0.5),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        else
-          ...widget.availableDeliveryMethods.map((method) {
-            final isSelected = widget.deliveryMethods
-                .any((m) => m.id == method.id && m.id != null);
-            return DeliveryMethodCard(
-              method: method,
-              isSelected: isSelected,
-              onTap: () => _toggleDeliveryMethod(method),
-            );
-          }),
 
         const SizedBox(height: 100),
       ],
     );
-  }
-
-  void _getDeliveryMethods() {
-    context.read<PublishBloc>().add(const PublishEvent.getDeliveryMethods());
   }
 
   Future<void> _addDeliveryMethod() async {
@@ -158,16 +102,8 @@ class _PriceStepState extends State<PriceStep> {
       context: context,
       isScrollControlled: true,
       builder: (_) => DeliveryMethodSheet(
-        onAdd: (method) {
-          context
-              .read<PublishBloc>()
-              .add(PublishEvent.addDeliveryMethod(method));
-        },
+        onAdd: widget.onAddDeliveryMethod,
       ),
     );
-  }
-
-  void _toggleDeliveryMethod(DeliveryMethod method) {
-    context.read<PublishBloc>().add(PublishEvent.toggleDeliveryMethod(method));
   }
 }

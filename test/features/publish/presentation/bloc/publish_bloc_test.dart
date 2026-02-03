@@ -5,9 +5,8 @@ import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.d
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -17,24 +16,16 @@ class MockAuthBloc extends Mock implements AuthBloc {}
 
 class MockGetGames extends Mock implements GetGames {}
 
-class MockCreateDeliveryMethod extends Mock implements CreateDeliveryMethod {}
-
-class MockGetDeliveryMethods extends Mock implements GetDeliveryMethods {}
-
 void main() {
   late MockCreatePublication mockCreatePublication;
   late MockAuthBloc mockAuthBloc;
   late MockGetGames mockGetGames;
-  late MockCreateDeliveryMethod mockCreateDeliveryMethod;
-  late MockGetDeliveryMethods mockGetDeliveryMethods;
   late PublishBloc publishBloc;
 
   setUp(() {
     mockCreatePublication = MockCreatePublication();
     mockAuthBloc = MockAuthBloc();
     mockGetGames = MockGetGames();
-    mockCreateDeliveryMethod = MockCreateDeliveryMethod();
-    mockGetDeliveryMethods = MockGetDeliveryMethods();
 
     // Mock authenticated state
     when(() => mockAuthBloc.state).thenReturn(
@@ -53,14 +44,11 @@ void main() {
 
     // Stub GetGames call since it might be called
     when(() => mockGetGames()).thenAnswer((_) async => []);
-    when(() => mockGetDeliveryMethods()).thenAnswer((_) async => []);
 
     publishBloc = PublishBloc(
       createPublication: mockCreatePublication,
       authBloc: mockAuthBloc,
       getGames: mockGetGames,
-      createDeliveryMethod: mockCreateDeliveryMethod,
-      getDeliveryMethods: mockGetDeliveryMethods,
     );
   });
 
@@ -74,44 +62,72 @@ void main() {
     });
 
     blocTest<PublishBloc, PublishState>(
-      'updates gameId and canProceed status',
+      'updates gameId and isStepValid status',
       build: () => publishBloc,
       act: (bloc) =>
           bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
       expect: () => [
         const PublishState(gameId: 'game-uuid-123'),
       ],
-      verify: (bloc) {
-        expect(bloc.state.canProceed, false); // No description/price yet
-      },
     );
 
     blocTest<PublishBloc, PublishState>(
-      'canProceed is true when basics are valid',
+      'sets isStepValid when all basic info is valid',
       build: () => publishBloc,
       act: (bloc) {
         bloc
           ..add(const PublishEvent.gameIdChanged('game-uuid-123'))
           ..add(
             const PublishEvent.descriptionChanged(
-              'A very long and descriptive text for the game.',
+              'A great game in perfect condition.',
             ),
           )
-          ..add(const PublishEvent.priceChanged(100))
-          ..add(const PublishEvent.conditionChanged('new'));
+          ..add(
+            const PublishEvent.conditionChanged(PublicationCondition.likeNew),
+          );
       },
-      skip: 3,
+      skip: 2, // Skip first two intermediate states
       expect: () => [
         const PublishState(
           gameId: 'game-uuid-123',
-          description: 'A very long and descriptive text for the game.',
-          price: 100,
-          condition: 'new',
+          description: 'A great game in perfect condition.',
+          condition: PublicationCondition.likeNew,
+          isStepValid: true,
         ),
       ],
-      verify: (bloc) {
-        expect(bloc.state.canProceed, true);
+      verify: (_) {
+        expect(publishBloc.state.isStepValid, isTrue);
       },
+    );
+
+    blocTest<PublishBloc, PublishState>(
+      'updates price correctly',
+      build: () => publishBloc,
+      act: (bloc) => bloc.add(const PublishEvent.priceChanged(1500)),
+      expect: () => [
+        const PublishState(price: 1500),
+      ],
+    );
+
+    blocTest<PublishBloc, PublishState>(
+      'navigates to next step when valid',
+      build: () => publishBloc,
+      seed: () => const PublishState(
+        gameId: 'game-123',
+        description: 'Valid description for the game',
+        condition: PublicationCondition.likeNew,
+        isStepValid: true,
+      ),
+      act: (bloc) => bloc.add(const PublishEvent.nextStep()),
+      expect: () => [
+        const PublishState(
+          gameId: 'game-123',
+          description: 'Valid description for the game',
+          condition: PublicationCondition.likeNew,
+          currentStep: 1,
+          isStepValid: true,
+        ),
+      ],
     );
   });
 }

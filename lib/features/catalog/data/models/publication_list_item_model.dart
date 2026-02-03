@@ -1,9 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
-import 'package:mobile_table_hopping/features/catalog/data/models/publication_listing_model.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_list_item.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart'
+    hide PublicationImage;
 
 part 'publication_list_item_model.freezed.dart';
 part 'publication_list_item_model.g.dart';
@@ -36,20 +37,20 @@ sealed class PublicationImageModel
 
 /// Data transfer object for game images within publications
 @freezed
-sealed class GameImageModelV2
-    with _$GameImageModelV2
+sealed class GameImageModel
+    with _$GameImageModel
     implements BaseDtoResponse<GameImage> {
-  const factory GameImageModelV2({
+  const factory GameImageModel({
     required String url,
     @Default('gallery') String type,
     int? width,
     int? height,
-  }) = _GameImageModelV2;
+  }) = _GameImageModel;
 
-  const GameImageModelV2._();
+  const GameImageModel._();
 
-  factory GameImageModelV2.fromJson(Map<String, dynamic> json) =>
-      _$GameImageModelV2FromJson(json);
+  factory GameImageModel.fromJson(Map<String, dynamic> json) =>
+      _$GameImageModelFromJson(json);
 
   @override
   GameImage toDomainModel() => GameImage(
@@ -57,40 +58,6 @@ sealed class GameImageModelV2
         type: type,
         width: width,
         height: height,
-      );
-}
-
-/// Data transfer object for nested game within a publication
-@freezed
-sealed class GameInPublicationModel
-    with _$GameInPublicationModel
-    implements BaseDtoResponse<GameInPublication> {
-  const factory GameInPublicationModel({
-    required int id,
-    required String title,
-    @Default(0) int duration,
-    @Default('Medio') String difficulty,
-    @Default('2-4') String players,
-    @Default([]) List<GameCategoryModel> categories,
-    @Default([]) List<AvailabilityRangeModel> availability,
-    @Default(GameRulesModel()) GameRulesModel rules,
-  }) = _GameInPublicationModel;
-
-  const GameInPublicationModel._();
-
-  factory GameInPublicationModel.fromJson(Map<String, dynamic> json) =>
-      _$GameInPublicationModelFromJson(json);
-
-  @override
-  GameInPublication toDomainModel() => GameInPublication(
-        id: id,
-        title: title,
-        duration: duration,
-        difficulty: difficulty,
-        players: players,
-        categories: categories.map((c) => c.toDomainModel()).toList(),
-        availability: availability.map((a) => a.toDomainModel()).toList(),
-        rules: rules.toDomainModel(),
       );
 }
 
@@ -102,9 +69,9 @@ sealed class PublicationListItemModel
   const factory PublicationListItemModel({
     required String id,
     required String description,
-    required String condition,
+    required PublicationCondition condition,
     required int price,
-    required GameInPublicationModel game,
+    required GameModel game,
     @Default([]) List<PublicationImageModel> images,
   }) = _PublicationListItemModel;
 
@@ -146,7 +113,7 @@ sealed class PublicationDetailModel
     required String description,
     required String condition,
     required int price,
-    required GameInPublicationModel game,
+    required GameModel game,
     required String ownerId,
     @Default([]) List<PublicationImageModel> images,
   }) = _PublicationDetailModel;

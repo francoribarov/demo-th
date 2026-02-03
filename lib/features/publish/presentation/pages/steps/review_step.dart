@@ -3,6 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
 /// Final step in the publish flow for reviewing the listing before submission.
 class ReviewStep extends StatelessWidget {
@@ -13,7 +14,6 @@ class ReviewStep extends StatelessWidget {
     required this.price,
     required this.condition,
     required this.images,
-    required this.conditions,
     super.key,
   });
 
@@ -26,21 +26,14 @@ class ReviewStep extends StatelessWidget {
   /// The price.
   final int price;
 
-  /// The game condition key.
-  final String condition;
+  /// The game condition.
+  final PublicationCondition? condition;
 
   /// List of image URLs.
   final List<String> images;
 
-  /// List of condition metadata.
-  final List<(String, String, String)> conditions;
-
   @override
   Widget build(BuildContext context) {
-    final conditionLabel = conditions
-        .firstWhere((c) => c.$1 == condition, orElse: () => ('', condition, ''))
-        .$2;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -91,7 +84,8 @@ class ReviewStep extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 16),
-              _InfoChip(icon: Icons.grade, label: conditionLabel),
+              if (condition != null)
+                _InfoChip(icon: Icons.grade, label: condition!.label),
 
               const Divider(height: 32),
               Row(

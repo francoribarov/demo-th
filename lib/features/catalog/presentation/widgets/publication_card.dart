@@ -25,17 +25,6 @@ class PublicationCard extends StatelessWidget {
   /// Callback when the category badge is tapped.
   final VoidCallback? onCategoryTap;
 
-  String _conditionLabel(String condition) {
-    return switch (condition) {
-      'new' => 'Nuevo',
-      'like_new' => 'Como nuevo',
-      'good' => 'Buen estado',
-      'fair' => 'Aceptable',
-      'worn' => 'Usado',
-      _ => condition,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -125,7 +114,7 @@ class PublicationCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
-                      _conditionLabel(publication.condition),
+                      publication.conditionLabel,
                       style: AppTypography.labelSmall.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,

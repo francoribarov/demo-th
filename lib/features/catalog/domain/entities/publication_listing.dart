@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart'
+    show PublicationCondition;
 
 part 'publication_listing.freezed.dart';
 
@@ -46,7 +48,7 @@ abstract class PublicationListing with _$PublicationListing {
     required String title,
 
     /// Condition of the game copy (e.g., "Nuevo", "Usado").
-    required String condition,
+    required PublicationCondition condition,
 
     /// Rental price per day.
     required double price,
@@ -104,4 +106,6 @@ abstract class PublicationListing with _$PublicationListing {
   String get availabilityLabel {
     return 'Disponible';
   }
+
+  String get conditionLabel => condition.label;
 }

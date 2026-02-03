@@ -27,12 +27,6 @@ class GameReviewsBloc extends Bloc<GameReviewsEvent, GameReviewsState> {
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    final id = int.tryParse(event.gameId);
-    if (id == null) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'ID inválido'));
-      return;
-    }
-
     try {
       final game = await _getGames.getById(event.gameId);
       if (game == null) {
@@ -41,7 +35,13 @@ class GameReviewsBloc extends Bloc<GameReviewsEvent, GameReviewsState> {
         );
         return;
       }
-      emit(state.copyWith(isLoading: false, game: game));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          game: game,
+          filteredReviews: _filterReviews(game, state.filterRating),
+        ),
+      );
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -56,6 +56,17 @@ class GameReviewsBloc extends Bloc<GameReviewsEvent, GameReviewsState> {
     _FilterRatingChanged event,
     Emitter<GameReviewsState> emit,
   ) {
-    emit(state.copyWith(filterRating: event.value));
+    emit(
+      state.copyWith(
+        filterRating: event.value,
+        filteredReviews: _filterReviews(state.game, event.value),
+      ),
+    );
+  }
+
+  List<GameReview> _filterReviews(Game? game, int? rating) {
+    if (game == null) return const [];
+    if (rating == null) return game.reviews;
+    return game.reviews.where((r) => r.rating.floor() == rating).toList();
   }
 }

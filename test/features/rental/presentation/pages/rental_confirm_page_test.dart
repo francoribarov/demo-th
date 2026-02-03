@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/pages/rental_confirm_page.dart';
@@ -27,7 +28,7 @@ void main() {
     ownerId: 'owner-1',
     gameId: '1',
     title: 'Test Game',
-    condition: 'like_new',
+    condition: PublicationCondition.likeNew,
     price: 100,
     deposit: 50,
     createdAt: DateTime(2026),

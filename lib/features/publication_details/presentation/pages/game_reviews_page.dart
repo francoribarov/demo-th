@@ -189,7 +189,7 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                       name: review.name,
                       rating: review.rating,
                       comment: review.comment,
-                      dateOrRole: '', // Role removed
+                      date: '', // Role removed
                     ),
                   ),
 

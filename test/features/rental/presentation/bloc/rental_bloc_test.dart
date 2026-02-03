@@ -4,6 +4,7 @@ import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
 import 'package:mocktail/mocktail.dart';
@@ -22,7 +23,7 @@ void main() {
     ownerId: 'owner-1',
     gameId: '1',
     title: 'Test Game',
-    condition: 'like_new',
+    condition: PublicationCondition.likeNew,
     price: 100,
     deposit: 50,
     createdAt: DateTime(2026),
@@ -147,6 +148,71 @@ void main() {
               'message',
               AppStrings.rentalChooseLaterEnd,
             ),
+      ],
+    );
+  });
+  group('RentalBloc Price Calculations', () {
+    blocTest<RentalBloc, RentalState>(
+      'should calculate 3 days rental price correctly',
+      build: () => rentalBloc,
+      seed: () => RentalState(publication: tPublication),
+      act: (bloc) => bloc
+        ..add(const RentalEvent.startDateChanged(startDate: '2026-06-01'))
+        ..add(const RentalEvent.endDateChanged(endDate: '2026-06-03')),
+      skip: 1, // Skip start date change
+      expect: () => [
+        isA<RentalState>()
+            .having((s) => s.rentalDays, 'rentalDays', 3)
+            .having((s) => s.subtotal, 'subtotal', 300.0) // 100 * 3
+            .having((s) => s.serviceFee, 'serviceFee', 30) // 300 * 0.1
+            .having((s) => s.foodTotal, 'foodTotal', 0)
+            .having((s) => s.deliveryFee, 'deliveryFee', 0)
+            .having((s) => s.total, 'total', 330.0), // 300 + 30
+      ],
+    );
+
+    blocTest<RentalBloc, RentalState>(
+      'should include delivery fee when delivery is selected',
+      build: () => rentalBloc,
+      seed: () => RentalState(
+        publication: tPublication,
+        startDate: '2026-06-01',
+        endDate: '2026-06-03',
+        rentalDays: 3,
+        subtotal: 300,
+        serviceFee: 30,
+        total: 330,
+      ),
+      act: (bloc) =>
+          bloc.add(const RentalEvent.deliveryChanged(isDelivery: true)),
+      expect: () => [
+        isA<RentalState>()
+            .having((s) => s.isDelivery, 'isDelivery', true)
+            .having((s) => s.deliveryFee, 'deliveryFee', 150)
+            .having((s) => s.total, 'total', 480.0), // 330 + 150
+      ],
+    );
+
+    blocTest<RentalBloc, RentalState>(
+      'should include food bundles in total',
+      build: () => rentalBloc,
+      seed: () => RentalState(
+        publication: tPublication,
+        startDate: '2026-06-01',
+        endDate: '2026-06-03',
+        rentalDays: 3,
+        subtotal: 300,
+        serviceFee: 30,
+        total: 330,
+      ),
+      act: (bloc) => bloc.add(
+        const RentalEvent.foodBundlesChanged(foodBundles: ['classic', 'sweet']),
+      ),
+      expect: () => [
+        isA<RentalState>()
+            .having((s) => s.selectedFoodBundles.length, 'bundles count', 2)
+            .having((s) => s.foodTotal, 'foodTotal', 500) // 2 * 250
+            .having((s) => s.total, 'total', 830.0), // 330 + 500
       ],
     );
   });

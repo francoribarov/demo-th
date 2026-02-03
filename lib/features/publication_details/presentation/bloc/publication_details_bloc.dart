@@ -39,8 +39,6 @@ class PublicationDetailsBloc
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-// ... (logic remains same, just ensuring references are updated implicitly by context if needed, but here only method signatures needed change if they used explicit types. They use `_Started` which is fine, but Emitter<State> needs update)
-
     final id = event.publicationId;
 
     try {

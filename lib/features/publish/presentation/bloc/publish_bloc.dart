@@ -6,9 +6,7 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
 
 part 'publish_bloc.freezed.dart';
@@ -24,13 +22,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     required CreatePublication createPublication,
     required AuthBloc authBloc,
     required GetGames getGames,
-    required CreateDeliveryMethod createDeliveryMethod,
-    required GetDeliveryMethods getDeliveryMethods,
   })  : _createPublication = createPublication,
         _authBloc = authBloc,
         _getGames = getGames,
-        _createDeliveryMethod = createDeliveryMethod,
-        _getDeliveryMethods = getDeliveryMethods,
         super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
@@ -41,40 +35,56 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     on<_DescriptionChanged>(_onDescriptionChanged);
     on<_PriceChanged>(_onPriceChanged);
     on<_ConditionChanged>(_onConditionChanged);
-    on<_ImagesChanged>(_onImagesChanged);
     on<_LoadGames>(_onLoadGames);
     on<_SearchGames>(_onSearchGames);
-    on<_DeliveryMethodsChanged>(_onDeliveryMethodsChanged);
-    on<_AddDeliveryMethod>(_onAddDeliveryMethod);
-    on<_GetDeliveryMethods>(_onGetDeliveryMethods);
-    on<_ToggleDeliveryMethod>(_onToggleDeliveryMethod);
   }
 
   final CreatePublication _createPublication;
   final AuthBloc _authBloc;
   final GetGames _getGames;
-  final CreateDeliveryMethod _createDeliveryMethod;
-  final GetDeliveryMethods _getDeliveryMethods;
 
   void _onStarted(_Started event, Emitter<PublishState> emit) {
     emit(const PublishState());
     add(const PublishEvent.loadGames());
-    add(const PublishEvent.getDeliveryMethods());
   }
 
   void _onNextStep(_NextStep event, Emitter<PublishState> emit) {
-    if (state.canProceed) {
+    if (state.isStepValid) {
       if (state.currentStep == 3) {
         add(const PublishEvent.submit());
       } else {
-        emit(state.copyWith(currentStep: state.currentStep + 1));
+        final nextStep = state.currentStep + 1;
+        emit(
+          state.copyWith(
+            currentStep: nextStep,
+            isStepValid: _validateStep(
+              nextStep,
+              state.gameId,
+              state.description,
+              state.condition,
+              state.price,
+            ),
+          ),
+        );
       }
     }
   }
 
   void _onPreviousStep(_PreviousStep event, Emitter<PublishState> emit) {
     if (state.currentStep > 0) {
-      emit(state.copyWith(currentStep: state.currentStep - 1));
+      final prevStep = state.currentStep - 1;
+      emit(
+        state.copyWith(
+          currentStep: prevStep,
+          isStepValid: _validateStep(
+            prevStep,
+            state.gameId,
+            state.description,
+            state.condition,
+            state.price,
+          ),
+        ),
+      );
     }
   }
 
@@ -82,8 +92,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(PublishState(formVersion: state.formVersion + 1));
   }
 
+  /// Submits the publication. Images and delivery methods are passed in.
   Future<void> _onSubmit(_Submit event, Emitter<PublishState> emit) async {
-    if (!state.canProceed) return;
+    if (!state.isStepValid) return;
 
     final userId = _authBloc.state.session?.user?.id;
     if (userId == null) {
@@ -98,8 +109,8 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
         gameId: state.gameId,
         description: state.description,
         price: state.price,
-        condition: state.condition,
-        images: state.images
+        condition: state.condition!,
+        images: event.images
             .map(
               (url) => PublicationImage(
                 url: url,
@@ -107,7 +118,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
               ),
             )
             .toList(),
-        deliveryMethods: state.deliveryMethods,
+        deliveryMethods: event.deliveryMethods,
       );
 
       await _createPublication(draft, ownerId: userId);
@@ -132,7 +143,14 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(
       state.copyWith(
         gameId: event.value,
-        condition: '', // Reset condition when game changes
+        condition: null,
+        isStepValid: _validateStep(
+          state.currentStep,
+          event.value,
+          state.description,
+          null,
+          state.price,
+        ),
       ),
     );
   }
@@ -141,29 +159,51 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     _DescriptionChanged event,
     Emitter<PublishState> emit,
   ) {
-    emit(state.copyWith(description: event.value));
+    emit(
+      state.copyWith(
+        description: event.value,
+        isStepValid: _validateStep(
+          state.currentStep,
+          state.gameId,
+          event.value,
+          state.condition,
+          state.price,
+        ),
+      ),
+    );
   }
 
   void _onPriceChanged(_PriceChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(price: event.value));
+    emit(
+      state.copyWith(
+        price: event.value,
+        isStepValid: _validateStep(
+          state.currentStep,
+          state.gameId,
+          state.description,
+          state.condition,
+          event.value,
+        ),
+      ),
+    );
   }
 
   void _onConditionChanged(
     _ConditionChanged event,
     Emitter<PublishState> emit,
   ) {
-    emit(state.copyWith(condition: event.value));
-  }
-
-  void _onImagesChanged(_ImagesChanged event, Emitter<PublishState> emit) {
-    emit(state.copyWith(images: event.value));
-  }
-
-  void _onDeliveryMethodsChanged(
-    _DeliveryMethodsChanged event,
-    Emitter<PublishState> emit,
-  ) {
-    emit(state.copyWith(deliveryMethods: event.value));
+    emit(
+      state.copyWith(
+        condition: event.value,
+        isStepValid: _validateStep(
+          state.currentStep,
+          state.gameId,
+          state.description,
+          event.value,
+          state.price,
+        ),
+      ),
+    );
   }
 
   Future<void> _onLoadGames(
@@ -181,7 +221,6 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
         ),
       );
     } on Object catch (_) {
-      // Silently fail or handling error depending on UX requirements
       emit(state.copyWith(isLoadingGames: false));
     }
   }
@@ -198,81 +237,29 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     }
   }
 
-  Future<void> _onAddDeliveryMethod(
-    _AddDeliveryMethod event,
-    Emitter<PublishState> emit,
-  ) async {
-    // Optimistically add to list or show loading?
-    // For now, let's just make the call and then update.
-    // Ideally we should have a loading state for this specific action or generic.
-    emit(state.copyWith(isSubmitting: true));
-
-    try {
-      final newMethod = await _createDeliveryMethod(event.method);
-      final updatedMethods = [...state.availableDeliveryMethods, newMethod];
-      final selectedMethods = [...state.deliveryMethods, newMethod];
-      emit(
-        state.copyWith(
-          availableDeliveryMethods: updatedMethods,
-          deliveryMethods: selectedMethods, // Auto-select new method
-          isSubmitting: false,
-        ),
-      );
-    } on Object catch (e) {
-      emit(
-        state.copyWith(
-          isSubmitting: false,
-          errorMessage: 'Error al crear método de entrega: $e',
-        ),
-      );
-    }
-  }
-
-  Future<void> _onGetDeliveryMethods(
-    _GetDeliveryMethods event,
-    Emitter<PublishState> emit,
-  ) async {
-    emit(state.copyWith(isLoadingDeliveryMethods: true));
-    try {
-      final methods = await _getDeliveryMethods();
-      emit(
-        state.copyWith(
-          isLoadingDeliveryMethods: false,
-          deliveryMethods: [], // Reset selection? Or default to all?
-          // Let's default to empty so user chooses, or all.
-          // User request: "Select methods". Usually explicit selection is better.
-          // IF editing, we should keep existing. But this is fresh publish.
-          // If we want to be nice, maybe pre-select all if it's the first load?
-          // Let's keep selection empty or existing if re-entering step.
-          // BUT if we reload, we might lose selection if we reset.
-          // Better: keep state.deliveryMethods, just update available.
-
-          availableDeliveryMethods: methods,
-        ),
-      );
-    } on Object catch (_) {
-      // Silently fail or handling error depending on UX requirements
-      emit(state.copyWith(isLoadingDeliveryMethods: false));
-    }
-  }
-
-  void _onToggleDeliveryMethod(
-    _ToggleDeliveryMethod event,
-    Emitter<PublishState> emit,
+  bool _validateStep(
+    int step,
+    String gameId,
+    String description,
+    PublicationCondition? condition,
+    int price,
   ) {
-    // Check if method is currently selected
-    // We compare by ID assuming ID is unique and present.
-    // If ID is null (optimistic?), use object equality or index? String ID is safe.
-    final exists = state.deliveryMethods
-        .any((m) => m.id == event.method.id && m.id != null);
-
-    List<DeliveryMethod> updated;
-    if (exists) {
-      updated =
-          state.deliveryMethods.where((m) => m.id != event.method.id).toList();
-    } else {
-      updated = [...state.deliveryMethods, event.method];
+    switch (step) {
+      case 0: // Data step: game and description and condition
+        return gameId.isNotEmpty &&
+            PublicationValidator.validateDescription(description).isValid &&
+            condition != null;
+      case 1: // Photos step: no validation required (optional)
+        return true;
+      case 2: // Price step: price must be valid
+        return PublicationValidator.validatePricing(price).isValid;
+      case 3: // Review step: ready to submit
+        return gameId.isNotEmpty &&
+            PublicationValidator.validateDescription(description).isValid &&
+            PublicationValidator.validatePricing(price).isValid &&
+            condition != null;
+      default:
+        return false;
     }
-    emit(state.copyWith(deliveryMethods: updated));
   }
 }

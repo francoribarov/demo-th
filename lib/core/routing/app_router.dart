@@ -8,7 +8,9 @@ import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.d
 import 'package:mobile_table_hopping/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/pages/register_page.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/pages/home_page.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/pages/edit_publication_page.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_rules_bloc.dart';
@@ -16,6 +18,8 @@ import 'package:mobile_table_hopping/features/publication_details/presentation/b
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_reviews_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_rules_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery_method_bloc.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/bloc/image_upload_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
@@ -59,6 +63,9 @@ class AppRoutes {
 
   /// Rental confirmation route template.
   static const String rental = '/publications/:id/rental';
+
+  /// Edit publication route template.
+  static const String editPublication = '/my-publications/:id/edit';
 }
 
 /// App router configuration using go_router.
@@ -79,7 +86,8 @@ class AppRouter {
 
       final isProtected = location == AppRoutes.publish ||
           location == AppRoutes.myPublications ||
-          RegExp(r'^/publications/[^/]+/rental$').hasMatch(location);
+          RegExp(r'^/publications/[^/]+/rental$').hasMatch(location) ||
+          RegExp(r'^/my-publications/[^/]+/edit$').hasMatch(location);
 
       final authBloc = getIt<AuthBloc>();
       final authState = authBloc.state;
@@ -112,9 +120,19 @@ class AppRouter {
             path: AppRoutes.publish,
             name: 'publish',
             pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider<PublishBloc>(
-                create: (_) =>
-                    getIt<PublishBloc>()..add(const PublishEvent.started()),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider<PublishBloc>(
+                    create: (_) =>
+                        getIt<PublishBloc>()..add(const PublishEvent.started()),
+                  ),
+                  BlocProvider<DeliveryMethodBloc>(
+                    create: (_) => getIt<DeliveryMethodBloc>(),
+                  ),
+                  BlocProvider<ImageUploadBloc>(
+                    create: (_) => getIt<ImageUploadBloc>(),
+                  ),
+                ],
                 child: const PublishGamePage(),
               ),
             ),
@@ -265,6 +283,20 @@ class AppRouter {
           ),
         ],
       ),
+      // Edit publication route
+      GoRoute(
+        path: AppRoutes.editPublication,
+        name: 'edit-publication',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return BlocProvider<EditPublicationBloc>(
+            create: (_) => getIt<EditPublicationBloc>()
+              ..add(EditPublicationEvent.started(publicationId: id)),
+            child: EditPublicationPage(publicationId: id),
+          );
+        },
+      ),
     ],
     errorBuilder: (context, state) => Scaffold(
       body: Center(
@@ -340,6 +372,9 @@ extension GoRouterExtension on BuildContext {
 
   /// Navigate to the home route.
   void goHome() => go(AppRoutes.home);
+
+  /// Navigate to edit a publication.
+  void goToEditPublication(String id) => push('/my-publications/$id/edit');
 
   /// Safe back navigation for deep links (no back stack).
   void popOrGo(String location) {

@@ -79,6 +79,9 @@ class ApiConstants {
   /// Rentals endpoints.
   static const String rentals = '$apiBasePath/rentals';
 
+  /// Images upload endpoint.
+  static const String imageUpload = '$apiBasePath/images/upload';
+
   /// Health check endpoint.
   static const String health = '/health';
 }
