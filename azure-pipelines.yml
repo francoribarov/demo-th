@@ -7,55 +7,45 @@ trigger:
 pr:
   branches:
     include:
-      - develop
-      - main
+      - '*'
 
 schedules:
 - cron: "0 0 * * 0"
-  displayName: "Weekly Sunday Security Scan"
+  displayName: Weekly security scan
   branches:
     include:
       - main
-  always: true
 
 pool:
-  vmImage: 'ubuntu-latest' # Cámbialo a name: 'Default' si usas tu propia PC
+  vmImage: 'ubuntu-latest'
+
+variables:
+  flutter_version: '3.38.7'
 
 jobs:
-- job: QualityGate
-  displayName: 'Quality Gate'
+- job: Flutter_Pipeline
+  displayName: 'Flutter Build and Test'
   steps:
-    - checkout: self
+  - checkout: self
 
-    - bash: |
-        FLUTTER_VERSION=$(grep -o '"flutter": *"[^"]*"' .fvmrc | cut -d'"' -f4)
-        echo "##vso[task.setvariable variable=FLUTTER_VERSION]$FLUTTER_VERSION"
-      displayName: 'Read Flutter Version from .fvmrc'
+  # 1. Instalar Flutter
+  - task: FlutterInstall@0
+    inputs:
+      mode: 'version'
+      channel: 'stable'
+      version: '$(flutter_version)'
 
-    - task: FlutterInstall@0
-      inputs:
-        mode: 'version'
-        channel: 'stable'
-        version: '$(FLUTTER_VERSION)'
-      displayName: 'Set up Flutter'
+  # 2. Instalar Dependencias
+  - script: flutter pub get
+    displayName: 'Install Dependencies'
 
-    - script: flutter pub get
-      displayName: 'Install Dependencies'
+  # 3. Generar Código (build_runner)
+  - script: dart run build_runner build --delete-conflicting-outputs
+    displayName: 'Generate Code'
 
-    - script: |
-        chmod +x ./scripts/pre_pr.sh
-        ./scripts/pre_pr.sh --ci
-      displayName: 'Run Pre-PR Check'
-
-- job: SecurityScan
-  displayName: 'Security Scan'
-  # Solo corre en PRs o por Schedule
-  condition: or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.Reason'], 'Schedule'))
-  steps:
-    - checkout: self
-
-    # OSV-Scanner no tiene una "Task" oficial en Azure como en GitHub, 
-    # así que lo ejecutamos vía script de Docker o Binario:
-    - script: |
-        docker run --rm -v $(pwd):/src ghcr.io/google/osv-scanner --lockfile=/src/pubspec.lock
-      displayName: 'Run OSV Scanner'
+  # 4. Formato, Análisis y Tests (Usando tus comandos de Make)
+  - script: |
+      make format
+      make analyze
+      make test
+    displayName: 'Format, Analyze and Test'
