@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/features/auth/domain/repositories/auth_repository.dart';
 
 @injectable
+
 /// Use case for logging out the current user.
 class Logout {
   /// Creates a [Logout] use case.

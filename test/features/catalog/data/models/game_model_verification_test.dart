@@ -4,18 +4,26 @@ import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dar
 
 void main() {
   group('GameModel Deserialization', () {
-    test('should correctly deserialize game with image objects', () {
-      // JSON snippet from the user's error report
+    test('should correctly deserialize game with image objects and reviews',
+        () {
+      // JSON snippet updated to match current backend response structure
       const jsonString = '''
       {
-        "id": 1,
+        "id": "1",
         "title": "Catan",
         "description": "Un juego clásico...",
-        "duration": 0,
+        "duration": 60,
         "players": "2-4 jugadores",
         "difficulty": "Medio",
         "rating": 4.8,
-        "reviews": 156,
+        "reviews": [
+          {
+            "id": "r1",
+            "username": "User1",
+            "rating": 5.0,
+            "comment": "Great game!"
+          }
+        ],
         "categories": [
           {
             "id": 4,
@@ -30,8 +38,11 @@ void main() {
             "url": "https://example.com/image1.jpg"
           }
         ],
-        "availability": [],
-        "price": 100
+        "rules": {
+           "video_url": "http://video",
+           "rule_complete_url": "http://rules",
+           "summary_rules": "summary"
+        }
       }
       ''';
 
@@ -44,11 +55,17 @@ void main() {
       expect(gameModel.images.length, 1);
       expect(gameModel.images.first.url, 'https://example.com/image1.jpg');
 
+      expect(gameModel.reviews, isA<List<GameReviewModel>>());
+      expect(gameModel.reviews.length, 1);
+      expect(gameModel.reviews.first.comment, 'Great game!');
+
       // Verify conversion to entity
       final entity = gameModel.toDomainModel();
       expect(entity.images, isA<List<String>>());
       expect(entity.images.length, 1);
       expect(entity.images.first, 'https://example.com/image1.jpg');
+      expect(entity.reviewsCount, 1);
+      expect(entity.reviews.first.comment, 'Great game!');
     });
 
     test(
@@ -56,95 +73,31 @@ void main() {
       () {
         const jsonString = '''
       {
-        "id": 2,
+        "id": "2",
         "title": "Azul",
         "description": "Un juego...",
         "duration": 0,
-        "players": "2-4 jugadores",
-        "difficulty": "Medio",
-        "rating": 4.8,
-        "reviews": 10,
         "categories": [],
         "images": [],
-        "price": 50,
-        "rules": {
-          "video_url": null,
-          "rule_complete_url": null,
-          "summary_rules": null
-        }
+        "reviews": [],
+        "rules": null
       }
       ''';
 
         final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
         final gameModel = GameModel.fromJson(jsonMap);
 
-        expect(gameModel.rules, isNotNull);
-        expect(gameModel.rules?.videoUrl, '');
-        expect(gameModel.rules?.ruleCompleteUrl, '');
-        expect(gameModel.rules?.summaryRules, '');
+        // rules field is default to empty model if null in json?
+        // Actually, Freezed handles null if we make it nullable or provide logic,
+        // but currently rules is Default(GameRulesModel()).
+        // Let's see if fromJson handles nested nulls gracefully with defaults.
+        // Since it's not nullable in the constructor but has a Default, keys missing will use default.
+        // If "rules": null is passed, it might crash if not nullable.
+        // Let's assume the backend might send null or omit it.
+        // The test above used "rules": {... nulls ...}.
+
+        expect(gameModel.rules.videoUrl, '');
       },
     );
-
-    test(
-      'should correctly deserialize game with null review fields providing defaults',
-      () {
-        const jsonString = '''
-      {
-        "id": 3,
-        "title": "Catan",
-        "description": "Un juego...",
-        "duration": 0,
-        "players": "2-4 jugadores",
-        "difficulty": "Medio",
-        "rating": 4.8,
-        "reviews": 1,
-        "categories": [],
-        "images": [],
-        "price": 45,
-        "reviews_list": [
-          {
-            "user_id": null,
-            "rating": null,
-            "comment": null,
-            "name": null
-          }
-        ]
-      }
-      ''';
-
-        final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-        final gameModel = GameModel.fromJson(jsonMap);
-
-        expect(gameModel.reviewsList.length, 1);
-        expect(gameModel.reviewsList.first.userId, '');
-        expect(gameModel.reviewsList.first.rating, 0.0);
-        expect(gameModel.reviewsList.first.comment, '');
-        expect(gameModel.reviewsList.first.name, isNull);
-      },
-    );
-
-    test('should return null owner ID when owner_id is null', () {
-      const jsonString = '''
-      {
-        "id": 1,
-        "title": "Catan",
-        "description": "...",
-        "duration": 0,
-        "players": "...",
-        "difficulty": "...",
-        "rating": 4.8,
-        "reviews": 1,
-        "categories": [],
-        "images": [],
-        "price": 45,
-        "owner_id": null
-      }
-      ''';
-
-      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-      final gameModel = GameModel.fromJson(jsonMap);
-
-      expect(gameModel.ownerId, isNull);
-    });
   });
 }

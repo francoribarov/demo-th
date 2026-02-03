@@ -47,12 +47,12 @@ void main() {
   });
 
   AuthBloc buildBloc() => AuthBloc(
-    getAuthStatus: getAuthStatus,
-    login: login,
-    register: register,
-    logout: logout,
-    refreshToken: refreshToken,
-  );
+        getAuthStatus: getAuthStatus,
+        login: login,
+        register: register,
+        logout: logout,
+        refreshToken: refreshToken,
+      );
 
   blocTest<AuthBloc, AuthState>(
     'emits authenticated state on login success',

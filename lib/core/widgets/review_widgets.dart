@@ -72,7 +72,7 @@ class ReviewCard extends StatelessWidget {
     required this.name,
     required this.rating,
     required this.comment,
-    required this.dateOrRole,
+    required this.date,
     super.key,
   });
 
@@ -86,7 +86,7 @@ class ReviewCard extends StatelessWidget {
   final String comment;
 
   /// A secondary label, usually the date or the user's role.
-  final String dateOrRole;
+  final String date;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,7 @@ class ReviewCard extends StatelessWidget {
                   children: [
                     Text(name, style: AppTypography.titleSmall),
                     Text(
-                      dateOrRole,
+                      date,
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.gameBrown.withOpacityValue(0.6),
                       ),

@@ -3,24 +3,26 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
 import 'package:mobile_table_hopping/features/rental/domain/entities/rental_draft.dart';
 import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
-import 'package:mobile_table_hopping/features/rental/domain/validators/rental_date_validator.dart';
 
 part 'rental_bloc.freezed.dart';
 part 'rental_event.dart';
 part 'rental_state.dart';
 
 @injectable
+
 /// Bloc coordinating rental confirmation state and side effects.
 class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
-  RentalBloc({required GetGames getGames, required ConfirmRental confirmRental})
-    : _getGames = getGames,
-      _confirmRental = confirmRental,
-      super(const RentalState()) {
+  RentalBloc({
+    required GetPublications getPublications,
+    required ConfirmRental confirmRental,
+  })  : _getPublications = getPublications,
+        _confirmRental = confirmRental,
+        super(const RentalState()) {
     on<_Started>(_onStarted);
     on<_StartDateChanged>(_onStartDateChanged);
     on<_EndDateChanged>(_onEndDateChanged);
@@ -34,7 +36,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     on<_MessageShown>(_onMessageShown);
     on<_PublishAnother>(_onPublishAnother);
   }
-  final GetGames _getGames;
+  final GetPublications _getPublications;
   final ConfirmRental _confirmRental;
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
@@ -52,8 +54,8 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final id = event.publicationId;
 
     try {
-      final game = await _getGames.getById(id);
-      if (game == null) {
+      final publication = await _getPublications.getById(id);
+      if (publication == null) {
         emit(
           state.copyWith(
             isLoading: false,
@@ -62,7 +64,11 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         );
         return;
       }
-      emit(state.copyWith(isLoading: false, game: game));
+      emit(
+        _updateCalculations(
+          state.copyWith(isLoading: false, publication: publication),
+        ),
+      );
     } on Exception catch (e) {
       emit(
         state.copyWith(
@@ -93,21 +99,19 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       snackbar = AppStrings.rentalChooseLaterEnd;
     }
 
-    final result = RentalDateValidator.validate(
-      game: state.game,
-      startDate: newStart,
-      endDate: newEnd,
+    final errorMessage = _validateDates(
+      state.publication,
+      newStart,
+      newEnd,
     );
 
     // If we newly set a start date but it makes the 3-day window unavailable
-    if (newEnd == null && state.game != null) {
+    if (newEnd == null && state.publication != null) {
       final startDate = DateTime.tryParse(newStart);
       if (startDate != null) {
         final minEndDate = startDate.add(const Duration(days: 2));
-        if (!state.game!.isAvailableFor(
-          newStart,
-          minEndDate.toIso8601String(),
-        )) {
+        if (!state.publication!
+            .isAvailableFor(newStart, minEndDate.toIso8601String())) {
           return emit(
             state.copyWith(
               startDate: null,
@@ -120,10 +124,12 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     }
 
     emit(
-      state.copyWith(
-        startDate: newStart,
-        endDate: result.isValid ? newEnd : null,
-        snackbarMessage: snackbar ?? (result.isValid ? null : result.message),
+      _updateCalculations(
+        state.copyWith(
+          startDate: newStart,
+          endDate: errorMessage == null ? newEnd : null,
+          snackbarMessage: snackbar ?? errorMessage,
+        ),
       ),
     );
   }
@@ -131,16 +137,18 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   void _onEndDateChanged(_EndDateChanged event, Emitter<RentalState> emit) {
     final newEnd = event.endDate;
 
-    final result = RentalDateValidator.validate(
-      game: state.game,
-      startDate: state.startDate,
-      endDate: newEnd,
+    final errorMessage = _validateDates(
+      state.publication,
+      state.startDate,
+      newEnd,
     );
 
     emit(
-      state.copyWith(
-        endDate: result.isValid ? newEnd : null,
-        snackbarMessage: result.isValid ? null : result.message,
+      _updateCalculations(
+        state.copyWith(
+          endDate: errorMessage == null ? newEnd : null,
+          snackbarMessage: errorMessage,
+        ),
       ),
     );
   }
@@ -151,28 +159,38 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
 
     if (startStr == null || endStr == null) {
       emit(
-        state.copyWith(startDate: null, endDate: null, snackbarMessage: null),
+        state.copyWith(
+          startDate: null,
+          endDate: null,
+          snackbarMessage: null,
+        ),
       );
       return;
     }
 
-    final result = RentalDateValidator.validate(
-      game: state.game,
-      startDate: startStr,
-      endDate: endStr,
+    final errorMessage = _validateDates(
+      state.publication,
+      startStr,
+      endStr,
     );
 
     emit(
-      state.copyWith(
-        startDate: result.isValid ? startStr : null,
-        endDate: result.isValid ? endStr : null,
-        snackbarMessage: result.isValid ? null : result.message,
+      _updateCalculations(
+        state.copyWith(
+          startDate: errorMessage == null ? startStr : null,
+          endDate: errorMessage == null ? endStr : null,
+          snackbarMessage: errorMessage,
+        ),
       ),
     );
   }
 
   void _onDeliveryChanged(_DeliveryChanged event, Emitter<RentalState> emit) {
-    emit(state.copyWith(isDelivery: event.isDelivery));
+    emit(
+      _updateCalculations(
+        state.copyWith(isDelivery: event.isDelivery),
+      ),
+    );
   }
 
   void _onDeliveryAddressChanged(
@@ -200,18 +218,22 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     _FoodBundlesChanged event,
     Emitter<RentalState> emit,
   ) {
-    emit(state.copyWith(selectedFoodBundles: event.foodBundles));
+    emit(
+      _updateCalculations(
+        state.copyWith(selectedFoodBundles: event.foodBundles),
+      ),
+    );
   }
 
   Future<void> _onSubmitted(_Submitted event, Emitter<RentalState> emit) async {
     final start = state.startDate;
     final end = state.endDate;
-    final game = state.game;
+    final publication = state.publication;
 
-    if (game == null) return;
+    if (publication == null) return;
 
-    final ownerId = game.ownerId ?? state.ownerId;
-    if (ownerId == null || ownerId.isEmpty) {
+    final ownerId = publication.ownerId;
+    if (ownerId.isEmpty) {
       emit(
         state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError),
       );
@@ -223,14 +245,10 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       return;
     }
 
-    final result = RentalDateValidator.validate(
-      game: game,
-      startDate: start,
-      endDate: end,
-    );
+    final isValid = _validateDates(publication, start, end);
 
-    if (!result.isValid) {
-      emit(state.copyWith(snackbarMessage: result.message));
+    if (isValid != null) {
+      emit(state.copyWith(snackbarMessage: isValid));
       return;
     }
 
@@ -239,17 +257,17 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     try {
       await _confirmRental(
         RentalDraft(
-          publicationId: game.id,
+          publicationId: publication.id,
           ownerId: ownerId,
           startDate: start,
           endDate: end,
-          deposit: (game.deposit ?? state.deposit) ?? 0,
+          deposit: publication.deposit,
           isDelivery: state.isDelivery,
           deliveryAddress: state.deliveryAddress,
           deliveryComments: state.deliveryComments,
           paymentMethod: state.paymentMethod,
           foodBundleIds: state.selectedFoodBundles,
-          pricePerDay: game.price,
+          pricePerDay: publication.price,
         ),
       );
       emit(state.copyWith(isSubmitting: false, success: true));
@@ -282,5 +300,80 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         errorMessage: null,
       ),
     );
+  }
+
+  RentalState _updateCalculations(RentalState state) {
+    // If no publication yet, we can't calculate much, but we can set defaults
+    // or just return as is if we rely on publication price.
+    // Assuming defaults:
+    final price = state.publication?.price ?? 0.0;
+
+    final startStr = state.startDate;
+    final endStr = state.endDate;
+    var rentalDays = 1;
+    if (startStr != null && endStr != null) {
+      final start = DateTime.tryParse(startStr);
+      final end = DateTime.tryParse(endStr);
+      if (start != null && end != null) {
+        // From Mon to Wed is 3 days. difference gives 2.
+        rentalDays = end.difference(start).inDays + 1;
+        if (rentalDays < 1) rentalDays = 1;
+      }
+    }
+
+    final subtotal = price * rentalDays;
+    final serviceFee = (subtotal * 0.1).round();
+    final deliveryFee = state.isDelivery ? 150 : 0;
+    final foodTotal = state.selectedFoodBundles.length * 250;
+    final total = subtotal + serviceFee + deliveryFee + foodTotal;
+
+    return state.copyWith(
+      rentalDays: rentalDays,
+      subtotal: subtotal,
+      serviceFee: serviceFee,
+      deliveryFee: deliveryFee,
+      foodTotal: foodTotal,
+      total: total,
+    );
+  }
+
+  /// Validates rental dates. Returns error message if invalid, null if valid.
+  String? _validateDates(
+    PublicationListing? publication,
+    String? startDate,
+    String? endDate,
+  ) {
+    if (publication == null) {
+      return 'No se pudo cargar la información del juego.';
+    }
+
+    if (startDate == null || endDate == null) {
+      return null;
+    }
+
+    final start = DateTime.tryParse(startDate);
+    final end = DateTime.tryParse(endDate);
+
+    if (start == null || end == null) {
+      return 'Formato de fecha inválido.';
+    }
+
+    // Check minimum duration (3 days)
+    final durationInDays = end.difference(start).inDays + 1;
+    if (durationInDays < 3) {
+      return AppStrings.rentalMinDays;
+    }
+
+    // Check maximum duration (30 days)
+    if (durationInDays > 30) {
+      return AppStrings.rentalMaxDays;
+    }
+
+    // Check availability
+    if (!publication.isAvailableFor(startDate, endDate)) {
+      return AppStrings.rentalUnavailableRange;
+    }
+
+    return null;
   }
 }

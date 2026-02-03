@@ -1,9 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_details_page.dart';
+import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
 
 /// Placeholder tests for game_details feature.
 
-// TODO(antigravity): Implement comprehensive tests for:
 // - Game details display
 // - Availability calendar
 // - Rental flow integration
@@ -11,8 +10,7 @@ import 'package:mobile_table_hopping/features/game_details/presentation/pages/ga
 void main() {
   group('GameDetailsPage', () {
     test('placeholder - requires implementation', () {
-      // This test documents that the game_details feature needs test coverage
-      expect(GameDetailsPage, isNotNull);
+      expect(PublicationDetailsPage, isNotNull);
     });
   });
 }

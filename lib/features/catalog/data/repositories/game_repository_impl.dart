@@ -10,6 +10,7 @@ import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dar
 
 import 'package:mobile_table_hopping/features/catalog/domain/entities/filters.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/repositories/game_repository.dart';
 
 /// Implementation of GameRepository using remote datasource
@@ -22,14 +23,14 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
 
   @override
   Future<List<Game>> getGames() async {
-    final response = await _gameDatasource.getPublications();
-    return response.items.map((m) => m.toGameEntity()).toList();
+    final response = await _gameDatasource.getAllGames();
+    return response.map((m) => m.toDomainModel()).toList();
   }
 
   @override
   Future<Game?> getGameById(String id) async {
     final response = await _gameDatasource.getGameById(id);
-    return response.toGameEntity();
+    return response.toDomainModel();
   }
 
   @override
@@ -97,21 +98,13 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
       sortBy: sortByParam,
     );
 
-    return response.items.map((m) => m.toGameEntity()).toList();
-  }
-
-  @override
-  Future<List<Game>> getGamesAvailableToday() async {
-    return executeDataSourceList<GameModel, Game>(
-      function: _gameDatasource.getGamesAvailableToday,
-    );
+    return response.map((m) => m.toGameEntity()).toList();
   }
 
   @override
   Future<List<Game>> getRecommendedGames(String gameId) async {
-    return executeDataSourceList<GameModel, Game>(
-      function: () => _gameDatasource.getGameRecommendations(gameId),
-    );
+    final dtos = await _gameDatasource.getPublicationsRecommendations(gameId);
+    return dtos.map((m) => m.toGameEntity()).toList();
   }
 
   @override
@@ -126,5 +119,13 @@ class GameRepositoryImpl extends BaseRepository implements GameRepository {
     return executeDataSourceList<FilterShortcutModel, FilterShortcut>(
       function: _categoryDatasource.getFilterShortcuts,
     );
+  }
+
+  @override
+  Future<List<PublicationListing>> getPublicationListings({
+    String? query,
+  }) async {
+    final response = await _gameDatasource.getPublicationListings(query: query);
+    return response.map((m) => m.toDomainModel()).toList();
   }
 }

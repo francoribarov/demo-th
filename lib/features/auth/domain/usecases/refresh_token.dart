@@ -4,6 +4,7 @@ import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.d
 import 'package:mobile_table_hopping/features/auth/domain/repositories/auth_repository.dart';
 
 @injectable
+
 /// Use case for refreshing access tokens.
 class RefreshToken {
   /// Creates a [RefreshToken] use case.
