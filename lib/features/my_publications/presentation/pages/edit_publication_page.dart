@@ -10,6 +10,7 @@ import 'package:mobile_table_hopping/features/my_publications/presentation/pages
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_price_step.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_review_step.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/widgets/edit_success_view.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/widgets/step_indicator.dart';
 
 /// Page for editing an existing publication.
@@ -22,14 +23,6 @@ class EditPublicationPage extends StatelessWidget {
 
   /// The ID of the publication to edit.
   final String publicationId;
-
-  static const _conditions = [
-    ('new', 'Nuevo', 'Sellado o usado una vez'),
-    ('like_new', 'Como nuevo', 'Excelente estado, sin marcas'),
-    ('good', 'Buen estado', 'Uso normal, todo completo'),
-    ('fair', 'Aceptable', 'Desgaste visible pero funcional'),
-    ('worn', 'Usado', 'Muy jugado, puede faltar algo'),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -101,38 +94,44 @@ class EditPublicationPage extends StatelessWidget {
                       EditDataStep(
                         description: state.description,
                         condition: state.condition,
-                        conditions: _conditions,
+                        conditions: PublicationCondition.values,
                         selectedGame: state.selectedGame,
-                        onDescriptionChanged: (v) => context
-                            .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.descriptionChanged(v),),
-                        onConditionChanged: (v) => context
-                            .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.conditionChanged(v),),
+                        onDescriptionChanged: (v) =>
+                            context.read<EditPublicationBloc>().add(
+                                  EditPublicationEvent.descriptionChanged(v),
+                                ),
+                        onConditionChanged: (v) =>
+                            context.read<EditPublicationBloc>().add(
+                                  EditPublicationEvent.conditionChanged(v),
+                                ),
                       ),
                       EditPhotosStep(
                         images: state.images,
                         isUploading: state.isUploadingImage,
-                        onImagesChanged: (v) => context
-                            .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.imagesChanged(v),),
+                        onImagesChanged: (v) =>
+                            context.read<EditPublicationBloc>().add(
+                                  EditPublicationEvent.imagesChanged(v),
+                                ),
                         onAddImage: () => context
                             .read<EditPublicationBloc>()
-                            .add(const EditPublicationEvent
-                                .pickMultipleImages(),),
+                            .add(
+                              const EditPublicationEvent.pickMultipleImages(),
+                            ),
                       ),
                       EditPriceStep(
                         price: state.price,
                         deliveryMethods: state.deliveryMethods,
                         availableDeliveryMethods:
                             state.availableDeliveryMethods,
-                        onPriceChanged: (v) => context
-                            .read<EditPublicationBloc>()
-                            .add(EditPublicationEvent.priceChanged(v),),
+                        onPriceChanged: (v) =>
+                            context.read<EditPublicationBloc>().add(
+                                  EditPublicationEvent.priceChanged(v),
+                                ),
                         onDeliveryMethodsChanged: (v) => context
                             .read<EditPublicationBloc>()
                             .add(
-                                EditPublicationEvent.deliveryMethodsChanged(v),),
+                              EditPublicationEvent.deliveryMethodsChanged(v),
+                            ),
                       ),
                       EditReviewStep(
                         selectedGame: state.selectedGame,
@@ -140,7 +139,6 @@ class EditPublicationPage extends StatelessWidget {
                         price: state.price,
                         condition: state.condition,
                         images: state.images,
-                        conditions: _conditions,
                       ),
                     ],
                   ),
@@ -169,7 +167,10 @@ class EditPublicationPage extends StatelessWidget {
     );
   }
 
-  Future<void> _handleBack(BuildContext context, EditPublicationState state) async {
+  Future<void> _handleBack(
+    BuildContext context,
+    EditPublicationState state,
+  ) async {
     if (state.hasChanges) {
       await showDialog<bool>(
         context: context,

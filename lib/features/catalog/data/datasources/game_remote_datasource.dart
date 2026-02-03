@@ -325,4 +325,92 @@ class GameRemoteDatasourceImpl implements GameRemoteDatasource {
       throw _handleError(e);
     }
   }
+
+  @override
+  Future<List<PublicationListingModel>> getPublicationListings({
+    String? query,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
+      if (query != null && query.isNotEmpty) queryParams['q'] = query;
+
+      final response = await _dioClient.get<dynamic>(
+        ApiConstants.publications,
+        queryParameters: queryParams,
+      );
+
+      final List<dynamic> itemsData;
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
+      final items = itemsData
+          .map(
+            (json) =>
+                PublicationListingModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+
+      return items;
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  @override
+  Future<GameModel> getGameById(String id) async {
+    try {
+      final response = await _dioClient.get<Map<String, dynamic>>(
+        '${ApiConstants.games}/$id',
+      );
+
+      final data = response.data ?? const <String, dynamic>{};
+      return GameModel.fromJson(data);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  @override
+  Future<List<GameModel>> getAllGames({
+    String? query,
+    int page = 1,
+    int limit = 50,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{'page': page, 'limit': limit};
+      if (query != null && query.isNotEmpty) queryParams['q'] = query;
+
+      final response = await _dioClient.get<dynamic>(
+        ApiConstants.games,
+        queryParameters: queryParams,
+      );
+
+      final List<dynamic> itemsData;
+      if (response.data is List) {
+        itemsData = response.data as List<dynamic>;
+      } else if (response.data is Map<String, dynamic>) {
+        final data = response.data as Map<String, dynamic>;
+        itemsData = data['items'] as List<dynamic>? ?? const <dynamic>[];
+      } else {
+        itemsData = const <dynamic>[];
+      }
+
+      final items = itemsData
+          .map(
+            (json) => GameModel.fromJson(json as Map<String, dynamic>),
+          )
+          .toList();
+
+      return items;
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
 }

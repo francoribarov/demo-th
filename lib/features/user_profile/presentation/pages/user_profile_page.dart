@@ -258,7 +258,7 @@ class UserProfilePage extends StatelessWidget {
                     name: review.name,
                     rating: review.rating,
                     comment: review.comment,
-                    dateOrRole: review.date,
+                    date: review.date,
                   ),
                 ),
 

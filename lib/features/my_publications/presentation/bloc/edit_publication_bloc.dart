@@ -9,6 +9,7 @@ import 'package:mobile_table_hopping/features/my_publications/domain/usecases/de
 import 'package:mobile_table_hopping/features/my_publications/domain/usecases/get_publication_detail.dart';
 import 'package:mobile_table_hopping/features/my_publications/domain/usecases/update_publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 
 part 'edit_publication_bloc.freezed.dart';

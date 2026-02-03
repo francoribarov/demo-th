@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
                       )
                     : state.isSearchMode
                         ? ResultsView(state: state)
-                        : DiscoveryView(state: state),
+                        : const DiscoveryView(),
               ),
             ],
           ),

@@ -15,13 +15,11 @@ import 'package:mobile_table_hopping/features/catalog/presentation/widgets/publi
 /// Discovery view shown when no search or filters are active.
 class DiscoveryView extends StatelessWidget {
   /// Creates a [DiscoveryView].
-  const DiscoveryView({required this.state, super.key});
-
-  /// Current catalog state.
-  final CatalogState state;
+  const DiscoveryView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<CatalogBloc>().state;
     return RefreshIndicator(
       onRefresh: () async {
         context.read<CatalogBloc>().add(const LoadGames());

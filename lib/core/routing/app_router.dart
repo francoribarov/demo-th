@@ -18,15 +18,9 @@ import 'package:mobile_table_hopping/features/publication_details/presentation/b
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_reviews_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_rules_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_details_bloc.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_reviews_bloc.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/bloc/game_rules_bloc.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_details_page.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_reviews_page.dart';
-import 'package:mobile_table_hopping/features/game_details/presentation/pages/game_rules_page.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery_method_bloc.dart';
+import 'package:mobile_table_hopping/features/publish/presentation/bloc/image_upload_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
 import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
@@ -127,9 +121,19 @@ class AppRouter {
             path: AppRoutes.publish,
             name: 'publish',
             pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider<PublishBloc>(
-                create: (_) =>
-                    getIt<PublishBloc>()..add(const PublishEvent.started()),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider<PublishBloc>(
+                    create: (_) =>
+                        getIt<PublishBloc>()..add(const PublishEvent.started()),
+                  ),
+                  BlocProvider<DeliveryMethodBloc>(
+                    create: (_) => getIt<DeliveryMethodBloc>(),
+                  ),
+                  BlocProvider<ImageUploadBloc>(
+                    create: (_) => getIt<ImageUploadBloc>(),
+                  ),
+                ],
                 child: const PublishGamePage(),
               ),
             ),

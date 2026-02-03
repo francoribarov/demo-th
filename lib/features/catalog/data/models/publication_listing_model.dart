@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart'
+    show PublicationCondition;
 
 part 'publication_listing_model.freezed.dart';
 part 'publication_listing_model.g.dart';
@@ -87,7 +89,10 @@ sealed class PublicationListingModel
     @JsonKey(name: 'owner_id') required String ownerId,
     @JsonKey(name: 'game_id') @IntToStringConverter() required String gameId,
     required String title,
-    required String condition,
+    /// Condition: "new", "like_new", "good", "fair", "worn"
+    @JsonEnum() required PublicationCondition condition,
+
+    /// Price in UYU.
     required double price,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @Default(0.0) double deposit,

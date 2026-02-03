@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
 /// Final review step before submitting publication changes.
 class EditReviewStep extends StatelessWidget {
@@ -14,7 +15,6 @@ class EditReviewStep extends StatelessWidget {
     required this.price,
     required this.condition,
     required this.images,
-    required this.conditions,
     this.selectedGame,
     super.key,
   });
@@ -29,18 +29,12 @@ class EditReviewStep extends StatelessWidget {
   final int price;
 
   /// Condition value.
-  final String condition;
+  final PublicationCondition? condition;
 
   /// Images list.
   final List<String> images;
 
-  /// Condition options for display.
-  final List<(String, String, String)> conditions;
-
-  String get _conditionLabel {
-    final found = conditions.where((c) => c.$1 == condition);
-    return found.isNotEmpty ? found.first.$2 : condition;
-  }
+  String get _conditionLabel => condition?.label ?? '';
 
   @override
   Widget build(BuildContext context) {

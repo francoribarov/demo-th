@@ -21,35 +21,12 @@ abstract class RentalState with _$RentalState {
     @Default([]) List<String> selectedFoodBundles,
     @Default(false) bool isSubmitting,
     String? snackbarMessage,
+    @Default(1) int rentalDays,
+    @Default(0.0) double subtotal,
+    @Default(0) int serviceFee,
+    @Default(0) int deliveryFee,
+    @Default(0) int foodTotal,
+    @Default(0.0) double total,
   }) = _RentalState;
   const RentalState._();
-
-  /// Number of days between start and end dates, inclusive.
-  int get rentalDays {
-    final startStr = startDate;
-    final endStr = endDate;
-    if (startStr == null || endStr == null) return 1;
-
-    final start = DateTime.tryParse(startStr);
-    final end = DateTime.tryParse(endStr);
-    if (start == null || end == null) return 1;
-
-    // From Mon to Wed is 3 days (Mon, Tue, Wed). difference() gives 2 days.
-    return end.difference(start).inDays + 1;
-  }
-
-  /// Subtotal for the rental without fees.
-  double get subtotal => (publication?.price ?? 0.0) * rentalDays;
-
-  /// Service fee applied to the subtotal.
-  int get serviceFee => (subtotal * 0.1).round();
-
-  /// Delivery fee based on delivery selection.
-  int get deliveryFee => isDelivery ? 150 : 0;
-
-  /// Total price for selected food bundles.
-  int get foodTotal => selectedFoodBundles.length * 250;
-
-  /// Total price including fees and add-ons.
-  double get total => subtotal + serviceFee + deliveryFee + foodTotal;
 }

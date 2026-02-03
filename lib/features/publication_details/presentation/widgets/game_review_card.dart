@@ -16,7 +16,7 @@ class GameReviewCard extends StatelessWidget {
       name: review.name,
       rating: review.rating,
       comment: review.comment,
-      dateOrRole: '', // Role removed from entity
+      date: review.createdAt?.toString() ?? '',
     );
   }
 }

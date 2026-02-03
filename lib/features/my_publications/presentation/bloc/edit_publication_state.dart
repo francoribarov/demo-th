@@ -20,7 +20,7 @@ abstract class EditPublicationState with _$EditPublicationState {
     // Editable fields
     @Default('') String gameId,
     @Default('') String description,
-    @Default('') String condition,
+    PublicationCondition? condition,
     @Default(0) int price,
     @Default([]) List<String> images,
     @Default([]) List<DeliveryMethod> deliveryMethods,
@@ -35,7 +35,7 @@ abstract class EditPublicationState with _$EditPublicationState {
 
   /// Returns whether the current step is valid for proceeding.
   bool get canProceed {
-    final hasValidData = description.isNotEmpty && condition.isNotEmpty;
+    final hasValidData = description.isNotEmpty && condition != null;
     final hasValidPrice = price > 0;
 
     return switch (currentStep) {

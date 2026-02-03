@@ -17,7 +17,7 @@ sealed class PublicationDetailModel
     @JsonKey(name: 'game_id') required String gameId,
     @JsonKey(name: 'owner_id') required String ownerId,
     required String description,
-    required String condition,
+    required PublicationCondition condition,
     required int price,
     @Default([]) List<String> images,
     @JsonKey(name: 'delivery_methods')
@@ -107,7 +107,7 @@ sealed class PublicationUpdateRequestModel
     with _$PublicationUpdateRequestModel {
   const factory PublicationUpdateRequestModel({
     String? description,
-    String? condition,
+    PublicationCondition? condition,
     int? price,
     List<String>? images,
     @JsonKey(name: 'delivery_method_ids') List<String>? deliveryMethodIds,

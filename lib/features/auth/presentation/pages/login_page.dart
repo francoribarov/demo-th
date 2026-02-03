@@ -20,10 +20,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _didClearErrors = false;
+
   @override
-  void initState() {
-    super.initState();
-    context.read<AuthBloc>().add(const AuthEvent.clearErrors());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_didClearErrors) {
+      _didClearErrors = true;
+      context.read<AuthBloc>().add(const AuthEvent.clearErrors());
+    }
   }
 
   @override

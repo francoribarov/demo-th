@@ -3,6 +3,37 @@ import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_m
 
 part 'publication.freezed.dart';
 
+/// Standard conditions for a publication.
+@JsonEnum(fieldRename: FieldRename.snake)
+enum PublicationCondition {
+  /// Brand new, sealed.
+  @JsonValue('new')
+  newCondition('Nuevo', 'Sellado o usado una vez'),
+
+  /// Like new, perfect condition.
+  @JsonValue('like_new')
+  likeNew('Como nuevo', 'Excelente estado, sin marcas'),
+
+  /// Good condition, normal wear.
+  @JsonValue('good')
+  good('Buen estado', 'Uso normal, todo completo'),
+
+  /// Fair condition, visible wear but playable.
+  @JsonValue('fair')
+  fair('Aceptable', 'Desgaste visible pero funcional'),
+
+  /// Worn condition, heavy wear.
+  @JsonValue('worn')
+  worn('Usado', 'Muy jugado, puede faltar algo');
+
+  const PublicationCondition(this.label, this.description);
+
+  /// Display label (e.g., "Nuevo").
+  final String label;
+
+  /// detailed description.
+  final String description;
+}
 /// Image metadata used by publications.
 @freezed
 abstract class PublicationImage with _$PublicationImage {
@@ -23,7 +54,7 @@ abstract class PublicationDraft with _$PublicationDraft {
     required String gameId,
     required String description,
     required int price,
-    required String condition, // "new"|"like_new"|"good"|"fair"|"worn"
+    required PublicationCondition condition,
     required List<PublicationImage> images,
     required List<DeliveryMethod> deliveryMethods,
   }) = _PublicationDraft;
@@ -38,7 +69,7 @@ abstract class Publication with _$Publication {
     required String gameId,
     required String ownerId,
     required String description,
-    required String condition,
+    required PublicationCondition condition,
     required int price,
     @Default([]) List<PublicationImage> images,
     @Default([]) List<DeliveryMethod> deliveryMethods,

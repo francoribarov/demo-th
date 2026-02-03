@@ -13,8 +13,11 @@ abstract class PublishEvent with _$PublishEvent {
   /// Returns to the previous step.
   const factory PublishEvent.previousStep() = _PreviousStep;
 
-  /// Submits the current publication.
-  const factory PublishEvent.submit() = _Submit;
+  /// Submits the current publication with images and delivery methods.
+  const factory PublishEvent.submit({
+    @Default([]) List<String> images,
+    @Default([]) List<DeliveryMethod> deliveryMethods,
+  }) = _Submit;
 
   /// Resets the form to publish another game.
   const factory PublishEvent.publishAnother() = _PublishAnother;
@@ -30,33 +33,11 @@ abstract class PublishEvent with _$PublishEvent {
   const factory PublishEvent.priceChanged(int value) = _PriceChanged;
 
   /// Updates the condition input.
-  const factory PublishEvent.conditionChanged(String value) = _ConditionChanged;
-
-  /// Updates the selected images.
-  const factory PublishEvent.imagesChanged(List<String> value) = _ImagesChanged;
+  const factory PublishEvent.conditionChanged(PublicationCondition value) =
+      _ConditionChanged;
 
   /// Loads the list of available games.
   const factory PublishEvent.loadGames() = _LoadGames;
-
   /// Filters the list of games by query.
   const factory PublishEvent.searchGames(String query) = _SearchGames;
-
-  /// Updates the delivery methods.
-  const factory PublishEvent.deliveryMethodsChanged(
-    List<DeliveryMethod> value,
-  ) = _DeliveryMethodsChanged;
-
-  /// Creates a new delivery method.
-  const factory PublishEvent.addDeliveryMethod(DeliveryMethod method) =
-      _AddDeliveryMethod;
-
-  /// Loads the delivery methods.
-  const factory PublishEvent.getDeliveryMethods() = _GetDeliveryMethods;
-
-  /// Toggles selection of a delivery method.
-  const factory PublishEvent.toggleDeliveryMethod(DeliveryMethod method) =
-      _ToggleDeliveryMethod;
-
-  /// Pick multiple images from gallery.
-  const factory PublishEvent.pickMultipleImages() = _PickMultipleImages;
 }

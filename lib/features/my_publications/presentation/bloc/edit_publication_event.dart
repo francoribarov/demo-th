@@ -16,8 +16,9 @@ sealed class EditPublicationEvent with _$EditPublicationEvent {
   const factory EditPublicationEvent.priceChanged(int value) = _PriceChanged;
 
   /// Condition selection changed.
-  const factory EditPublicationEvent.conditionChanged(String value) =
-      _ConditionChanged;
+  const factory EditPublicationEvent.conditionChanged(
+    PublicationCondition value,
+  ) = _ConditionChanged;
 
   /// Images list changed.
   const factory EditPublicationEvent.imagesChanged(List<String> value) =

@@ -22,10 +22,6 @@ void main() {
     authBloc = MockAuthBloc();
   });
 
-  tearDown(() async {
-    await authBloc.close();
-  });
-
   Widget buildSubject() {
     return MaterialApp(
       home: Scaffold(
@@ -50,6 +46,8 @@ void main() {
 
     await tester.pumpWidget(buildSubject());
 
+    verify(() => authBloc.add(const AuthEvent.clearErrors())).called(1);
+
     await tester.tap(find.widgetWithText(ElevatedButton, 'Ingresar'));
     verify(() => authBloc.add(const AuthEvent.loginSubmitted())).called(1);
 
@@ -61,6 +59,8 @@ void main() {
     await tester.pump();
     expect(find.text('Login failed'), findsOneWidget);
 
+    // Allow widget tree to settle before closing
+    await tester.pumpAndSettle();
     await controller.close();
   });
 }

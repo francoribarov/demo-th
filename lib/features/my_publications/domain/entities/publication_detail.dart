@@ -13,7 +13,7 @@ abstract class PublicationDetail with _$PublicationDetail {
     required String gameId,
     required String ownerId,
     required String description,
-    required String condition,
+    required PublicationCondition condition,
     required int price,
     @Default([]) List<PublicationImage> images,
     @Default([]) List<DeliveryMethod> deliveryMethods,
@@ -41,7 +41,7 @@ abstract class PublicationDetail with _$PublicationDetail {
 abstract class PublicationUpdate with _$PublicationUpdate {
   const factory PublicationUpdate({
     String? description,
-    String? condition,
+    PublicationCondition? condition,
     int? price,
     List<String>? images,
     List<String>? deliveryMethodIds,

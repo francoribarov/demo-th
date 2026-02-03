@@ -283,16 +283,13 @@ class PublicationRemoteDatasourceImpl implements PublicationRemoteDatasource {
   }
 
   Exception _handleError(DioException e) {
-    if (e.type == DioExceptionType.badResponse) {
-      final data = e.response?.data;
-      if (data is Map && data['detail'] != null) {
-        return Exception(data['detail'].toString());
-      }
+    var message = e.message ?? 'Error de conexión';
+    final data = e.response?.data;
+    if (data is Map && data['detail'] != null) {
+      message = data['detail'].toString();
+    } else if (e.error != null) {
+      message = 'Error de red: ${e.error}';
     }
-    final error = e.error;
-    if (error != null) {
-      return Exception('Error de red: $error');
-    }
-    return Exception(e.message ?? 'Error de conexión');
+    return Exception(message);
   }
 }

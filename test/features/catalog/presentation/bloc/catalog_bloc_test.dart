@@ -6,6 +6,7 @@ import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
 
 import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetGames extends Mock implements GetGames {}
@@ -45,7 +46,7 @@ void main() {
     ownerId: 'owner1',
     gameId: 'g1',
     title: 'Test Publication',
-    condition: 'new',
+    condition: PublicationCondition.newCondition,
     price: 100,
     images: ['image.jpg'],
     createdAt: DateTime(2023),

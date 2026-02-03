@@ -50,7 +50,7 @@ sealed class PublicationModel
     @JsonKey(name: 'game_id') required String gameId,
     @JsonKey(name: 'owner_id') required String ownerId,
     required String description,
-    required String condition,
+    required PublicationCondition condition,
     required int price,
     @Default([]) List<String> images,
   }) = _PublicationModel;
@@ -92,7 +92,7 @@ sealed class PublicationCreateRequestModel
     required String description,
 
     /// Condition: "new", "like_new", "good", "fair", "worn"
-    required String condition,
+    required PublicationCondition condition,
 
     /// Price in UYU
     required int price,

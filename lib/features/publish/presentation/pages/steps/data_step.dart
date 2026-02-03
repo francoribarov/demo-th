@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/validators/publication_validator.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/widgets/game_selector.dart';
 
@@ -28,11 +29,11 @@ class DataStep extends StatelessWidget {
   /// Current description value.
   final String description;
 
-  /// Current game condition key.
-  final String condition;
+  /// Current game condition.
+  final PublicationCondition? condition;
 
-  /// List of condition metadata (key, label, description).
-  final List<(String, String, String)> conditions;
+  /// List of available conditions.
+  final List<PublicationCondition> conditions;
 
   /// Callback when game ID changes.
   final void Function(String) onGameIdChanged;
@@ -41,7 +42,7 @@ class DataStep extends StatelessWidget {
   final void Function(String) onDescriptionChanged;
 
   /// Callback when condition changes.
-  final void Function(String) onConditionChanged;
+  final void Function(PublicationCondition) onConditionChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +89,8 @@ class DataStep extends StatelessWidget {
         // Condition
         Text('Estado del juego', style: AppTypography.titleMedium),
         const SizedBox(height: 12),
-        DropdownButtonFormField<String>(
-          initialValue: condition.isEmpty ? null : condition,
+        DropdownButtonFormField<PublicationCondition>(
+          initialValue: condition,
           decoration: InputDecoration(
             hintText: 'Seleccioná el estado',
             border: OutlineInputBorder(
@@ -115,15 +116,15 @@ class DataStep extends StatelessWidget {
             fillColor: AppColors.card,
           ),
           items: conditions.map((c) {
-            return DropdownMenuItem<String>(
-              value: c.$1,
+            return DropdownMenuItem<PublicationCondition>(
+              value: c,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(c.$2, style: AppTypography.bodyMedium),
+                  Text(c.label, style: AppTypography.bodyMedium),
                   Text(
-                    c.$3,
+                    c.description,
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.gameBrown.withOpacityValue(0.7),
                     ),
@@ -139,12 +140,12 @@ class DataStep extends StatelessWidget {
           },
           selectedItemBuilder: (context) {
             return conditions.map((c) {
-              return Text(c.$2, style: AppTypography.bodyMedium);
+              return Text(c.label, style: AppTypography.bodyMedium);
             }).toList();
           },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
-            if (value == null || value.isEmpty) {
+            if (value == null) {
               return 'Debes seleccionar el estado del juego';
             }
             return null;

@@ -3,6 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
 /// Step for editing publication data (description and condition).
 class EditDataStep extends StatelessWidget {
@@ -21,10 +22,10 @@ class EditDataStep extends StatelessWidget {
   final String description;
 
   /// Current condition.
-  final String condition;
+  final PublicationCondition? condition;
 
   /// List of condition options.
-  final List<(String, String, String)> conditions;
+  final List<PublicationCondition> conditions;
 
   /// Selected game (read-only display).
   final Game? selectedGame;
@@ -33,7 +34,7 @@ class EditDataStep extends StatelessWidget {
   final ValueChanged<String> onDescriptionChanged;
 
   /// Callback when condition changes.
-  final ValueChanged<String> onConditionChanged;
+  final ValueChanged<PublicationCondition> onConditionChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -155,11 +156,9 @@ class EditDataStep extends StatelessWidget {
           (c) => Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: _ConditionOption(
-              value: c.$1,
-              label: c.$2,
-              description: c.$3,
-              isSelected: condition == c.$1,
-              onTap: () => onConditionChanged(c.$1),
+              condition: c,
+              isSelected: condition == c,
+              onTap: () => onConditionChanged(c),
             ),
           ),
         ),
@@ -189,16 +188,12 @@ class _GamePlaceholder extends StatelessWidget {
 
 class _ConditionOption extends StatelessWidget {
   const _ConditionOption({
-    required this.value,
-    required this.label,
-    required this.description,
+    required this.condition,
     required this.isSelected,
     required this.onTap,
   });
 
-  final String value;
-  final String label;
-  final String description;
+  final PublicationCondition condition;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -244,7 +239,7 @@ class _ConditionOption extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    label,
+                    condition.label,
                     style: AppTypography.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
                       color: isSelected
@@ -253,7 +248,7 @@ class _ConditionOption extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    description,
+                    condition.description,
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.mutedForeground,
                     ),

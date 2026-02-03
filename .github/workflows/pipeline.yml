@@ -10,37 +10,19 @@ on:
     - cron: '0 0 * * 0' # Weekly run for security scans
 
 jobs:
-  quality_gate:
-    name: Quality Gate
+  flutter:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Setup Flutter using version from .fvmrc
-      # We use .fvmrc to dictate the version, but flutter-action reads pubspec 'environment' 
-      # OR we can manually parse it. The easiest reliable way with fvmrc is to just read it or use a simpler action.
-      # subosito/flutter-action supports `flutter-version-file` which points to `pubspec.yaml` usually.
-      # To support .fvmrc directly efficiently, we can use a jq command or allow the action to read it if supported.
-      # subosito/flutter-action supports .fvmrc via channel/version parsing if configured, 
-      # but standard practice is 'flutter-version' or 'glue' scripts.
-      # We will extract it for precision.
-      - name: Read Flutter Version from .fvmrc
-        id: fvm-config
-        run: |
-          FLUTTER_VERSION=$(grep -o '"flutter": *"[^"]*"' .fvmrc | cut -d'"' -f4)
-          echo "FLUTTER_VERSION=${FLUTTER_VERSION}" >> $GITHUB_ENV
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
+          flutter-version: 3.38.7
       
-      # Prepare dependencies
       - name: Install Dependencies
         run: flutter pub get
-
       # Run the robust gate script
       - name: Run Pre-PR Check
         run: ./scripts/pre_pr.sh --ci
@@ -60,4 +42,3 @@ jobs:
           # Scan the lockfile
           scan-args: |-
             --lockfile=pubspec.lock
-
