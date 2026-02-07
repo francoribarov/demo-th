@@ -61,7 +61,7 @@ sealed class DeliveryMethodDetailModel
     with _$DeliveryMethodDetailModel
     implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodDetailModel({
-    required String deliveryType,
+    @JsonKey(name: 'delivery_type') required String deliveryType,
     String? id,
     @Default(0) int price,
     String? address,

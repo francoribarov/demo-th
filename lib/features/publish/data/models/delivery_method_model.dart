@@ -10,17 +10,17 @@ sealed class DeliveryMethodModel
     with _$DeliveryMethodModel
     implements BaseDtoResponse<DeliveryMethod> {
   const factory DeliveryMethodModel({
-    required DeliveryType deliveryType,
+    @JsonKey(name: 'delivery_type') required DeliveryType deliveryType,
     String? id,
     @Default(0) int price,
     String? address,
-    String? addressName,
-    String? addressNumber,
-    String? additionalNotes,
-    String? initPickupTime,
-    String? finishPickupTime,
-    String? createdAt,
-    String? updatedAt,
+    @JsonKey(name: 'address_name') String? addressName,
+    @JsonKey(name: 'address_number') String? addressNumber,
+    @JsonKey(name: 'additional_notes') String? additionalNotes,
+    @JsonKey(name: 'init_pickup_time') String? initPickupTime,
+    @JsonKey(name: 'finish_pickup_time') String? finishPickupTime,
+    @JsonKey(name: 'created_at') String? createdAt,
+    @JsonKey(name: 'updated_at') String? updatedAt,
   }) = _DeliveryMethodModel;
 
   const DeliveryMethodModel._();

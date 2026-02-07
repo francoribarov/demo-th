@@ -22,6 +22,7 @@ abstract class UserModel with _$UserModel implements BaseDtoResponse<User> {
     DateTime? dateOfBirth,
     UserAddressModel? address,
     List<String>? deliveryZone,
+    @JsonKey(name: 'delivery_methods')
     List<DeliveryMethodModel>? deliveryMethods,
     @JsonKey(name: 'preferences')
     @Default([])
@@ -91,9 +92,9 @@ abstract class UserAddressModel
     with _$UserAddressModel
     implements BaseDtoResponse<Address> {
   const factory UserAddressModel({
-    required String address,
-    required String addressName,
-    required String number,
+    @Default('') String address,
+    @Default('') String addressName,
+    @Default('') String number,
     String? additionalNotes,
   }) = _UserAddressModel;
 
