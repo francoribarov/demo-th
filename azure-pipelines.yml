@@ -1,0 +1,51 @@
+trigger:
+  branches:
+    include:
+      - develop
+      - main
+
+pr:
+  branches:
+    include:
+      - '*'
+
+schedules:
+- cron: "0 0 * * 0"
+  displayName: Weekly security scan
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  flutter_version: '3.38.7'
+
+jobs:
+- job: Flutter_Pipeline
+  displayName: 'Flutter Build and Test'
+  steps:
+  - checkout: self
+
+  # 1. Instalar Flutter
+  - task: FlutterInstall@0
+    inputs:
+      mode: 'version'
+      channel: 'stable'
+      version: '$(flutter_version)'
+
+  # 2. Instalar Dependencias
+  - script: flutter pub get
+    displayName: 'Install Dependencies'
+
+  # 3. Generar Código (build_runner)
+  - script: dart run build_runner build --delete-conflicting-outputs
+    displayName: 'Generate Code'
+
+  # 4. Formato, Análisis y Tests (Usando tus comandos de Make)
+  - script: |
+      make format
+      make analyze
+      make test
+    displayName: 'Format, Analyze and Test'
