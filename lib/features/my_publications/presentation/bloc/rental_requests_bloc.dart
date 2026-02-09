@@ -21,6 +21,7 @@ class RentalRequestsBloc
     on<_Started>(_onStarted);
     on<_RequestAccepted>(_onAccepted);
     on<_RequestRejected>(_onRejected);
+    on<_MessageDismissed>(_onMessageDismissed);
   }
 
   final GetRentalRequestsUseCase _getRentalRequests;
@@ -47,20 +48,29 @@ class RentalRequestsBloc
     final currentState = state;
     if (currentState is! _Success) return;
 
-    // Changes status locally
-    final updatedRequests = currentState.requests.map((r) {
-      if (r.id == event.requestId) {
-        return r.copyWith(status: RentalRequestStatus.accepted);
-      }
-      return r;
-    }).toList();
-    emit(currentState.copyWith(requests: updatedRequests));
+    emit(currentState.copyWith(processingRequestId: event.requestId));
 
     try {
       await _acceptRentalRequest(event.requestId);
+      final updatedRequests = currentState.requests.map((r) {
+        if (r.id == event.requestId) {
+          return r.copyWith(status: RentalRequestStatus.accepted);
+        }
+        return r;
+      }).toList();
+      emit(
+        RentalRequestsState.success(
+          updatedRequests,
+          feedbackMessage: 'Solicitud aceptada',
+        ),
+      );
     } on Object {
-      // Revert or simple re-fetch
-      add(const _Started());
+      emit(
+        currentState.copyWith(
+          processingRequestId: null,
+          feedbackMessage: 'Error al procesar la solicitud',
+        ),
+      );
     }
   }
 
@@ -71,18 +81,38 @@ class RentalRequestsBloc
     final currentState = state;
     if (currentState is! _Success) return;
 
-    final updatedRequests = currentState.requests.map((r) {
-      if (r.id == event.requestId) {
-        return r.copyWith(status: RentalRequestStatus.rejected);
-      }
-      return r;
-    }).toList();
-    emit(currentState.copyWith(requests: updatedRequests));
+    emit(currentState.copyWith(processingRequestId: event.requestId));
 
     try {
       await _rejectRentalRequest(event.requestId);
+      final updatedRequests = currentState.requests.map((r) {
+        if (r.id == event.requestId) {
+          return r.copyWith(status: RentalRequestStatus.rejected);
+        }
+        return r;
+      }).toList();
+      emit(
+        RentalRequestsState.success(
+          updatedRequests,
+          feedbackMessage: 'Solicitud rechazada',
+        ),
+      );
     } on Object {
-      add(const _Started());
+      emit(
+        currentState.copyWith(
+          processingRequestId: null,
+          feedbackMessage: 'Error al procesar la solicitud',
+        ),
+      );
     }
+  }
+
+  void _onMessageDismissed(
+    _MessageDismissed event,
+    Emitter<RentalRequestsState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is! _Success) return;
+    emit(currentState.copyWith(feedbackMessage: null));
   }
 }

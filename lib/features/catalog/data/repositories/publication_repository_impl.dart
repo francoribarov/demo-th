@@ -26,7 +26,7 @@ class PublicationRepositoryImpl implements PublicationRepository {
     String? endDate,
     String? sortBy,
     int page = 1,
-    int limit = 20,
+    int limit = 100,
   }) async {
     final response = await _datasource.getPublications(
       query: query,

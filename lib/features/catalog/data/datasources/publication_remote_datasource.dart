@@ -21,7 +21,7 @@ abstract class PublicationRemoteDatasource {
     String? endDate,
     String? sortBy,
     int page = 1,
-    int limit = 20,
+    int limit = 100,
   });
 
   /// Fetches a single publication by ID.

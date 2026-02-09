@@ -85,9 +85,6 @@ class ApiConstants {
   /// Images upload endpoint.
   static const String imageUpload = '$apiBasePath/images/upload';
 
-  /// Images upload endpoint.
-  static const String imageUpload = '$apiBasePath/images/upload';
-
   /// Health check endpoint.
   static const String health = '/health';
 }

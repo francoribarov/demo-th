@@ -9,13 +9,10 @@ part 'rental_models.g.dart';
 abstract class RentalCreateRequestModel with _$RentalCreateRequestModel {
   /// Creates a rental request model.
   const factory RentalCreateRequestModel({
-    @JsonKey(name: 'publicationId') required String publicationId,
-    required String ownerId,
+    required String publicationId,
     required String startDate,
     required String endDate,
-    required double pricePerDay,
-    required double deposit,
-    required String deliveryMethod,
+    @JsonKey(name: 'selectedDelivery') required String selectedDelivery,
     required String paymentMethod,
     String? deliveryAddress,
     List<String>? foodBundleIds,
@@ -25,12 +22,9 @@ abstract class RentalCreateRequestModel with _$RentalCreateRequestModel {
   factory RentalCreateRequestModel.fromEntity(RentalDraft draft) {
     return RentalCreateRequestModel(
       publicationId: draft.publicationId,
-      ownerId: draft.ownerId,
       startDate: draft.startDate,
       endDate: draft.endDate,
-      pricePerDay: draft.pricePerDay,
-      deposit: draft.deposit,
-      deliveryMethod: draft.isDelivery ? 'delivery' : 'pickup',
+      selectedDelivery: draft.isDelivery ? 'Delivery' : 'Retiro en persona',
       paymentMethod: draft.paymentMethod,
       deliveryAddress: draft.isDelivery && draft.deliveryAddress.isNotEmpty
           ? draft.deliveryAddress

@@ -8,11 +8,8 @@ abstract class RentalDraft with _$RentalDraft {
   /// Creates a draft payload for a rental request.
   const factory RentalDraft({
     required String publicationId,
-    required String ownerId,
     required String startDate,
     required String endDate,
-    required double pricePerDay,
-    @Default(0.0) double deposit,
     @Default(false) bool isDelivery,
     @Default('') String deliveryAddress,
     @Default('') String deliveryComments,

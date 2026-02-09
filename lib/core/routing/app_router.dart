@@ -10,6 +10,7 @@ import 'package:mobile_table_hopping/features/auth/presentation/pages/register_p
 import 'package:mobile_table_hopping/features/catalog/presentation/pages/home_page.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/edit_publication_page.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart';
@@ -18,7 +19,6 @@ import 'package:mobile_table_hopping/features/publication_details/presentation/b
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_reviews_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_rules_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery_method_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/image_upload_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';

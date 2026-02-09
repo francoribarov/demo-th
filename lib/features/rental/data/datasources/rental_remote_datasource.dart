@@ -36,7 +36,7 @@ class RentalRemoteDatasourceImpl implements RentalRemoteDatasource {
       final statusCode = error.response!.statusCode;
       final data = error.response!.data;
 
-      var message = 'Error al confirmar alquiler';
+      var message = 'Error al enviar solicitud de alquiler';
       if (data is Map && data['detail'] != null) {
         message = data['detail'].toString();
       } else if (data is Map && data['message'] != null) {

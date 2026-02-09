@@ -7,4 +7,5 @@ class RentalRequestsEvent with _$RentalRequestsEvent {
       _RequestAccepted;
   const factory RentalRequestsEvent.rejected(String requestId) =
       _RequestRejected;
+  const factory RentalRequestsEvent.messageDismissed() = _MessageDismissed;
 }

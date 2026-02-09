@@ -2,8 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
+import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/my_publications/data/models/rental_request_model.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/game_summary.dart';
 import 'package:mobile_table_hopping/features/my_publications/domain/entities/rental_request.dart';
 
 abstract class RentalRequestsDataSource {
@@ -22,18 +23,16 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
   @override
   Future<List<RentalRequest>> getRentalRequests() async {
     try {
-      final response = await _dioClient.get<Map<String, dynamic>>(
+      final response = await _dioClient.get<dynamic>(
         ApiConstants.rentalRequests,
       );
       final data = response.data;
-      if (data != null && data['items'] is List) {
-        final items = data['items'] as List;
-        return items
-            .map((e) => RentalRequestModel.fromJson(e as Map<String, dynamic>))
-            .map((e) => e.toDomainModel())
-            .toList();
-      }
-      return [];
+      final items = _extractItems(data);
+
+      return items
+          .whereType<Map<String, dynamic>>()
+          .map(_mapRentalRequest)
+          .toList();
     } on DioException catch (e) {
       throw _handleError(e);
     }
@@ -66,7 +65,6 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
       const Game(
         id: 'game-1',
         title: 'Catan',
-        categories: [],
         images: [
           'https://m.media-amazon.com/images/I/81xHeEaXlML._AC_SL1500_.jpg',
         ],
@@ -76,7 +74,6 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
         duration: 90,
         players: '3-4',
         difficulty: 'Medium',
-        price: 50,
         rules: GameRules(
           videoUrl: '',
           ruleCompleteUrl: '',
@@ -86,7 +83,6 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
       const Game(
         id: 'game-3',
         title: 'Pandemic',
-        categories: [],
         images: [
           'https://m.media-amazon.com/images/I/81YQ8C3-kDL._AC_SL1500_.jpg',
         ],
@@ -96,7 +92,6 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
         duration: 45,
         players: '2-4',
         difficulty: 'Hard',
-        price: 40,
         rules: GameRules(
           videoUrl: '',
           ruleCompleteUrl: '',
@@ -118,5 +113,73 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
       return Exception(message);
     }
     return Exception('Error de conexión. Intente nuevamente.');
+  }
+
+  List<dynamic> _extractItems(dynamic data) {
+    if (data is List) return data;
+    if (data is Map<String, dynamic>) {
+      final items = data['items'];
+      if (items is List) return items;
+    }
+    return const [];
+  }
+
+  RentalRequest _mapRentalRequest(Map<String, dynamic> json) {
+    final id = json['id']?.toString() ?? '';
+    final renterId = json['renterId']?.toString() ?? '';
+    final renterName = json['renterName']?.toString() ?? 'Usuario';
+    final publicationId = json['publicationId']?.toString() ?? id;
+    final gameTitle = json['gameTitle']?.toString() ?? 'Juego';
+    final totalPrice = _parseDouble(json['finalPrice'] ?? json['totalPrice']);
+    final startDate = _parseDate(json['startDate']);
+    final endDate = _parseDate(json['endDate']);
+    final status = _parseStatus(json['status']?.toString());
+
+    return RentalRequest(
+      id: id,
+      game: GameSummary(
+        id: publicationId,
+        title: gameTitle,
+        price: totalPrice.round(),
+        images: const [],
+        ownerId: json['ownerId']?.toString(),
+      ),
+      requester: User(
+        id: renterId,
+        email: '',
+        username: renterName,
+      ),
+      startDate: startDate,
+      endDate: endDate,
+      totalPrice: totalPrice,
+      status: status,
+    );
+  }
+
+  double _parseDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
+  DateTime _parseDate(dynamic value) {
+    if (value is String && value.isNotEmpty) {
+      return DateTime.parse(value);
+    }
+    return DateTime.fromMillisecondsSinceEpoch(0);
+  }
+
+  RentalRequestStatus _parseStatus(String? status) {
+    switch (status?.toUpperCase()) {
+      case 'PENDING':
+        return RentalRequestStatus.pending;
+      case 'ACTIVE':
+      case 'ACCEPTED':
+        return RentalRequestStatus.accepted;
+      case 'REJECTED':
+        return RentalRequestStatus.rejected;
+      default:
+        return RentalRequestStatus.pending;
+    }
   }
 }

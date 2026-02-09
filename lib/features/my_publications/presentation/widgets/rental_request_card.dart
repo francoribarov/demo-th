@@ -7,12 +7,14 @@ class RentalRequestCard extends StatelessWidget {
     required this.request,
     required this.onAccept,
     required this.onReject,
+    this.isProcessing = false,
     super.key,
   });
 
   final RentalRequest request;
   final VoidCallback onAccept;
   final VoidCallback onReject;
+  final bool isProcessing;
 
   @override
   Widget build(BuildContext context) {
@@ -76,39 +78,45 @@ class RentalRequestCard extends StatelessWidget {
             Text('Fechas: $range'),
             const SizedBox(height: 16),
             if (request.status == RentalRequestStatus.pending) ...[
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: onReject,
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
-                        maximumSize: const Size.fromHeight(48),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
+              if (isProcessing)
+                const SizedBox(
+                  height: 48,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: onReject,
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48),
+                          maximumSize: const Size.fromHeight(48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          padding: EdgeInsets.zero,
                         ),
-                        padding: EdgeInsets.zero,
+                        child: const Text('Rechazar'),
                       ),
-                      child: const Text('Rechazar'),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: onAccept,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
-                        maximumSize: const Size.fromHeight(48),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: onAccept,
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48),
+                          maximumSize: const Size.fromHeight(48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          padding: EdgeInsets.zero,
                         ),
-                        padding: EdgeInsets.zero,
+                        child: const Text('Aceptar'),
                       ),
-                      child: const Text('Aceptar'),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
             ] else ...[
               Container(
                 width: double.infinity,

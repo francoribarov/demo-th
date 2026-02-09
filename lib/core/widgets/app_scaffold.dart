@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
@@ -89,7 +88,6 @@ class AppScaffold extends StatelessWidget {
                   activeIcon: Icons.casino,
                   label: 'Mis Publicaciones',
                   isSelected: selectedIndex == 1,
-                  badgeCount: 0,
                   onTap: () => _onItemTapped(context, 1),
                 ),
                 _NavItem(
@@ -122,7 +120,6 @@ class _NavItem extends StatelessWidget {
     required this.label,
     required this.isSelected,
     required this.onTap,
-    this.badgeCount = 0,
   });
 
   final IconData icon;
@@ -130,7 +127,6 @@ class _NavItem extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
-  final int badgeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -150,19 +146,6 @@ class _NavItem extends StatelessWidget {
                   size: 24,
                   color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
                 ),
-                if (badgeCount > 0)
-                  Positioned(
-                    right: -2,
-                    top: -2,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
               ],
             ),
             const SizedBox(height: 4),

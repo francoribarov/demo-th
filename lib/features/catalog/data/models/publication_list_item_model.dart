@@ -60,7 +60,6 @@ sealed class GameImageModel
         height: height,
       );
 }
-}
 
 /// Data transfer object for publication list items
 @freezed
