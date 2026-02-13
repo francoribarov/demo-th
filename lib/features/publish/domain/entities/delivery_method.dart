@@ -33,7 +33,7 @@ enum DeliveryType {
 @freezed
 abstract class DeliveryMethod with _$DeliveryMethod {
   const factory DeliveryMethod({
-    required DeliveryType deliveryType,
+    @JsonKey(name: 'delivery_type') required DeliveryType deliveryType,
     String? id,
     @Default(0) int price,
     String? address,

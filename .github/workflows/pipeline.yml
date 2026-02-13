@@ -23,18 +23,17 @@ jobs:
       
       - name: Install Dependencies
         run: flutter pub get
-      # Run the robust gate script
-      - name: Run Pre-PR Check
-        run: ./scripts/pre_pr.sh --ci
+      - name: Generate Code
+        run: dart run build_runner build --delete-conflicting-outputs
 
-  security_scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    # Only run on PRs or schedule to save resources, or if meaningful changes happen.
-    if: github.event_name == 'pull_request' || github.event_name == 'schedule'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Format
+        run: make format
+
+      - name: Analyze
+        run: make analyze
+
+      - name: Test
+        run: make test
 
       - name: Run OSV Scanner
         uses: google/osv-scanner-action@v2.3.2
