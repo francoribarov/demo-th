@@ -141,7 +141,6 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
         id: publicationId,
         title: gameTitle,
         price: totalPrice.round(),
-        images: const [],
         ownerId: json['ownerId']?.toString(),
       ),
       requester: User(
@@ -159,7 +158,7 @@ class RentalRequestsDataSourceImpl implements RentalRequestsDataSource {
   double _parseDouble(dynamic value) {
     if (value is num) return value.toDouble();
     if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
+    return 0;
   }
 
   DateTime _parseDate(dynamic value) {

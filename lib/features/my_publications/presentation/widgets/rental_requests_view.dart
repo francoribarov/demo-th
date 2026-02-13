@@ -71,10 +71,16 @@ class RentalRequestsView extends StatelessWidget {
                 return RentalRequestCard(
                   request: request,
                   isProcessing: processingRequestId == request.id,
-                  onAccept: () => _confirmAccept(context, request.id,
-                      request.requester.username),
-                  onReject: () => _confirmReject(context, request.id,
-                      request.requester.username),
+                  onAccept: () => _confirmAccept(
+                    context,
+                    request.id,
+                    request.requester.username,
+                  ),
+                  onReject: () => _confirmReject(
+                    context,
+                    request.id,
+                    request.requester.username,
+                  ),
                 );
               },
             );
@@ -108,7 +114,7 @@ class RentalRequestsView extends StatelessWidget {
         ],
       ),
     );
-    if (confirmed == true && context.mounted) {
+    if ((confirmed ?? false) && context.mounted) {
       context.read<RentalRequestsBloc>().add(
             RentalRequestsEvent.accepted(requestId),
           );
@@ -142,7 +148,7 @@ class RentalRequestsView extends StatelessWidget {
         ],
       ),
     );
-    if (confirmed == true && context.mounted) {
+    if ((confirmed ?? false) && context.mounted) {
       context.read<RentalRequestsBloc>().add(
             RentalRequestsEvent.rejected(requestId),
           );
