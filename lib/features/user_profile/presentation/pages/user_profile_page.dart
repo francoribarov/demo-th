@@ -234,9 +234,8 @@ class UserProfilePage extends StatelessWidget {
                           children: List.generate(5, (i) {
                             final stars = 5 - i;
                             final count = ratingBreakdown[stars] ?? 0;
-                            final percentage = totalReviews > 0
-                                ? count / totalReviews
-                                : 0.0;
+                            final percentage =
+                                totalReviews > 0 ? count / totalReviews : 0.0;
                             return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,
@@ -259,7 +258,7 @@ class UserProfilePage extends StatelessWidget {
                     name: review.name,
                     rating: review.rating,
                     comment: review.comment,
-                    dateOrRole: review.date,
+                    date: review.date,
                   ),
                 ),
 

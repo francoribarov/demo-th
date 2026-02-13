@@ -1,7 +1,7 @@
 import 'package:mobile_table_hopping/features/catalog/domain/entities/filters.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
-/// Repository interface for game operations
 abstract class GameRepository {
   /// Get all games
   Future<List<Game>> getGames();
@@ -18,9 +18,6 @@ abstract class GameRepository {
     SortOption sortOption = SortOption.availability,
   });
 
-  /// Get games available today
-  Future<List<Game>> getGamesAvailableToday();
-
   /// Get recommended games for a specific game (Publication ID)
   Future<List<Game>> getRecommendedGames(String gameId);
 
@@ -29,4 +26,7 @@ abstract class GameRepository {
 
   /// Get filter shortcuts
   Future<List<FilterShortcut>> getFilterShortcuts();
+
+  /// Get publication listings
+  Future<List<PublicationListing>> getPublicationListings({String? query});
 }

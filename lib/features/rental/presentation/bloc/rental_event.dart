@@ -1,6 +1,7 @@
 part of 'rental_bloc.dart';
 
 @freezed
+
 /// Events for creating and submitting a rental draft.
 abstract class RentalEvent with _$RentalEvent {
   /// Loads the game and initializes dates for the rental flow.
@@ -9,7 +10,7 @@ abstract class RentalEvent with _$RentalEvent {
     String? startDate,
     String? endDate,
     String? ownerId,
-    int? deposit,
+    double? deposit,
   }) = _Started;
 
   /// Updates the rental start date.

@@ -3,22 +3,22 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// A unified date range selector widget for game availability.
 /// Used in both Game Details and Rental Confirmation flows.
 class AvailabilityDateSelector extends StatelessWidget {
   /// Creates an availability date selector.
   const AvailabilityDateSelector({
-    required this.game,
+    required this.publication,
     required this.onRangeChanged,
     this.startDate,
     this.endDate,
     super.key,
   });
 
-  /// The game whose availability should be respected.
-  final Game game;
+  /// The publication whose availability should be respected.
+  final PublicationListing publication;
 
   /// Currently selected start date string.
   final String? startDate;
@@ -32,7 +32,7 @@ class AvailabilityDateSelector extends StatelessWidget {
   Future<void> _showRangePicker(BuildContext context) async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final ranges = _normalizedRanges();
+    final booked = _normalizedBookedDates();
 
     final initialStart = DateTime.tryParse(startDate ?? '');
     final initialEnd = DateTime.tryParse(endDate ?? '');
@@ -42,10 +42,9 @@ class AvailabilityDateSelector extends StatelessWidget {
       initialRange = DateTimeRange(start: initialStart, end: initialEnd);
     }
 
+    // Allow booking up to a year in advance
     final firstDate = today;
-    final lastDate = ranges.isNotEmpty
-        ? ranges.last.$2
-        : today.add(const Duration(days: 365));
+    final lastDate = today.add(const Duration(days: 365));
 
     final picked = await showDateRangePicker(
       context: context,
@@ -56,9 +55,8 @@ class AvailabilityDateSelector extends StatelessWidget {
       helpText: 'Seleccioná el rango (mínimo 3 días)',
       selectableDayPredicate: (day, start, end) {
         if (day.isBefore(today)) return false;
-        if (ranges.isEmpty) return true;
-        // Day must be in at least one available range
-        return ranges.any(
+        // Day is available if it is NOT in any booked range
+        return !booked.any(
           (range) => !day.isBefore(range.$1) && !day.isAfter(range.$2),
         );
       },
@@ -81,13 +79,12 @@ class AvailabilityDateSelector extends StatelessWidget {
         return;
       }
 
-      if (!game.isAvailableFor(startStr, endStr)) {
+      if (!publication.isAvailableFor(startStr, endStr)) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text(
-                'El rango seleccionado contiene días no disponibles.',
-              ),
+              content:
+                  Text('El rango seleccionado contiene días no disponibles.'),
               backgroundColor: AppColors.gameRust,
             ),
           );
@@ -99,11 +96,11 @@ class AvailabilityDateSelector extends StatelessWidget {
     }
   }
 
-  List<(DateTime, DateTime)> _normalizedRanges() {
-    final ranges = game.availability;
-    if (ranges == null || ranges.isEmpty) return const [];
+  List<(DateTime, DateTime)> _normalizedBookedDates() {
+    final booked = publication.bookedDates;
+    if (booked.isEmpty) return const [];
 
-    return ranges
+    return booked
         .map((range) {
           final from = DateTime.tryParse(range.from);
           final to = DateTime.tryParse(range.to);
@@ -111,8 +108,7 @@ class AvailabilityDateSelector extends StatelessWidget {
           return (from, to);
         })
         .whereType<(DateTime, DateTime)>()
-        .toList()
-      ..sort((a, b) => a.$1.compareTo(b.$1));
+        .toList();
   }
 
   @override

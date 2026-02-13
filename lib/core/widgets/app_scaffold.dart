@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
 
 /// Main scaffold with bottom navigation.
 /// Matches the Layout component from the Vite.js prototype.
@@ -17,19 +19,28 @@ class AppScaffold extends StatelessWidget {
   int _calculateSelectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     if (location == AppRoutes.home) return 0;
-    if (location == AppRoutes.myGames) return 1;
+    if (location == AppRoutes.myPublications) return 1;
     if (location == AppRoutes.publish) return 2;
     if (location == AppRoutes.profile) return 3;
     return 0;
   }
 
   void _onItemTapped(BuildContext context, int index) {
+    if (index == 1 || index == 2) {
+      final authBloc = getIt<AuthBloc>();
+      if (!authBloc.state.isAuthenticated) {
+        final from = index == 1 ? AppRoutes.myPublications : AppRoutes.publish;
+        context.goToLogin(from: from);
+        return;
+      }
+    }
+
     switch (index) {
       case 0:
         context.go(AppRoutes.home);
         return;
       case 1:
-        context.go(AppRoutes.myGames);
+        context.go(AppRoutes.myPublications);
         return;
       case 2:
         context.go(AppRoutes.publish);
@@ -76,7 +87,7 @@ class AppScaffold extends StatelessWidget {
                 _NavItem(
                   icon: Icons.casino_outlined,
                   activeIcon: Icons.casino,
-                  label: 'Mis Juegos',
+                  label: 'Mis Publicaciones',
                   isSelected: selectedIndex == 1,
                   onTap: () => _onItemTapped(context, 1),
                 ),

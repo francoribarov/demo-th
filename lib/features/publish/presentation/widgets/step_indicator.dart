@@ -21,9 +21,8 @@ class StepIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.gameCream.withOpacityValue(0.5),
-      ),
+      decoration:
+          BoxDecoration(color: AppColors.gameCream.withOpacityValue(0.5)),
       child: Row(
         children: List.generate(steps.length * 2 - 1, (index) {
           if (index.isOdd) {

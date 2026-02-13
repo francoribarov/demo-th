@@ -8,15 +8,23 @@ class PhotosStep extends StatelessWidget {
   /// Creates a [PhotosStep].
   const PhotosStep({
     required this.images,
-    required this.onImagesChanged,
+    required this.onAddImage,
+    required this.onRemoveImage,
+    this.isUploading = false,
     super.key,
   });
 
   /// List of current image URLs.
   final List<String> images;
 
-  /// Callback when the image list is updated.
-  final void Function(List<String>) onImagesChanged;
+  /// Callback to add new images.
+  final VoidCallback onAddImage;
+
+  /// Callback to remove an image at index.
+  final void Function(int index) onRemoveImage;
+
+  /// Whether images are currently uploading.
+  final bool isUploading;
 
   @override
   Widget build(BuildContext context) {
@@ -27,52 +35,50 @@ class PhotosStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Agregá fotos del juego para que los inquilinos lo vean',
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
-          ),
+          style: AppTypography.bodyMedium
+              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
         ),
         const SizedBox(height: 24),
 
         // Photo upload placeholder
         GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Carga de imágenes próximamente')),
-            );
-          },
+          onTap: isUploading ? null : onAddImage,
           child: Container(
             height: 200,
             decoration: BoxDecoration(
               color: AppColors.gameCream.withOpacityValue(0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(
-                color: AppColors.gameBrown.withOpacityValue(0.3),
-              ),
+              border:
+                  Border.all(color: AppColors.gameBrown.withOpacityValue(0.3)),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.add_photo_alternate_outlined,
-                  size: 48,
-                  color: AppColors.gameBrown.withOpacityValue(0.5),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Tocá para agregar fotos',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.7),
+            child: isUploading
+                ? const Center(
+                    child: CircularProgressIndicator(color: AppColors.gameRust),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add_photo_alternate_outlined,
+                        size: 48,
+                        color: AppColors.gameBrown.withOpacityValue(0.5),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Tocá para agregar fotos',
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'La primera foto será la portada',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(0.5),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'La primera foto será la portada',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.5),
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
 
@@ -104,11 +110,7 @@ class PhotosStep extends StatelessWidget {
                     top: 4,
                     right: 4,
                     child: GestureDetector(
-                      onTap: () {
-                        final newImages = List<String>.from(images)
-                          ..removeAt(index);
-                        onImagesChanged(newImages);
-                      },
+                      onTap: () => onRemoveImage(index),
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: const BoxDecoration(

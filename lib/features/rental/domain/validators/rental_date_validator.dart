@@ -1,5 +1,5 @@
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// Result of a rental date validation.
 class RentalValidationResult {
@@ -27,13 +27,13 @@ class RentalDateValidator {
   /// Maximum allowed rental duration in days.
   static const int maxDays = 30;
 
-  /// Validates a rental date range against a game's availability.
+  /// Validates a rental date range against a publication's availability.
   static RentalValidationResult validate({
-    required Game? game,
+    required PublicationListing? publication,
     required String? startDate,
     required String? endDate,
   }) {
-    if (game == null) {
+    if (publication == null) {
       return const RentalValidationResult(
         isValid: false,
         message: 'No se pudo cargar la información del juego.',
@@ -72,7 +72,7 @@ class RentalDateValidator {
     }
 
     // Check availability
-    if (!game.isAvailableFor(startDate, endDate)) {
+    if (!publication.isAvailableFor(startDate, endDate)) {
       return const RentalValidationResult(
         isValid: false,
         message: AppStrings.rentalUnavailableRange,

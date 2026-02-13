@@ -45,8 +45,8 @@ class HomePage extends StatelessWidget {
                         ),
                       )
                     : state.isSearchMode
-                    ? ResultsView(state: state)
-                    : DiscoveryView(state: state),
+                        ? ResultsView(state: state)
+                        : const DiscoveryView(),
               ),
             ],
           ),
@@ -63,20 +63,24 @@ class HomePage extends StatelessWidget {
       initialEndDate: state.endDate,
       onSearch: (query, startDate, endDate) {
         context.read<CatalogBloc>().add(
-          SearchCatalog(query: query, startDate: startDate, endDate: endDate),
-        );
+              SearchCatalog(
+                query: query,
+                startDate: startDate,
+                endDate: endDate,
+              ),
+            );
       },
       onClear: () {
         context.read<CatalogBloc>().add(const ClearSearch());
       },
       onSurprise: () {
-        // Random pick from filtered games
-        final games = state.filteredGames.isNotEmpty
-            ? state.filteredGames
-            : state.allGames;
-        if (games.isNotEmpty) {
-          final random = games[DateTime.now().millisecond % games.length];
-          context.goToGame(random.id);
+        // Random pick from filtered publications
+        final pubs = state.filteredPublications.isNotEmpty
+            ? state.filteredPublications
+            : state.allPublications;
+        if (pubs.isNotEmpty) {
+          final random = pubs[DateTime.now().millisecond % pubs.length];
+          context.goToPublication(random.id);
         }
       },
     );

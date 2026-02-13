@@ -1,6 +1,7 @@
 part of 'publish_bloc.dart';
 
 @freezed
+
 /// Publish flow actions.
 abstract class PublishEvent with _$PublishEvent {
   /// Initializes the publish flow.
@@ -12,14 +13,17 @@ abstract class PublishEvent with _$PublishEvent {
   /// Returns to the previous step.
   const factory PublishEvent.previousStep() = _PreviousStep;
 
-  /// Submits the current publication.
-  const factory PublishEvent.submit() = _Submit;
+  /// Submits the current publication with images and delivery methods.
+  const factory PublishEvent.submit({
+    @Default([]) List<String> images,
+    @Default([]) List<DeliveryMethod> deliveryMethods,
+  }) = _Submit;
 
   /// Resets the form to publish another game.
   const factory PublishEvent.publishAnother() = _PublishAnother;
 
   /// Updates the game ID input.
-  const factory PublishEvent.gameIdChanged(int value) = _GameIdChanged;
+  const factory PublishEvent.gameIdChanged(String value) = _GameIdChanged;
 
   /// Updates the description input.
   const factory PublishEvent.descriptionChanged(String value) =
@@ -29,13 +33,12 @@ abstract class PublishEvent with _$PublishEvent {
   const factory PublishEvent.priceChanged(int value) = _PriceChanged;
 
   /// Updates the condition input.
-  const factory PublishEvent.conditionChanged(String value) = _ConditionChanged;
+  const factory PublishEvent.conditionChanged(PublicationCondition value) =
+      _ConditionChanged;
 
-  /// Updates the selected images.
-  const factory PublishEvent.imagesChanged(List<String> value) = _ImagesChanged;
+  /// Loads the list of available games.
+  const factory PublishEvent.loadGames() = _LoadGames;
 
-  /// Updates delivery methods.
-  const factory PublishEvent.deliveryMethodsChanged(
-    List<DeliveryMethod> value,
-  ) = _DeliveryMethodsChanged;
+  /// Filters the list of games by query.
+  const factory PublishEvent.searchGames(String query) = _SearchGames;
 }
