@@ -78,7 +78,7 @@ class RentalConfirmPage extends StatelessWidget {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => context.popOrGo('/publications/$publicationId'),
             ),
-            title: const Text('Confirmar alquiler'),
+            title: const Text('Solicitar alquiler'),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -195,9 +195,7 @@ class RentalConfirmPage extends StatelessWidget {
                             color: Colors.white,
                           ),
                         )
-                      : Text(
-                          'Confirmar y pagar ${CurrencyFormatter.formatUYU(state.total)}',
-                        ),
+                      : const Text('Enviar solicitud'),
                 ),
 
                 const SizedBox(height: 100),
@@ -653,13 +651,13 @@ class _SuccessView extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               Text(
-                '¡Reserva confirmada!',
+                '¡Solicitud enviada!',
                 style: AppTypography.displaySmall,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                'Tu alquiler de ${publication.title} ha sido procesado exitosamente.',
+                'Tu solicitud de alquiler de ${publication.title} fue enviada. El propietario deberá aceptarla.',
                 style: AppTypography.bodyLarge.copyWith(
                   color: AppColors.gameBrown.withOpacityValue(0.7),
                 ),
@@ -667,7 +665,7 @@ class _SuccessView extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Te enviaremos un email con los detalles de tu reserva y las instrucciones de entrega.',
+                'Te notificaremos cuando el propietario acepte tu solicitud.',
                 style: AppTypography.bodyMedium.copyWith(
                   color: AppColors.gameBrown.withOpacityValue(0.6),
                 ),

@@ -258,16 +258,13 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       await _confirmRental(
         RentalDraft(
           publicationId: publication.id,
-          ownerId: ownerId,
           startDate: start,
           endDate: end,
-          deposit: publication.deposit,
           isDelivery: state.isDelivery,
           deliveryAddress: state.deliveryAddress,
           deliveryComments: state.deliveryComments,
           paymentMethod: state.paymentMethod,
           foodBundleIds: state.selectedFoodBundles,
-          pricePerDay: publication.price,
         ),
       );
       emit(state.copyWith(isSubmitting: false, success: true));

@@ -38,7 +38,6 @@ class PublicationDetailsBloc
     Emitter<PublicationDetailsState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
-
     final id = event.publicationId;
 
     try {

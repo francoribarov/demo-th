@@ -17,8 +17,7 @@ sealed class PublicationDetailModel
     @JsonKey(name: 'game_id') required String gameId,
     @JsonKey(name: 'owner_id') required String ownerId,
     required String description,
-    required PublicationCondition
-        condition, // Changed type to PublicationCondition
+    required PublicationCondition condition,
     required int price,
     @Default([]) List<String> images,
     @JsonKey(name: 'delivery_methods')

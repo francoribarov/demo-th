@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
@@ -139,10 +138,15 @@ class _NavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              isSelected ? activeIcon : icon,
-              size: 24,
-              color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Icon(
+                  isSelected ? activeIcon : icon,
+                  size: 24,
+                  color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
+                ),
+              ],
             ),
             const SizedBox(height: 4),
             Text(

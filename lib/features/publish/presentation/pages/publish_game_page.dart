@@ -88,9 +88,7 @@ class PublishGamePage extends StatelessWidget {
                                 isUploading: imageState.isUploading,
                                 onAddImage: () => context
                                     .read<ImageUploadBloc>()
-                                    .add(
-                                      const ImageUploadEvent.pickAndUpload(),
-                                    ),
+                                    .add(const ImageUploadEvent.pickAndUpload()),
                                 onRemoveImage: (index) => context
                                     .read<ImageUploadBloc>()
                                     .add(ImageUploadEvent.imageRemoved(index)),
@@ -104,18 +102,16 @@ class PublishGamePage extends StatelessWidget {
                                 onPriceChanged: (v) => context
                                     .read<PublishBloc>()
                                     .add(PublishEvent.priceChanged(v)),
-                                onToggleDeliveryMethod: (method) =>
-                                    context.read<DeliveryMethodBloc>().add(
-                                          DeliveryMethodEvent.methodToggled(
-                                            method,
-                                          ),
-                                        ),
-                                onAddDeliveryMethod: (method) =>
-                                    context.read<DeliveryMethodBloc>().add(
-                                          DeliveryMethodEvent.methodCreated(
-                                            method,
-                                          ),
-                                        ),
+                                onToggleDeliveryMethod: (method) => context
+                                    .read<DeliveryMethodBloc>()
+                                    .add(
+                                      DeliveryMethodEvent.methodToggled(method),
+                                    ),
+                                onAddDeliveryMethod: (method) => context
+                                    .read<DeliveryMethodBloc>()
+                                    .add(
+                                      DeliveryMethodEvent.methodCreated(method),
+                                    ),
                               ),
                               ReviewStep(
                                 gameId: publishState.gameId,
@@ -177,13 +173,11 @@ class PublishGamePage extends StatelessWidget {
                                       ? null
                                       : () {
                                           if (publishState.currentStep == 3) {
-                                            // Final step - submit with images and delivery methods
                                             context.read<PublishBloc>().add(
                                                   PublishEvent.submit(
                                                     images: imageState.images,
-                                                    deliveryMethods:
-                                                        deliveryState
-                                                            .selectedMethods,
+                                                    deliveryMethods: deliveryState
+                                                        .selectedMethods,
                                                   ),
                                                 );
                                           } else {

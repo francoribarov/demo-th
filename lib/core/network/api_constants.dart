@@ -78,6 +78,9 @@ class ApiConstants {
 
   /// Rentals endpoints.
   static const String rentals = '$apiBasePath/rentals';
+  static const String rentalRequests = '$rentals/requests';
+  static String acceptRental(String id) => '$rentals/$id/accept';
+  static String rejectRental(String id) => '$rentals/$id/reject';
 
   /// Images upload endpoint.
   static const String imageUpload = '$apiBasePath/images/upload';

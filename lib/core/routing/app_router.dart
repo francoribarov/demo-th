@@ -10,6 +10,7 @@ import 'package:mobile_table_hopping/features/auth/presentation/pages/register_p
 import 'package:mobile_table_hopping/features/catalog/presentation/pages/home_page.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/edit_publication_page.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart';
@@ -141,9 +142,19 @@ class AppRouter {
             path: AppRoutes.myPublications,
             name: 'my-publications',
             pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider<MyPublicationsBloc>(
-                create: (_) => getIt<MyPublicationsBloc>()
-                  ..add(const MyPublicationsEvent.started()),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider<MyPublicationsBloc>(
+                    create: (_) =>
+                        getIt<MyPublicationsBloc>()
+                          ..add(const MyPublicationsEvent.started()),
+                  ),
+                  BlocProvider<RentalRequestsBloc>(
+                    create: (_) =>
+                        getIt<RentalRequestsBloc>()
+                          ..add(const RentalRequestsEvent.started()),
+                  ),
+                ],
                 child: const MyPublicationsPage(),
               ),
             ),

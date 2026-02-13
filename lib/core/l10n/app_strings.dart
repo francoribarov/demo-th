@@ -43,8 +43,9 @@ class AppStrings {
   static const String rentalIdentifyOwnerError =
       'No pudimos identificar al dueño del juego.';
 
-  /// Message shown when a rental confirmation fails.
-  static const String rentalConfirmError = 'No se pudo confirmar el alquiler.';
+  /// Message shown when a rental request submission fails.
+  static const String rentalConfirmError =
+      'No se pudo enviar la solicitud de alquiler.';
 
   // Auth
 

@@ -34,7 +34,6 @@ enum PublicationCondition {
   /// detailed description.
   final String description;
 }
-
 /// Image metadata used by publications.
 @freezed
 abstract class PublicationImage with _$PublicationImage {

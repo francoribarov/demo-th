@@ -48,8 +48,7 @@ class PhotosStep extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.gameCream.withOpacityValue(0.5),
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border:
-                  Border.all(color: AppColors.gameBrown.withOpacityValue(0.3)),
+              border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.3)),
             ),
             child: isUploading
                 ? const Center(

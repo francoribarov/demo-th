@@ -51,7 +51,6 @@ class _PriceStepState extends State<PriceStep> {
   @override
   void initState() {
     super.initState();
-    // Load delivery methods when step is shown
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context
