@@ -4,7 +4,7 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_rules_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_rules_bloc.dart';
 
 /// Game rules page matching GameRules.tsx
 class GameRulesPage extends StatefulWidget {

@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_bottom_bar.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_error_view.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_header.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_info_header.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_loading_view.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_details_tab_content.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_reviews_tab_content.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publication_details/publication_details_bloc.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_bottom_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_error_view.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_info_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_loading_view.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_tab_content.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_reviews_tab_content.dart';
 
 /// Game details page matching ProductDetail.tsx
 class PublicationDetailsPage extends StatefulWidget {

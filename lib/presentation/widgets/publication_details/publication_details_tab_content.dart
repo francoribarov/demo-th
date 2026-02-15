@@ -6,10 +6,10 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/availability_checker.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/game_recommendation_card.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/publication_detail_row.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publication_details/publication_details_bloc.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/availability_checker.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/game_recommendation_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_detail_row.dart';
 
 class PublicationDetailsTabContent extends StatelessWidget {
   const PublicationDetailsTabContent({
