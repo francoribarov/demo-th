@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
@@ -21,7 +21,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   PublishBloc({
     required CreatePublication createPublication,
     required AuthBloc authBloc,
-    required GetGames getGames,
+    required GetGamesUseCase getGames,
   })  : _createPublication = createPublication,
         _authBloc = authBloc,
         _getGames = getGames,
@@ -41,7 +41,7 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
 
   final CreatePublication _createPublication;
   final AuthBloc _authBloc;
-  final GetGames _getGames;
+  final GetGamesUseCase _getGames;
 
   void _onStarted(_Started event, Emitter<PublishState> emit) {
     emit(const PublishState());
@@ -211,18 +211,17 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     Emitter<PublishState> emit,
   ) async {
     emit(state.copyWith(isLoadingGames: true));
-    try {
-      final games = await _getGames();
-      emit(
+    final result = await _getGames();
+    result.fold(
+      (_) => emit(state.copyWith(isLoadingGames: false)),
+      (games) => emit(
         state.copyWith(
           isLoadingGames: false,
           allGames: games,
           filteredGames: games,
         ),
-      );
-    } on Object catch (_) {
-      emit(state.copyWith(isLoadingGames: false));
-    }
+      ),
+    );
   }
 
   void _onSearchGames(_SearchGames event, Emitter<PublishState> emit) {

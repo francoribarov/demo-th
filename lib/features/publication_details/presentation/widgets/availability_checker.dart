@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/availability_date_selector.dart';
 
 /// Widget to check game availability for a date range.

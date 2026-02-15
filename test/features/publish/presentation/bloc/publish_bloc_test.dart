@@ -1,10 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
@@ -14,7 +17,7 @@ class MockCreatePublication extends Mock implements CreatePublication {}
 
 class MockAuthBloc extends Mock implements AuthBloc {}
 
-class MockGetGames extends Mock implements GetGames {}
+class MockGetGames extends Mock implements GetGamesUseCase {}
 
 void main() {
   late MockCreatePublication mockCreatePublication;
@@ -42,8 +45,9 @@ void main() {
       ),
     );
 
-    // Stub GetGames call since it might be called
-    when(() => mockGetGames()).thenAnswer((_) async => []);
+    // Stub GetGamesUseCase call since it might be called
+    when(() => mockGetGames())
+        .thenAnswer((_) async => const Right<DomainException, List<Game>>([]));
 
     publishBloc = PublishBloc(
       createPublication: mockCreatePublication,

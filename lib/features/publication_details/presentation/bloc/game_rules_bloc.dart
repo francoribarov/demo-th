@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_game_by_id_use_case.dart';
 
 part 'game_rules_bloc.freezed.dart';
 part 'game_rules_event.dart';
@@ -13,38 +13,25 @@ part 'game_rules_state.dart';
 /// Bloc for loading and presenting game rules.
 class GameRulesBloc extends Bloc<GameRulesEvent, GameRulesState> {
   /// Creates a [GameRulesBloc].
-  GameRulesBloc({required GetGames getGames})
-      : _getGames = getGames,
+  GameRulesBloc({required GetGameByIdUseCase getGameById})
+      : _getGameById = getGameById,
         super(const GameRulesState()) {
     on<_Started>(_onStarted);
   }
-  final GetGames _getGames;
+  final GetGameByIdUseCase _getGameById;
 
   Future<void> _onStarted(_Started event, Emitter<GameRulesState> emit) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    final id = int.tryParse(event.gameId);
-    if (id == null) {
-      emit(state.copyWith(isLoading: false, errorMessage: 'ID inválido'));
-      return;
-    }
-
-    try {
-      final game = await _getGames.getById(event.gameId);
-      if (game == null) {
-        emit(
-          state.copyWith(isLoading: false, errorMessage: 'Juego no encontrado'),
-        );
-        return;
-      }
-      emit(state.copyWith(isLoading: false, game: game));
-    } on Exception catch (e) {
-      emit(
+    final result = await _getGameById(event.gameId);
+    result.fold(
+      (error) => emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: 'Error al cargar reglas: $e',
+          errorMessage: 'Error al cargar reglas: ${error.message}',
         ),
-      );
-    }
+      ),
+      (game) => emit(state.copyWith(isLoading: false, game: game)),
+    );
   }
 }

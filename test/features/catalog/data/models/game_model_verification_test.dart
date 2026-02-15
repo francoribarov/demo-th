@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 
 void main() {
   group('GameModel Deserialization', () {

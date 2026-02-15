@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/widgets/review_widgets.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 
 /// A card displaying a single game review.
 class GameReviewCard extends StatelessWidget {

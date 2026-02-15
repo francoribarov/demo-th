@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/widgets/game_review_card.dart';
 
 class PublicationReviewsTabContent extends StatelessWidget {

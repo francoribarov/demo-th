@@ -5,7 +5,6 @@ import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart';
 
 /// Bootstrap the application.
 Future<void> bootstrap() async {
@@ -26,9 +25,6 @@ class TableHoppingApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>.value(value: getIt<AuthBloc>()),
-        BlocProvider<CatalogBloc>(
-          create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
-        ),
       ],
       child: MaterialApp.router(
         title: 'Table Hopping',

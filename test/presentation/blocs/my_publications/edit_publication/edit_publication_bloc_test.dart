@@ -5,14 +5,14 @@ import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_detail_model.dart';
 import 'package:mobile_table_hopping/data/mapper/my_publications/publish_delivery_method_to_my_publications.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/get_publication_detail_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publication_use_case.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart'
     as publish;
 import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
@@ -28,7 +28,7 @@ class MockUpdatePublicationUseCase extends Mock
 class MockDeletePublicationUseCase extends Mock
     implements DeletePublicationUseCase {}
 
-class MockGetGames extends Mock implements GetGames {}
+class MockGetGames extends Mock implements GetGamesUseCase {}
 
 class MockGetDeliveryMethods extends Mock implements GetDeliveryMethods {}
 
@@ -85,7 +85,9 @@ void main() {
     getDeliveryMethods = MockGetDeliveryMethods();
     imageUploadService = MockImageUploadService();
 
-    when(() => getGames()).thenAnswer((_) async => [tGame]);
+    when(() => getGames()).thenAnswer(
+      (_) async => const Right<DomainException, List<Game>>([tGame]),
+    );
     when(() => getDeliveryMethods()).thenAnswer(
       (_) async => [tPublishDeliveryMethod],
     );

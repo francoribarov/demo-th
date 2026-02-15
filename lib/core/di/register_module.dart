@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
+import 'package:mobile_table_hopping/data/services/catalog/catalog_service.dart';
 import 'package:mobile_table_hopping/data/services/my_publications/publication_detail_service.dart';
 import 'package:mobile_table_hopping/data/services/my_publications/rental_requests_service.dart';
 import 'package:mobile_table_hopping/data/services/rental/rental_service.dart';
@@ -22,6 +23,11 @@ abstract class RegisterModule {
   @lazySingleton
   RentalService rentalService(DioClient dioClient) =>
       RentalService(dioClient.dio);
+
+  /// Provides the Retrofit catalog service.
+  @lazySingleton
+  CatalogService catalogService(DioClient dioClient) =>
+      CatalogService(dioClient.dio);
 
   /// Provides the Retrofit publication detail service.
   @lazySingleton

@@ -2,10 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_publication_by_id_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
 
 part 'rental_bloc.freezed.dart';
 part 'rental_event.dart';
@@ -17,9 +17,9 @@ part 'rental_state.dart';
 class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
   RentalBloc({
-    required GetPublications getPublications,
+    required GetPublicationByIdUseCase getPublicationById,
     required ConfirmRentalUseCase confirmRentalUseCase,
-  })  : _getPublications = getPublications,
+  })  : _getPublicationById = getPublicationById,
         _confirmRentalUseCase = confirmRentalUseCase,
         super(const RentalState()) {
     on<_Started>(_onStarted);
@@ -35,7 +35,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     on<_MessageShown>(_onMessageShown);
     on<_PublishAnother>(_onPublishAnother);
   }
-  final GetPublications _getPublications;
+  final GetPublicationByIdUseCase _getPublicationById;
   final ConfirmRentalUseCase _confirmRentalUseCase;
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
@@ -52,30 +52,21 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
 
     final id = event.publicationId;
 
-    try {
-      final publication = await _getPublications.getById(id);
-      if (publication == null) {
-        emit(
-          state.copyWith(
-            isLoading: false,
-            errorMessage: AppStrings.errorGameNotFound,
-          ),
-        );
-        return;
-      }
-      emit(
+    final result = await _getPublicationById(id);
+    result.fold(
+      (error) => emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage:
+              '${AppStrings.errorLoadingGame}: ${error.message}',
+        ),
+      ),
+      (publication) => emit(
         _updateCalculations(
           state.copyWith(isLoading: false, publication: publication),
         ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: '${AppStrings.errorLoadingGame}: $e',
-        ),
-      );
-    }
+      ),
+    );
   }
 
   void _onStartDateChanged(_StartDateChanged event, Emitter<RentalState> emit) {

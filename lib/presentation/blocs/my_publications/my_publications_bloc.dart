@@ -2,8 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_my_publications_use_case.dart';
 
 part 'my_publications_bloc.freezed.dart';
 part 'my_publications_event.dart';
@@ -14,14 +14,14 @@ part 'my_publications_state.dart';
 class MyPublicationsBloc
     extends Bloc<MyPublicationsEvent, MyPublicationsState> {
   MyPublicationsBloc({
-    required GetPublications getPublications,
-  })  : _getPublications = getPublications,
+    required GetMyPublicationsUseCase getMyPublications,
+  })  : _getMyPublications = getMyPublications,
         super(const MyPublicationsState()) {
     on<_Started>(_onStarted);
     on<_Refresh>(_onRefresh);
   }
 
-  final GetPublications _getPublications;
+  final GetMyPublicationsUseCase _getMyPublications;
 
   Future<void> _onStarted(
     _Started event,
@@ -29,22 +29,21 @@ class MyPublicationsBloc
   ) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
 
-    try {
-      final publications = await _getPublications.getMyPublications();
-      emit(
+    final result = await _getMyPublications();
+    result.fold(
+      (error) => emit(
+        state.copyWith(
+          isLoading: false,
+          errorMessage: 'Error al cargar tus publicaciones: ${error.message}',
+        ),
+      ),
+      (publications) => emit(
         state.copyWith(
           isLoading: false,
           publications: publications,
         ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: 'Error al cargar tus publicaciones: $e',
-        ),
-      );
-    }
+      ),
+    );
   }
 
   Future<void> _onRefresh(
@@ -53,21 +52,20 @@ class MyPublicationsBloc
   ) async {
     emit(state.copyWith(isRefreshing: true, errorMessage: null));
 
-    try {
-      final publications = await _getPublications.getMyPublications();
-      emit(
+    final result = await _getMyPublications();
+    result.fold(
+      (error) => emit(
+        state.copyWith(
+          isRefreshing: false,
+          errorMessage: 'Error al actualizar: ${error.message}',
+        ),
+      ),
+      (publications) => emit(
         state.copyWith(
           isRefreshing: false,
           publications: publications,
         ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          isRefreshing: false,
-          errorMessage: 'Error al actualizar: $e',
-        ),
-      );
-    }
+      ),
+    );
   }
 }
