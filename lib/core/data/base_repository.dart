@@ -1,4 +1,7 @@
+import 'package:dartz/dartz.dart';
+import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
+import 'package:mobile_table_hopping/core/resources/data_state.dart';
 
 /// Base repository class providing common utilities for repository implementations.
 ///
@@ -67,5 +70,27 @@ abstract class BaseRepository {
     } catch (e) {
       rethrow;
     }
+  }
+
+  /// Converts a [DataState] to an [Either] for use in domain layer.
+  ///
+  /// This helper method bridges the data layer ([DataState]) with the domain
+  /// layer ([Either]). It converts:
+  /// - [DataSuccess] → [Right] with the data
+  /// - [DataFailed] → [Left] with the domain exception
+  ///
+  /// Example:
+  /// ```dart
+  /// @override
+  /// Future<Either<DomainException, User>> getUser(String id) async {
+  ///   final result = await _dataSource.fetchUser(id);
+  ///   return toEither(result);
+  /// }
+  /// ```
+  Either<DomainException, T> toEither<T>(DataState<T> state) {
+    return state.when(
+      success: (data) => Right(data),
+      failed: (error) => Left(error.toDomainException()),
+    );
   }
 }

@@ -8,9 +8,9 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
-import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
-import 'package:mobile_table_hopping/features/rental/presentation/pages/rental_confirm_page.dart';
-import 'package:mobile_table_hopping/features/rental/presentation/widgets/availability_date_selector.dart';
+import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
+import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
+import 'package:mobile_table_hopping/presentation/widgets/rental/availability_date_selector.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockRentalBloc extends Mock implements RentalBloc {}

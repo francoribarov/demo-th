@@ -5,17 +5,17 @@ import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart'
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
-import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
-import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
+import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
+import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetPublications extends Mock implements GetPublications {}
 
-class MockConfirmRental extends Mock implements ConfirmRental {}
+class MockConfirmRentalUseCase extends Mock implements ConfirmRentalUseCase {}
 
 void main() {
   late MockGetPublications mockGetPublications;
-  late MockConfirmRental mockConfirmRental;
+  late MockConfirmRentalUseCase mockConfirmRentalUseCase;
   late RentalBloc rentalBloc;
 
   final tPublication = PublicationListing(
@@ -36,10 +36,10 @@ void main() {
 
   setUp(() {
     mockGetPublications = MockGetPublications();
-    mockConfirmRental = MockConfirmRental();
+    mockConfirmRentalUseCase = MockConfirmRentalUseCase();
     rentalBloc = RentalBloc(
       getPublications: mockGetPublications,
-      confirmRental: mockConfirmRental,
+      confirmRentalUseCase: mockConfirmRentalUseCase,
     );
 
     when(() => mockGetPublications.getById(any()))

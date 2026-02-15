@@ -23,8 +23,8 @@ import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/image_upload_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
-import 'package:mobile_table_hopping/features/rental/presentation/bloc/rental_bloc.dart';
-import 'package:mobile_table_hopping/features/rental/presentation/pages/rental_confirm_page.dart';
+import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
+import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
 
