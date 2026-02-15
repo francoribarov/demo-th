@@ -16,9 +16,9 @@ import 'package:mobile_table_hopping/domain/repository/rental/rental_repository.
 ///
 /// Example flow:
 /// 1. Receives [ConfirmRentalParams] from use case
-/// 2. Converts to [ConfirmRentalBody] via mapper
+/// 2. Converts to `ConfirmRentalBody` via mapper
 /// 3. Calls data source
-/// 4. Converts [DataState] to [Either] for domain layer
+/// 4. Converts data state to [Either] for domain layer
 @LazySingleton(as: RentalRepository)
 class RentalRepositoryImpl extends BaseRepository
     implements RentalRepository {

@@ -8,6 +8,8 @@ import 'package:mobile_table_hopping/data/services/rental/rental_service.dart';
 ///
 /// Defines the interface for rental-related data operations that interact
 /// with remote APIs.
+// Data source contracts may intentionally expose one operation per feature.
+// ignore: one_member_abstracts
 abstract class RentalRemoteDataSource {
   /// Creates a new rental request on the server.
   ///

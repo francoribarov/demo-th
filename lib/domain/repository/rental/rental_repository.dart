@@ -10,6 +10,8 @@ import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.
 /// Returns [Either<DomainException, T>] to provide explicit error handling:
 /// - [Left] contains [DomainException] on failure
 /// - [Right] contains the success value
+// Repository contracts may intentionally start with a single method.
+// ignore: one_member_abstracts
 abstract class RentalRepository {
   /// Confirms a rental request.
   ///

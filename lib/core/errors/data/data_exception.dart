@@ -16,15 +16,6 @@ import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 /// }
 /// ```
 class DataException implements Exception {
-  /// Human-readable error message.
-  final String message;
-
-  /// HTTP status code (if applicable).
-  final int? statusCode;
-
-  /// Additional error data from the server response.
-  final dynamic data;
-
   /// Creates a data exception with the given message and optional details.
   DataException({
     required this.message,
@@ -78,6 +69,15 @@ class DataException implements Exception {
       data: data,
     );
   }
+
+  /// Human-readable error message.
+  final String message;
+
+  /// HTTP status code (if applicable).
+  final int? statusCode;
+
+  /// Additional error data from the server response.
+  final dynamic data;
 
   /// Converts this data exception to a domain exception.
   ///

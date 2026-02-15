@@ -23,10 +23,10 @@ import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/image_upload_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
 import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
-import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
-import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
+import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
+import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 
 /// Route paths for type-safe navigation.
 class AppRoutes {
@@ -145,14 +145,12 @@ class AppRouter {
               child: MultiBlocProvider(
                 providers: [
                   BlocProvider<MyPublicationsBloc>(
-                    create: (_) =>
-                        getIt<MyPublicationsBloc>()
-                          ..add(const MyPublicationsEvent.started()),
+                    create: (_) => getIt<MyPublicationsBloc>()
+                      ..add(const MyPublicationsEvent.started()),
                   ),
                   BlocProvider<RentalRequestsBloc>(
-                    create: (_) =>
-                        getIt<RentalRequestsBloc>()
-                          ..add(const RentalRequestsEvent.started()),
+                    create: (_) => getIt<RentalRequestsBloc>()
+                      ..add(const RentalRequestsEvent.started()),
                   ),
                 ],
                 child: const MyPublicationsPage(),

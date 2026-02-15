@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/data/dto/rental/confirm_rental_body.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
+import 'package:mobile_table_hopping/data/dto/rental/confirm_rental_body.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'rental_service.g.dart';
@@ -25,6 +25,8 @@ part 'rental_service.g.dart';
 /// }
 /// ```
 @RestApi()
+// Retrofit services can validly expose a single endpoint per feature module.
+// ignore: one_member_abstracts
 abstract class RentalService {
   /// Creates a [RentalService] instance with the provided Dio client.
   ///

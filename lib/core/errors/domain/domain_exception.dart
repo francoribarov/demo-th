@@ -18,12 +18,6 @@
 /// }
 /// ```
 class DomainException implements Exception {
-  /// Human-readable error message suitable for display to users.
-  final String message;
-
-  /// HTTP status code (if applicable) for additional context.
-  final int? statusCode;
-
   /// Creates a domain exception with the given message and optional status code.
   const DomainException({
     required this.message,
@@ -68,6 +62,12 @@ class DomainException implements Exception {
       statusCode: 404,
     );
   }
+
+  /// Human-readable error message suitable for display to users.
+  final String message;
+
+  /// HTTP status code (if applicable) for additional context.
+  final int? statusCode;
 
   @override
   String toString() =>

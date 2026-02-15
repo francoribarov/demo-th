@@ -89,7 +89,7 @@ abstract class BaseRepository {
   /// ```
   Either<DomainException, T> toEither<T>(DataState<T> state) {
     return state.when(
-      success: (data) => Right(data),
+      success: Right.new,
       failed: (error) => Left(error.toDomainException()),
     );
   }
