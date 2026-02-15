@@ -1,0 +1,65 @@
+import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/core/data/base_repository.dart';
+import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
+import 'package:mobile_table_hopping/core/resources/data_state.dart';
+import 'package:mobile_table_hopping/data/datasource/my_publications/rental_requests_data_source.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
+import 'package:mobile_table_hopping/domain/repository/my_publications/rental_requests_repository.dart';
+
+/// Implementation of [RentalRequestsRepository] using remote data source.
+///
+/// This repository bridges the domain and data layers, handling:
+/// - DTO to domain model mapping
+/// - Error handling and transformation
+/// - Data state to Either conversion
+///
+/// Example flow:
+/// 1. Receives request from use case
+/// 2. Calls data source
+/// 3. Maps DTOs to domain models (for list operations)
+/// 4. Converts data state to [Either] for domain layer
+@LazySingleton(as: RentalRequestsRepository)
+class RentalRequestsRepositoryImpl extends BaseRepository
+    implements RentalRequestsRepository {
+  /// Creates the repository with the remote data source.
+  RentalRequestsRepositoryImpl(this._dataSource);
+
+  final RentalRequestsRemoteDataSource _dataSource;
+
+  @override
+  Future<Either<DomainException, List<RentalRequest>>>
+      getRentalRequests() async {
+    // Execute data source operation
+    final dataState = await _dataSource.getRentalRequests();
+
+    // Map DTOs to domain models within DataState
+    final mappedState = dataState.map(
+      success: (data) => DataState.success(
+        data.data.map((m) => m.toDomainModel()).toList(),
+      ),
+      failed: (error) => DataState<List<RentalRequest>>.failed(error.error),
+    );
+
+    // Convert DataState to Either for domain layer
+    return toEither(mappedState);
+  }
+
+  @override
+  Future<Either<DomainException, void>> acceptRentalRequest(String id) async {
+    // Execute data source operation
+    final result = await _dataSource.acceptRentalRequest(id);
+
+    // Convert DataState to Either for domain layer
+    return toEither(result);
+  }
+
+  @override
+  Future<Either<DomainException, void>> rejectRentalRequest(String id) async {
+    // Execute data source operation
+    final result = await _dataSource.rejectRentalRequest(id);
+
+    // Convert DataState to Either for domain layer
+    return toEither(result);
+  }
+}

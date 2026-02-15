@@ -8,11 +8,6 @@ import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.d
 import 'package:mobile_table_hopping/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_table_hopping/features/auth/presentation/pages/register_page.dart';
 import 'package:mobile_table_hopping/features/catalog/presentation/pages/home_page.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/pages/edit_publication_page.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_rules_bloc.dart';
 import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
@@ -25,7 +20,12 @@ import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_
 import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
+import 'package:mobile_table_hopping/presentation/pages/my_publications/edit_publication_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/my_publications/my_publications_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 
 /// Route paths for type-safe navigation.
