@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'catalog_service.g.dart';
@@ -16,7 +18,7 @@ abstract class CatalogService {
   Future<dynamic> getPublications(@Queries() Map<String, String> queryParams);
 
   @GET('${ApiConstants.publications}/{id}')
-  Future<dynamic> getPublicationById(@Path('id') String id);
+  Future<PublicationListingModel> getPublicationById(@Path('id') String id);
 
   @GET('${ApiConstants.publications}/available-today')
   Future<dynamic> getPublicationsAvailableToday(@Query('limit') String limit);
@@ -41,7 +43,7 @@ abstract class CatalogService {
   );
 
   @GET('${ApiConstants.games}/{id}')
-  Future<dynamic> getGameById(@Path('id') String id);
+  Future<GameModel> getGameById(@Path('id') String id);
 
   @GET(ApiConstants.games)
   Future<dynamic> getGames();
@@ -50,5 +52,5 @@ abstract class CatalogService {
   Future<dynamic> searchGames(@Queries() Map<String, String> queryParams);
 
   @GET('${ApiConstants.games}/{id}/recommended')
-  Future<dynamic> getRecommendedGames(@Path('id') String gameId);
+  Future<List<GameModel>> getRecommendedGames(@Path('id') String gameId);
 }

@@ -27,46 +27,26 @@ class DataException implements Exception {
   /// This factory maps different [DioExceptionType] values to appropriate
   /// error messages and extracts status codes and response data.
   factory DataException.fromDioError(DioException error) {
-    String message;
-    int? statusCode;
-    dynamic data;
-
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        message = 'Connection timeout. Please check your internet connection.';
+        return DataException(
+          message: 'Connection timeout. Please check your internet connection.',
+        );
       case DioExceptionType.badResponse:
-        statusCode = error.response?.statusCode;
-        data = error.response?.data;
-
-        // Try to extract error message from response
-        if (data is Map) {
-          message = data['message'] as String? ??
-              data['error'] as String? ??
-              'Server error occurred';
-        } else {
-          message = 'Server error occurred';
-        }
-      case DioExceptionType.cancel:
-        message = 'Request was cancelled';
+        return _fromBadResponse(error);
       case DioExceptionType.connectionError:
-        message = 'No internet connection. Please check your network.';
+        return DataException(
+          message: 'No internet connection. Please check your network.',
+        );
+      case DioExceptionType.cancel:
+        return DataException(message: 'Request was cancelled');
       case DioExceptionType.badCertificate:
-        message = 'Invalid SSL certificate';
+        return DataException(message: 'Invalid SSL certificate');
       case DioExceptionType.unknown:
-        if (error.message?.contains('SocketException') ?? false) {
-          message = 'No internet connection';
-        } else {
-          message = 'An unexpected error occurred';
-        }
+        return _fromUnknown(error);
     }
-
-    return DataException(
-      message: message,
-      statusCode: statusCode,
-      data: data,
-    );
   }
 
   /// Human-readable error message.
@@ -81,4 +61,82 @@ class DataException implements Exception {
   @override
   String toString() =>
       'DataException(message: $message, statusCode: $statusCode)';
+
+}
+
+DataException _fromBadResponse(DioException error) {
+  final statusCode = error.response?.statusCode;
+  final data = error.response?.data;
+  final extractedMessage = _extractErrorMessage(data);
+
+  if (statusCode == 401 || statusCode == 403) {
+    return DataException(
+      message: extractedMessage ?? 'Unauthorized access',
+      statusCode: statusCode,
+      data: data,
+    );
+  }
+
+  if (statusCode == 422) {
+    return DataException(
+      message: extractedMessage ?? 'Validation error',
+      statusCode: statusCode,
+      data: data,
+    );
+  }
+
+  if (statusCode != null && statusCode >= 500) {
+    return DataException(
+      message: extractedMessage ?? 'Server error occurred',
+      statusCode: statusCode,
+      data: data,
+    );
+  }
+
+  return DataException(
+    message: extractedMessage ?? 'Request failed',
+    statusCode: statusCode,
+    data: data,
+  );
+}
+
+DataException _fromUnknown(DioException error) {
+  if (error.error is Exception && error.error.toString().contains('SocketException')) {
+    return DataException(message: 'No internet connection');
+  }
+
+  if (error.message?.contains('SocketException') ?? false) {
+    return DataException(message: 'No internet connection');
+  }
+
+  final data = error.response?.data;
+  return DataException(
+    message: _extractErrorMessage(data) ?? 'An unexpected error occurred',
+    statusCode: error.response?.statusCode,
+    data: data,
+  );
+}
+
+String? _extractErrorMessage(dynamic data) {
+  if (data is! Map) return null;
+
+  final message = data['message']?.toString();
+  if (message != null && message.trim().isNotEmpty) {
+    return message;
+  }
+
+  final error = data['error']?.toString();
+  if (error != null && error.trim().isNotEmpty) {
+    return error;
+  }
+
+  final fault = data['fault'];
+  if (fault is Map) {
+    final faultString = fault['faultstring']?.toString();
+    if (faultString != null && faultString.trim().isNotEmpty) {
+      return faultString;
+    }
+  }
+
+  return null;
 }

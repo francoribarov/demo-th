@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/data/datasource/catalog/catalog_data_source.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/catalog_params.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_list_item_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
@@ -87,7 +88,9 @@ void main() {
       },
     );
 
-    final result = await dataSource.getPublications(query: 'catan');
+    final result = await dataSource.getPublications(
+      const PublicationsQueryParams(query: 'catan'),
+    );
 
     verify(
       () => service.getPublications(
@@ -110,7 +113,9 @@ void main() {
       () => service.getPublicationsAvailableToday('10'),
     ).thenAnswer((_) async => [publicationJson]);
 
-    final result = await dataSource.getPublicationsAvailableToday();
+    final result = await dataSource.getPublicationsAvailableToday(
+      const AvailableTodayQueryParams(),
+    );
 
     final data = expectSuccess<List<PublicationListingModel>>(result);
     expect(data, hasLength(1));
@@ -154,7 +159,9 @@ void main() {
       (_) async => 'unexpected',
     );
 
-    final result = await dataSource.getPublicationListings(query: 'abc');
+    final result = await dataSource.getPublicationListings(
+      const PublicationListingsQueryParams(query: 'abc'),
+    );
 
     final data = expectSuccess<List<PublicationListingModel>>(result);
     expect(data, isEmpty);
@@ -165,7 +172,9 @@ void main() {
       () => service.searchGames(any()),
     ).thenAnswer((_) async => [publicationListItemJson]);
 
-    final result = await dataSource.searchGames(query: 'terraforming');
+    final result = await dataSource.searchGames(
+      const SearchGamesQueryParams(query: 'terraforming'),
+    );
 
     verify(
       () => service.searchGames(

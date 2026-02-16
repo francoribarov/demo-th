@@ -50,10 +50,52 @@ abstract class BaseDataSource {
       return ApiResult.success(data: response);
     } on DioException catch (e) {
       return ApiResult.failure(dataException: DataException.fromDioError(e));
+    } on FormatException catch (e) {
+      return ApiResult.failure(
+        dataException: DataException(
+          message: _normalizeExceptionMessage(
+            e.message,
+            fallback: 'Failed to parse server response.',
+          ),
+        ),
+      );
     } on Exception catch (e) {
       return ApiResult.failure(
-        dataException: DataException(message: e.toString()),
+        dataException: DataException(
+          message: _normalizeExceptionMessage(
+            e.toString(),
+            fallback: 'An unexpected error occurred while processing request.',
+          ),
+        ),
+      );
+    } on Object catch (e) {
+      if (e is TypeError) {
+        return ApiResult.failure(
+          dataException: DataException(
+            message: _normalizeExceptionMessage(
+              e.toString(),
+              fallback: 'Unexpected response type from server.',
+            ),
+          ),
+        );
+      }
+      return ApiResult.failure(
+        dataException: DataException(
+          message: _normalizeExceptionMessage(
+            e.toString(),
+            fallback: 'An unexpected error occurred while processing request.',
+          ),
+        ),
       );
     }
+  }
+
+  String _normalizeExceptionMessage(
+    String? rawMessage, {
+    required String fallback,
+  }) {
+    final message = rawMessage?.trim();
+    if (message == null || message.isEmpty) return fallback;
+    return message;
   }
 }

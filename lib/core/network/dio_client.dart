@@ -21,7 +21,6 @@ class DioClient {
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     );
@@ -64,11 +63,16 @@ class DioClient {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
+    final normalizedData = _normalizeRequestBody(data);
+    final resolvedOptions = _resolveOptionsForData(
+      options: options,
+      data: normalizedData,
+    );
     return _dio.post<T>(
       path,
-      data: data,
+      data: normalizedData,
       queryParameters: queryParameters,
-      options: options,
+      options: resolvedOptions,
     );
   }
 
@@ -79,11 +83,16 @@ class DioClient {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
+    final normalizedData = _normalizeRequestBody(data);
+    final resolvedOptions = _resolveOptionsForData(
+      options: options,
+      data: normalizedData,
+    );
     return _dio.put<T>(
       path,
-      data: data,
+      data: normalizedData,
       queryParameters: queryParameters,
-      options: options,
+      options: resolvedOptions,
     );
   }
 
@@ -94,11 +103,63 @@ class DioClient {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
+    final normalizedData = _normalizeRequestBody(data);
+    final resolvedOptions = _resolveOptionsForData(
+      options: options,
+      data: normalizedData,
+    );
     return _dio.delete<T>(
       path,
-      data: data,
+      data: normalizedData,
       queryParameters: queryParameters,
-      options: options,
+      options: resolvedOptions,
+    );
+  }
+
+  dynamic _normalizeRequestBody(dynamic data) {
+    if (data == null ||
+        data is Map ||
+        data is List ||
+        data is String ||
+        data is num ||
+        data is bool ||
+        data is FormData ||
+        data is List<int>) {
+      return data;
+    }
+
+    try {
+      return (data as dynamic).toJson();
+    } on Object {
+      return data;
+    }
+  }
+
+  Options? _resolveOptionsForData({
+    required Options? options,
+    required dynamic data,
+  }) {
+    if (data == null) return options;
+
+    final baseOptions = options ?? Options();
+    final headers = Map<String, dynamic>.from(baseOptions.headers ?? {});
+
+    if (data is FormData) {
+      headers
+        ..remove('Content-Type')
+        ..remove('content-type');
+      return baseOptions.copyWith(
+        headers: headers,
+        contentType: Headers.multipartFormDataContentType,
+      );
+    }
+
+    headers
+      ..remove('Content-Type')
+      ..remove('content-type');
+    return baseOptions.copyWith(
+      headers: headers,
+      contentType: Headers.jsonContentType,
     );
   }
 }

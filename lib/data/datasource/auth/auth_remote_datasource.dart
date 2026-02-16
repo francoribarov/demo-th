@@ -1,10 +1,9 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
-import 'package:mobile_table_hopping/core/network/dio_client.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
+import 'package:mobile_table_hopping/data/services/auth/auth_service.dart';
 
 /// Remote datasource for authentication API calls
 abstract class AuthRemoteDatasource {
@@ -27,65 +26,35 @@ abstract class AuthRemoteDatasource {
 class AuthRemoteDatasourceImpl extends BaseDataSource
     implements AuthRemoteDatasource {
   /// Creates an [AuthRemoteDatasourceImpl].
-  AuthRemoteDatasourceImpl(this._dioClient);
+  AuthRemoteDatasourceImpl(this._service);
 
-  final DioClient _dioClient;
+  final AuthService _service;
 
   @override
   Future<ApiResult<AuthResponse>> login(LoginRequest request) {
     return getStateOf<AuthResponse>(
-      request: () async {
-        final response = await _dioClient.post<Map<String, dynamic>>(
-          ApiConstants.login,
-          data: request.toJson(),
-        );
-        final data = response.data;
-        if (data == null) {
-          throw Exception('Invalid server response');
-        }
-        return AuthResponse.fromJson(data);
-      },
+      request: () => _service.login(request.toJson()),
     );
   }
 
   @override
   Future<ApiResult<AuthResponse>> register(RegisterRequest request) {
     return getStateOf<AuthResponse>(
-      request: () async {
-        final response = await _dioClient.post<Map<String, dynamic>>(
-          ApiConstants.register,
-          data: request.toJson(),
-        );
-        final data = response.data;
-        if (data == null) {
-          throw Exception('Invalid server response');
-        }
-        return AuthResponse.fromJson(data);
-      },
+      request: () => _service.register(request.toJson()),
     );
   }
 
   @override
   Future<ApiResult<TokenResponse>> refreshToken(RefreshTokenRequest request) {
     return getStateOf<TokenResponse>(
-      request: () async {
-        final response = await _dioClient.post<Map<String, dynamic>>(
-          ApiConstants.refreshToken,
-          data: request.toJson(),
-        );
-        final data = response.data;
-        if (data == null) {
-          throw Exception('Invalid server response');
-        }
-        return TokenResponse.fromJson(data);
-      },
+      request: () => _service.refreshToken(request.toJson()),
     );
   }
 
   @override
   Future<ApiResult<void>> logout() {
     return getStateOf<void>(
-      request: () => _dioClient.post<void>(ApiConstants.logout),
+      request: _service.logout,
     );
   }
 }

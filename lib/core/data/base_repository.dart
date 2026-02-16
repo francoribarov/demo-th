@@ -94,6 +94,13 @@ abstract class BaseRepository {
   }
 
   /// Unwraps an [ApiResult], returning data or throwing a [DomainException].
+  ///
+  /// Prefer `executeDataSource*` helpers for standard repository methods that
+  /// already return `Either<DomainException, T>`.
+  ///
+  /// This helper is intended for flows that keep imperative control at the
+  /// repository level (for example, auth/session persistence sequences) where
+  /// early throw semantics are simpler to compose.
   Future<T> unwrapOrThrow<T>(Future<ApiResult<T>> Function() function) async {
     final state = await function();
     return state.when(
