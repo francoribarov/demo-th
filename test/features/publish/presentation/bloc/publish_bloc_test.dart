@@ -2,22 +2,24 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
-import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
 import 'package:mobile_table_hopping/domain/model/auth/user.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
+import 'package:mobile_table_hopping/domain/usecase/publish/create_publication_use_case.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/create_publication.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publish/publish_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockCreatePublication extends Mock implements CreatePublication {}
+class MockCreatePublication extends Mock implements CreatePublicationUseCase {}
 
 class MockAuthBloc extends Mock implements AuthBloc {}
 
 class MockGetGames extends Mock implements GetGamesUseCase {}
+
+class FakePublicationDraft extends Fake implements PublicationDraft {}
 
 void main() {
   late MockCreatePublication mockCreatePublication;
@@ -54,6 +56,10 @@ void main() {
       authBloc: mockAuthBloc,
       getGames: mockGetGames,
     );
+  });
+
+  setUpAll(() {
+    registerFallbackValue(FakePublicationDraft());
   });
 
   tearDown(() async {
@@ -130,6 +136,45 @@ void main() {
           condition: PublicationCondition.likeNew,
           currentStep: 1,
           isStepValid: true,
+        ),
+      ],
+    );
+
+    blocTest<PublishBloc, PublishState>(
+      'emits fallback error when createPublication throws unexpectedly',
+      build: () {
+        when(
+          () => mockCreatePublication(any(), ownerId: any(named: 'ownerId')),
+        ).thenThrow(Exception('unexpected'));
+        return publishBloc;
+      },
+      seed: () => const PublishState(
+        gameId: 'game-123',
+        description: 'Valid description for the game',
+        condition: PublicationCondition.likeNew,
+        price: 1500,
+        currentStep: 3,
+        isStepValid: true,
+      ),
+      act: (bloc) => bloc.add(const PublishEvent.submit()),
+      expect: () => [
+        const PublishState(
+          gameId: 'game-123',
+          description: 'Valid description for the game',
+          condition: PublicationCondition.likeNew,
+          price: 1500,
+          currentStep: 3,
+          isStepValid: true,
+          isSubmitting: true,
+        ),
+        const PublishState(
+          gameId: 'game-123',
+          description: 'Valid description for the game',
+          condition: PublicationCondition.likeNew,
+          price: 1500,
+          currentStep: 3,
+          isStepValid: true,
+          errorMessage: 'Ocurrio un error inesperado al publicar.',
         ),
       ],
     );

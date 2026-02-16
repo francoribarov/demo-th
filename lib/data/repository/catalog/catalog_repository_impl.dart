@@ -61,10 +61,12 @@ class CatalogRepositoryImpl extends BaseRepository
     String id,
   ) async {
     final result = await _dataSource.getPublicationById(id);
-    return toEither(result.when(
-      success: (dto) => DataState.success(dto.toDomainModel()),
-      failed: DataState.failed,
-    ),);
+    return toEither(
+      result.when(
+        success: (dto) => DataState.success(dto.toDomainModel()),
+        failed: DataState.failed,
+      ),
+    );
   }
 
   @override
@@ -134,10 +136,12 @@ class CatalogRepositoryImpl extends BaseRepository
   @override
   Future<Either<DomainException, Game>> getGameById(String id) async {
     final result = await _dataSource.getGameById(id);
-    return toEither(result.when(
-      success: (dto) => DataState.success(dto.toDomainModel()),
-      failed: DataState.failed,
-    ),);
+    return toEither(
+      result.when(
+        success: (dto) => DataState.success(dto.toDomainModel()),
+        failed: DataState.failed,
+      ),
+    );
   }
 
   @override

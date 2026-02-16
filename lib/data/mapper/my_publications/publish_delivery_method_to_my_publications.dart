@@ -1,6 +1,6 @@
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart'
     as mp;
-import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart'
+import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart'
     as publish;
 
 extension PublishDeliveryMethodToMyPublications on publish.DeliveryMethod {

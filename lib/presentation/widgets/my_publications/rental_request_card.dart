@@ -62,9 +62,9 @@ class RentalRequestCard extends StatelessWidget {
                     Text(
                       '\$${request.totalPrice}',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     Text(
                       'Total ($duration días)',

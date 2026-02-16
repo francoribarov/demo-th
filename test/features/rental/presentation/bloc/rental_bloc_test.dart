@@ -5,13 +5,14 @@ import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publication_by_id_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetPublicationById extends Mock implements GetPublicationByIdUseCase {}
+class MockGetPublicationById extends Mock
+    implements GetPublicationByIdUseCase {}
 
 class MockConfirmRentalUseCase extends Mock implements ConfirmRentalUseCase {}
 

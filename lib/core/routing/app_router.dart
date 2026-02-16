@@ -4,10 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/go_router_refresh_stream.dart';
 import 'package:mobile_table_hopping/core/widgets/app_scaffold.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery_method_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/image_upload_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
@@ -18,6 +14,9 @@ import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_r
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_reviews_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_rules_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/publication_details_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publish/delivery_method_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publish/image_upload_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publish/publish_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/auth/login_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/auth/register_page.dart';
@@ -27,6 +26,7 @@ import 'package:mobile_table_hopping/presentation/pages/my_publications/my_publi
 import 'package:mobile_table_hopping/presentation/pages/publication_details/game_reviews_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publication_details/game_rules_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publication_details/publication_details_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/publish/publish_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 
 /// Route paths for type-safe navigation.

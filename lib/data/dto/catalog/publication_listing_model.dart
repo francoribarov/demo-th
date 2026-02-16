@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart'
+import 'package:mobile_table_hopping/domain/model/publish/publication.dart'
     show PublicationCondition;
 
 part 'publication_listing_model.freezed.dart';

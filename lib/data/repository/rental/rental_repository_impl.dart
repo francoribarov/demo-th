@@ -20,8 +20,7 @@ import 'package:mobile_table_hopping/domain/repository/rental/rental_repository.
 /// 3. Calls data source
 /// 4. Converts data state to [Either] for domain layer
 @LazySingleton(as: RentalRepository)
-class RentalRepositoryImpl extends BaseRepository
-    implements RentalRepository {
+class RentalRepositoryImpl extends BaseRepository implements RentalRepository {
   /// Creates the repository with the remote data source.
   RentalRepositoryImpl(this._dataSource);
 

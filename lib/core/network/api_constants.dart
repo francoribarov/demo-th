@@ -82,6 +82,9 @@ class ApiConstants {
   static String acceptRental(String id) => '$rentals/$id/accept';
   static String rejectRental(String id) => '$rentals/$id/reject';
 
+  /// Delivery methods endpoints.
+  static const String deliveryMethods = '$apiBasePath/delivery-methods';
+
   /// Images upload endpoint.
   static const String imageUpload = '$apiBasePath/images/upload';
 
