@@ -35,7 +35,7 @@ class DeliveryMethodRemoteDataSourceImpl extends BaseDataSource
   @override
   Future<DataState<List<DeliveryMethodModel>>> getDeliveryMethods() {
     return getStateOf<List<DeliveryMethodModel>>(
-      request: () => _service.getDeliveryMethods(),
+      request: _service.getDeliveryMethods,
     );
   }
 }

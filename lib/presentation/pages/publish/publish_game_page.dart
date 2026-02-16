@@ -89,7 +89,8 @@ class PublishGamePage extends StatelessWidget {
                                 onAddImage: () => context
                                     .read<ImageUploadBloc>()
                                     .add(
-                                        const ImageUploadEvent.pickAndUpload()),
+                                      const ImageUploadEvent.pickAndUpload(),
+                                    ),
                                 onRemoveImage: (index) => context
                                     .read<ImageUploadBloc>()
                                     .add(ImageUploadEvent.imageRemoved(index)),
