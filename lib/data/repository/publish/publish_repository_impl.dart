@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
 import 'package:mobile_table_hopping/data/datasource/publish/publish_data_source.dart';
 import 'package:mobile_table_hopping/data/dto/publish/publication_model.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
@@ -11,7 +10,7 @@ import 'package:mobile_table_hopping/domain/repository/publish/publish_repositor
 /// Repository implementation for publish actions.
 ///
 /// This repository bridges the domain and data layers, handling:
-/// - Conversion from DataState to Either
+/// - Conversion from ApiResult to Either
 /// - DTO to domain model mapping
 /// - Error handling and transformation
 @LazySingleton(as: PublishRepository)
@@ -27,14 +26,9 @@ class PublishRepositoryImpl extends BaseRepository
     PublicationDraft draft, {
     required String ownerId,
   }) async {
-    final result = await _dataSource.createPublication(
-      PublicationCreateRequestModel.fromEntity(draft, ownerId: ownerId),
-    );
-
-    return toEither(
-      result.when(
-        success: (dto) => DataState.success(dto.toDomainModel()),
-        failed: DataState.failed,
+    return executeDataSource<PublicationModel, Publication>(
+      function: () => _dataSource.createPublication(
+        PublicationCreateRequestModel.fromEntity(draft, ownerId: ownerId),
       ),
     );
   }

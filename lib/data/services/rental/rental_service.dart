@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
-import 'package:mobile_table_hopping/data/dto/rental/confirm_rental_body.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'rental_service.g.dart';
@@ -45,5 +44,5 @@ abstract class RentalService {
   ///
   /// Throws [DioException] on network or server errors.
   @POST(ApiConstants.rentals)
-  Future<void> createRental(@Body() ConfirmRentalBody body);
+  Future<void> createRental(@Body() Map<String, dynamic> body);
 }

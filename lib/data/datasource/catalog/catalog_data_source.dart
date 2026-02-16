@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_list_item_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
@@ -9,7 +9,7 @@ import 'package:mobile_table_hopping/data/services/catalog/catalog_service.dart'
 /// Remote datasource contract for catalog operations.
 abstract class CatalogRemoteDataSource {
   /// Fetches publications with optional filters.
-  Future<DataState<List<PublicationListingModel>>> getPublications({
+  Future<ApiResult<List<PublicationListingModel>>> getPublications({
     String? query,
     String? category,
     String? players,
@@ -24,41 +24,41 @@ abstract class CatalogRemoteDataSource {
   });
 
   /// Fetches a single publication by ID.
-  Future<DataState<PublicationListingModel>> getPublicationById(String id);
+  Future<ApiResult<PublicationListingModel>> getPublicationById(String id);
 
   /// Fetches publications available for rental today.
-  Future<DataState<List<PublicationListingModel>>>
+  Future<ApiResult<List<PublicationListingModel>>>
       getPublicationsAvailableToday({
     int limit = 10,
   });
 
   /// Fetches recommended publications based on a game ID.
-  Future<DataState<List<PublicationListingModel>>> getRecommendedPublications(
+  Future<ApiResult<List<PublicationListingModel>>> getRecommendedPublications(
     String gameId,
   );
 
   /// Fetches the current user's publications.
-  Future<DataState<List<PublicationListingModel>>> getMyPublications();
+  Future<ApiResult<List<PublicationListingModel>>> getMyPublications();
 
   /// Fetches publication categories for filtering.
-  Future<DataState<List<GameCategoryModel>>> getCategories();
+  Future<ApiResult<List<GameCategoryModel>>> getCategories();
 
   /// Fetches filter shortcuts for quick filtering.
-  Future<DataState<List<FilterShortcutModel>>> getFilterShortcuts();
+  Future<ApiResult<List<FilterShortcutModel>>> getFilterShortcuts();
 
   /// Fetches publication listings with optional query filter.
-  Future<DataState<List<PublicationListingModel>>> getPublicationListings({
+  Future<ApiResult<List<PublicationListingModel>>> getPublicationListings({
     String? query,
   });
 
   /// Fetches a single game by ID.
-  Future<DataState<GameModel>> getGameById(String id);
+  Future<ApiResult<GameModel>> getGameById(String id);
 
   /// Fetches all games from the catalog.
-  Future<DataState<List<GameModel>>> getGames();
+  Future<ApiResult<List<GameModel>>> getGames();
 
   /// Searches games with optional filters.
-  Future<DataState<List<PublicationListItemModel>>> searchGames({
+  Future<ApiResult<List<PublicationListItemModel>>> searchGames({
     String? query,
     String? players,
     String? duration,
@@ -70,13 +70,13 @@ abstract class CatalogRemoteDataSource {
   });
 
   /// Fetches recommended games for a specific game.
-  Future<DataState<List<GameModel>>> getRecommendedGames(String gameId);
+  Future<ApiResult<List<GameModel>>> getRecommendedGames(String gameId);
 }
 
 /// Implementation of [CatalogRemoteDataSource] using Retrofit service.
 ///
 /// Extends [BaseDataSource] to leverage the standard error handling
-/// and [DataState] wrapping pattern.
+/// and [ApiResult] wrapping pattern.
 @LazySingleton(as: CatalogRemoteDataSource)
 class CatalogRemoteDataSourceImpl extends BaseDataSource
     implements CatalogRemoteDataSource {
@@ -85,7 +85,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   final CatalogService _service;
 
   @override
-  Future<DataState<List<PublicationListingModel>>> getPublications({
+  Future<ApiResult<List<PublicationListingModel>>> getPublications({
     String? query,
     String? category,
     String? players,
@@ -101,15 +101,15 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
     return getStateOf<List<PublicationListingModel>>(
       request: () async {
         final queryParams = <String, String>{
-          if (query != null) 'q': query,
-          if (category != null) 'category': category,
-          if (players != null) 'players': players,
-          if (duration != null) 'duration': duration,
+          'q': ?query,
+          'category': ?category,
+          'players': ?players,
+          'duration': ?duration,
           if (priceMin != null) 'price_min': priceMin.toString(),
           if (priceMax != null) 'price_max': priceMax.toString(),
-          if (startDate != null) 'start_date': startDate,
-          if (endDate != null) 'end_date': endDate,
-          if (sortBy != null) 'sort_by': sortBy,
+          'start_date': ?startDate,
+          'end_date': ?endDate,
+          'sort_by': ?sortBy,
           'page': page.toString(),
           'limit': limit.toString(),
         };
@@ -120,7 +120,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<PublicationListingModel>> getPublicationById(String id) {
+  Future<ApiResult<PublicationListingModel>> getPublicationById(String id) {
     return getStateOf<PublicationListingModel>(
       request: () async {
         final response = await _service.getPublicationById(id);
@@ -132,7 +132,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<PublicationListingModel>>>
+  Future<ApiResult<List<PublicationListingModel>>>
       getPublicationsAvailableToday({
     int limit = 10,
   }) {
@@ -147,7 +147,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<PublicationListingModel>>> getRecommendedPublications(
+  Future<ApiResult<List<PublicationListingModel>>> getRecommendedPublications(
     String gameId,
   ) {
     return getStateOf<List<PublicationListingModel>>(
@@ -162,7 +162,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<PublicationListingModel>>> getMyPublications() {
+  Future<ApiResult<List<PublicationListingModel>>> getMyPublications() {
     return getStateOf<List<PublicationListingModel>>(
       request: () async {
         final response = await _service.getMyPublications();
@@ -172,7 +172,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<GameCategoryModel>>> getCategories() {
+  Future<ApiResult<List<GameCategoryModel>>> getCategories() {
     return getStateOf<List<GameCategoryModel>>(
       request: () async {
         final response = await _service.getCategories();
@@ -187,7 +187,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<FilterShortcutModel>>> getFilterShortcuts() {
+  Future<ApiResult<List<FilterShortcutModel>>> getFilterShortcuts() {
     return getStateOf<List<FilterShortcutModel>>(
       request: () async {
         final response = await _service.getFilterShortcuts();
@@ -202,13 +202,13 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<PublicationListingModel>>> getPublicationListings({
+  Future<ApiResult<List<PublicationListingModel>>> getPublicationListings({
     String? query,
   }) {
     return getStateOf<List<PublicationListingModel>>(
       request: () async {
         final queryParams = <String, String>{
-          if (query != null) 'q': query,
+          'q': ?query,
         };
         final response = await _service.getPublicationListings(queryParams);
         return _parsePublicationListingList(response);
@@ -217,7 +217,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<GameModel>> getGameById(String id) {
+  Future<ApiResult<GameModel>> getGameById(String id) {
     return getStateOf<GameModel>(
       request: () async {
         final response = await _service.getGameById(id);
@@ -227,7 +227,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<GameModel>>> getGames() {
+  Future<ApiResult<List<GameModel>>> getGames() {
     return getStateOf<List<GameModel>>(
       request: () async {
         final response = await _service.getGames();
@@ -239,7 +239,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<PublicationListItemModel>>> searchGames({
+  Future<ApiResult<List<PublicationListItemModel>>> searchGames({
     String? query,
     String? players,
     String? duration,
@@ -252,14 +252,14 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
     return getStateOf<List<PublicationListItemModel>>(
       request: () async {
         final queryParams = <String, String>{
-          if (query != null) 'q': query,
-          if (players != null) 'players': players,
-          if (duration != null) 'duration': duration,
-          if (difficulty != null) 'difficulty': difficulty,
-          if (category != null) 'category': category,
-          if (startDate != null) 'start_date': startDate,
-          if (endDate != null) 'end_date': endDate,
-          if (sortBy != null) 'sort_by': sortBy,
+          'q': ?query,
+          'players': ?players,
+          'duration': ?duration,
+          'difficulty': ?difficulty,
+          'category': ?category,
+          'start_date': ?startDate,
+          'end_date': ?endDate,
+          'sort_by': ?sortBy,
         };
         final response = await _service.searchGames(queryParams);
         return _extractList(response)
@@ -274,7 +274,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<DataState<List<GameModel>>> getRecommendedGames(String gameId) {
+  Future<ApiResult<List<GameModel>>> getRecommendedGames(String gameId) {
     return getStateOf<List<GameModel>>(
       request: () async {
         final response = await _service.getRecommendedGames(gameId);

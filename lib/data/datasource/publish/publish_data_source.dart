@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
 import 'package:mobile_table_hopping/data/dto/publish/publication_model.dart';
 import 'package:mobile_table_hopping/data/services/publish/publish_service.dart';
 
@@ -8,7 +8,7 @@ import 'package:mobile_table_hopping/data/services/publish/publish_service.dart'
 // ignore: one_member_abstracts
 abstract class PublishRemoteDataSource {
   /// Creates a publication on the backend.
-  Future<DataState<PublicationModel>> createPublication(
+  Future<ApiResult<PublicationModel>> createPublication(
     PublicationCreateRequestModel request,
   );
 }
@@ -16,7 +16,7 @@ abstract class PublishRemoteDataSource {
 /// Remote datasource implementation using Retrofit service.
 ///
 /// Extends [BaseDataSource] to leverage the standard error handling
-/// and [DataState] wrapping pattern.
+/// and [ApiResult] wrapping pattern.
 @LazySingleton(as: PublishRemoteDataSource)
 class PublishRemoteDataSourceImpl extends BaseDataSource
     implements PublishRemoteDataSource {
@@ -26,7 +26,7 @@ class PublishRemoteDataSourceImpl extends BaseDataSource
   final PublishService _service;
 
   @override
-  Future<DataState<PublicationModel>> createPublication(
+  Future<ApiResult<PublicationModel>> createPublication(
     PublicationCreateRequestModel request,
   ) {
     return getStateOf<PublicationModel>(

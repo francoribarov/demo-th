@@ -67,7 +67,8 @@ class EditDataStep extends StatelessWidget {
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _GamePlaceholder(),
+                          errorBuilder: (_, error, stackTrace) =>
+                              _GamePlaceholder(),
                         )
                       : _GamePlaceholder(),
                 ),

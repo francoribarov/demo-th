@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/data/datasource/my_publications/publication_detail_data_source.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_detail_model.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_update_body.dart';
@@ -37,7 +37,7 @@ void main() {
   test('getPublicationDetail returns Right on success', () async {
     when(
       () => dataSource.getPublicationDetail('p-1'),
-    ).thenAnswer((_) async => const DataState.success(tModel));
+    ).thenAnswer((_) async => const ApiResult.success(data: tModel));
 
     final result = await repository.getPublicationDetail('p-1');
 
@@ -54,7 +54,7 @@ void main() {
   test('getPublicationDetail returns Left on failure', () async {
     when(
       () => dataSource.getPublicationDetail('p-1'),
-    ).thenAnswer((_) async => DataState.failed(dataException));
+    ).thenAnswer((_) async => ApiResult.failure(dataException: dataException));
 
     final result = await repository.getPublicationDetail('p-1');
 
@@ -90,7 +90,7 @@ void main() {
           deliveryMethodIds: ['dm-1'],
         ),
       ),
-    ).thenAnswer((_) async => DataState.failed(dataException));
+    ).thenAnswer((_) async => ApiResult.failure(dataException: dataException));
 
     final result = await repository.updatePublication(params);
 
@@ -107,14 +107,14 @@ void main() {
   test('deletePublication maps success and failure', () async {
     when(
       () => dataSource.deletePublication('p-1'),
-    ).thenAnswer((_) async => const DataState.success(null));
+    ).thenAnswer((_) async => const ApiResult.success(data: null));
 
     final success = await repository.deletePublication('p-1');
     expect(success.isRight(), isTrue);
 
     when(
       () => dataSource.deletePublication('p-2'),
-    ).thenAnswer((_) async => DataState.failed(dataException));
+    ).thenAnswer((_) async => ApiResult.failure(dataException: dataException));
 
     final failure = await repository.deletePublication('p-2');
     expect(failure.isLeft(), isTrue);

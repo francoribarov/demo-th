@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
+import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
 import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
@@ -56,7 +58,9 @@ void main() {
   });
 
   test('login persists tokens and caches user', () async {
-    when(() => remote.login(any())).thenAnswer((_) async => authResponse);
+    when(
+      () => remote.login(any()),
+    ).thenAnswer((_) async => const ApiResult.success(data: authResponse));
 
     final session = await repository.login(
       email: 'user@example.com',
@@ -81,7 +85,9 @@ void main() {
   });
 
   test('register persists tokens and caches user', () async {
-    when(() => remote.register(any())).thenAnswer((_) async => authResponse);
+    when(
+      () => remote.register(any()),
+    ).thenAnswer((_) async => const ApiResult.success(data: authResponse));
 
     final session = await repository.register(
       email: 'user@example.com',
@@ -116,7 +122,7 @@ void main() {
       () => remote.refreshToken(
         const RefreshTokenRequest(refreshToken: 'old-refresh'),
       ),
-    ).thenAnswer((_) async => tokenResponse);
+    ).thenAnswer((_) async => const ApiResult.success(data: tokenResponse));
 
     final tokens = await repository.refresh();
 
@@ -130,7 +136,13 @@ void main() {
   });
 
   test('logout clears tokens and cached user even on failure', () async {
-    when(() => remote.logout()).thenThrow(Exception('fail'));
+    when(
+      () => remote.logout(),
+    ).thenAnswer(
+      (_) async => ApiResult.failure(
+        dataException: DataException(message: 'fail'),
+      ),
+    );
     await tokenStorage.saveTokens('access-token', 'refresh-token');
     await prefs.setString('auth_user', jsonEncode(userModel.toJson()));
 

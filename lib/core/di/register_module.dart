@@ -4,6 +4,7 @@ import 'package:mobile_table_hopping/core/network/dio_client.dart';
 import 'package:mobile_table_hopping/data/services/catalog/catalog_service.dart';
 import 'package:mobile_table_hopping/data/services/my_publications/publication_detail_service.dart';
 import 'package:mobile_table_hopping/data/services/my_publications/rental_requests_service.dart';
+import 'package:mobile_table_hopping/data/services/publish/publish_service.dart';
 import 'package:mobile_table_hopping/data/services/rental/rental_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,4 +39,9 @@ abstract class RegisterModule {
   @lazySingleton
   RentalRequestsService rentalRequestsService(DioClient dioClient) =>
       RentalRequestsService(dioClient.dio);
+
+  /// Provides the Retrofit publish service.
+  @lazySingleton
+  PublishService publishService(DioClient dioClient) =>
+      PublishService(dioClient.dio);
 }

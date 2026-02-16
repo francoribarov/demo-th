@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_model.dart';
 import 'package:mobile_table_hopping/data/services/my_publications/rental_requests_service.dart';
 
@@ -12,9 +12,9 @@ abstract class RentalRequestsRemoteDataSource {
   /// Retrieves all rental requests for the current user's publications.
   ///
   /// Returns:
-  /// - [DataState.success] with list of rental request models if successful
-  /// - [DataState.failed] with error details if the operation failed
-  Future<DataState<List<RentalRequestModel>>> getRentalRequests();
+  /// - [ApiResult.success] with list of rental request models if successful
+  /// - [ApiResult.failure] with error details if the operation failed
+  Future<ApiResult<List<RentalRequestModel>>> getRentalRequests();
 
   /// Accepts a rental request.
   ///
@@ -22,9 +22,9 @@ abstract class RentalRequestsRemoteDataSource {
   /// - [id]: The rental request ID
   ///
   /// Returns:
-  /// - [DataState.success] if the request was accepted successfully
-  /// - [DataState.failed] with error details if the operation failed
-  Future<DataState<void>> acceptRentalRequest(String id);
+  /// - [ApiResult.success] if the request was accepted successfully
+  /// - [ApiResult.failure] with error details if the operation failed
+  Future<ApiResult<void>> acceptRentalRequest(String id);
 
   /// Rejects a rental request.
   ///
@@ -32,15 +32,15 @@ abstract class RentalRequestsRemoteDataSource {
   /// - [id]: The rental request ID
   ///
   /// Returns:
-  /// - [DataState.success] if the request was rejected successfully
-  /// - [DataState.failed] with error details if the operation failed
-  Future<DataState<void>> rejectRentalRequest(String id);
+  /// - [ApiResult.success] if the request was rejected successfully
+  /// - [ApiResult.failure] with error details if the operation failed
+  Future<ApiResult<void>> rejectRentalRequest(String id);
 }
 
 /// Implementation of [RentalRequestsRemoteDataSource] using Retrofit service.
 ///
 /// This class extends [BaseDataSource] to leverage the standard
-/// error handling and [DataState] wrapping pattern.
+/// error handling and [ApiResult] wrapping pattern.
 ///
 /// Example:
 /// ```dart
@@ -59,21 +59,21 @@ class RentalRequestsRemoteDataSourceImpl extends BaseDataSource
   final RentalRequestsService _service;
 
   @override
-  Future<DataState<List<RentalRequestModel>>> getRentalRequests() {
+  Future<ApiResult<List<RentalRequestModel>>> getRentalRequests() {
     return getStateOf<List<RentalRequestModel>>(
       request: _service.getRentalRequests,
     );
   }
 
   @override
-  Future<DataState<void>> acceptRentalRequest(String id) {
+  Future<ApiResult<void>> acceptRentalRequest(String id) {
     return getStateOf<void>(
       request: () => _service.acceptRentalRequest(id),
     );
   }
 
   @override
-  Future<DataState<void>> rejectRentalRequest(String id) {
+  Future<ApiResult<void>> rejectRentalRequest(String id) {
     return getStateOf<void>(
       request: () => _service.rejectRentalRequest(id),
     );

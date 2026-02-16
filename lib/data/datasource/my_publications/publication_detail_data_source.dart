@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_detail_model.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_update_body.dart';
 import 'package:mobile_table_hopping/data/services/my_publications/publication_detail_service.dart';
@@ -16,9 +16,9 @@ abstract class PublicationDetailRemoteDataSource {
   /// - [id]: The publication ID
   ///
   /// Returns:
-  /// - [DataState.success] with publication detail model if successful
-  /// - [DataState.failed] with error details if the operation failed
-  Future<DataState<PublicationDetailModel>> getPublicationDetail(String id);
+  /// - [ApiResult.success] with publication detail model if successful
+  /// - [ApiResult.failure] with error details if the operation failed
+  Future<ApiResult<PublicationDetailModel>> getPublicationDetail(String id);
 
   /// Updates an existing publication.
   ///
@@ -27,9 +27,9 @@ abstract class PublicationDetailRemoteDataSource {
   /// - [body]: The update request data
   ///
   /// Returns:
-  /// - [DataState.success] with updated publication detail model if successful
-  /// - [DataState.failed] with error details if the operation failed
-  Future<DataState<PublicationDetailModel>> updatePublication(
+  /// - [ApiResult.success] with updated publication detail model if successful
+  /// - [ApiResult.failure] with error details if the operation failed
+  Future<ApiResult<PublicationDetailModel>> updatePublication(
     String id,
     PublicationUpdateBody body,
   );
@@ -40,15 +40,15 @@ abstract class PublicationDetailRemoteDataSource {
   /// - [id]: The publication ID
   ///
   /// Returns:
-  /// - [DataState.success] if the publication was deleted successfully
-  /// - [DataState.failed] with error details if the operation failed
-  Future<DataState<void>> deletePublication(String id);
+  /// - [ApiResult.success] if the publication was deleted successfully
+  /// - [ApiResult.failure] with error details if the operation failed
+  Future<ApiResult<void>> deletePublication(String id);
 }
 
 /// Implementation of [PublicationDetailRemoteDataSource] using Retrofit service.
 ///
 /// This class extends [BaseDataSource] to leverage the standard
-/// error handling and [DataState] wrapping pattern.
+/// error handling and [ApiResult] wrapping pattern.
 ///
 /// Example:
 /// ```dart
@@ -67,24 +67,24 @@ class PublicationDetailRemoteDataSourceImpl extends BaseDataSource
   final PublicationDetailService _service;
 
   @override
-  Future<DataState<PublicationDetailModel>> getPublicationDetail(String id) {
+  Future<ApiResult<PublicationDetailModel>> getPublicationDetail(String id) {
     return getStateOf<PublicationDetailModel>(
       request: () => _service.getPublicationDetail(id),
     );
   }
 
   @override
-  Future<DataState<PublicationDetailModel>> updatePublication(
+  Future<ApiResult<PublicationDetailModel>> updatePublication(
     String id,
     PublicationUpdateBody body,
   ) {
     return getStateOf<PublicationDetailModel>(
-      request: () => _service.updatePublication(id, body),
+      request: () => _service.updatePublication(id, body.toJson()),
     );
   }
 
   @override
-  Future<DataState<void>> deletePublication(String id) {
+  Future<ApiResult<void>> deletePublication(String id) {
     return getStateOf<void>(
       request: () => _service.deletePublication(id),
     );

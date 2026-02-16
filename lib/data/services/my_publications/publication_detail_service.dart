@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_detail_model.dart';
-import 'package:mobile_table_hopping/data/dto/my_publications/publication_update_body.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'publication_detail_service.g.dart';
@@ -48,7 +47,7 @@ abstract class PublicationDetailService {
   @PUT('${ApiConstants.publications}/{id}')
   Future<PublicationDetailModel> updatePublication(
     @Path('id') String id,
-    @Body() PublicationUpdateBody body,
+    @Body() Map<String, dynamic> body,
   );
 
   /// Deletes a publication.

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 
 /// Data layer exception that wraps HTTP/network errors.
 ///
@@ -78,17 +77,6 @@ class DataException implements Exception {
 
   /// Additional error data from the server response.
   final dynamic data;
-
-  /// Converts this data exception to a domain exception.
-  ///
-  /// This method is used when crossing the boundary from the data layer
-  /// to the domain layer, ensuring errors are properly transformed.
-  DomainException toDomainException() {
-    return DomainException(
-      message: message,
-      statusCode: statusCode,
-    );
-  }
 
   @override
   String toString() =>

@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 
 /// Abstract base class for all remote data sources.
 ///
 /// [BaseDataSource] provides a common pattern for executing HTTP requests
-/// and wrapping them in [DataState]. This ensures consistent error handling
+/// and wrapping them in [ApiResult]. This ensures consistent error handling
 /// across all data sources.
 ///
 /// Extend this class in your data source implementations:
@@ -20,7 +20,7 @@ import 'package:mobile_table_hopping/core/resources/data_state.dart';
 ///   final UserService _service;
 ///
 ///   @override
-///   Future<DataState<UserDto>> getUser(String id) {
+///   Future<ApiResult<UserDto>> getUser(String id) {
 ///     return getStateOf<UserDto>(
 ///       request: () => _service.getUser(id),
 ///     );
@@ -28,12 +28,12 @@ import 'package:mobile_table_hopping/core/resources/data_state.dart';
 /// }
 /// ```
 abstract class BaseDataSource {
-  /// Executes a request and wraps the result in [DataState].
+  /// Executes a request and wraps the result in [ApiResult].
   ///
   /// This method:
   /// 1. Executes the provided request function
-  /// 2. On success, wraps the result in [DataState.success]
-  /// 3. On [DioException], converts it to [DataException] and wraps in [DataState.failed]
+  /// 2. On success, wraps the result in [ApiResult.success]
+  /// 3. On [DioException], converts it to [DataException] and wraps in [ApiResult.failure]
   ///
   /// Type parameters:
   /// - [T]: The expected return type of the request
@@ -41,15 +41,19 @@ abstract class BaseDataSource {
   /// Parameters:
   /// - [request]: A function that returns a `Future<T>` representing the HTTP call
   ///
-  /// Returns a [DataState<T>] containing either the successful data or an error.
-  Future<DataState<T>> getStateOf<T>({
+  /// Returns an [ApiResult<T>] containing either the successful data or an error.
+  Future<ApiResult<T>> getStateOf<T>({
     required Future<T> Function() request,
   }) async {
     try {
       final response = await request();
-      return DataState.success(response);
+      return ApiResult.success(data: response);
     } on DioException catch (e) {
-      return DataState.failed(DataException.fromDioError(e));
+      return ApiResult.failure(dataException: DataException.fromDioError(e));
+    } on Exception catch (e) {
+      return ApiResult.failure(
+        dataException: DataException(message: e.toString()),
+      );
     }
   }
 }
