@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 
 /// Registration screen for new users.
 class RegisterPage extends StatefulWidget {

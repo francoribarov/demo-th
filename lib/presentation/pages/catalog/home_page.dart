@@ -13,7 +13,6 @@ import 'package:mobile_table_hopping/presentation/widgets/catalog/discovery_view
 import 'package:mobile_table_hopping/presentation/widgets/catalog/results_view.dart';
 import 'package:mobile_table_hopping/presentation/widgets/catalog/search_header.dart';
 
-/// Home page matching the Vite.js Home component
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 

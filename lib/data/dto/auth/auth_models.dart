@@ -2,9 +2,9 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
-import 'package:mobile_table_hopping/features/auth/data/models/user_model.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
+import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
 import 'package:mobile_table_hopping/features/publish/data/models/delivery_method_model.dart';
 
 part 'auth_models.freezed.dart';

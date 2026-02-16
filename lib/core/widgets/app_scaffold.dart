@@ -4,10 +4,9 @@ import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 
 /// Main scaffold with bottom navigation.
-/// Matches the Layout component from the Vite.js prototype.
 class AppScaffold extends StatelessWidget {
   /// Creates an [AppScaffold] with the provided [child].
   const AppScaffold({required this.child, super.key});

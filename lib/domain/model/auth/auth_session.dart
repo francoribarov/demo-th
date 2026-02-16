@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
+import 'package:mobile_table_hopping/domain/model/auth/user.dart';
 
 part 'auth_session.freezed.dart';
 

@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:mobile_table_hopping/features/auth/domain/repositories/auth_repository.dart';
+import 'package:mobile_table_hopping/domain/repository/auth/auth_repository.dart';
 
 @injectable
 

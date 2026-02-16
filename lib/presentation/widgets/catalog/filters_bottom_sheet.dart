@@ -11,7 +11,6 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
 
-/// Bottom sheet for filters matching the Vite.js FiltersModal
 class FiltersBottomSheet extends StatefulWidget {
   const FiltersBottomSheet({
     required this.initialFilters,
