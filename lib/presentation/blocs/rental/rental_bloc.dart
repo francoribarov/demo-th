@@ -1,12 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
+import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
+import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
-import 'package:mobile_table_hopping/features/rental/domain/entities/rental_draft.dart';
-import 'package:mobile_table_hopping/features/rental/domain/usecases/confirm_rental.dart';
 
 part 'rental_bloc.freezed.dart';
 part 'rental_event.dart';
@@ -19,9 +18,9 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
   RentalBloc({
     required GetPublications getPublications,
-    required ConfirmRental confirmRental,
+    required ConfirmRentalUseCase confirmRentalUseCase,
   })  : _getPublications = getPublications,
-        _confirmRental = confirmRental,
+        _confirmRentalUseCase = confirmRentalUseCase,
         super(const RentalState()) {
     on<_Started>(_onStarted);
     on<_StartDateChanged>(_onStartDateChanged);
@@ -37,7 +36,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     on<_PublishAnother>(_onPublishAnother);
   }
   final GetPublications _getPublications;
-  final ConfirmRental _confirmRental;
+  final ConfirmRentalUseCase _confirmRentalUseCase;
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
     emit(
@@ -254,28 +253,32 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
 
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
-    try {
-      await _confirmRental(
-        RentalDraft(
-          publicationId: publication.id,
-          startDate: start,
-          endDate: end,
-          isDelivery: state.isDelivery,
-          deliveryAddress: state.deliveryAddress,
-          deliveryComments: state.deliveryComments,
-          paymentMethod: state.paymentMethod,
-          foodBundleIds: state.selectedFoodBundles,
-        ),
-      );
-      emit(state.copyWith(isSubmitting: false, success: true));
-    } on Exception catch (e) {
-      emit(
+    // Build params for the use case
+    final params = ConfirmRentalParams(
+      publicationId: publication.id,
+      startDate: start,
+      endDate: end,
+      isDelivery: state.isDelivery,
+      deliveryAddress: state.deliveryAddress,
+      deliveryComments: state.deliveryComments,
+      paymentMethod: state.paymentMethod,
+      foodBundleIds: state.selectedFoodBundles,
+    );
+
+    // Call use case and handle Either result
+    final result = await _confirmRentalUseCase(params);
+
+    result.fold(
+      // Left: error case
+      (error) => emit(
         state.copyWith(
           isSubmitting: false,
-          errorMessage: '${AppStrings.rentalConfirmError}: $e',
+          errorMessage: '${AppStrings.rentalConfirmError}: ${error.message}',
         ),
-      );
-    }
+      ),
+      // Right: success case
+      (_) => emit(state.copyWith(isSubmitting: false, success: true)),
+    );
   }
 
   void _onMessageShown(_MessageShown event, Emitter<RentalState> emit) {
