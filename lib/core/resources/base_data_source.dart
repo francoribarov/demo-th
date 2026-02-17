@@ -39,7 +39,7 @@ abstract class BaseDataSource {
   /// - [T]: The expected return type of the request
   ///
   /// Parameters:
-  /// - [request]: A function that returns a Future<T> representing the HTTP call
+  /// - [request]: A function that returns a `Future<T>` representing the HTTP call
   ///
   /// Returns a [DataState<T>] containing either the successful data or an error.
   Future<DataState<T>> getStateOf<T>({
