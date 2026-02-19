@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
+import 'package:mobile_table_hopping/data/datasource/auth/auth_local_data_source.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
 import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
@@ -14,8 +15,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MockAuthRemoteDatasource extends Mock implements AuthRemoteDatasource {}
 
+class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
+
 void main() {
   late AuthRemoteDatasource remote;
+  late AuthLocalDataSource local;
   late SharedPreferences prefs;
   late TokenStorage tokenStorage;
   late AuthRepositoryImpl repository;
@@ -54,7 +58,13 @@ void main() {
     prefs = await SharedPreferences.getInstance();
     tokenStorage = TokenStorage(prefs);
     remote = MockAuthRemoteDatasource();
-    repository = AuthRepositoryImpl(remote, tokenStorage, prefs);
+    local = MockAuthLocalDataSource();
+    repository = AuthRepositoryImpl(remote, tokenStorage, local);
+
+    // Setup default mock behaviors
+    when(() => local.saveUser(any())).thenAnswer((_) async {});
+    when(() => local.clearUser()).thenAnswer((_) async {});
+    when(() => local.getCachedUser()).thenReturn(null);
   });
 
   test('login persists tokens and caches user', () async {

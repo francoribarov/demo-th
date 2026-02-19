@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/filter_publications_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_categories_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_filter_shortcuts_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publications_use_case.dart';
@@ -18,20 +19,26 @@ class MockGetFilterShortcuts extends Mock
 
 class MockGetPublications extends Mock implements GetPublicationsUseCase {}
 
+class MockFilterPublications extends Mock
+    implements FilterPublicationsUseCase {}
+
 void main() {
   late MockGetCategories mockGetCategories;
   late MockGetFilterShortcuts mockGetFilterShortcuts;
   late MockGetPublications mockGetPublications;
+  late MockFilterPublications mockFilterPublications;
   late CatalogBloc catalogBloc;
 
   setUp(() {
     mockGetCategories = MockGetCategories();
     mockGetFilterShortcuts = MockGetFilterShortcuts();
     mockGetPublications = MockGetPublications();
+    mockFilterPublications = MockFilterPublications();
     catalogBloc = CatalogBloc(
       getPublications: mockGetPublications,
       getCategories: mockGetCategories,
       getFilterShortcuts: mockGetFilterShortcuts,
+      filterPublications: mockFilterPublications,
     );
   });
 

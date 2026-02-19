@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
 import 'package:mobile_table_hopping/data/mapper/my_publications/publish_delivery_method_to_my_publications.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
@@ -14,6 +13,8 @@ import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publi
 import 'package:mobile_table_hopping/domain/usecase/my_publications/get_publication_detail_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publication_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/publish/get_delivery_methods_use_case.dart';
+import 'package:mobile_table_hopping/domain/usecase/upload/upload_images_use_case.dart';
+import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 
 part 'edit_publication_bloc.freezed.dart';
 part 'edit_publication_event.dart';
@@ -31,13 +32,15 @@ class EditPublicationBloc
     required DeletePublicationUseCase deletePublication,
     required GetGamesUseCase getGames,
     required GetDeliveryMethodsUseCase getDeliveryMethods,
-    required ImageUploadService imageUploadService,
+    required ImagePickerGateway imagePickerGateway,
+    required UploadImagesUseCase uploadImages,
   })  : _getPublicationDetail = getPublicationDetail,
         _updatePublication = updatePublication,
         _deletePublication = deletePublication,
         _getGames = getGames,
         _getDeliveryMethods = getDeliveryMethods,
-        _imageUploadService = imageUploadService,
+        _gateway = imagePickerGateway,
+        _uploadImages = uploadImages,
         super(const EditPublicationState()) {
     _registerEventHandlers();
   }
@@ -61,7 +64,8 @@ class EditPublicationBloc
   final DeletePublicationUseCase _deletePublication;
   final GetGamesUseCase _getGames;
   final GetDeliveryMethodsUseCase _getDeliveryMethods;
-  final ImageUploadService _imageUploadService;
+  final ImagePickerGateway _gateway;
+  final UploadImagesUseCase _uploadImages;
 
   // ─────────────────────────────────────────────────────────────────────────
   // Event Registration
@@ -299,7 +303,7 @@ class EditPublicationBloc
     _PickImage event,
     Emitter<EditPublicationState> emit,
   ) async {
-    final imagePath = await _imageUploadService.pickImageFromGallery();
+    final imagePath = await _gateway.pickImageFromGallery();
     if (imagePath != null) {
       await _uploadAndAddImages([imagePath], emit);
     }
@@ -309,7 +313,7 @@ class EditPublicationBloc
     _PickMultipleImages event,
     Emitter<EditPublicationState> emit,
   ) async {
-    final imagePaths = await _imageUploadService.pickMultipleImages();
+    final imagePaths = await _gateway.pickMultipleImages();
     if (imagePaths.isNotEmpty) {
       await _uploadAndAddImages(imagePaths, emit);
     }
@@ -321,13 +325,26 @@ class EditPublicationBloc
   ) async {
     try {
       emit(state.copyWith(isUploadingImage: true));
-      final imageUrls = await _imageUploadService.uploadImages(imagePaths);
-      emit(
-        state.copyWith(
-          images: [...state.images, ...imageUrls],
-          hasChanges: true,
-          isUploadingImage: false,
-        ),
+
+      final result = await _uploadImages(imagePaths);
+      result.fold(
+        (error) {
+          emit(
+            state.copyWith(
+              isUploadingImage: false,
+              errorMessage: 'Error al subir imágenes: ${error.message}',
+            ),
+          );
+        },
+        (imageUrls) {
+          emit(
+            state.copyWith(
+              images: [...state.images, ...imageUrls],
+              hasChanges: true,
+              isUploadingImage: false,
+            ),
+          );
+        },
       );
     } on Object catch (e) {
       emit(

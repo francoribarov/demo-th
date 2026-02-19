@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
+import 'package:mobile_table_hopping/data/datasource/auth/auth_local_data_source.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
 import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
@@ -11,20 +10,17 @@ import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
 import 'package:mobile_table_hopping/domain/model/auth/user.dart';
 import 'package:mobile_table_hopping/domain/repository/auth/auth_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: AuthRepository)
 
 /// Default implementation of [AuthRepository].
 class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   /// Creates an [AuthRepositoryImpl].
-  AuthRepositoryImpl(this._remote, this._tokenStorage, this._prefs);
-
-  static const String _cachedUserKey = 'auth_user';
+  AuthRepositoryImpl(this._remote, this._tokenStorage, this._local);
 
   final AuthRemoteDatasource _remote;
   final TokenStorage _tokenStorage;
-  final SharedPreferences _prefs;
+  final AuthLocalDataSource _local;
 
   @override
   Future<AuthSession> login({
@@ -85,7 +81,7 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
       // Always clear local session, even if API call fails.
     } finally {
       await _tokenStorage.clearTokens();
-      await _prefs.remove(_cachedUserKey);
+      await clearCachedUser();
     }
   }
 
@@ -95,27 +91,30 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     final refreshToken = _tokenStorage.getRefreshToken();
     if (accessToken == null || refreshToken == null) return null;
 
-    final user = _getCachedUser();
+    final user = getCachedUser();
     return AuthSession(
       user: user,
       tokens: AuthTokens(accessToken: accessToken, refreshToken: refreshToken),
     );
   }
 
-  Future<void> _persistSession(AuthResponse response) async {
-    await _tokenStorage.saveTokens(response.accessToken, response.refreshToken);
-    await _prefs.setString(_cachedUserKey, jsonEncode(response.user.toJson()));
+  @override
+  User? getCachedUser() {
+    return _local.getCachedUser()?.toDomainModel();
   }
 
-  User? _getCachedUser() {
-    final raw = _prefs.getString(_cachedUserKey);
-    if (raw == null || raw.trim().isEmpty) return null;
-    try {
-      final json = jsonDecode(raw);
-      if (json is! Map<String, dynamic>) return null;
-      return UserModel.fromJson(json).toDomainModel();
-    } on Exception catch (_) {
-      return null;
-    }
+  @override
+  Future<void> cacheUser(User user) async {
+    await _local.saveUser(UserModel.fromEntity(user));
+  }
+
+  @override
+  Future<void> clearCachedUser() async {
+    await _local.clearUser();
+  }
+
+  Future<void> _persistSession(AuthResponse response) async {
+    await _tokenStorage.saveTokens(response.accessToken, response.refreshToken);
+    await _local.saveUser(response.user);
   }
 }

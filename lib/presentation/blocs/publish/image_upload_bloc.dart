@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
+import 'package:mobile_table_hopping/domain/usecase/upload/upload_images_use_case.dart';
+import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 
 part 'image_upload_bloc.freezed.dart';
 
@@ -34,30 +35,46 @@ abstract class ImageUploadState with _$ImageUploadState {
 class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
   /// Creates an [ImageUploadBloc].
   ImageUploadBloc({
-    required ImageUploadService imageUploadService,
-  })  : _imageUploadService = imageUploadService,
+    required ImagePickerGateway imagePickerGateway,
+    required UploadImagesUseCase uploadImages,
+  })  : _gateway = imagePickerGateway,
+        _uploadImages = uploadImages,
         super(const ImageUploadState()) {
     on<_PickAndUpload>(_onPickAndUpload);
     on<_ImageRemoved>(_onImageRemoved);
     on<_Reset>(_onReset);
   }
 
-  final ImageUploadService _imageUploadService;
+  final ImagePickerGateway _gateway;
+  final UploadImagesUseCase _uploadImages;
 
   Future<void> _onPickAndUpload(
     _PickAndUpload event,
     Emitter<ImageUploadState> emit,
   ) async {
     try {
-      final imagePaths = await _imageUploadService.pickMultipleImages();
+      final imagePaths = await _gateway.pickMultipleImages();
       if (imagePaths.isNotEmpty) {
         emit(state.copyWith(isUploading: true, errorMessage: null));
-        final imageUrls = await _imageUploadService.uploadImages(imagePaths);
-        emit(
-          state.copyWith(
-            images: [...state.images, ...imageUrls],
-            isUploading: false,
-          ),
+
+        final result = await _uploadImages(imagePaths);
+        result.fold(
+          (error) {
+            emit(
+              state.copyWith(
+                isUploading: false,
+                errorMessage: 'Error al subir imágenes: ${error.message}',
+              ),
+            );
+          },
+          (imageUrls) {
+            emit(
+              state.copyWith(
+                images: [...state.images, ...imageUrls],
+                isUploading: false,
+              ),
+            );
+          },
         );
       }
     } on Object catch (e) {

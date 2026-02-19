@@ -1,5 +1,6 @@
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
+import 'package:mobile_table_hopping/domain/model/auth/user.dart';
 
 /// Repository interface for authentication operations.
 abstract class AuthRepository {
@@ -22,4 +23,13 @@ abstract class AuthRepository {
 
   /// Returns the cached authenticated session, or null if not authenticated.
   Future<AuthSession?> getAuthStatus();
+
+  /// Get cached user from local storage.
+  User? getCachedUser();
+
+  /// Cache user to local storage.
+  Future<void> cacheUser(User user);
+
+  /// Clear cached user from local storage.
+  Future<void> clearCachedUser();
 }

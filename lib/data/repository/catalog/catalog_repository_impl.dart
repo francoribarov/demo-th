@@ -7,6 +7,7 @@ import 'package:mobile_table_hopping/data/dto/catalog/catalog_params.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_list_item_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
+import 'package:mobile_table_hopping/data/mapper/catalog/catalog_filter_mapper.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
@@ -146,48 +147,12 @@ class CatalogRepositoryImpl extends BaseRepository
     String? endDate,
     SortOption sortOption = SortOption.availability,
   }) async {
-    // Map FiltersState to API parameters
-    String? playersParam;
-    final playersRange = filters?.playersRange;
-    if (playersRange != null) {
-      playersParam = switch (playersRange) {
-        PlayersRangeOption.any => null,
-        PlayersRangeOption.two => '2',
-        PlayersRangeOption.threeToFour => '3-4',
-        PlayersRangeOption.fiveToSix => '5-6',
-        PlayersRangeOption.sevenPlus => '7+',
-      };
-    }
-
-    String? durationParam;
-    final durationRange = filters?.durationRange;
-    if (durationRange != null) {
-      durationParam = switch (durationRange) {
-        DurationRangeOption.any => null,
-        DurationRangeOption.lte30 => 'lte30',
-        DurationRangeOption.thirtyToSixty => '30-60',
-        DurationRangeOption.sixtyToNinety => '60-90',
-        DurationRangeOption.ninetyPlus => '90+',
-      };
-    }
-
-    String? difficultyParam;
-    if (filters?.difficulty != null &&
-        filters!.difficulty != DifficultyOption.any) {
-      difficultyParam = filters.difficulty.label;
-    }
-
-    String? categoryParam;
-    if (filters?.experienceTypes.isNotEmpty ?? false) {
-      categoryParam = filters!.experienceTypes.first;
-    }
-
-    final sortByParam = switch (sortOption) {
-      SortOption.availability => 'availability',
-      SortOption.price => 'price',
-      SortOption.rating => 'rating',
-      SortOption.duration => 'duration',
-    };
+    // Map FiltersState to API parameters using mappers
+    final playersParam = filters?.playersRange.toApiParam();
+    final durationParam = filters?.durationRange.toApiParam();
+    final difficultyParam = filters?.difficulty.toApiParam();
+    final categoryParam = filters?.categoryApiParam;
+    final sortByParam = sortOption.toApiParam();
 
     return executeDataSourceListMapped<PublicationListItemModel, Game>(
       function: () => _dataSource.searchGames(
