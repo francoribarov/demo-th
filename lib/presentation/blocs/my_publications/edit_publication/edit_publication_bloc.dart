@@ -3,16 +3,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
 import 'package:mobile_table_hopping/data/mapper/my_publications/publish_delivery_method_to_my_publications.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/get_publication_detail_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publication_use_case.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/delivery_method.dart'
-    as publish;
 import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
 
 part 'edit_publication_bloc.freezed.dart';
@@ -29,7 +27,7 @@ class EditPublicationBloc
     required GetPublicationDetailUseCase getPublicationDetail,
     required UpdatePublicationUseCase updatePublication,
     required DeletePublicationUseCase deletePublication,
-    required GetGames getGames,
+    required GetGamesUseCase getGames,
     required GetDeliveryMethods getDeliveryMethods,
     required ImageUploadService imageUploadService,
   })  : _getPublicationDetail = getPublicationDetail,
@@ -59,7 +57,7 @@ class EditPublicationBloc
   final GetPublicationDetailUseCase _getPublicationDetail;
   final UpdatePublicationUseCase _updatePublication;
   final DeletePublicationUseCase _deletePublication;
-  final GetGames _getGames;
+  final GetGamesUseCase _getGames;
   final GetDeliveryMethods _getDeliveryMethods;
   final ImageUploadService _imageUploadService;
 
@@ -100,15 +98,12 @@ class EditPublicationBloc
     emit(state.copyWith(isLoading: true, publicationId: event.publicationId));
 
     try {
-      // Load games and delivery methods (still using old pattern)
-      final gamesAndDeliveryFutures = await Future.wait([
-        _getGames(),
-        _getDeliveryMethods(),
-      ]);
-
-      final games = gamesAndDeliveryFutures[0] as List<Game>;
-      final deliveryMethods =
-          gamesAndDeliveryFutures[1] as List<publish.DeliveryMethod>;
+      final gamesResult = await _getGames();
+      final deliveryMethods = await _getDeliveryMethods();
+      final games = gamesResult.fold<List<Game>>(
+        (_) => const [],
+        (value) => value,
+      );
       final mappedDeliveryMethods = deliveryMethods
           .map((method) => method.toMyPublicationsModel())
           .toList();

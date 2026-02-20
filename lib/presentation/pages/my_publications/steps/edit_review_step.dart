@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
 
 /// Final review step before submitting publication changes.
 class EditReviewStep extends StatelessWidget {

@@ -2,9 +2,9 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/address.dart';
 import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
-import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
 import 'package:mobile_table_hopping/features/publish/data/models/delivery_method_model.dart';
 
 part 'user_model.freezed.dart';

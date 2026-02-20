@@ -3,8 +3,8 @@ import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
-import 'package:mobile_table_hopping/features/catalog/presentation/widgets/publication_card.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/widgets/catalog/publication_card.dart';
 
 class MyPublicationsGrid extends StatelessWidget {
   const MyPublicationsGrid({required this.publications, super.key});

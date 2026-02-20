@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
