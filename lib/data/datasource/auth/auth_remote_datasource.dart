@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
-import 'package:mobile_table_hopping/features/auth/data/models/auth_models.dart';
+import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
 
 /// Remote datasource for authentication API calls
 abstract class AuthRemoteDatasource {

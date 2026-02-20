@@ -6,12 +6,12 @@ import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/errors/exceptions.dart';
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/get_auth_status.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/login.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/logout.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/refresh_token.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/register.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/login.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/logout.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/refresh_token.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/register.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';

@@ -1,5 +1,5 @@
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
 
 /// Repository interface for authentication operations.
 abstract class AuthRepository {

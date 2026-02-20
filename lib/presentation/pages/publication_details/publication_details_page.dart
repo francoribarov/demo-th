@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/publication_details_bloc.dart';
 import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_bottom_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_error_view.dart';

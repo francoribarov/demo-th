@@ -1,6 +1,3 @@
-// UI widgets are documented at a higher level; omit per-member docs.
-//
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,7 +6,6 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 
-/// Search header widget matching the Vite.js Layout search pill
 class SearchHeader extends StatelessWidget {
   const SearchHeader({
     required this.onTap,

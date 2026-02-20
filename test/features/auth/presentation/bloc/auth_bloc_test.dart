@@ -1,14 +1,14 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/get_auth_status.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/login.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/logout.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/refresh_token.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/register.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
+import 'package:mobile_table_hopping/domain/model/auth/user.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/login.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/logout.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/refresh_token.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/register.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetAuthStatus extends Mock implements GetAuthStatus {}

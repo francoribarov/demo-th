@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
-import 'package:mobile_table_hopping/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:mobile_table_hopping/features/auth/data/models/auth_models.dart';
-import 'package:mobile_table_hopping/features/auth/data/models/user_model.dart';
-import 'package:mobile_table_hopping/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
+import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
+import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
+import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
+import 'package:mobile_table_hopping/data/repository/auth/auth_repository_impl.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
