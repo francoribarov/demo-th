@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
@@ -37,6 +35,7 @@ void main() {
   );
 
   setUpAll(() {
+    registerFallbackValue(userModel);
     registerFallbackValue(
       const LoginRequest(email: 'fallback@example.com', password: 'password'),
     );
@@ -81,11 +80,7 @@ void main() {
     expect(session.tokens.accessToken, 'access-token');
     expect(tokenStorage.getAccessToken(), 'access-token');
     expect(tokenStorage.getRefreshToken(), 'refresh-token');
-
-    final cachedUser = prefs.getString('auth_user');
-    expect(cachedUser, isNotNull);
-    final cachedJson = jsonDecode(cachedUser!) as Map<String, dynamic>;
-    expect(cachedJson['id'], 'user-1');
+    verify(() => local.saveUser(userModel)).called(1);
 
     verify(
       () => remote.login(
@@ -108,7 +103,7 @@ void main() {
 
     expect(session.tokens.refreshToken, 'refresh-token');
     expect(tokenStorage.getAccessToken(), 'access-token');
-    expect(prefs.getString('auth_user'), isNotNull);
+    verify(() => local.saveUser(userModel)).called(1);
 
     verify(
       () => remote.register(
@@ -154,12 +149,11 @@ void main() {
       ),
     );
     await tokenStorage.saveTokens('access-token', 'refresh-token');
-    await prefs.setString('auth_user', jsonEncode(userModel.toJson()));
 
     await repository.logout();
 
     expect(tokenStorage.getAccessToken(), isNull);
     expect(tokenStorage.getRefreshToken(), isNull);
-    expect(prefs.getString('auth_user'), isNull);
+    verify(() => local.clearUser()).called(1);
   });
 }

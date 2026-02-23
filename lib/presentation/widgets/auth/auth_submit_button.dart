@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+
 /// Submit button with loading state for authentication forms.
 class AuthSubmitButton extends StatelessWidget {
   /// Creates an auth submit button.
@@ -29,7 +31,7 @@ class AuthSubmitButton extends StatelessWidget {
               width: 18,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: Colors.white,
+                color: AppColors.primaryForeground,
               ),
             )
           : Text(label),

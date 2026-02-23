@@ -73,9 +73,75 @@ class AppStrings {
   static const String authPasswordTooShort =
       'La contraseña debe tener al menos 8 caracteres.';
 
+  /// Validation message when password confirmation is missing.
+  static const String authPasswordConfirmRequired =
+      'Repetí tu contraseña para continuar.';
+
   /// Validation message when passwords in registration don't match.
   static const String authPasswordsDontMatch = 'Las contraseñas no coinciden.';
 
   /// Validation message when name is missing.
   static const String authNameRequired = 'Ingresá tu nombre.';
+
+  /// Auth heading shown on login.
+  static const String authLoginWelcomeTitle = 'Bienvenido/a';
+
+  /// Auth subtitle shown on login.
+  static const String authLoginWelcomeSubtitle =
+      'Ingresá tus datos para continuar.';
+
+  /// Auth heading shown on registration.
+  static const String authRegisterWelcomeTitle = 'Empecemos';
+
+  /// Auth subtitle shown on registration.
+  static const String authRegisterWelcomeSubtitle =
+      'Creá tu cuenta para publicar y alquilar juegos.';
+
+  /// Label for email field.
+  static const String authEmailLabel = 'Email';
+
+  /// Hint for email field.
+  static const String authEmailHint = 'tu@email.com';
+
+  /// Label for password field.
+  static const String authPasswordLabel = 'Contraseña';
+
+  /// Helper text for password field.
+  static const String authPasswordHelper = 'Mínimo 8 caracteres.';
+
+  /// Label for password confirmation field.
+  static const String authPasswordConfirmLabel = 'Repetí la contraseña';
+
+  /// Label for username field.
+  static const String authNameLabel = 'Nombre';
+
+  /// Label for optional location field.
+  static const String authLocationLabel = 'Ubicación (opcional)';
+
+  /// Hint for optional location field.
+  static const String authLocationHint = 'Ej: Palermo, CABA';
+
+  /// Label for login submit button.
+  static const String authLoginCta = 'Ingresar';
+
+  /// Label for register submit button.
+  static const String authRegisterCta = 'Crear cuenta';
+
+  /// Prompt shown on login to invite new users to register.
+  static const String authLoginSwitchPrompt = 'No tenés cuenta? ';
+
+  /// Tappable action on login switch row.
+  static const String authLoginSwitchAction = 'Registrate';
+
+  /// Prompt shown on register to invite existing users to log in.
+  static const String authRegisterSwitchPrompt = 'Ya tenés cuenta? ';
+
+  /// Tappable action on register switch row.
+  static const String authRegisterSwitchAction = 'Iniciá sesión';
+
+  /// Tooltip label for showing a password.
+  static const String authShowPassword = 'Mostrar contraseña';
+
+  /// Tooltip label for hiding a password.
+  static const String authHidePassword = 'Ocultar contraseña';
 }
