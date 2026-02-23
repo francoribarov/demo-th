@@ -12,7 +12,7 @@ Entrypoints:
 - `lib/main.dart` and `lib/bootstrap.dart`.
 
 Platforms:
-- `android/`, `ios/`, `web/`, `macos/`, `windows/`, `linux/`.
+- `android/`, `ios/`, `web/`.
 
 ## Docs
 - [Project rules](docs/rules.md)
