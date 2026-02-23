@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_detail_model.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -14,7 +13,7 @@ part 'publication_detail_service.g.dart';
 abstract class PublicationDetailService {
   /// Creates a [PublicationDetailService] instance with the provided Dio client.
   ///
-  /// The base URL is automatically set from [ApiConstants.baseUrl].
+  /// The base URL is automatically set by DioClient.
   @factoryMethod
   factory PublicationDetailService(Dio dio) = _PublicationDetailService;
 
@@ -28,7 +27,7 @@ abstract class PublicationDetailService {
   /// Returns the publication detail model.
   ///
   /// Throws [DioException] on network or server errors.
-  @GET('${ApiConstants.publications}/{id}')
+  @GET('/api/publications/{id}')
   Future<PublicationDetailModel> getPublicationDetail(
     @Path('id') String id,
   );
@@ -44,7 +43,7 @@ abstract class PublicationDetailService {
   /// Returns the updated publication detail model.
   ///
   /// Throws [DioException] on network or server errors.
-  @PUT('${ApiConstants.publications}/{id}')
+  @PUT('/api/publications/{id}')
   Future<PublicationDetailModel> updatePublication(
     @Path('id') String id,
     @Body() Map<String, dynamic> body,
@@ -60,6 +59,6 @@ abstract class PublicationDetailService {
   /// Returns a Future that completes when the publication is deleted.
   ///
   /// Throws [DioException] on network or server errors.
-  @DELETE('${ApiConstants.publications}/{id}')
+  @DELETE('/api/publications/{id}')
   Future<void> deletePublication(@Path('id') String id);
 }

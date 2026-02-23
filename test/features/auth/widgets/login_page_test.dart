@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/auth/login_page.dart';
@@ -136,8 +135,11 @@ void main() {
     await tester.tap(find.byKey(const Key('loginSubmitButton')));
     await tester.pump();
 
-    expect(find.text(AppStrings.authEmailInvalid), findsOneWidget);
-    expect(find.text(AppStrings.authPasswordTooShort), findsOneWidget);
+    expect(find.text('Ingresá un email válido.'), findsOneWidget);
+    expect(
+      find.text('La contraseña debe tener al menos 8 caracteres.'),
+      findsOneWidget,
+    );
     verifyNever(() => authBloc.add(const AuthEvent.loginSubmitted()));
   });
 
@@ -183,7 +185,7 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.tap(find.text(AppStrings.authLoginSwitchAction));
+    await tester.tap(find.text('Registrate'));
     await tester.pumpAndSettle();
 
     expect(find.text('register:/publish'), findsOneWidget);

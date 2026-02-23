@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/dio_client.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
@@ -40,7 +39,7 @@ class UploadRemoteDataSourceImpl extends BaseDataSource
         });
 
         final response = await _dioClient.post<Map<String, dynamic>>(
-          ApiConstants.imageUpload,
+          '/api/images/upload',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',

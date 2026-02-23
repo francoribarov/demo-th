@@ -5,7 +5,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/login.dart';
@@ -162,7 +161,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isSubmittingLogin: false,
           loginErrorMessage: _friendlyMessage(
             e,
-            fallback: AppStrings.authLoginError,
+            fallback: 'No pudimos iniciar sesión. Intenta nuevamente.',
           ),
         ),
       );
@@ -326,7 +325,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isSubmittingRegister: false,
           registerErrorMessage: _friendlyMessage(
             e,
-            fallback: AppStrings.authRegisterError,
+            fallback: 'No pudimos crear tu cuenta. Intenta nuevamente.',
           ),
         ),
       );
@@ -362,7 +361,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           errorMessage: _friendlyMessage(
             e,
-            fallback: AppStrings.authRefreshError,
+            fallback: 'Error al refrescar sesión.',
           ),
         ),
       );

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
 import 'package:retrofit/retrofit.dart';
@@ -14,43 +13,43 @@ abstract class CatalogService {
   @factoryMethod
   factory CatalogService(Dio dio) = _CatalogService;
 
-  @GET(ApiConstants.publications)
+  @GET('/api/publications')
   Future<dynamic> getPublications(@Queries() Map<String, String> queryParams);
 
-  @GET('${ApiConstants.publications}/{id}')
+  @GET('/api/publications/{id}')
   Future<PublicationListingModel> getPublicationById(@Path('id') String id);
 
-  @GET('${ApiConstants.publications}/available-today')
+  @GET('/api/publications/available-today')
   Future<dynamic> getPublicationsAvailableToday(@Query('limit') String limit);
 
-  @GET(ApiConstants.publications)
+  @GET('/api/publications')
   Future<dynamic> getRecommendedPublications(
     @Queries() Map<String, String> queryParams,
   );
 
-  @GET('${ApiConstants.publications}/my-publications')
+  @GET('/api/publications/my-publications')
   Future<dynamic> getMyPublications();
 
-  @GET(ApiConstants.categories)
+  @GET('/api/categories')
   Future<dynamic> getCategories();
 
-  @GET(ApiConstants.filterShortcuts)
+  @GET('/api/categories/filter-shortcuts')
   Future<dynamic> getFilterShortcuts();
 
-  @GET(ApiConstants.publications)
+  @GET('/api/publications')
   Future<dynamic> getPublicationListings(
     @Queries() Map<String, String> queryParams,
   );
 
-  @GET('${ApiConstants.games}/{id}')
+  @GET('/api/games/{id}')
   Future<GameModel> getGameById(@Path('id') String id);
 
-  @GET(ApiConstants.games)
+  @GET('/api/games')
   Future<dynamic> getGames();
 
-  @GET('${ApiConstants.publications}/search')
+  @GET('/api/publications/search')
   Future<dynamic> searchGames(@Queries() Map<String, String> queryParams);
 
-  @GET('${ApiConstants.games}/{id}/recommended')
+  @GET('/api/games/{id}/recommended')
   Future<List<GameModel>> getRecommendedGames(@Path('id') String gameId);
 }

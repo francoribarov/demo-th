@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
@@ -136,8 +135,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         const SizedBox(height: 24),
                         const AuthHeader(
-                          title: AppStrings.authRegisterWelcomeTitle,
-                          subtitle: AppStrings.authRegisterWelcomeSubtitle,
+                          title: 'Empecemos',
+                          subtitle:
+                              'Creá tu cuenta para publicar y alquilar juegos.',
                         ),
                         const SizedBox(height: 32),
                         Form(
@@ -158,7 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.newUsername,
                                   ],
                                   decoration: const InputDecoration(
-                                    labelText: AppStrings.authNameLabel,
+                                    labelText: 'Nombre',
                                   ),
                                   validator: (value) =>
                                       validateUsernameRequired(value ?? ''),
@@ -184,8 +184,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.newUsername,
                                   ],
                                   decoration: const InputDecoration(
-                                    labelText: AppStrings.authEmailLabel,
-                                    hintText: AppStrings.authEmailHint,
+                                    labelText: 'Email',
+                                    hintText: 'tu@email.com',
                                   ),
                                   validator: (value) =>
                                       validateEmail(value ?? ''),
@@ -211,15 +211,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.newPassword,
                                   ],
                                   decoration: InputDecoration(
-                                    labelText: AppStrings.authPasswordLabel,
-                                    helperText: AppStrings.authPasswordHelper,
+                                    labelText: 'Contraseña',
+                                    helperText: 'Mínimo 8 caracteres.',
                                     suffixIcon: IconButton(
                                       key: const Key(
                                         'registerPasswordVisibilityButton',
                                       ),
                                       tooltip: _isPasswordVisible
-                                          ? AppStrings.authHidePassword
-                                          : AppStrings.authShowPassword,
+                                          ? 'Ocultar contraseña'
+                                          : 'Mostrar contraseña',
                                       onPressed: isSubmitting
                                           ? null
                                           : () {
@@ -263,15 +263,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.newPassword,
                                   ],
                                   decoration: InputDecoration(
-                                    labelText:
-                                        AppStrings.authPasswordConfirmLabel,
+                                    labelText: 'Repetí la contraseña',
                                     suffixIcon: IconButton(
                                       key: const Key(
                                         'registerConfirmPasswordVisibilityButton',
                                       ),
                                       tooltip: _isConfirmPasswordVisible
-                                          ? AppStrings.authHidePassword
-                                          : AppStrings.authShowPassword,
+                                          ? 'Ocultar contraseña'
+                                          : 'Mostrar contraseña',
                                       onPressed: isSubmitting
                                           ? null
                                           : () {
@@ -312,8 +311,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 //   textCapitalization: TextCapitalization.words,
                                 //   autofillHints: const [AutofillHints.addressCity],
                                 //   decoration: const InputDecoration(
-                                //     labelText: AppStrings.authLocationLabel,
-                                //     hintText: AppStrings.authLocationHint,
+                                //     labelText: 'Ubicación (opcional)',
+                                //     hintText: 'Ej: Palermo, CABA',
                                 //   ),
                                 //   onChanged: (location) => context.read<AuthBloc>().add(
                                 //     AuthEvent.registerLocationChanged(location),
@@ -331,7 +330,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         const SizedBox(height: 24),
                         AuthSubmitButton(
                           key: const Key('registerSubmitButton'),
-                          label: AppStrings.authRegisterCta,
+                          label: 'Crear cuenta',
                           isLoading: isSubmitting,
                           onPressed: () =>
                               _submitRegister(isSubmitting: isSubmitting),
@@ -339,8 +338,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         const SizedBox(height: 16),
                         AuthSwitchRow(
                           key: const Key('registerGoToLoginButton'),
-                          prompt: AppStrings.authRegisterSwitchPrompt,
-                          actionLabel: AppStrings.authRegisterSwitchAction,
+                          prompt: 'Ya tenés cuenta? ',
+                          actionLabel: 'Iniciá sesión',
                           onAction: isSubmitting
                               ? () {}
                               : () => context.goToLogin(from: widget.from),

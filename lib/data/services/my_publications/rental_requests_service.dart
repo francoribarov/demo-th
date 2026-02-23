@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_model.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -14,7 +13,7 @@ part 'rental_requests_service.g.dart';
 abstract class RentalRequestsService {
   /// Creates a [RentalRequestsService] instance with the provided Dio client.
   ///
-  /// The base URL is automatically set from [ApiConstants.baseUrl].
+  /// The base URL is automatically set by DioClient.
   @factoryMethod
   factory RentalRequestsService(Dio dio) = _RentalRequestsService;
 
@@ -25,7 +24,7 @@ abstract class RentalRequestsService {
   /// Returns a list of rental request models.
   ///
   /// Throws [DioException] on network or server errors.
-  @GET(ApiConstants.rentalRequests)
+  @GET('/api/rentals/requests')
   Future<List<RentalRequestModel>> getRentalRequests();
 
   /// Accepts a rental request.
@@ -38,7 +37,7 @@ abstract class RentalRequestsService {
   /// Returns a Future that completes when the request is accepted.
   ///
   /// Throws [DioException] on network or server errors.
-  @POST('${ApiConstants.rentals}/{id}/accept')
+  @POST('/api/rentals/{id}/accept')
   Future<void> acceptRentalRequest(@Path('id') String id);
 
   /// Rejects a rental request.
@@ -51,6 +50,6 @@ abstract class RentalRequestsService {
   /// Returns a Future that completes when the request is rejected.
   ///
   /// Throws [DioException] on network or server errors.
-  @POST('${ApiConstants.rentals}/{id}/reject')
+  @POST('/api/rentals/{id}/reject')
   Future<void> rejectRentalRequest(@Path('id') String id);
 }

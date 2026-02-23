@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
@@ -125,8 +124,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 24),
                         const AuthHeader(
-                          title: AppStrings.authLoginWelcomeTitle,
-                          subtitle: AppStrings.authLoginWelcomeSubtitle,
+                          title: 'Bienvenido/a',
+                          subtitle: 'Ingresá tus datos para continuar.',
                         ),
                         const SizedBox(height: 32),
                         Form(
@@ -148,8 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                                   ],
                                   autocorrect: false,
                                   decoration: const InputDecoration(
-                                    labelText: AppStrings.authEmailLabel,
-                                    hintText: AppStrings.authEmailHint,
+                                    labelText: 'Email',
+                                    hintText: 'tu@email.com',
                                   ),
                                   validator: (value) =>
                                       validateEmail(value ?? ''),
@@ -173,15 +172,15 @@ class _LoginPageState extends State<LoginPage> {
                                   autocorrect: false,
                                   enableSuggestions: false,
                                   decoration: InputDecoration(
-                                    labelText: AppStrings.authPasswordLabel,
-                                    helperText: AppStrings.authPasswordHelper,
+                                    labelText: 'Contraseña',
+                                    helperText: 'Mínimo 8 caracteres.',
                                     suffixIcon: IconButton(
                                       key: const Key(
                                         'loginPasswordVisibilityButton',
                                       ),
                                       tooltip: _isPasswordVisible
-                                          ? AppStrings.authHidePassword
-                                          : AppStrings.authShowPassword,
+                                          ? 'Ocultar contraseña'
+                                          : 'Mostrar contraseña',
                                       onPressed: isSubmitting
                                           ? null
                                           : () {
@@ -219,15 +218,15 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 24),
                         AuthSubmitButton(
                           key: const Key('loginSubmitButton'),
-                          label: AppStrings.authLoginCta,
+                          label: 'Ingresar',
                           isLoading: isSubmitting,
                           onPressed: () =>
                               _submitLogin(isSubmitting: isSubmitting),
                         ),
                         const SizedBox(height: 16),
                         AuthSwitchRow(
-                          prompt: AppStrings.authLoginSwitchPrompt,
-                          actionLabel: AppStrings.authLoginSwitchAction,
+                          prompt: 'No tenés cuenta? ',
+                          actionLabel: 'Registrate',
                           onAction: isSubmitting
                               ? () {}
                               : () => context.goToRegister(from: widget.from),

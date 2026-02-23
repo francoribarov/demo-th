@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/auth/register_page.dart';
@@ -132,10 +131,10 @@ void main() {
     await tester.tap(find.byKey(const Key('registerSubmitButton')));
     await tester.pump();
 
-    expect(find.text(AppStrings.authNameRequired), findsOneWidget);
-    expect(find.text(AppStrings.authEmailRequired), findsOneWidget);
-    expect(find.text(AppStrings.authPasswordRequired), findsOneWidget);
-    expect(find.text(AppStrings.authPasswordConfirmRequired), findsOneWidget);
+    expect(find.text('Ingresá tu nombre.'), findsOneWidget);
+    expect(find.text('Ingresá tu email.'), findsOneWidget);
+    expect(find.text('Ingresá tu contraseña.'), findsOneWidget);
+    expect(find.text('Repetí tu contraseña para continuar.'), findsOneWidget);
     verifyNever(() => authBloc.add(const AuthEvent.registerSubmitted()));
   });
 

@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
 import 'package:mobile_table_hopping/domain/model/auth/user.dart';
@@ -136,7 +135,7 @@ void main() {
       isA<AuthState>().having(
         (state) => state.loginErrorMessage,
         'loginErrorMessage',
-        AppStrings.authEmailInvalid,
+        'Ingresá un email válido.',
       ),
     ],
     verify: (_) {
@@ -251,7 +250,7 @@ void main() {
       isA<AuthState>().having(
         (state) => state.registerErrorMessage,
         'registerErrorMessage',
-        AppStrings.authPasswordsDontMatch,
+        'Las contraseñas no coinciden.',
       ),
     ],
     verify: (_) {
