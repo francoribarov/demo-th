@@ -23,6 +23,7 @@ import 'package:mobile_table_hopping/presentation/pages/auth/register_page.dart'
 import 'package:mobile_table_hopping/presentation/pages/catalog/home_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/edit_publication_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/my_publications_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/profile/profile_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publication_details/game_reviews_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publication_details/game_rules_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publication_details/publication_details_page.dart';
@@ -55,10 +56,10 @@ class AppRoutes {
   static const String publicationDetails = '/publications/:id';
 
   /// Game rules route template.
-  static const String gameRules = '/games/:id/rules';
+  static const String gameRules = '/publications/:id/rules';
 
   /// Game reviews route template.
-  static const String gameReviews = '/games/:id/reviews';
+  static const String gameReviews = '/publications/:id/reviews';
 
   /// Game owner route template.
   static const String gameOwner = '/publications/:id/owner';
@@ -68,6 +69,104 @@ class AppRoutes {
 
   /// Edit publication route template.
   static const String editPublication = '/my-publications/:id/edit';
+
+  /// Home route name.
+  static const String homeName = 'home';
+
+  /// Publish route name.
+  static const String publishName = 'publish';
+
+  /// My publications route name.
+  static const String myPublicationsName = 'my-publications';
+
+  /// Profile route name.
+  static const String profileName = 'profile';
+
+  /// Login route name.
+  static const String loginName = 'login';
+
+  /// Register route name.
+  static const String registerName = 'register';
+
+  /// Publication details route name.
+  static const String publicationDetailsName = 'publication-details';
+
+  /// Rules route name.
+  static const String gameRulesName = 'game-rules';
+
+  /// Reviews route name.
+  static const String gameReviewsName = 'game-reviews';
+
+  /// Owner route name.
+  static const String gameOwnerName = 'game-owner';
+
+  /// Rental route name.
+  static const String rentalName = 'rental';
+
+  /// Edit publication route name.
+  static const String editPublicationName = 'edit-publication';
+
+  /// Publication details location.
+  static String publicationDetailsPath(String id) => '/publications/$id';
+
+  /// Rules location.
+  static String gameRulesPath(String id) =>
+      '${publicationDetailsPath(id)}/rules';
+
+  /// Reviews location.
+  static String gameReviewsPath(String id) =>
+      '${publicationDetailsPath(id)}/reviews';
+
+  /// Owner location.
+  static String gameOwnerPath(String id) =>
+      '${publicationDetailsPath(id)}/owner';
+
+  /// Rental location.
+  static String rentalPath(String id) => '${publicationDetailsPath(id)}/rental';
+
+  /// Edit publication location.
+  static String editPublicationPath(String id) => '/my-publications/$id/edit';
+
+  /// Login location, optionally preserving where the user came from.
+  static String loginPath({String? from}) {
+    if (from == null || from.trim().isEmpty) {
+      return login;
+    }
+
+    final normalizedFrom = _normalizeFromParam(from);
+
+    return Uri(
+      path: login,
+      queryParameters: {'from': normalizedFrom},
+    ).toString();
+  }
+
+  /// Register location, optionally preserving where the user came from.
+  static String registerPath({String? from}) {
+    if (from == null || from.trim().isEmpty) {
+      return register;
+    }
+
+    final normalizedFrom = _normalizeFromParam(from);
+
+    return Uri(
+      path: register,
+      queryParameters: {'from': normalizedFrom},
+    ).toString();
+  }
+
+  static String _normalizeFromParam(String from) {
+    final trimmed = from.trim();
+    if (trimmed.isEmpty) {
+      return trimmed;
+    }
+
+    try {
+      return Uri.decodeComponent(trimmed);
+    } on FormatException {
+      return trimmed;
+    }
+  }
 }
 
 /// App router configuration using go_router.
@@ -75,7 +174,36 @@ class AppRouter {
   AppRouter._();
 
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
-  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
+  static final _homeNavigatorKey = GlobalKey<NavigatorState>();
+  static final _myPublicationsNavigatorKey = GlobalKey<NavigatorState>();
+  static final _publishNavigatorKey = GlobalKey<NavigatorState>();
+  static final _profileNavigatorKey = GlobalKey<NavigatorState>();
+
+  static bool _isProtectedLocation(String location) {
+    if (location == AppRoutes.publish ||
+        location == AppRoutes.myPublications ||
+        location == AppRoutes.profile) {
+      return true;
+    }
+
+    final segments = Uri(path: location).pathSegments;
+
+    final isRentalRoute =
+        segments.length == 3 &&
+        segments.first == 'publications' &&
+        segments.last == 'rental';
+
+    if (isRentalRoute) {
+      return true;
+    }
+
+    final isEditRoute =
+        segments.length == 3 &&
+        segments.first == 'my-publications' &&
+        segments.last == 'edit';
+
+    return isEditRoute;
+  }
 
   /// Application router instance.
   static final GoRouter router = GoRouter(
@@ -84,123 +212,113 @@ class AppRouter {
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(getIt<AuthBloc>().stream),
     redirect: (context, state) {
-      final location = state.uri.path;
-
-      final isProtected =
-          location == AppRoutes.publish ||
-          location == AppRoutes.myPublications ||
-          RegExp(r'^/publications/[^/]+/rental$').hasMatch(location) ||
-          RegExp(r'^/my-publications/[^/]+/edit$').hasMatch(location);
-
-      final authBloc = getIt<AuthBloc>();
-      final authState = authBloc.state;
+      final authState = getIt<AuthBloc>().state;
 
       if (authState.status == AuthStatus.unknown ||
           authState.isCheckingStatus) {
         return null;
       }
-      final isAuthed = authState.status == AuthStatus.authenticated;
 
-      if (!isAuthed && isProtected) {
+      if (!_isProtectedLocation(state.uri.path)) {
+        return null;
+      }
+
+      if (authState.status != AuthStatus.authenticated) {
         return AppRoutes.home;
       }
 
       return null;
     },
     routes: [
-      // Shell route for bottom navigation
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) => AppScaffold(child: child),
-        routes: [
-          GoRoute(
-            path: AppRoutes.home,
-            name: 'home',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider<CatalogBloc>(
-                create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
-                child: const HomePage(),
-              ),
-            ),
-          ),
-          GoRoute(
-            path: AppRoutes.publish,
-            name: 'publish',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<PublishBloc>(
-                    create: (_) =>
-                        getIt<PublishBloc>()..add(const PublishEvent.started()),
-                  ),
-                  BlocProvider<DeliveryMethodBloc>(
-                    create: (_) => getIt<DeliveryMethodBloc>(),
-                  ),
-                  BlocProvider<ImageUploadBloc>(
-                    create: (_) => getIt<ImageUploadBloc>(),
-                  ),
-                ],
-                child: const PublishGamePage(),
-              ),
-            ),
-          ),
-          GoRoute(
-            path: AppRoutes.myPublications,
-            name: 'my-publications',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<MyPublicationsBloc>(
-                    create: (_) =>
-                        getIt<MyPublicationsBloc>()
-                          ..add(const MyPublicationsEvent.started()),
-                  ),
-                  BlocProvider<RentalRequestsBloc>(
-                    create: (_) =>
-                        getIt<RentalRequestsBloc>()
-                          ..add(const RentalRequestsEvent.started()),
-                  ),
-                ],
-                child: const MyPublicationsPage(),
-              ),
-            ),
-          ),
-          GoRoute(
-            path: AppRoutes.profile,
-            name: 'profile',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: Scaffold(
-                appBar: AppBar(title: const Text('Mi Perfil')),
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Configuración de tu perfil.'),
-                      const SizedBox(height: 32),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          getIt<AuthBloc>().add(
-                            const AuthEvent.logoutRequested(),
-                          );
-                        },
-                        icon: const Icon(Icons.logout),
-                        label: const Text('Cerrar Sesión'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ],
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return AppScaffold(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: _homeNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                name: AppRoutes.homeName,
+                pageBuilder: (context, state) => NoTransitionPage(
+                  child: BlocProvider<CatalogBloc>(
+                    create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
+                    child: const HomePage(),
                   ),
                 ),
               ),
-            ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _myPublicationsNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.myPublications,
+                name: AppRoutes.myPublicationsName,
+                pageBuilder: (context, state) => NoTransitionPage(
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider<MyPublicationsBloc>(
+                        create: (_) =>
+                            getIt<MyPublicationsBloc>()
+                              ..add(const MyPublicationsEvent.started()),
+                      ),
+                      BlocProvider<RentalRequestsBloc>(
+                        create: (_) =>
+                            getIt<RentalRequestsBloc>()
+                              ..add(const RentalRequestsEvent.started()),
+                      ),
+                    ],
+                    child: const MyPublicationsPage(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _publishNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.publish,
+                name: AppRoutes.publishName,
+                pageBuilder: (context, state) => NoTransitionPage(
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider<PublishBloc>(
+                        create: (_) =>
+                            getIt<PublishBloc>()
+                              ..add(const PublishEvent.started()),
+                      ),
+                      BlocProvider<DeliveryMethodBloc>(
+                        create: (_) => getIt<DeliveryMethodBloc>(),
+                      ),
+                      BlocProvider<ImageUploadBloc>(
+                        create: (_) => getIt<ImageUploadBloc>(),
+                      ),
+                    ],
+                    child: const PublishGamePage(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _profileNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.profile,
+                name: AppRoutes.profileName,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: ProfilePage()),
+              ),
+            ],
           ),
         ],
       ),
       GoRoute(
         path: AppRoutes.login,
-        name: 'login',
+        name: AppRoutes.loginName,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final from = state.uri.queryParameters['from'];
@@ -209,7 +327,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.register,
-        name: 'register',
+        name: AppRoutes.registerName,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final from = state.uri.queryParameters['from'];
@@ -219,7 +337,7 @@ class AppRouter {
       // Routes outside of shell (no bottom nav)
       GoRoute(
         path: AppRoutes.publicationDetails,
-        name: AppRoutes.publicationDetails,
+        name: AppRoutes.publicationDetailsName,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final id = state.pathParameters['id']!;
@@ -233,7 +351,7 @@ class AppRouter {
         routes: [
           GoRoute(
             path: 'rules',
-            name: 'gameRules',
+            name: AppRoutes.gameRulesName,
             parentNavigatorKey: _rootNavigatorKey,
             builder: (context, state) {
               final id = state.pathParameters['id']!;
@@ -247,7 +365,7 @@ class AppRouter {
           ),
           GoRoute(
             path: 'reviews',
-            name: 'gameReviews',
+            name: AppRoutes.gameReviewsName,
             parentNavigatorKey: _rootNavigatorKey,
             builder: (context, state) {
               final id = state.pathParameters['id']!;
@@ -261,7 +379,7 @@ class AppRouter {
           ),
           GoRoute(
             path: 'owner',
-            name: 'gameOwner',
+            name: AppRoutes.gameOwnerName,
             parentNavigatorKey: _rootNavigatorKey,
             builder: (context, state) {
               final id = state.pathParameters['id']!;
@@ -275,7 +393,7 @@ class AppRouter {
           ),
           GoRoute(
             path: 'rental',
-            name: 'rental',
+            name: AppRoutes.rentalName,
             parentNavigatorKey: _rootNavigatorKey,
             builder: (context, state) {
               final id = state.pathParameters['id']!;
@@ -308,7 +426,7 @@ class AppRouter {
       // Edit publication route
       GoRoute(
         path: AppRoutes.editPublication,
-        name: 'edit-publication',
+        name: AppRoutes.editPublicationName,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final id = state.pathParameters['id']!;
@@ -347,16 +465,16 @@ class AppRouter {
 /// Extension methods for easier navigation.
 extension GoRouterExtension on BuildContext {
   /// Navigate to publication details for [id].
-  void goToPublication(String id) => push('/publications/$id');
+  void goToPublication(String id) => push(AppRoutes.publicationDetailsPath(id));
 
   /// Navigate to game rules for [id].
-  void goToGameRules(String id) => push('/publications/$id/rules');
+  void goToGameRules(String id) => push(AppRoutes.gameRulesPath(id));
 
   /// Navigate to game reviews for [id].
-  void goToGameReviews(String id) => push('/publications/$id/reviews');
+  void goToGameReviews(String id) => push(AppRoutes.gameReviewsPath(id));
 
   /// Navigate to game owner for [id].
-  void goToGameOwner(String id) => push('/publications/$id/owner');
+  void goToGameOwner(String id) => push(AppRoutes.gameOwnerPath(id));
 
   /// Navigate to rental confirmation for [id] with optional dates.
   void goToRental(
@@ -366,7 +484,7 @@ extension GoRouterExtension on BuildContext {
     String? ownerId,
     double? deposit,
   }) => push(
-    '/publications/$id/rental',
+    AppRoutes.rentalPath(id),
     extra: {
       'startDate': startDate,
       'endDate': endDate,
@@ -376,22 +494,10 @@ extension GoRouterExtension on BuildContext {
   );
 
   /// Navigate to login with an optional [from] redirect.
-  void goToLogin({String? from}) {
-    final uri = Uri(
-      path: AppRoutes.login,
-      queryParameters: {
-        if (from != null && from.trim().isNotEmpty) 'from': from,
-      },
-    );
-    go(uri.toString());
-  }
+  void goToLogin({String? from}) => go(AppRoutes.loginPath(from: from));
 
   /// Navigate to registration with an optional [from] redirect.
-  void goToRegister({String? from}) => go(
-    from != null
-        ? '${AppRoutes.register}?from=${Uri.encodeComponent(from)}'
-        : AppRoutes.register,
-  );
+  void goToRegister({String? from}) => go(AppRoutes.registerPath(from: from));
 
   /// Navigate to the publish flow.
   void goToPublish() => go(AppRoutes.publish);
@@ -400,7 +506,8 @@ extension GoRouterExtension on BuildContext {
   void goHome() => go(AppRoutes.home);
 
   /// Navigate to edit a publication.
-  void goToEditPublication(String id) => push('/my-publications/$id/edit');
+  void goToEditPublication(String id) =>
+      push(AppRoutes.editPublicationPath(id));
 
   /// Safe back navigation for deep links (no back stack).
   void popOrGo(String location) {

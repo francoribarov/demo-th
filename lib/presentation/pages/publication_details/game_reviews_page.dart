@@ -38,8 +38,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () =>
-                    context.popOrGo('/publications/${widget.gameId}'),
+                onPressed: () => context.popOrGo(
+                  AppRoutes.publicationDetailsPath(widget.gameId),
+                ),
               ),
             ),
             body: Center(
@@ -61,7 +62,9 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/games/${widget.gameId}'),
+              onPressed: () => context.popOrGo(
+                AppRoutes.publicationDetailsPath(widget.gameId),
+              ),
             ),
             title: Text('Reseñas de ${game.title}'),
           ),
@@ -116,8 +119,10 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                             final percentage = game.reviews.isNotEmpty
                                 ? count / game.reviews.length
                                 : count /
-                                    game.reviews.length
-                                        .clamp(1, double.infinity);
+                                      game.reviews.length.clamp(
+                                        1,
+                                        double.infinity,
+                                      );
                             return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,
@@ -143,8 +148,8 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                         label: 'Todas',
                         isSelected: state.filterRating == null,
                         onTap: () => context.read<GameReviewsBloc>().add(
-                              const GameReviewsEvent.filterRatingChanged(null),
-                            ),
+                          const GameReviewsEvent.filterRatingChanged(null),
+                        ),
                       ),
                       ...List.generate(5, (i) {
                         final stars = 5 - i;
@@ -152,8 +157,8 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                           label: '$stars ⭐',
                           isSelected: state.filterRating == stars,
                           onTap: () => context.read<GameReviewsBloc>().add(
-                                GameReviewsEvent.filterRatingChanged(stars),
-                              ),
+                            GameReviewsEvent.filterRatingChanged(stars),
+                          ),
                         );
                       }),
                     ],

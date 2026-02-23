@@ -150,10 +150,8 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.ensureVisible(
-      find.byKey(const Key('registerGoToLoginButton')),
-    );
-    await tester.tap(find.byKey(const Key('registerGoToLoginButton')));
+    await tester.ensureVisible(find.text('Iniciá sesión'));
+    await tester.tap(find.text('Iniciá sesión'));
     await tester.pumpAndSettle();
 
     expect(find.text('login:/publish'), findsOneWidget);

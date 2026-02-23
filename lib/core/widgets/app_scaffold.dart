@@ -8,53 +8,52 @@ import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 
 /// Main scaffold with bottom navigation.
 class AppScaffold extends StatelessWidget {
-  /// Creates an [AppScaffold] with the provided [child].
-  const AppScaffold({required this.child, super.key});
+  /// Creates an [AppScaffold] with the provided [navigationShell].
+  const AppScaffold({required this.navigationShell, super.key});
 
-  /// Content rendered above the bottom navigation bar.
-  final Widget child;
+  /// Shell that holds the navigation branches.
+  final StatefulNavigationShell navigationShell;
 
-  int _calculateSelectedIndex(BuildContext context) {
-    final location = GoRouterState.of(context).uri.path;
-    if (location == AppRoutes.home) return 0;
-    if (location == AppRoutes.myPublications) return 1;
-    if (location == AppRoutes.publish) return 2;
-    if (location == AppRoutes.profile) return 3;
-    return 0;
+  static const _protectedBranchIndexes = {1, 2, 3};
+
+  String _targetLocationForBranch(int index) {
+    switch (index) {
+      case 0:
+        return AppRoutes.home;
+      case 1:
+        return AppRoutes.myPublications;
+      case 2:
+        return AppRoutes.publish;
+      case 3:
+        return AppRoutes.profile;
+      default:
+        return AppRoutes.home;
+    }
   }
 
   void _onItemTapped(BuildContext context, int index) {
-    if (index == 1 || index == 2) {
+    final targetLocation = _targetLocationForBranch(index);
+
+    if (_protectedBranchIndexes.contains(index)) {
       final authBloc = getIt<AuthBloc>();
       if (!authBloc.state.isAuthenticated) {
-        final from = index == 1 ? AppRoutes.myPublications : AppRoutes.publish;
-        context.goToLogin(from: from);
+        context.goToLogin(from: targetLocation);
         return;
       }
     }
 
-    switch (index) {
-      case 0:
-        context.go(AppRoutes.home);
-        return;
-      case 1:
-        context.go(AppRoutes.myPublications);
-        return;
-      case 2:
-        context.go(AppRoutes.publish);
-        return;
-      case 3:
-        context.go(AppRoutes.profile);
-        return;
-    }
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedIndex = _calculateSelectedIndex(context);
+    final selectedIndex = navigationShell.currentIndex;
 
     return Scaffold(
-      body: child,
+      body: navigationShell,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.card,
