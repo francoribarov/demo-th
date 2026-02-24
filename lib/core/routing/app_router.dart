@@ -205,6 +205,23 @@ class AppRouter {
     return isEditRoute;
   }
 
+  @visibleForTesting
+  static String? authRedirectFor(AuthState authState, String location) {
+    if (authState.status == AuthStatus.unknown || authState.isCheckingStatus) {
+      return null;
+    }
+
+    if (!_isProtectedLocation(location)) {
+      return null;
+    }
+
+    if (authState.status != AuthStatus.authenticated) {
+      return AppRoutes.home;
+    }
+
+    return null;
+  }
+
   /// Application router instance.
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -212,22 +229,7 @@ class AppRouter {
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(getIt<AuthBloc>().stream),
     redirect: (context, state) {
-      final authState = getIt<AuthBloc>().state;
-
-      if (authState.status == AuthStatus.unknown ||
-          authState.isCheckingStatus) {
-        return null;
-      }
-
-      if (!_isProtectedLocation(state.uri.path)) {
-        return null;
-      }
-
-      if (authState.status != AuthStatus.authenticated) {
-        return AppRoutes.home;
-      }
-
-      return null;
+      return authRedirectFor(getIt<AuthBloc>().state, state.uri.path);
     },
     routes: [
       StatefulShellRoute.indexedStack(
