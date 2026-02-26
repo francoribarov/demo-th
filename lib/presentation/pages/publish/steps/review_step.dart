@@ -4,6 +4,8 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/info_chip.dart';
 
 /// Final step in the publish flow for reviewing the listing before submission.
 class ReviewStep extends StatelessWidget {
@@ -41,20 +43,15 @@ class ReviewStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Revisá que todo esté correcto antes de publicar',
-          style: AppTypography.bodyMedium
-              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.gameBrown.withOpacityValue(0.7),
+          ),
         ),
         const SizedBox(height: 24),
 
         // Preview card
-        Container(
+        SurfaceCard(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-            border:
-                Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -85,7 +82,7 @@ class ReviewStep extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               if (condition != null)
-                _InfoChip(icon: Icons.grade, label: condition!.label),
+                InfoChip(icon: Icons.grade, label: condition!.label),
 
               const Divider(height: 32),
               Row(
@@ -113,24 +110,6 @@ class ReviewStep extends StatelessWidget {
         ),
 
         const SizedBox(height: 100),
-      ],
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 16, color: AppColors.gameBrown),
-        const SizedBox(width: 4),
-        Text(label, style: AppTypography.labelSmall),
       ],
     );
   }

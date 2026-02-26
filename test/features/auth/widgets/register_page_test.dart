@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_table_hopping/core/routing/app_router.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/auth/register_page.dart';
 import 'package:mocktail/mocktail.dart';
@@ -150,10 +150,8 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.ensureVisible(
-      find.byKey(const Key('registerGoToLoginButton')),
-    );
-    await tester.tap(find.byKey(const Key('registerGoToLoginButton')));
+    await tester.ensureVisible(find.text('Iniciá sesión'));
+    await tester.tap(find.text('Iniciá sesión'));
     await tester.pumpAndSettle();
 
     expect(find.text('login:/publish'), findsOneWidget);

@@ -5,14 +5,25 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_table_hopping/core/routing/app_router.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
-import 'package:mobile_table_hopping/presentation/widgets/rental/availability_date_selector.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/button_loading_indicator.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/label_value_row.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/section_header_block.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/rental/availability_date_selector.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/success_state_view.dart';
 
 /// Rental confirmation page matching RentalConfirm.tsx
 class RentalConfirmPage extends StatelessWidget {
@@ -30,14 +41,12 @@ class RentalConfirmPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (previous, current) =>
-          previous.snackbarMessage != current.snackbarMessage &&
-          current.snackbarMessage != null,
+          previous.feedbackNotice != current.feedbackNotice &&
+          current.feedbackNotice != null,
       listener: (context, state) {
-        final message = state.snackbarMessage;
-        if (message == null) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+        final notice = state.feedbackNotice;
+        if (notice == null) return;
+        _showNotice(context, notice);
         context.read<RentalBloc>().add(const RentalEvent.messageShown());
       },
       builder: (context, state) {
@@ -52,12 +61,10 @@ class RentalConfirmPage extends StatelessWidget {
         final publication = state.publication;
         if (publication == null) {
           return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () =>
-                    context.popOrGo('/publications/$publicationId'),
-              ),
+            appBar: PageAppBar(
+              title: const Text('Solicitar alquiler'),
+              onLeadingPressed: () =>
+                  context.popOrGo('/publications/$publicationId'),
             ),
             body: Center(
               child: Text(state.errorMessage ?? 'Publicación no encontrada'),
@@ -66,19 +73,21 @@ class RentalConfirmPage extends StatelessWidget {
         }
 
         if (state.success) {
-          return _SuccessView(
-            publication: publication,
-            onBackHome: () => context.go('/'),
+          return SuccessStateView(
+            title: '¡Solicitud enviada!',
+            subtitle:
+                'Tu solicitud de alquiler de ${publication.title} fue enviada. El propietario deberá aceptarla.\nTe notificaremos cuando el propietario acepte tu solicitud.',
+            primaryActionLabel: 'Volver al inicio',
+            onPrimaryAction: () => context.go('/'),
+            icon: Icons.check_circle,
           );
         }
 
         return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/publications/$publicationId'),
-            ),
+          appBar: PageAppBar(
             title: const Text('Solicitar alquiler'),
+            onLeadingPressed: () =>
+                context.popOrGo('/publications/$publicationId'),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -91,7 +100,10 @@ class RentalConfirmPage extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // Dates section
-                const _SectionTitle(title: 'FECHAS DE ALQUILER'),
+                SectionHeaderBlock(
+                  title: 'FECHAS DE ALQUILER',
+                  titleStyle: AppTypography.sectionHeader,
+                ),
                 const SizedBox(height: 12),
                 AvailabilityDateSelector(
                   publication: publication,
@@ -99,17 +111,20 @@ class RentalConfirmPage extends StatelessWidget {
                   endDate: state.endDate,
                   onRangeChanged: (start, end) =>
                       context.read<RentalBloc>().add(
-                            RentalEvent.dateRangeChanged(
-                              startDate: start,
-                              endDate: end,
-                            ),
-                          ),
+                        RentalEvent.dateRangeChanged(
+                          startDate: start,
+                          endDate: end,
+                        ),
+                      ),
                 ),
 
                 const SizedBox(height: 24),
 
                 // Delivery/Pickup
-                const _SectionTitle(title: 'ENTREGA'),
+                SectionHeaderBlock(
+                  title: 'ENTREGA',
+                  titleStyle: AppTypography.sectionHeader,
+                ),
                 const SizedBox(height: 12),
                 _DeliverySelector(
                   isDelivery: state.isDelivery,
@@ -119,35 +134,41 @@ class RentalConfirmPage extends StatelessWidget {
                       .read<RentalBloc>()
                       .add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
                   onAddressChanged: (value) => context.read<RentalBloc>().add(
-                        RentalEvent.deliveryAddressChanged(address: value),
-                      ),
+                    RentalEvent.deliveryAddressChanged(address: value),
+                  ),
                   onCommentsChanged: (value) => context.read<RentalBloc>().add(
-                        RentalEvent.deliveryCommentsChanged(comments: value),
-                      ),
+                    RentalEvent.deliveryCommentsChanged(comments: value),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
 
                 // Food bundles
-                const _SectionTitle(title: 'AGREGÁ SNACKS'),
+                SectionHeaderBlock(
+                  title: 'AGREGÁ SNACKS',
+                  titleStyle: AppTypography.sectionHeader,
+                ),
                 const SizedBox(height: 12),
                 _FoodBundleSelector(
                   selectedBundles: state.selectedFoodBundles,
                   onBundlesChanged: (bundles) => context.read<RentalBloc>().add(
-                        RentalEvent.foodBundlesChanged(foodBundles: bundles),
-                      ),
+                    RentalEvent.foodBundlesChanged(foodBundles: bundles),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
 
                 // Payment method
-                const _SectionTitle(title: 'MÉTODO DE PAGO'),
+                SectionHeaderBlock(
+                  title: 'MÉTODO DE PAGO',
+                  titleStyle: AppTypography.sectionHeader,
+                ),
                 const SizedBox(height: 12),
                 _PaymentSelector(
                   selected: state.paymentMethod,
                   onChanged: (method) => context.read<RentalBloc>().add(
-                        RentalEvent.paymentMethodChanged(paymentMethod: method),
-                      ),
+                    RentalEvent.paymentMethodChanged(paymentMethod: method),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -166,12 +187,8 @@ class RentalConfirmPage extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 if (state.errorMessage != null) ...[
-                  Text(
-                    state.errorMessage!,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.destructive,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  InlineFeedbackText(
+                    message: state.errorMessage!,
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -181,20 +198,13 @@ class RentalConfirmPage extends StatelessWidget {
                   onPressed: state.isSubmitting
                       ? null
                       : () => context.read<RentalBloc>().add(
-                            const RentalEvent.submitted(),
-                          ),
+                          const RentalEvent.submitted(),
+                        ),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 56),
                   ),
                   child: state.isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
+                      ? const ButtonLoadingIndicator()
                       : const Text('Enviar solicitud'),
                 ),
 
@@ -208,28 +218,16 @@ class RentalConfirmPage extends StatelessWidget {
   }
 }
 
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(title, style: AppTypography.sectionHeader);
-  }
-}
-
 class _PublicationSummary extends StatelessWidget {
   const _PublicationSummary({required this.publication});
   final PublicationListing publication;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SurfaceCard(
+      variant: SurfaceCardVariant.subtle,
+      borderWidth: 0,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.gameCream.withOpacityValue(0.5),
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-      ),
       child: Row(
         children: [
           ClipRRect(
@@ -303,93 +301,44 @@ class _DeliverySelector extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _OptionButton(
-                label: 'Retiro en punto',
-                icon: Icons.store,
-                isSelected: !isDelivery,
+              child: SelectableInputCard(
                 onTap: () => onDeliveryChanged(isDelivery: false),
+                isSelected: !isDelivery,
+                layout: SelectableInputCardLayout.stacked,
+                leading: const Icon(Icons.store),
+                title: 'Retiro en punto',
+                titleStyle: AppTypography.labelMedium,
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: _OptionButton(
-                label: 'Envío a domicilio',
-                icon: Icons.delivery_dining,
-                isSelected: isDelivery,
+              child: SelectableInputCard(
                 onTap: () => onDeliveryChanged(isDelivery: true),
+                isSelected: isDelivery,
+                layout: SelectableInputCardLayout.stacked,
+                leading: const Icon(Icons.delivery_dining),
+                title: 'Envío a domicilio',
+                titleStyle: AppTypography.labelMedium,
               ),
             ),
           ],
         ),
         if (isDelivery) ...[
           const SizedBox(height: 16),
-          TextField(
-            decoration: const InputDecoration(
-              labelText: 'Dirección de entrega',
-              hintText: 'Ej: Av. 18 de Julio 1234, Montevideo',
-            ),
+          TextInputField(
+            labelText: 'Dirección de entrega',
+            hintText: 'Ej: Av. 18 de Julio 1234, Montevideo',
             onChanged: onAddressChanged,
           ),
           const SizedBox(height: 12),
-          TextField(
-            decoration: const InputDecoration(
-              labelText: 'Comentarios (opcional)',
-              hintText: 'Ej: Timbre 2B, casa con reja verde',
-            ),
+          TextInputField(
+            labelText: 'Comentarios (opcional)',
+            hintText: 'Ej: Timbre 2B, casa con reja verde',
             onChanged: onCommentsChanged,
             maxLines: 2,
           ),
         ],
       ],
-    );
-  }
-}
-
-class _OptionButton extends StatelessWidget {
-  const _OptionButton({
-    required this.label,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-  final String label;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.gameCream : AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(
-            color: isSelected
-                ? AppColors.gameRust
-                : AppColors.gameBrown.withOpacityValue(0.2),
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: AppTypography.labelMedium.copyWith(
-                color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -413,7 +362,7 @@ class _FoodBundleSelector extends StatelessWidget {
     return Column(
       children: _bundles.map((bundle) {
         final isSelected = selectedBundles.contains(bundle.$1);
-        return GestureDetector(
+        return SelectableInputCard(
           onTap: () {
             final newBundles = List<String>.from(selectedBundles);
             if (isSelected) {
@@ -423,64 +372,29 @@ class _FoodBundleSelector extends StatelessWidget {
             }
             onBundlesChanged(newBundles);
           },
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
+          isSelected: isSelected,
+          margin: const EdgeInsets.only(bottom: 12),
+          indicatorMode: SelectableInputIndicatorMode.check,
+          leading: Container(
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.gameCream : AppColors.card,
-              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(
-                color: isSelected
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.2),
-                width: isSelected ? 2 : 1,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            ),
+            child: Center(
+              child: Text(
+                bundle.$2.split(' ')[0],
+                style: const TextStyle(fontSize: 24),
               ),
             ),
-            child: Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                  ),
-                  child: Center(
-                    child: Text(
-                      bundle.$2.split(' ')[0],
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        bundle.$2.length > 3
-                            ? bundle.$2.substring(3)
-                            : bundle.$2,
-                        style: AppTypography.titleSmall,
-                      ),
-                      Text(
-                        bundle.$3,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Text(r'$250', style: AppTypography.titleSmall),
-                const SizedBox(width: 8),
-                Icon(
-                  isSelected ? Icons.check_circle : Icons.add_circle_outline,
-                  color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
-                ),
-              ],
-            ),
           ),
+          title: bundle.$2.length > 3 ? bundle.$2.substring(3) : bundle.$2,
+          subtitle: bundle.$3,
+          titleStyle: AppTypography.titleSmall,
+          selectedTextColor: AppColors.foreground,
+          unselectedTextColor: AppColors.foreground,
+          trailing: Text(r'$250', style: AppTypography.titleSmall),
         );
       }).toList(),
     );
@@ -503,33 +417,18 @@ class _PaymentSelector extends StatelessWidget {
     return Column(
       children: _methods.map((method) {
         final isSelected = selected == method.$1;
-        return GestureDetector(
+        return SelectableInputCard(
           onTap: () => onChanged(method.$1),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.gameCream : AppColors.card,
-              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(
-                color: isSelected
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.2),
-                width: isSelected ? 2 : 1,
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(method.$3, color: AppColors.gameBrown),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(method.$2, style: AppTypography.titleSmall),
-                ),
-                if (isSelected)
-                  const Icon(Icons.check_circle, color: AppColors.gameRust),
-              ],
-            ),
-          ),
+          isSelected: isSelected,
+          margin: const EdgeInsets.only(bottom: 12),
+          indicatorMode: SelectableInputIndicatorMode.check,
+          leading: Icon(method.$3),
+          title: method.$2,
+          titleStyle: AppTypography.titleSmall,
+          selectedTextColor: AppColors.foreground,
+          unselectedTextColor: AppColors.foreground,
+          selectedIconColor: AppColors.gameBrown,
+          unselectedIconColor: AppColors.gameBrown,
         );
       }).toList(),
     );
@@ -556,29 +455,41 @@ class _PriceBreakdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SurfaceCard(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-      ),
       child: Column(
         children: [
-          _PriceRow(
+          LabelValueRow(
             label:
                 '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
-            value: subtotal,
+            value: CurrencyFormatter.formatUYU(subtotal),
+            labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+            valueStyle: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 8),
-          _PriceRow(label: 'Tarifa de servicio', value: serviceFee),
+          LabelValueRow(
+            label: 'Tarifa de servicio',
+            value: CurrencyFormatter.formatUYU(serviceFee),
+            labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+            valueStyle: AppTypography.bodyMedium,
+          ),
           if (deliveryFee > 0) ...[
             const SizedBox(height: 8),
-            _PriceRow(label: 'Envío a domicilio', value: deliveryFee),
+            LabelValueRow(
+              label: 'Envío a domicilio',
+              value: CurrencyFormatter.formatUYU(deliveryFee),
+              labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+              valueStyle: AppTypography.bodyMedium,
+            ),
           ],
           if (foodTotal > 0) ...[
             const SizedBox(height: 8),
-            _PriceRow(label: 'Snacks', value: foodTotal),
+            LabelValueRow(
+              label: 'Snacks',
+              value: CurrencyFormatter.formatUYU(foodTotal),
+              labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+              valueStyle: AppTypography.bodyMedium,
+            ),
           ],
           const Divider(height: 24),
           Row(
@@ -597,92 +508,19 @@ class _PriceBreakdown extends StatelessWidget {
   }
 }
 
-class _PriceRow extends StatelessWidget {
-  const _PriceRow({required this.label, required this.value});
-  final String label;
-  final num value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
-          ),
-        ),
-        Text(
-          CurrencyFormatter.formatUYU(value),
-          style: AppTypography.bodyMedium,
-        ),
-      ],
-    );
-  }
-}
-
-class _SuccessView extends StatelessWidget {
-  const _SuccessView({required this.publication, required this.onBackHome});
-  final PublicationListing publication;
-  final VoidCallback onBackHome;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.check_circle,
-                  size: 64,
-                  color: Colors.green[600],
-                ),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                '¡Solicitud enviada!',
-                style: AppTypography.displaySmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Tu solicitud de alquiler de ${publication.title} fue enviada. El propietario deberá aceptarla.',
-                style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.gameBrown.withOpacityValue(0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Te notificaremos cuando el propietario acepte tu solicitud.',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.gameBrown.withOpacityValue(0.6),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 48),
-              ElevatedButton(
-                onPressed: onBackHome,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 56),
-                ),
-                child: const Text('Volver al inicio'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+void _showNotice(BuildContext context, FeedbackNotice notice) {
+  switch (notice.severity) {
+    case FeedbackSeverity.success:
+      FeedbackMessenger.showSuccess(context, message: notice.message);
+      return;
+    case FeedbackSeverity.error:
+      FeedbackMessenger.showError(context, message: notice.message);
+      return;
+    case FeedbackSeverity.warning:
+      FeedbackMessenger.showWarning(context, message: notice.message);
+      return;
+    case FeedbackSeverity.info:
+      FeedbackMessenger.showInfo(context, message: notice.message);
+      return;
   }
 }

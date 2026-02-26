@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_table_hopping/core/routing/app_router.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_rules_bloc.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/info_chip.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Game rules page matching GameRules.tsx
 class GameRulesPage extends StatefulWidget {
@@ -33,12 +36,11 @@ class _GameRulesPageState extends State<GameRulesPage> {
 
         final game = state.game;
         if (game == null) {
+          final publicationPath = publicationDetailsPath(widget.gameId);
           return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/games/${widget.gameId}'),
-              ),
+            appBar: PageAppBar(
+              title: const Text('Reglas'),
+              onLeadingPressed: () => context.popOrGo(publicationPath),
             ),
             body: Center(
               child: Text(state.errorMessage ?? 'Juego no encontrado'),
@@ -46,14 +48,11 @@ class _GameRulesPageState extends State<GameRulesPage> {
           );
         }
 
+        final publicationPath = publicationDetailsPath(widget.gameId);
         return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () =>
-                  context.popOrGo('/publications/${widget.gameId}'),
-            ),
+          appBar: PageAppBar(
             title: Text('Reglas de ${game.title}'),
+            onLeadingPressed: () => context.popOrGo(publicationPath),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -70,12 +69,24 @@ class _GameRulesPageState extends State<GameRulesPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _InfoChip(
+                      InfoChip(
                         icon: Icons.timer,
                         label: '${game.duration} min',
+                        layout: InfoChipLayout.column,
+                        textStyle: AppTypography.labelMedium,
                       ),
-                      _InfoChip(icon: Icons.people, label: game.players),
-                      _InfoChip(icon: Icons.psychology, label: game.difficulty),
+                      InfoChip(
+                        icon: Icons.people,
+                        label: game.players,
+                        layout: InfoChipLayout.column,
+                        textStyle: AppTypography.labelMedium,
+                      ),
+                      InfoChip(
+                        icon: Icons.psychology,
+                        label: game.difficulty,
+                        layout: InfoChipLayout.column,
+                        textStyle: AppTypography.labelMedium,
+                      ),
                     ],
                   ),
                 ),
@@ -171,15 +182,10 @@ class _GameRulesPageState extends State<GameRulesPage> {
 
                 // PDF download
                 OutlinedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(
-                      const SnackBar(
-                        content: Text('Descarga de PDF próximamente'),
-                      ),
-                    );
-                  },
+                  onPressed: () => FeedbackMessenger.showInfo(
+                    context,
+                    message: 'Descarga de PDF próximamente',
+                  ),
                   icon: const Icon(Icons.picture_as_pdf),
                   label: const Text('Descargar manual completo (PDF)'),
                   style: OutlinedButton.styleFrom(
@@ -208,23 +214,6 @@ class _GameRulesPageState extends State<GameRulesPage> {
       default:
         return '';
     }
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, color: AppColors.gameBrown),
-        const SizedBox(height: 4),
-        Text(label, style: AppTypography.labelMedium),
-      ],
-    );
   }
 }
 

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
-import 'package:mobile_table_hopping/presentation/blocs/publish/delivery_method_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/steps/widgets/delivery_section.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/steps/widgets/price_section.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publish/delivery_method_sheet.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/publish/delivery_method_sheet.dart';
 
 /// Step in the publish flow for setting price and delivery methods.
-class PriceStep extends StatefulWidget {
+class PriceStep extends StatelessWidget {
   /// Creates a [PriceStep].
   const PriceStep({
     required this.formVersion,
@@ -44,23 +42,6 @@ class PriceStep extends StatefulWidget {
   final void Function(DeliveryMethod) onAddDeliveryMethod;
 
   @override
-  State<PriceStep> createState() => _PriceStepState();
-}
-
-class _PriceStepState extends State<PriceStep> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context
-            .read<DeliveryMethodBloc>()
-            .add(const DeliveryMethodEvent.started());
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,26 +50,27 @@ class _PriceStepState extends State<PriceStep> {
         const SizedBox(height: 8),
         Text(
           'Definí el precio de alquiler y cómo entregarás el juego',
-          style: AppTypography.bodyMedium
-              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.gameBrown.withOpacityValue(0.7),
+          ),
         ),
         const SizedBox(height: 24),
 
         // Price
         PriceSection(
-          formVersion: widget.formVersion,
-          price: widget.price,
-          onChanged: widget.onPriceChanged,
+          formVersion: formVersion,
+          price: price,
+          onChanged: onPriceChanged,
         ),
 
         const SizedBox(height: 32),
 
         // Delivery Methods
         DeliverySection(
-          selectedMethods: widget.deliveryMethods,
-          availableMethods: widget.availableDeliveryMethods,
-          onAdd: _addDeliveryMethod,
-          onToggle: widget.onToggleDeliveryMethod,
+          selectedMethods: deliveryMethods,
+          availableMethods: availableDeliveryMethods,
+          onAdd: () => _addDeliveryMethod(context),
+          onToggle: onToggleDeliveryMethod,
         ),
 
         const SizedBox(height: 100),
@@ -96,12 +78,12 @@ class _PriceStepState extends State<PriceStep> {
     );
   }
 
-  Future<void> _addDeliveryMethod() async {
+  Future<void> _addDeliveryMethod(BuildContext context) async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (_) => DeliveryMethodSheet(
-        onAdd: widget.onAddDeliveryMethod,
+        onAdd: onAddDeliveryMethod,
       ),
     );
   }

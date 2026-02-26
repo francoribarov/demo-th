@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
 import 'package:mobile_table_hopping/domain/validators/publish/publication_validator.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publish/game_selector.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/dropdown_form_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/publish/game_selector.dart';
 
 /// Step in the publish flow for entering basic game data.
 class DataStep extends StatelessWidget {
@@ -14,7 +17,12 @@ class DataStep extends StatelessWidget {
     required this.description,
     required this.condition,
     required this.conditions,
+    required this.allGames,
+    required this.filteredGames,
+    required this.isLoadingGames,
     required this.onGameIdChanged,
+    required this.onGameSearchChanged,
+    required this.onGameSearchCleared,
     required this.onDescriptionChanged,
     required this.onConditionChanged,
     super.key,
@@ -34,9 +42,14 @@ class DataStep extends StatelessWidget {
 
   /// List of available conditions.
   final List<PublicationCondition> conditions;
+  final List<Game> allGames;
+  final List<Game> filteredGames;
+  final bool isLoadingGames;
 
   /// Callback when game ID changes.
   final void Function(String) onGameIdChanged;
+  final ValueChanged<String> onGameSearchChanged;
+  final VoidCallback onGameSearchCleared;
 
   /// Callback when description changes.
   final void Function(String) onDescriptionChanged;
@@ -53,14 +66,20 @@ class DataStep extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           'Contanos sobre el juego que querés publicar',
-          style: AppTypography.bodyMedium
-              .copyWith(color: AppColors.gameBrown.withOpacityValue(0.7)),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.gameBrown.withOpacityValue(0.7),
+          ),
         ),
         const SizedBox(height: 24),
 
         // Game Selector
         GameSelector(
           selectedGameId: gameId.isEmpty ? null : gameId,
+          allGames: allGames,
+          filteredGames: filteredGames,
+          isLoadingGames: isLoadingGames,
+          onSearchChanged: onGameSearchChanged,
+          onSearchCleared: onGameSearchCleared,
           onGameSelected: (game) {
             onGameIdChanged(game.id);
           },
@@ -68,19 +87,18 @@ class DataStep extends StatelessWidget {
         const SizedBox(height: 16),
 
         // Description
-        TextFormField(
+        TextFormInputField(
           key: ValueKey('publish_description_${formVersion}_$gameId'),
           initialValue: description,
           maxLines: 3,
-          decoration: const InputDecoration(
-            labelText: 'Descripción *',
-            hintText: 'Contanos qué hace especial a este juego...',
-          ),
+          labelText: 'Descripción *',
+          hintText: 'Contanos qué hace especial a este juego...',
           onChanged: onDescriptionChanged,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
-            final result =
-                PublicationValidator.validateDescription(value ?? '');
+            final result = PublicationValidator.validateDescription(
+              value ?? '',
+            );
             return result.isValid ? null : result.message;
           },
         ),
@@ -89,32 +107,9 @@ class DataStep extends StatelessWidget {
         // Condition
         Text('Estado del juego', style: AppTypography.titleMedium),
         const SizedBox(height: 12),
-        DropdownButtonFormField<PublicationCondition>(
+        DropdownFormInputField<PublicationCondition>(
           initialValue: condition,
-          decoration: InputDecoration(
-            hintText: 'Seleccioná el estado',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.gameBrown.withOpacityValue(0.2),
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.gameBrown.withOpacityValue(0.2),
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.gameRust,
-                width: 2,
-              ),
-            ),
-            filled: true,
-            fillColor: AppColors.card,
-          ),
+          hintText: 'Seleccioná el estado',
           items: conditions.map((c) {
             return DropdownMenuItem<PublicationCondition>(
               value: c,

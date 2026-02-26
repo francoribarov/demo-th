@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/go_router_refresh_stream.dart';
-import 'package:mobile_table_hopping/core/widgets/app_scaffold.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
+import 'package:mobile_table_hopping/core/widgets/templates/app_scaffold.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
@@ -28,47 +29,6 @@ import 'package:mobile_table_hopping/presentation/pages/publication_details/game
 import 'package:mobile_table_hopping/presentation/pages/publication_details/publication_details_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/publish_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
-
-/// Route paths for type-safe navigation.
-class AppRoutes {
-  AppRoutes._();
-
-  /// Home route.
-  static const String home = '/';
-
-  /// Login route.
-  static const String login = '/login';
-
-  /// Register route.
-  static const String register = '/register';
-
-  /// Publish game route.
-  static const String publish = '/publish';
-
-  /// My PUBLICATIONS route.
-  static const String myPublications = '/my-publications';
-
-  /// Personal profile route.
-  static const String profile = '/profile';
-
-  /// Publication details route template.
-  static const String publicationDetails = '/publications/:id';
-
-  /// Game rules route template.
-  static const String gameRules = '/games/:id/rules';
-
-  /// Game reviews route template.
-  static const String gameReviews = '/games/:id/reviews';
-
-  /// Game owner route template.
-  static const String gameOwner = '/publications/:id/owner';
-
-  /// Rental confirmation route template.
-  static const String rental = '/publications/:id/rental';
-
-  /// Edit publication route template.
-  static const String editPublication = '/my-publications/:id/edit';
-}
 
 /// App router configuration using go_router.
 class AppRouter {
@@ -342,73 +302,4 @@ class AppRouter {
       ),
     ),
   );
-}
-
-/// Extension methods for easier navigation.
-extension GoRouterExtension on BuildContext {
-  /// Navigate to publication details for [id].
-  void goToPublication(String id) => push('/publications/$id');
-
-  /// Navigate to game rules for [id].
-  void goToGameRules(String id) => push('/publications/$id/rules');
-
-  /// Navigate to game reviews for [id].
-  void goToGameReviews(String id) => push('/publications/$id/reviews');
-
-  /// Navigate to game owner for [id].
-  void goToGameOwner(String id) => push('/publications/$id/owner');
-
-  /// Navigate to rental confirmation for [id] with optional dates.
-  void goToRental(
-    String id, {
-    String? startDate,
-    String? endDate,
-    String? ownerId,
-    double? deposit,
-  }) => push(
-    '/publications/$id/rental',
-    extra: {
-      'startDate': startDate,
-      'endDate': endDate,
-      'ownerId': ownerId,
-      'deposit': deposit,
-    },
-  );
-
-  /// Navigate to login with an optional [from] redirect.
-  void goToLogin({String? from}) {
-    final uri = Uri(
-      path: AppRoutes.login,
-      queryParameters: {
-        if (from != null && from.trim().isNotEmpty) 'from': from,
-      },
-    );
-    go(uri.toString());
-  }
-
-  /// Navigate to registration with an optional [from] redirect.
-  void goToRegister({String? from}) => go(
-    from != null
-        ? '${AppRoutes.register}?from=${Uri.encodeComponent(from)}'
-        : AppRoutes.register,
-  );
-
-  /// Navigate to the publish flow.
-  void goToPublish() => go(AppRoutes.publish);
-
-  /// Navigate to the home route.
-  void goHome() => go(AppRoutes.home);
-
-  /// Navigate to edit a publication.
-  void goToEditPublication(String id) => push('/my-publications/$id/edit');
-
-  /// Safe back navigation for deep links (no back stack).
-  void popOrGo(String location) {
-    final router = GoRouter.of(this);
-    if (router.canPop()) {
-      router.pop();
-    } else {
-      router.go(location);
-    }
-  }
 }

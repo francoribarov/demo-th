@@ -144,6 +144,25 @@ log_info "Running analyzer..."
 $DART_CMD analyze --fatal-infos || { log_error "Analysis failed."; exit 1; }
 log_success "Analysis passed."
 
+# Step 5.1: Atomic guardrails (report-only)
+# ------------------------------------------------------------------------------
+print_header "Step 5.1: Atomic Guardrails (Report Only)"
+if [ -x "./scripts/atomic_guardrails.sh" ]; then
+  if [ "$CI_MODE" = true ]; then
+    log_info "CI Mode: enforcing atomic guardrails in strict mode..."
+    ./scripts/atomic_guardrails.sh --strict || {
+      log_error "Atomic guardrails failed in strict mode."
+      exit 1
+    }
+  else
+    if ! ./scripts/atomic_guardrails.sh; then
+      log_warn "Atomic guardrails reported issues."
+    fi
+  fi
+else
+  log_warn "atomic_guardrails.sh not found or not executable; skipping."
+fi
+
 # Step 6: Testing
 # ------------------------------------------------------------------------------
 if [ "$SKIP_TEST" = false ]; then

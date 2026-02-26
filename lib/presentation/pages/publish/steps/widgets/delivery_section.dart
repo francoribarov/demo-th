@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
-import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publish/delivery_method_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/delivery_method_card.dart';
 
 class DeliverySection extends StatelessWidget {
   const DeliverySection({
@@ -40,8 +40,9 @@ class DeliverySection extends StatelessWidget {
           _buildEmptyState()
         else
           ...availableMethods.map((method) {
-            final isSelected =
-                selectedMethods.any((m) => m.id == method.id && m.id != null);
+            final isSelected = selectedMethods.any(
+              (m) => m.id == method.id && m.id != null,
+            );
             return DeliveryMethodCard(
               method: method,
               isSelected: isSelected,
@@ -53,15 +54,9 @@ class DeliverySection extends StatelessWidget {
   }
 
   Widget _buildEmptyState() {
-    return Container(
+    return SurfaceCard(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(
-          color: AppColors.gameBrown.withOpacityValue(0.2),
-        ),
-      ),
+      borderColor: AppColors.gameBrown.withOpacityValue(0.2),
       child: Center(
         child: Column(
           children: [

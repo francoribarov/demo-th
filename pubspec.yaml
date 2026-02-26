@@ -24,9 +24,9 @@ dependencies:
   injectable: ^2.7.1+4
   intl: ^0.20.2
   json_annotation: 4.9.0
-  meta: 1.16.0
+  meta: 1.17.0
   pretty_dio_logger: ^1.4.0
-  retrofit: ^4.4.1
+  retrofit: 4.9.2
   shared_preferences: ^2.5.4
   shimmer: 3.0.0
 
@@ -40,7 +40,7 @@ dev_dependencies:
   injectable_generator: ^2.8.1
   json_serializable: ^6.11.2
   mocktail: 1.0.4
-  retrofit_generator: 10.2.0
+  retrofit_generator: 10.2.3
   very_good_analysis: 10.0.0
 
 flutter:

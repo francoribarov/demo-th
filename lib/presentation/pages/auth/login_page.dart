@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile_table_hopping/core/routing/app_router.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_error_text.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_header.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_submit_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_switch_row.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/auth/auth_error_text.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/auth/auth_submit_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
 /// Login screen for email/password authentication.
 class LoginPage extends StatefulWidget {
@@ -81,12 +83,10 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
+        appBar: PageAppBar(
           title: const Text('Iniciar sesión'),
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => context.popOrGo(AppRoutes.home),
-          ),
+          leadingType: PageAppBarLeadingType.close,
+          onLeadingPressed: () => context.popOrGo(AppRoutes.home),
         ),
         body: SafeArea(
           child: LayoutBuilder(
@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: AutofillGroup(
                             child: Column(
                               children: [
-                                TextFormField(
+                                TextFormInputField(
                                   key: const Key('loginEmailField'),
                                   controller: _emailController,
                                   focusNode: _emailFocusNode,
@@ -146,10 +146,8 @@ class _LoginPageState extends State<LoginPage> {
                                     AutofillHints.email,
                                   ],
                                   autocorrect: false,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Email',
-                                    hintText: 'tu@email.com',
-                                  ),
+                                  labelText: 'Email',
+                                  hintText: 'tu@email.com',
                                   validator: (value) =>
                                       validateEmail(value ?? ''),
                                   onChanged: (email) =>
@@ -161,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                                   },
                                 ),
                                 const SizedBox(height: 16),
-                                TextFormField(
+                                TextFormInputField(
                                   key: const Key('loginPasswordField'),
                                   controller: _passwordController,
                                   focusNode: _passwordFocusNode,
@@ -171,29 +169,27 @@ class _LoginPageState extends State<LoginPage> {
                                   autofillHints: const [AutofillHints.password],
                                   autocorrect: false,
                                   enableSuggestions: false,
-                                  decoration: InputDecoration(
-                                    labelText: 'Contraseña',
-                                    helperText: 'Mínimo 8 caracteres.',
-                                    suffixIcon: IconButton(
-                                      key: const Key(
-                                        'loginPasswordVisibilityButton',
-                                      ),
-                                      tooltip: _isPasswordVisible
-                                          ? 'Ocultar contraseña'
-                                          : 'Mostrar contraseña',
-                                      onPressed: isSubmitting
-                                          ? null
-                                          : () {
-                                              setState(() {
-                                                _isPasswordVisible =
-                                                    !_isPasswordVisible;
-                                              });
-                                            },
-                                      icon: Icon(
-                                        _isPasswordVisible
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                      ),
+                                  labelText: 'Contraseña',
+                                  helperText: 'Mínimo 8 caracteres.',
+                                  suffixIcon: IconButton(
+                                    key: const Key(
+                                      'loginPasswordVisibilityButton',
+                                    ),
+                                    tooltip: _isPasswordVisible
+                                        ? 'Ocultar contraseña'
+                                        : 'Mostrar contraseña',
+                                    onPressed: isSubmitting
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              _isPasswordVisible =
+                                                  !_isPasswordVisible;
+                                            });
+                                          },
+                                    icon: Icon(
+                                      _isPasswordVisible
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                     ),
                                   ),
                                   validator: (value) =>

@@ -1,7 +1,6 @@
 part of 'rental_bloc.dart';
 
 @freezed
-
 /// State for the rental confirmation flow.
 abstract class RentalState with _$RentalState {
   /// Creates a new rental state instance.
@@ -20,7 +19,7 @@ abstract class RentalState with _$RentalState {
     @Default('mercadopago') String paymentMethod,
     @Default([]) List<String> selectedFoodBundles,
     @Default(false) bool isSubmitting,
-    String? snackbarMessage,
+    FeedbackNotice? feedbackNotice,
     @Default(1) int rentalDays,
     @Default(0.0) double subtotal,
     @Default(0) int serviceFee,

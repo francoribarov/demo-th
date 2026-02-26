@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_table_hopping/core/routing/app_router.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/publication_details_bloc.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_bottom_bar.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_error_view.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_header.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_info_header.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_loading_view.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_details_tab_content.dart';
-import 'package:mobile_table_hopping/presentation/widgets/publication_details/publication_reviews_tab_content.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/publication_details/publication_details_bottom_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/publication_details/publication_details_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/publication_details/publication_details_info_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/publication_details/publication_details_error_view.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/publication_details/publication_details_loading_view.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/publication_details/publication_details_tab_content.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/publication_details/publication_reviews_tab_content.dart';
 
 /// Game details page matching ProductDetail.tsx
 class PublicationDetailsPage extends StatefulWidget {
@@ -52,7 +53,11 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
         final gameDetail = state.gameDetail;
 
         if (publication == null || gameDetail == null) {
-          return PublicationDetailsErrorView(errorMessage: state.errorMessage);
+          return PublicationDetailsErrorView(
+            errorMessage: state.errorMessage,
+            onBack: () => context.popOrGo(AppRoutes.home),
+            onGoHome: context.goHome,
+          );
         }
 
         return Scaffold(
@@ -62,14 +67,14 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
               PublicationDetailsHeader(
                 publication: publication,
                 isWishlisted: state.isWishlisted,
+                onBack: () => context.popOrGo(AppRoutes.home),
                 onToggleWishlist: () => context
                     .read<PublicationDetailsBloc>()
                     .add(const PublicationDetailsEvent.toggleWishlist()),
-                onShare: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Compartir próximamente')),
-                  );
-                },
+                onShare: () => FeedbackMessenger.showInfo(
+                  context,
+                  message: 'Compartir próximamente',
+                ),
               ),
 
               // Content
@@ -82,6 +87,7 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
                         publication: publication,
                         gameDetail: gameDetail,
                         tabController: _tabController,
+                        onOwnerTap: () => context.goToGameOwner(publication.id),
                       ),
                       ColoredBox(
                         color: AppColors.background,
@@ -98,11 +104,33 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
                                 checkEndDate: state.checkEndDate,
                                 availabilityResult: state.availabilityResult,
                                 recommendations: state.recommendations,
+                                onDateRangeSelected: (start, end) {
+                                  context.read<PublicationDetailsBloc>().add(
+                                    PublicationDetailsEvent.checkDateRangeChanged(
+                                      start ?? '',
+                                      end ?? '',
+                                    ),
+                                  );
+                                },
+                                onCheckAvailability: () {
+                                  context.read<PublicationDetailsBloc>().add(
+                                    const PublicationDetailsEvent.checkAvailabilityPressed(),
+                                  );
+                                },
+                                onViewRules: () =>
+                                    context.goToGameRules(publication.id),
+                                onOpenRecommendation:
+                                    (recommendedPublication) =>
+                                        context.goToPublication(
+                                          recommendedPublication.id,
+                                        ),
                               ),
                               // Reviews tab
                               PublicationReviewsTabContent(
                                 gameDetail: gameDetail,
-                                publicationId: widget.publicationId,
+                                onViewAllReviews: () => context.goToGameReviews(
+                                  widget.publicationId,
+                                ),
                               ),
                             ],
                           ),
@@ -119,7 +147,9 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
             onRent: () {
               final authBloc = context.read<AuthBloc>();
               if (!authBloc.state.isAuthenticated) {
-                final currentPath = '/publications/${widget.publicationId}';
+                final currentPath = publicationDetailsPath(
+                  widget.publicationId,
+                );
                 context.goToLogin(from: currentPath);
                 return;
               }

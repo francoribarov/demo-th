@@ -6,6 +6,9 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/media_placeholder.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/label_value_row.dart';
 
 /// Final review step before submitting publication changes.
 class EditReviewStep extends StatelessWidget {
@@ -57,19 +60,15 @@ class EditReviewStep extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Preview card
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-            border: Border.all(color: AppColors.border),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacityValue(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        SurfaceCard(
+          borderColor: AppColors.border,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacityValue(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -100,21 +99,21 @@ class EditReviewStep extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     // Info rows
-                    _InfoRow(
-                      icon: Icons.sell_outlined,
+                    LabelValueRow(
+                      leadingIcon: Icons.sell_outlined,
                       label: 'Precio por día',
                       value: '\$$price UYU',
                       valueColor: AppColors.gameRust,
                     ),
                     const SizedBox(height: 12),
-                    _InfoRow(
-                      icon: Icons.star_outline,
+                    LabelValueRow(
+                      leadingIcon: Icons.star_outline,
                       label: 'Condición',
                       value: _conditionLabel,
                     ),
                     const SizedBox(height: 12),
-                    _InfoRow(
-                      icon: Icons.photo_library_outlined,
+                    LabelValueRow(
+                      leadingIcon: Icons.photo_library_outlined,
                       label: 'Fotos',
                       value:
                           '${images.length} imagen${images.length != 1 ? 'es' : ''}',
@@ -175,15 +174,9 @@ class EditReviewStep extends StatelessWidget {
 
   Widget _buildHeroImage() {
     if (images.isEmpty) {
-      return ColoredBox(
-        color: AppColors.muted.withOpacityValue(0.2),
-        child: const Center(
-          child: Icon(
-            Icons.image_outlined,
-            size: 48,
-            color: AppColors.mutedForeground,
-          ),
-        ),
+      return const MediaPlaceholder(
+        icon: Icons.image_outlined,
+        iconSize: 48,
       );
     }
 
@@ -192,13 +185,15 @@ class EditReviewStep extends StatelessWidget {
       return Image.network(
         heroUrl,
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) => _ImagePlaceholder(),
+        errorBuilder: (_, error, stackTrace) =>
+            const MediaPlaceholder(iconSize: 48),
       );
     } else {
       return Image.file(
         File(heroUrl),
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) => _ImagePlaceholder(),
+        errorBuilder: (_, error, stackTrace) =>
+            const MediaPlaceholder(iconSize: 48),
       );
     }
   }
@@ -210,7 +205,7 @@ class EditReviewStep extends StatelessWidget {
         width: 80,
         height: 80,
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) => _SmallPlaceholder(),
+        errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(),
       );
     } else {
       return Image.file(
@@ -218,79 +213,8 @@ class EditReviewStep extends StatelessWidget {
         width: 80,
         height: 80,
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) => _SmallPlaceholder(),
+        errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(),
       );
     }
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.valueColor,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color? valueColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: AppColors.mutedForeground,
-        ),
-        const SizedBox(width: 12),
-        Text(
-          label,
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.mutedForeground,
-          ),
-        ),
-        const Spacer(),
-        Text(
-          value,
-          style: AppTypography.bodyMedium.copyWith(
-            fontWeight: FontWeight.w600,
-            color: valueColor ?? AppColors.foreground,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ImagePlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: AppColors.muted.withOpacityValue(0.2),
-      child: const Center(
-        child: Icon(
-          Icons.broken_image,
-          size: 48,
-          color: AppColors.mutedForeground,
-        ),
-      ),
-    );
-  }
-}
-
-class _SmallPlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: AppColors.muted.withOpacityValue(0.2),
-      child: const Icon(
-        Icons.broken_image,
-        color: AppColors.mutedForeground,
-      ),
-    );
   }
 }

@@ -79,6 +79,18 @@ class AppColors {
   /// Informational state color.
   static const Color info = Color(0xFF3B82F6);
 
+  /// Reusable shadow color for elevation.
+  static const Color shadow = Color(0xFF3D2E1F);
+
+  /// Soft success background surface.
+  static const Color successSurface = Color(0xFFEAF7EA);
+
+  /// Soft error background surface.
+  static const Color errorSurface = Color(0xFFFDECEC);
+
+  /// Border token for highlighted chips.
+  static const Color goldBorder = Color(0xFFF3D58A);
+
   // Opacity variations for gameBrown
   /// Returns [gameBrown] with the provided opacity.
   static Color gameBrownWithOpacity(double opacity) =>
