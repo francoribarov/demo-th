@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/auth_interceptor.dart';
-import 'package:mobile_table_hopping/core/network/interceptors/error_interceptor.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/logging_interceptor.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/refresh_interceptor.dart';
 
@@ -33,7 +32,6 @@ class DioClient {
       AuthInterceptor(_tokenStorage),
       RefreshInterceptor(_tokenStorage, _dio, refreshDio),
       createLoggingInterceptor(),
-      ErrorInterceptor(),
     ]);
   }
 
@@ -143,23 +141,16 @@ class DioClient {
 
     final baseOptions = options ?? Options();
     final headers = Map<String, dynamic>.from(baseOptions.headers ?? {});
-
-    if (data is FormData) {
-      headers
-        ..remove('Content-Type')
-        ..remove('content-type');
-      return baseOptions.copyWith(
-        headers: headers,
-        contentType: Headers.multipartFormDataContentType,
-      );
-    }
-
     headers
       ..remove('Content-Type')
       ..remove('content-type');
+
+    final contentType = data is FormData
+        ? Headers.multipartFormDataContentType
+        : Headers.jsonContentType;
     return baseOptions.copyWith(
       headers: headers,
-      contentType: Headers.jsonContentType,
+      contentType: contentType,
     );
   }
 }
