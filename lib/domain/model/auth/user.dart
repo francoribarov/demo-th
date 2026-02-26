@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/auth/address.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 
 part 'user.freezed.dart';
 

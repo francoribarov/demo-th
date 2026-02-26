@@ -1,6 +1,3 @@
-// UI widgets are documented at a higher level; omit per-member docs.
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -175,7 +172,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Players section
-                            _SectionHeader(title: 'Jugadores'),
+                            const _SectionHeader(title: 'Jugadores'),
                             const SizedBox(height: 12),
                             Wrap(
                               spacing: 8,
@@ -194,7 +191,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             const SizedBox(height: 24),
 
                             // Duration section
-                            _SectionHeader(title: 'Duración'),
+                            const _SectionHeader(title: 'Duración'),
                             const SizedBox(height: 12),
                             Wrap(
                               spacing: 8,
@@ -215,7 +212,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             const SizedBox(height: 24),
 
                             // Price section
-                            _SectionHeader(
+                            const _SectionHeader(
                               title: 'Precio por día',
                               description:
                                   'Filtrá por precio de alquiler por día.',
@@ -250,7 +247,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             const SizedBox(height: 24),
 
                             // Difficulty section
-                            _SectionHeader(title: 'Dificultad'),
+                            const _SectionHeader(title: 'Dificultad'),
                             const SizedBox(height: 12),
                             Wrap(
                               spacing: 8,
@@ -269,7 +266,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             const SizedBox(height: 24),
 
                             // Experience types section
-                            _SectionHeader(title: 'Tipo de experiencia'),
+                            const _SectionHeader(title: 'Tipo de experiencia'),
                             const SizedBox(height: 12),
                             Wrap(
                               spacing: 8,
@@ -301,7 +298,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                             const SizedBox(height: 24),
 
                             // Other filters section
-                            _SectionHeader(title: 'Otros'),
+                            const _SectionHeader(title: 'Otros'),
                             const SizedBox(height: 12),
 
                             // Available in dates toggle
@@ -563,9 +560,9 @@ class _PriceInput extends StatelessWidget {
           key: ValueKey('$label-$version'),
           initialValue: value?.toString() ?? '',
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             isDense: true,
-            contentPadding: const EdgeInsets.symmetric(
+            contentPadding: EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
             ),

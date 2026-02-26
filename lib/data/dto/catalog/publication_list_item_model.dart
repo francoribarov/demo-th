@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_list_item.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart'
+import 'package:mobile_table_hopping/domain/model/publish/publication.dart'
     hide PublicationImage;
 
 part 'publication_list_item_model.freezed.dart';

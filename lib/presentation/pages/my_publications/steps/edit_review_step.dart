@@ -161,7 +161,7 @@ class EditReviewStep extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: images.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (context, index) => ClipRRect(
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 child: _buildThumbnail(images[index]),
@@ -192,13 +192,13 @@ class EditReviewStep extends StatelessWidget {
       return Image.network(
         heroUrl,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _ImagePlaceholder(),
+        errorBuilder: (_, error, stackTrace) => _ImagePlaceholder(),
       );
     } else {
       return Image.file(
         File(heroUrl),
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _ImagePlaceholder(),
+        errorBuilder: (_, error, stackTrace) => _ImagePlaceholder(),
       );
     }
   }
@@ -210,7 +210,7 @@ class EditReviewStep extends StatelessWidget {
         width: 80,
         height: 80,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _SmallPlaceholder(),
+        errorBuilder: (_, error, stackTrace) => _SmallPlaceholder(),
       );
     } else {
       return Image.file(
@@ -218,7 +218,7 @@ class EditReviewStep extends StatelessWidget {
         width: 80,
         height: 80,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _SmallPlaceholder(),
+        errorBuilder: (_, error, stackTrace) => _SmallPlaceholder(),
       );
     }
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
+import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
 import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
@@ -30,8 +31,8 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    final response = await _remote.login(
-      LoginRequest(email: email, password: password),
+    final response = await unwrapOrThrow<AuthResponse>(
+      () => _remote.login(LoginRequest(email: email, password: password)),
     );
     await _persistSession(response);
     return response.toDomainModel();
@@ -44,12 +45,14 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     required String username,
     String? location,
   }) async {
-    final response = await _remote.register(
-      RegisterRequest(
-        email: email,
-        password: password,
-        username: username,
-        location: location,
+    final response = await unwrapOrThrow<AuthResponse>(
+      () => _remote.register(
+        RegisterRequest(
+          email: email,
+          password: password,
+          username: username,
+          location: location,
+        ),
       ),
     );
     await _persistSession(response);
@@ -63,8 +66,10 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
       throw Exception('No refresh token available');
     }
 
-    final response = await _remote.refreshToken(
-      RefreshTokenRequest(refreshToken: refreshToken),
+    final response = await unwrapOrThrow<TokenResponse>(
+      () => _remote.refreshToken(
+        RefreshTokenRequest(refreshToken: refreshToken),
+      ),
     );
 
     await _tokenStorage.saveTokens(response.accessToken, response.refreshToken);
@@ -74,8 +79,9 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   @override
   Future<void> logout() async {
     try {
-      await _remote.logout();
-    } on Exception catch (_) {
+      final result = await executeVoidDataSource(function: _remote.logout);
+      result.fold((error) => throw error, (_) {});
+    } on DomainException catch (_) {
       // Always clear local session, even if API call fails.
     } finally {
       await _tokenStorage.clearTokens();

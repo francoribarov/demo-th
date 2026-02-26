@@ -60,8 +60,10 @@ class PublicationDetailsBloc
 
         final recommendedResult =
             await _getRecommendedPublications(publication.gameId);
-        final recommendations =
-            recommendedResult.fold((_) => const <PublicationListing>[], (v) => v);
+        final recommendations = recommendedResult.fold(
+          (_) => const <PublicationListing>[],
+          (v) => v,
+        );
 
         emit(
           state.copyWith(

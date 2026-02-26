@@ -1,7 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/data/datasource/catalog/catalog_data_source.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/catalog_params.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_list_item_model.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
 import 'package:mobile_table_hopping/data/services/catalog/catalog_service.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -85,7 +88,9 @@ void main() {
       },
     );
 
-    final result = await dataSource.getPublications(query: 'catan');
+    final result = await dataSource.getPublications(
+      const PublicationsQueryParams(query: 'catan'),
+    );
 
     verify(
       () => service.getPublications(
@@ -98,7 +103,7 @@ void main() {
       ),
     ).called(1);
 
-    final data = expectSuccess(result);
+    final data = expectSuccess<List<PublicationListingModel>>(result);
     expect(data, hasLength(1));
     expect(data.first.id, 'pub-1');
   });
@@ -108,9 +113,11 @@ void main() {
       () => service.getPublicationsAvailableToday('10'),
     ).thenAnswer((_) async => [publicationJson]);
 
-    final result = await dataSource.getPublicationsAvailableToday();
+    final result = await dataSource.getPublicationsAvailableToday(
+      const AvailableTodayQueryParams(),
+    );
 
-    final data = expectSuccess(result);
+    final data = expectSuccess<List<PublicationListingModel>>(result);
     expect(data, hasLength(1));
   });
 
@@ -125,7 +132,7 @@ void main() {
 
     final result = await dataSource.getMyPublications();
 
-    final data = expectSuccess(result);
+    final data = expectSuccess<List<PublicationListingModel>>(result);
     expect(data, hasLength(1));
   });
 
@@ -139,7 +146,7 @@ void main() {
     );
 
     final result = await dataSource.getCategories();
-    final data = expectSuccess(result);
+    final data = expectSuccess<List<GameCategoryModel>>(result);
 
     expect(data, hasLength(1));
     expect(data.first.name, 'Abstracto');
@@ -152,9 +159,11 @@ void main() {
       (_) async => 'unexpected',
     );
 
-    final result = await dataSource.getPublicationListings(query: 'abc');
+    final result = await dataSource.getPublicationListings(
+      const PublicationListingsQueryParams(query: 'abc'),
+    );
 
-    final data = expectSuccess(result);
+    final data = expectSuccess<List<PublicationListingModel>>(result);
     expect(data, isEmpty);
   });
 
@@ -163,7 +172,9 @@ void main() {
       () => service.searchGames(any()),
     ).thenAnswer((_) async => [publicationListItemJson]);
 
-    final result = await dataSource.searchGames(query: 'terraforming');
+    final result = await dataSource.searchGames(
+      const SearchGamesQueryParams(query: 'terraforming'),
+    );
 
     verify(
       () => service.searchGames(
@@ -176,17 +187,17 @@ void main() {
       ),
     ).called(1);
 
-    final data = expectSuccess(result);
+    final data = expectSuccess<List<PublicationListItemModel>>(result);
     expect(data, hasLength(1));
     expect(data.first, isA<PublicationListItemModel>());
   });
 }
 
-T expectSuccess<T>(DataState<T> state) {
+T expectSuccess<T>(ApiResult<T> state) {
   return switch (state) {
-    DataSuccess<T>(:final data) => data,
-    DataFailed<T>(:final error) => fail(
-        'Expected success, got error: ${error.message}',
+    Success<T>(:final data) => data,
+    Failure<T>(:final dataException) => fail(
+        'Expected success, got error: ${dataException.message}',
       ),
   };
 }

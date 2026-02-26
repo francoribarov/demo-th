@@ -184,7 +184,7 @@ class _PhotoTile extends StatelessWidget {
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
-            errorBuilder: (_, __, ___) => ColoredBox(
+            errorBuilder: (_, error, stackTrace) => ColoredBox(
               color: AppColors.muted.withOpacityValue(0.2),
               child: const Center(
                 child: Icon(

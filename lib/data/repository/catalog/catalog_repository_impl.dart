@@ -2,8 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
 import 'package:mobile_table_hopping/data/datasource/catalog/catalog_data_source.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/catalog_params.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/publication_list_item_model.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
@@ -12,7 +15,7 @@ import 'package:mobile_table_hopping/domain/repository/catalog/catalog_repositor
 /// Implementation of [CatalogRepository] using remote data source.
 ///
 /// This repository bridges the domain and data layers, handling:
-/// - Conversion from DataState to Either
+/// - Conversion from ApiResult to Either
 /// - DTO to domain model mapping
 /// - Error handling and transformation
 @LazySingleton(as: CatalogRepository)
@@ -36,23 +39,22 @@ class CatalogRepositoryImpl extends BaseRepository
     int page = 1,
     int limit = 100,
   }) async {
-    final result = await _dataSource.getPublications(
-      query: query,
-      category: category,
-      players: players,
-      duration: duration,
-      priceMin: priceMin,
-      priceMax: priceMax,
-      startDate: startDate,
-      endDate: endDate,
-      sortBy: sortBy,
-      page: page,
-      limit: limit,
-    );
-
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<PublicationListingModel, PublicationListing>(
+      function: () => _dataSource.getPublications(
+        PublicationsQueryParams(
+        query: query,
+        category: category,
+        players: players,
+        duration: duration,
+        priceMin: priceMin,
+        priceMax: priceMax,
+        startDate: startDate,
+        endDate: endDate,
+        sortBy: sortBy,
+        page: page,
+        limit: limit,
+        ),
+      ),
     );
   }
 
@@ -60,11 +62,9 @@ class CatalogRepositoryImpl extends BaseRepository
   Future<Either<DomainException, PublicationListing>> getPublicationById(
     String id,
   ) async {
-    final result = await _dataSource.getPublicationById(id);
-    return toEither(result.when(
-      success: (dto) => DataState.success(dto.toDomainModel()),
-      failed: DataState.failed,
-    ),);
+    return executeDataSource<PublicationListingModel, PublicationListing>(
+      function: () => _dataSource.getPublicationById(id),
+    );
   }
 
   @override
@@ -72,50 +72,43 @@ class CatalogRepositoryImpl extends BaseRepository
       getPublicationsAvailableToday({
     int limit = 10,
   }) async {
-    final result =
-        await _dataSource.getPublicationsAvailableToday(limit: limit);
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<PublicationListingModel, PublicationListing>(
+      function: () => _dataSource.getPublicationsAvailableToday(
+        AvailableTodayQueryParams(limit: limit),
+      ),
     );
   }
 
   @override
   Future<Either<DomainException, List<PublicationListing>>>
       getRecommendedPublications(String gameId) async {
-    final result = await _dataSource.getRecommendedPublications(gameId);
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<PublicationListingModel, PublicationListing>(
+      function: () => _dataSource.getRecommendedPublications(
+        RecommendedPublicationsQueryParams(gameId: gameId),
+      ),
     );
   }
 
   @override
   Future<Either<DomainException, List<PublicationListing>>>
       getMyPublications() async {
-    final result = await _dataSource.getMyPublications();
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<PublicationListingModel, PublicationListing>(
+      function: _dataSource.getMyPublications,
     );
   }
 
   @override
   Future<Either<DomainException, List<GameCategory>>> getCategories() async {
-    final result = await _dataSource.getCategories();
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<GameCategoryModel, GameCategory>(
+      function: _dataSource.getCategories,
     );
   }
 
   @override
   Future<Either<DomainException, List<FilterShortcut>>>
       getFilterShortcuts() async {
-    final result = await _dataSource.getFilterShortcuts();
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<FilterShortcutModel, FilterShortcut>(
+      function: _dataSource.getFilterShortcuts,
     );
   }
 
@@ -124,28 +117,24 @@ class CatalogRepositoryImpl extends BaseRepository
       getPublicationListings({
     String? query,
   }) async {
-    final result = await _dataSource.getPublicationListings(query: query);
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<PublicationListingModel, PublicationListing>(
+      function: () => _dataSource.getPublicationListings(
+        PublicationListingsQueryParams(query: query),
+      ),
     );
   }
 
   @override
   Future<Either<DomainException, Game>> getGameById(String id) async {
-    final result = await _dataSource.getGameById(id);
-    return toEither(result.when(
-      success: (dto) => DataState.success(dto.toDomainModel()),
-      failed: DataState.failed,
-    ),);
+    return executeDataSource<GameModel, Game>(
+      function: () => _dataSource.getGameById(id),
+    );
   }
 
   @override
   Future<Either<DomainException, List<Game>>> getGames() async {
-    final result = await _dataSource.getGames();
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<GameModel, Game>(
+      function: _dataSource.getGames,
     );
   }
 
@@ -200,20 +189,20 @@ class CatalogRepositoryImpl extends BaseRepository
       SortOption.duration => 'duration',
     };
 
-    final result = await _dataSource.searchGames(
-      query: query,
-      players: playersParam,
-      duration: durationParam,
-      difficulty: difficultyParam,
-      category: categoryParam,
-      startDate: startDate,
-      endDate: endDate,
-      sortBy: sortByParam,
-    );
-
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toGameEntity()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceListMapped<PublicationListItemModel, Game>(
+      function: () => _dataSource.searchGames(
+        SearchGamesQueryParams(
+          query: query,
+          players: playersParam,
+          duration: durationParam,
+          difficulty: difficultyParam,
+          category: categoryParam,
+          startDate: startDate,
+          endDate: endDate,
+          sortBy: sortByParam,
+        ),
+      ),
+      mapper: (dto) => dto.toGameEntity(),
     );
   }
 
@@ -221,10 +210,8 @@ class CatalogRepositoryImpl extends BaseRepository
   Future<Either<DomainException, List<Game>>> getRecommendedGames(
     String gameId,
   ) async {
-    final result = await _dataSource.getRecommendedGames(gameId);
-    return result.when(
-      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
-      failed: (error) => Left(error.toDomainException()),
+    return executeDataSourceList<GameModel, Game>(
+      function: () => _dataSource.getRecommendedGames(gameId),
     );
   }
 }

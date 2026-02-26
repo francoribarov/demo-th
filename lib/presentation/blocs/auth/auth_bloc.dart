@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:mobile_table_hopping/core/errors/exceptions.dart';
+import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
@@ -411,7 +411,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   String _friendlyMessage(Object error, {required String fallback}) {
-    if (error is AppException) {
+    if (error is DomainException) {
       return error.message;
     }
     final cleaned = _stripExceptionPrefix(error.toString());
@@ -425,12 +425,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     var cleaned = message;
     const prefixes = [
       'Exception: ',
-      'AppException: ',
-      'ServerException: ',
-      'NetworkException: ',
-      'CacheException: ',
-      'ValidationException: ',
-      'NotFoundException: ',
+      'DomainException: ',
     ];
     for (final prefix in prefixes) {
       if (cleaned.startsWith(prefix)) {

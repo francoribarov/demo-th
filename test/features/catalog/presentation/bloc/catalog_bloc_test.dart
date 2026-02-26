@@ -4,15 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_categories_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_filter_shortcuts_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publications_use_case.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
 import 'package:mobile_table_hopping/presentation/blocs/catalog/catalog_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetCategories extends Mock implements GetCategoriesUseCase {}
-class MockGetFilterShortcuts extends Mock implements GetFilterShortcutsUseCase {}
+
+class MockGetFilterShortcuts extends Mock
+    implements GetFilterShortcutsUseCase {}
 
 class MockGetPublications extends Mock implements GetPublicationsUseCase {}
 

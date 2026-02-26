@@ -1,11 +1,9 @@
-// ignore_for_file: annotate_overrides, invalid_annotation_target // Required for Freezed/json annotations.
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
+import 'package:mobile_table_hopping/data/dto/publish/delivery_method_model.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
-import 'package:mobile_table_hopping/features/publish/data/models/delivery_method_model.dart';
 
 part 'auth_models.freezed.dart';
 part 'auth_models.g.dart';
@@ -26,6 +24,7 @@ abstract class LoginRequest with _$LoginRequest {
       _$LoginRequestFromJson(json);
 
   /// Serializes the request payload.
+  @override
   Map<String, dynamic> toJson() => {'email': email, 'password': password};
 }
 
@@ -52,6 +51,7 @@ abstract class RegisterRequest with _$RegisterRequest {
       _$RegisterRequestFromJson(json);
 
   /// Serializes the request payload.
+  @override
   Map<String, dynamic> toJson() => {
         'email': email,
         'password': password,

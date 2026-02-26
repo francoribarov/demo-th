@@ -6,12 +6,14 @@ import 'package:mobile_table_hopping/data/mapper/my_publications/publish_deliver
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
+import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart'
+    as publish;
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/get_publication_detail_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publication_use_case.dart';
-import 'package:mobile_table_hopping/features/publish/domain/usecases/get_delivery_methods.dart';
+import 'package:mobile_table_hopping/domain/usecase/publish/get_delivery_methods_use_case.dart';
 
 part 'edit_publication_bloc.freezed.dart';
 part 'edit_publication_event.dart';
@@ -28,7 +30,7 @@ class EditPublicationBloc
     required UpdatePublicationUseCase updatePublication,
     required DeletePublicationUseCase deletePublication,
     required GetGamesUseCase getGames,
-    required GetDeliveryMethods getDeliveryMethods,
+    required GetDeliveryMethodsUseCase getDeliveryMethods,
     required ImageUploadService imageUploadService,
   })  : _getPublicationDetail = getPublicationDetail,
         _updatePublication = updatePublication,
@@ -58,7 +60,7 @@ class EditPublicationBloc
   final UpdatePublicationUseCase _updatePublication;
   final DeletePublicationUseCase _deletePublication;
   final GetGamesUseCase _getGames;
-  final GetDeliveryMethods _getDeliveryMethods;
+  final GetDeliveryMethodsUseCase _getDeliveryMethods;
   final ImageUploadService _imageUploadService;
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -99,8 +101,13 @@ class EditPublicationBloc
 
     try {
       final gamesResult = await _getGames();
-      final deliveryMethods = await _getDeliveryMethods();
       final games = gamesResult.fold<List<Game>>(
+        (_) => const [],
+        (value) => value,
+      );
+      final deliveryMethodsResult = await _getDeliveryMethods();
+      final deliveryMethods =
+          deliveryMethodsResult.fold<List<publish.DeliveryMethod>>(
         (_) => const [],
         (value) => value,
       );
@@ -109,7 +116,8 @@ class EditPublicationBloc
           .toList();
 
       // Load publication details using Either pattern
-      final publicationResult = await _getPublicationDetail(event.publicationId);
+      final publicationResult =
+          await _getPublicationDetail(event.publicationId);
 
       publicationResult.fold(
         // Error case
@@ -233,8 +241,7 @@ class EditPublicationBloc
       condition: state.condition,
       price: state.price,
       images: state.images,
-      deliveryMethodIds:
-          state.deliveryMethods.map((m) => m.id ?? '').toList(),
+      deliveryMethodIds: state.deliveryMethods.map((m) => m.id ?? '').toList(),
     );
 
     final result = await _updatePublication(params);

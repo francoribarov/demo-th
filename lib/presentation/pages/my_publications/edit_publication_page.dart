@@ -5,13 +5,13 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/widgets/step_indicator.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/steps/edit_data_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/steps/edit_photos_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/steps/edit_price_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/steps/edit_review_step.dart';
 import 'package:mobile_table_hopping/presentation/widgets/my_publications/edit_success_view.dart';
+import 'package:mobile_table_hopping/presentation/widgets/publish/step_indicator.dart';
 
 /// Page for editing an existing publication.
 class EditPublicationPage extends StatelessWidget {

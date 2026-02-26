@@ -1,6 +1,3 @@
-// DTOs follow Freezed conventions; public docs are omitted for brevity.
-// ignore_for_file: invalid_annotation_target
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';

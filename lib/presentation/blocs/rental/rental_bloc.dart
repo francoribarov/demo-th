@@ -57,8 +57,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       (error) => emit(
         state.copyWith(
           isLoading: false,
-          errorMessage:
-              '${AppStrings.errorLoadingGame}: ${error.message}',
+          errorMessage: '${AppStrings.errorLoadingGame}: ${error.message}',
         ),
       ),
       (publication) => emit(

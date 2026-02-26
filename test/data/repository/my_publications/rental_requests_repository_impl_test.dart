@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/data/datasource/my_publications/rental_requests_data_source.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_model.dart';
 import 'package:mobile_table_hopping/data/repository/my_publications/rental_requests_repository_impl.dart';
@@ -43,7 +43,7 @@ void main() {
   test('getRentalRequests returns Right on success', () async {
     when(
       () => dataSource.getRentalRequests(),
-    ).thenAnswer((_) async => const DataState.success([tModel]));
+    ).thenAnswer((_) async => const ApiResult.success(data: [tModel]));
 
     final result = await repository.getRentalRequests();
 
@@ -60,7 +60,7 @@ void main() {
   test('getRentalRequests returns Left on failure', () async {
     when(
       () => dataSource.getRentalRequests(),
-    ).thenAnswer((_) async => DataState.failed(dataException));
+    ).thenAnswer((_) async => ApiResult.failure(dataException: dataException));
 
     final result = await repository.getRentalRequests();
 
