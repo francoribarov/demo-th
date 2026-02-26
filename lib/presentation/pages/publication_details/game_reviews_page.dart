@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_table_hopping/core/routing/navigation.dart';
+import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/molecules/review_widgets.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_reviews_bloc.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/selectable_chip.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
 
 /// Game reviews page matching GameReviews.tsx
 class GameReviewsPage extends StatefulWidget {
@@ -36,11 +34,14 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
 
         final game = state.game;
         if (game == null) {
-          final publicationPath = publicationDetailsPath(widget.gameId);
           return Scaffold(
-            appBar: PageAppBar(
-              title: const Text('Reseñas'),
-              onLeadingPressed: () => context.popOrGo(publicationPath),
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.popOrGo(
+                  AppRoutes.publicationDetailsPath(widget.gameId),
+                ),
+              ),
             ),
             body: Center(
               child: Text(state.errorMessage ?? 'Juego no encontrado'),
@@ -49,7 +50,6 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
         }
 
         final reviews = state.filteredReviews;
-        final publicationPath = publicationDetailsPath(widget.gameId);
 
         // Calculate rating breakdown
         final ratingCounts = <int, int>{};
@@ -59,9 +59,14 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
         }
 
         return Scaffold(
-          appBar: PageAppBar(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.popOrGo(
+                AppRoutes.publicationDetailsPath(widget.gameId),
+              ),
+            ),
             title: Text('Reseñas de ${game.title}'),
-            onLeadingPressed: () => context.popOrGo(publicationPath),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -139,26 +144,20 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: SelectableChip(
-                          label: 'Todas',
-                          isSelected: state.filterRating == null,
-                          onTap: () => context.read<GameReviewsBloc>().add(
-                            const GameReviewsEvent.filterRatingChanged(null),
-                          ),
+                      _FilterChip(
+                        label: 'Todas',
+                        isSelected: state.filterRating == null,
+                        onTap: () => context.read<GameReviewsBloc>().add(
+                          const GameReviewsEvent.filterRatingChanged(null),
                         ),
                       ),
                       ...List.generate(5, (i) {
                         final stars = 5 - i;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: SelectableChip(
-                            label: '$stars ⭐',
-                            isSelected: state.filterRating == stars,
-                            onTap: () => context.read<GameReviewsBloc>().add(
-                              GameReviewsEvent.filterRatingChanged(stars),
-                            ),
+                        return _FilterChip(
+                          label: '$stars ⭐',
+                          isSelected: state.filterRating == stars,
+                          onTap: () => context.read<GameReviewsBloc>().add(
+                            GameReviewsEvent.filterRatingChanged(stars),
                           ),
                         );
                       }),
@@ -205,6 +204,48 @@ class _GameReviewsPageState extends State<GameReviewsPage> {
           ),
         );
       },
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  const _FilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.gameCream : AppColors.card,
+            borderRadius: BorderRadius.circular(AppTheme.radius2xl),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.gameRust
+                  : AppColors.gameBrown.withOpacityValue(0.2),
+              width: isSelected ? 2 : 1,
+            ),
+          ),
+          child: Text(
+            label,
+            style: AppTypography.labelMedium.copyWith(
+              color: isSelected
+                  ? AppColors.gameBrown
+                  : AppColors.gameBrown.withOpacityValue(0.7),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:mobile_table_hopping/core/routing/navigation.dart';
+import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/molecules/review_widgets.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
 
 /// User profile page matching UserProfile.tsx
 class UserProfilePage extends StatelessWidget {
@@ -32,7 +31,7 @@ class UserProfilePage extends StatelessWidget {
         final game = state.game;
         if (game == null) {
           return Scaffold(
-            appBar: const PageAppBar(title: Text('Propietario')),
+            appBar: AppBar(title: const Text('Propietario')),
             body: Center(
               child: Text(state.errorMessage ?? 'No se encontró el juego'),
             ),
@@ -77,9 +76,14 @@ class UserProfilePage extends StatelessWidget {
         ];
 
         return Scaffold(
-          appBar: PageAppBar(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.popOrGo(
+                AppRoutes.publicationDetailsPath(gameId),
+              ),
+            ),
             title: const Text('Perfil del dueño'),
-            onLeadingPressed: () => context.popOrGo('/publications/$gameId'),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
