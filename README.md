@@ -31,6 +31,22 @@ make analyze
 make test
 ```
 
+## Lefthook (Azure local gate)
+```sh
+lefthook install
+lefthook run pre-push
+```
+
+The `pre-push` hook mirrors the Azure pipeline checks:
+- `make format`
+- `make analyze`
+- `make test`
+
+And `pre-commit` runs fast staged-file checks:
+- `dart fix --apply` on staged `.dart` files (excluding generated files)
+- `dart format --line-length=120` on staged `.dart` files
+- `flutter analyze` for staged `.dart` files
+
 ## API configuration
 The app talks to the backend at port `8000`.
 
