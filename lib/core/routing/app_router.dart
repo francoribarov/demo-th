@@ -234,7 +234,12 @@ class AppRouter {
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return AppScaffold(navigationShell: navigationShell);
+          return AppScaffold(
+            navigationShell: navigationShell,
+            onItemTapped: (index) {
+              navigationShell.goBranch(index);
+            },
+          );
         },
         branches: [
           StatefulShellBranch(
