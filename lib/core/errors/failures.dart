@@ -1,7 +1,7 @@
-import 'package:meta/meta.dart';
+// Failure classes have only final fields; skip @immutable to avoid meta dep.
+// ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 
 /// Base class for all failures in the application.
-@immutable
 abstract class Failure {
   /// Creates a [Failure] with a message and optional error code.
   const Failure({required this.message, this.code});
@@ -26,7 +26,6 @@ abstract class Failure {
 }
 
 /// Failure produced by server-related errors.
-@immutable
 class ServerFailure extends Failure {
   /// Creates a [ServerFailure] with optional HTTP status code.
   const ServerFailure({required super.message, super.code, this.statusCode});
@@ -62,7 +61,6 @@ class NetworkFailure extends Failure {
 }
 
 /// Failure produced by validation errors.
-@immutable
 class ValidationFailure extends Failure {
   /// Creates a [ValidationFailure] with optional field errors.
   const ValidationFailure({

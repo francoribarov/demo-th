@@ -31,9 +31,8 @@ jobs:
   # 1. Instalar Flutter
   - task: FlutterInstall@0
     inputs:
-      mode: 'version'
-      channel: 'stable'
-      version: '$(flutter_version)'
+      mode: 'custom'
+      customUrl: 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_$(flutter_version)-stable.tar.xz'
 
   # 2. Instalar Dependencias
   - script: flutter pub get

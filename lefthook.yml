@@ -1,0 +1,71 @@
+pre-push:
+  commands:
+    azure-gate:
+      run: |
+        set -euo pipefail
+        make format
+        make analyze
+        make test
+
+pre-commit:
+  commands:
+    flutter_lint_code:
+      glob: "*.dart"
+      exclude: "*.{g,freezed}.dart"
+      run: |
+        set -euo pipefail
+        if command -v fvm >/dev/null 2>&1 && [ -f ".fvmrc" ]; then
+          DART="fvm dart"
+        else
+          DART="dart"
+        fi
+        for file in {staged_files}; do
+          if [ -f "$file" ]; then
+            $DART fix --apply "$file"
+          fi
+        done
+      stage_fixed: true
+
+    format:
+      glob: "*.dart"
+      exclude: "*.{g,freezed}.dart"
+      run: |
+        set -euo pipefail
+        if command -v fvm >/dev/null 2>&1 && [ -f ".fvmrc" ]; then
+          DART="fvm dart"
+        else
+          DART="dart"
+        fi
+        FILES=""
+        for file in {staged_files}; do
+          if [ -f "$file" ]; then
+            FILES="$FILES $file"
+          fi
+        done
+        if [ -n "$FILES" ]; then
+          $DART format --line-length=120 $FILES
+        fi
+      stage_fixed: true
+
+    analyze:
+      glob: "*.dart"
+      exclude: "*.{g,freezed}.dart"
+      run: |
+        set -euo pipefail
+        if command -v fvm >/dev/null 2>&1 && [ -f ".fvmrc" ]; then
+          FLUTTER="fvm flutter"
+        else
+          FLUTTER="flutter"
+        fi
+        FILES=""
+        for file in {staged_files}; do
+          if [ -f "$file" ]; then
+            FILES="$FILES $file"
+          fi
+        done
+        if [ -n "$FILES" ]; then
+          echo "Analyzing staged files:$FILES"
+          $FLUTTER analyze $FILES --no-fatal-warnings --no-fatal-infos
+        else
+          echo "No staged Dart files to analyze."
+        fi
