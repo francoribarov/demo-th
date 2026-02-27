@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
-import 'package:mobile_table_hopping/presentation/pages/publish/steps/widgets/delivery_section.dart';
-import 'package:mobile_table_hopping/presentation/pages/publish/steps/widgets/price_section.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/price_section.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/publish/delivery_section.dart';
 import 'package:mobile_table_hopping/presentation/widgets/templates/publish/delivery_method_sheet.dart';
 
 /// Step in the publish flow for setting price and delivery methods.
@@ -47,14 +48,14 @@ class PriceStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Precio y entrega', style: AppTypography.headlineMedium),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppTheme.spacingSm),
         Text(
           'Definí el precio de alquiler y cómo entregarás el juego',
           style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
+            color: AppColors.textTertiary,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppTheme.spacing2xl),
 
         // Price
         PriceSection(
@@ -63,7 +64,7 @@ class PriceStep extends StatelessWidget {
           onChanged: onPriceChanged,
         ),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: AppTheme.spacing3xl),
 
         // Delivery Methods
         DeliverySection(
@@ -73,7 +74,7 @@ class PriceStep extends StatelessWidget {
           onToggle: onToggleDeliveryMethod,
         ),
 
-        const SizedBox(height: 100),
+        const SizedBox(height: AppTheme.spacingScrollBottom),
       ],
     );
   }

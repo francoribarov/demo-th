@@ -62,13 +62,7 @@ class EditReviewStep extends StatelessWidget {
         // Preview card
         SurfaceCard(
           borderColor: AppColors.border,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacityValue(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: AppTheme.shadowMd,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -115,8 +109,7 @@ class EditReviewStep extends StatelessWidget {
                     LabelValueRow(
                       leadingIcon: Icons.photo_library_outlined,
                       label: 'Fotos',
-                      value:
-                          '${images.length} imagen${images.length != 1 ? 'es' : ''}',
+                      value: '${images.length} imagen${images.length != 1 ? 'es' : ''}',
                     ),
 
                     if (description.isNotEmpty) ...[
@@ -185,15 +178,13 @@ class EditReviewStep extends StatelessWidget {
       return Image.network(
         heroUrl,
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) =>
-            const MediaPlaceholder(iconSize: 48),
+        errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(iconSize: 48),
       );
     } else {
       return Image.file(
         File(heroUrl),
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) =>
-            const MediaPlaceholder(iconSize: 48),
+        errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(iconSize: 48),
       );
     }
   }

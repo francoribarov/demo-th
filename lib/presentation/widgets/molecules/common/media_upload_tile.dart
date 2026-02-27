@@ -45,13 +45,13 @@ class MediaUploadTile extends StatelessWidget {
                   Icon(
                     icon,
                     size: 48,
-                    color: AppColors.gameBrown.withOpacityValue(0.5),
+                    color: AppColors.textPlaceholder,
                   ),
                   const SizedBox(height: 12),
                   Text(
                     title,
                     style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.gameBrown.withOpacityValue(0.7),
+                      color: AppColors.textTertiary,
                     ),
                   ),
                   if (subtitle != null) ...[
@@ -59,7 +59,7 @@ class MediaUploadTile extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.5),
+                        color: AppColors.textPlaceholder,
                       ),
                     ),
                   ],

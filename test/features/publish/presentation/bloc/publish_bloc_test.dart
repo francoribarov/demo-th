@@ -48,8 +48,9 @@ void main() {
     );
 
     // Stub GetGamesUseCase call since it might be called
-    when(() => mockGetGames())
-        .thenAnswer((_) async => const Right<DomainException, List<Game>>([]));
+    when(
+      () => mockGetGames(),
+    ).thenAnswer((_) async => const Right<DomainException, List<Game>>([]));
 
     publishBloc = PublishBloc(
       createPublication: mockCreatePublication,
@@ -74,8 +75,7 @@ void main() {
     blocTest<PublishBloc, PublishState>(
       'updates gameId and isStepValid status',
       build: () => publishBloc,
-      act: (bloc) =>
-          bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
+      act: (bloc) => bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
       expect: () => [
         const PublishState(gameId: 'game-uuid-123'),
       ],

@@ -35,7 +35,7 @@ class ReviewRatingBar extends StatelessWidget {
               height: 8,
               decoration: BoxDecoration(
                 color: AppColors.gameBrown.withOpacityValue(0.1),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(AppTheme.radiusXs),
               ),
               child: FractionallySizedBox(
                 alignment: Alignment.centerLeft,
@@ -43,7 +43,7 @@ class ReviewRatingBar extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.gameGold,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusXs),
                   ),
                 ),
               ),
@@ -55,7 +55,7 @@ class ReviewRatingBar extends StatelessWidget {
             child: Text(
               '$count',
               style: AppTypography.labelSmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.6),
+                color: AppColors.textMuted,
               ),
             ),
           ),
@@ -97,13 +97,7 @@ class ReviewCard extends StatelessWidget {
         color: AppColors.card,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacityValue(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: AppTheme.shadowMd,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +121,7 @@ class ReviewCard extends StatelessWidget {
                     Text(
                       date,
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.6),
+                        color: AppColors.textMuted,
                       ),
                     ),
                   ],

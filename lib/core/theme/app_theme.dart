@@ -29,6 +29,9 @@ class AppTheme {
   /// Border radius value for 3x extra-large rounding.
   static const double radius3xl = 32;
 
+  /// Border radius value for full pill/circle shapes.
+  static const double radiusFull = 999;
+
   /// Spacing value for extra-small gaps.
   static const double spacingXs = 4;
 
@@ -52,6 +55,45 @@ class AppTheme {
 
   /// Spacing value for 4x extra-large gaps.
   static const double spacing4xl = 40;
+
+  /// Extra bottom padding for scrollable step content (e.g. publish wizard).
+  static const double spacingScrollBottom = 100;
+
+  /// Small shadow — for badges, chips, and floating labels.
+  static List<BoxShadow> get shadowSm => [
+    BoxShadow(
+      color: AppColors.shadow.withOpacityValue(0.05),
+      blurRadius: 4,
+      offset: const Offset(0, 2),
+    ),
+  ];
+
+  /// Medium shadow — for cards and elevated surfaces.
+  static List<BoxShadow> get shadowMd => [
+    BoxShadow(
+      color: AppColors.shadow.withOpacityValue(0.05),
+      blurRadius: 8,
+      offset: const Offset(0, 4),
+    ),
+  ];
+
+  /// Large shadow — for modals, drawers, and prominent cards.
+  static List<BoxShadow> get shadowLg => [
+    BoxShadow(
+      color: AppColors.shadow.withOpacityValue(0.06),
+      blurRadius: 12,
+      offset: const Offset(0, 6),
+    ),
+  ];
+
+  /// Upward shadow — for bottom bars and bottom navigation.
+  static List<BoxShadow> get shadowUp => [
+    BoxShadow(
+      color: AppColors.shadow.withOpacityValue(0.06),
+      blurRadius: 10,
+      offset: const Offset(0, -4),
+    ),
+  ];
 
   /// Light theme configuration for the app.
   static ThemeData get lightTheme {
@@ -77,19 +119,19 @@ class AppTheme {
 
       // Date Picker Theme
       datePickerTheme: DatePickerThemeData(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.card,
         headerBackgroundColor: AppColors.gameRust,
-        headerForegroundColor: Colors.white,
+        headerForegroundColor: AppColors.primaryForeground,
         rangeSelectionBackgroundColor: AppColors.gameCream,
         rangeSelectionOverlayColor: WidgetStateProperty.all(
           AppColors.gameRust.withOpacityValue(0.1),
         ),
         dayForegroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return Colors.white;
+          if (states.contains(WidgetState.selected)) return AppColors.primaryForeground;
           return AppColors.gameBrown;
         }),
         todayForegroundColor: WidgetStateProperty.all(AppColors.gameRust),
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: const Color(0x00000000),
       ),
 
       // Scaffold
@@ -122,7 +164,7 @@ class AppTheme {
         color: AppColors.card,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radius3xl),
+          borderRadius: BorderRadius.circular(radiusXl),
           side: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.1)),
         ),
         margin: EdgeInsets.zero,
@@ -132,13 +174,15 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.gameRust,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.primaryForeground,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radius2xl),
           ),
-          textStyle: AppTypography.labelLarge.copyWith(color: Colors.white),
+          textStyle: AppTypography.labelLarge.copyWith(
+            color: AppColors.primaryForeground,
+          ),
         ),
       ),
 
@@ -195,7 +239,7 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.destructive),
         ),
         hintStyle: AppTypography.bodyMedium.copyWith(
-          color: AppColors.gameBrown.withOpacityValue(0.5),
+          color: AppColors.textPlaceholder,
         ),
         labelStyle: AppTypography.bodyMedium,
       ),
@@ -215,7 +259,7 @@ class AppTheme {
 
       // Tab bar theme
       tabBarTheme: TabBarThemeData(
-        labelColor: Colors.white,
+        labelColor: AppColors.primaryForeground,
         unselectedLabelColor: AppColors.gameBrown,
         labelStyle: AppTypography.labelLarge,
         unselectedLabelStyle: AppTypography.labelLarge,
@@ -292,7 +336,7 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.gameBrown,
         contentTextStyle: AppTypography.bodyMedium.copyWith(
-          color: Colors.white,
+          color: AppColors.primaryForeground,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusMd),

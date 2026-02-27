@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/button_loading_indicator.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_secondary_button.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/step_indicator.dart';
@@ -26,9 +28,9 @@ class WizardScaffold extends StatelessWidget {
     this.onSecondaryPressed,
     this.isSubmitting = false,
     this.submittingChild,
-    this.contentPadding = const EdgeInsets.all(16),
+    EdgeInsetsGeometry? contentPadding,
     this.extendBottomSafeArea = true,
-  });
+  }) : _contentPadding = contentPadding ?? const EdgeInsets.all(AppTheme.spacingLg);
 
   final String title;
   final PageAppBarLeadingType leadingType;
@@ -45,15 +47,12 @@ class WizardScaffold extends StatelessWidget {
   final VoidCallback? onSecondaryPressed;
   final bool isSubmitting;
   final Widget? submittingChild;
-  final EdgeInsetsGeometry contentPadding;
+  final EdgeInsetsGeometry _contentPadding;
   final bool extendBottomSafeArea;
 
   @override
   Widget build(BuildContext context) {
-    final hasSecondary =
-        secondaryLabel != null &&
-        secondaryLabel!.isNotEmpty &&
-        onSecondaryPressed != null;
+    final hasSecondary = secondaryLabel != null && secondaryLabel!.isNotEmpty && onSecondaryPressed != null;
 
     return Scaffold(
       appBar: PageAppBar(
@@ -67,7 +66,7 @@ class WizardScaffold extends StatelessWidget {
           StepIndicator(currentStep: currentStep, steps: steps),
           Expanded(
             child: SingleChildScrollView(
-              padding: contentPadding,
+              padding: _contentPadding,
               child: body,
             ),
           ),
@@ -75,10 +74,12 @@ class WizardScaffold extends StatelessWidget {
             InlineFeedbackText(
               message: inlineErrorMessage!,
               textAlign: inlineErrorTextAlign,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.spacingLg,
+              ),
             ),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppTheme.spacingLg),
             decoration: BoxDecoration(
               color: AppColors.card,
               border: Border(
@@ -101,19 +102,20 @@ class WizardScaffold extends StatelessWidget {
       children: [
         if (hasSecondary)
           Expanded(
-            child: OutlinedButton(
-              onPressed: isSubmitting ? null : onSecondaryPressed,
-              child: Text(secondaryLabel!),
+            child: AppSecondaryButton(
+              label: secondaryLabel!,
+              onPressed: onSecondaryPressed,
+              isLoading: isSubmitting,
             ),
           ),
-        if (hasSecondary) const SizedBox(width: 16),
+        if (hasSecondary) const SizedBox(width: AppTheme.spacingLg),
         Expanded(
           flex: hasSecondary ? 2 : 1,
-          child: ElevatedButton(
-            onPressed: isSubmitting ? null : onPrimaryPressed,
-            child: isSubmitting
-                ? (submittingChild ?? const ButtonLoadingIndicator())
-                : Text(primaryLabel),
+          child: AppPrimaryButton(
+            label: primaryLabel,
+            onPressed: onPrimaryPressed,
+            isLoading: isSubmitting,
+            loadingChild: submittingChild,
           ),
         ),
       ],

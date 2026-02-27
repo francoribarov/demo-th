@@ -44,9 +44,8 @@ This file documents the atomic taxonomy adopted for the presentation layer and c
 - `lib/presentation/widgets/atoms/common/app_bar_icon_action.dart`: `AppBarIconAction` = Atom
 - `lib/presentation/widgets/atoms/common/button_loading_indicator.dart`: `ButtonLoadingIndicator` = Atom
 - `lib/presentation/widgets/atoms/common/inline_feedback_text.dart`: `InlineFeedbackText` = Atom
-- `lib/presentation/widgets/atoms/common/selectable_chip.dart`: `SelectableChip` = Atom
+- `lib/presentation/widgets/atoms/common/selectable_chip.dart`: `SelectableChip` = Atom (includes suggestion variant)
 - `lib/presentation/widgets/atoms/common/media_placeholder.dart`: `MediaPlaceholder` = Atom
-- `lib/presentation/widgets/atoms/common/suggestion_chip.dart`: `SuggestionChip` = Atom
 - `lib/presentation/widgets/atoms/common/surface_card.dart`: `SurfaceCard` = Atom
 - `lib/presentation/widgets/molecules/auth/auth_switch_row.dart`: `AuthSwitchRow` = Molecule
 - `lib/presentation/widgets/molecules/common/date_picker_field.dart`: `DatePickerField` = Molecule

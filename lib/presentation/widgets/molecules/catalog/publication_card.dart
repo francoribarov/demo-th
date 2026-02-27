@@ -32,15 +32,9 @@ class PublicationCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radius3xl),
+          borderRadius: BorderRadius.circular(AppTheme.radiusXl),
           border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacityValue(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: AppTheme.shadowMd,
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -84,14 +78,9 @@ class PublicationCard extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacityValue(0.9),
+                        color: AppColors.card.withOpacityValue(0.9),
                         borderRadius: BorderRadius.circular(AppTheme.radius2xl),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacityValue(0.1),
-                            blurRadius: 4,
-                          ),
-                        ],
+                        boxShadow: AppTheme.shadowSm,
                       ),
                       child: Text(
                         publication.categoryName,
@@ -111,12 +100,12 @@ class PublicationCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.gameRust.withOpacityValue(0.9),
-                      borderRadius: BorderRadius.circular(100),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                     ),
                     child: Text(
                       publication.conditionLabel,
                       style: AppTypography.labelSmall.copyWith(
-                        color: Colors.white,
+                        color: AppColors.primaryForeground,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -153,7 +142,7 @@ class PublicationCard extends StatelessWidget {
                       Text(
                         publication.game.players,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.8),
+                          color: AppColors.textSecondary,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -167,7 +156,7 @@ class PublicationCard extends StatelessWidget {
                       Text(
                         '${publication.game.duration} min',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.8),
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -186,7 +175,7 @@ class PublicationCard extends StatelessWidget {
                       Text(
                         '/día',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.6),
+                          color: AppColors.textMuted,
                         ),
                       ),
                     ],
@@ -225,13 +214,7 @@ class PublicationCardHorizontal extends StatelessWidget {
           color: AppColors.card,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacityValue(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          boxShadow: AppTheme.shadowSm,
         ),
         clipBehavior: Clip.antiAlias,
         child: Row(
@@ -248,7 +231,10 @@ class PublicationCardHorizontal extends StatelessWidget {
                 ),
                 errorWidget: (context, url, error) => const ColoredBox(
                   color: AppColors.gameCream,
-                  child: Icon(Icons.image_not_supported_outlined),
+                  child: Icon(
+                    Icons.image_not_supported_outlined,
+                    color: AppColors.gameBrown,
+                  ),
                 ),
               ),
             ),
@@ -270,7 +256,7 @@ class PublicationCardHorizontal extends StatelessWidget {
                     Text(
                       '${publication.game.players} • ${publication.game.duration} min',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.7),
+                        color: AppColors.textTertiary,
                       ),
                     ),
                     const SizedBox(height: 8),

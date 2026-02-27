@@ -51,7 +51,7 @@ class DatePickerField extends StatelessWidget {
                 Text(
                   label,
                   style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.6),
+                    color: AppColors.textMuted,
                   ),
                 ),
                 if (canClear)
@@ -78,16 +78,14 @@ class DatePickerField extends StatelessWidget {
                   child: Text(
                     value ?? 'Seleccionar',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: value != null
-                          ? AppColors.gameBrown
-                          : AppColors.gameBrown.withOpacityValue(0.5),
+                      color: value != null ? AppColors.gameBrown : AppColors.textPlaceholder,
                     ),
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.calendar_today,
                   size: 16,
-                  color: AppColors.gameBrown.withOpacityValue(0.5),
+                  color: AppColors.textPlaceholder,
                 ),
               ],
             ),

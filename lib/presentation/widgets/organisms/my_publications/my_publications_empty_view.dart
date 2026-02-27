@@ -17,7 +17,7 @@ class MyPublicationsEmptyView extends StatelessWidget {
     return StateFeedbackView(
       variant: StateFeedbackVariant.empty,
       leading: Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppTheme.spacing2xl),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -43,22 +43,9 @@ class MyPublicationsEmptyView extends StatelessWidget {
         ),
       ),
       title: 'Aún no tienes publicaciones',
-      message:
-          '¡Publica tu primer juego de mesa y comienza a ganar dinero compartiéndolo con otros jugadores!',
+      message: '¡Publica tu primer juego de mesa y comienza a ganar dinero compartiéndolo con otros jugadores!',
       primaryActionLabel: 'Publicar mi primer juego',
       onPrimaryAction: onPublish,
-      primaryActionStyle: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.gameRust,
-        foregroundColor: AppColors.primaryForeground,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 28,
-          vertical: 16,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-        ),
-        elevation: 4,
-      ),
       titleStyle: AppTypography.titleLarge.copyWith(
         color: AppColors.foreground,
       ),

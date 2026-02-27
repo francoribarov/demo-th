@@ -60,9 +60,7 @@ class _GameSelectorState extends State<GameSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedGame = widget.allGames
-        .where((g) => g.id == widget.selectedGameId)
-        .firstOrNull;
+    final selectedGame = widget.allGames.where((g) => g.id == widget.selectedGameId).firstOrNull;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +75,7 @@ class _GameSelectorState extends State<GameSelector> {
               _focusNode.requestFocus();
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.spacingLg),
         ],
         if (selectedGame == null || _showResults)
           Column(
@@ -111,17 +109,11 @@ class _GameSelectorState extends State<GameSelector> {
               if (_showResults)
                 Container(
                   constraints: const BoxConstraints(maxHeight: 300),
-                  margin: const EdgeInsets.only(top: 8),
+                  margin: const EdgeInsets.only(top: AppTheme.spacingSm),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.card,
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacityValue(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    boxShadow: AppTheme.shadowMd,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -129,26 +121,29 @@ class _GameSelectorState extends State<GameSelector> {
                     children: [
                       if (widget.isLoadingGames)
                         const Padding(
-                          padding: EdgeInsets.all(16),
+                          padding: EdgeInsets.all(AppTheme.spacingLg),
                           child: Center(child: CircularProgressIndicator()),
                         )
                       else if (widget.filteredGames.isEmpty)
                         Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(AppTheme.spacingLg),
                           child: Text(
                             'No se encontraron juegos',
                             style: AppTypography.bodyMedium.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.7),
+                              color: AppColors.textTertiary,
                             ),
                           ),
                         )
                       else ...[
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                          padding: const EdgeInsets.fromLTRB(
+                            AppTheme.spacingLg,
+                            AppTheme.spacingMd,
+                            AppTheme.spacingLg,
+                            AppTheme.spacingXs,
+                          ),
                           child: Text(
-                            _searchController.text.isEmpty
-                                ? 'Sugerencias'
-                                : 'Resultados',
+                            _searchController.text.isEmpty ? 'Sugerencias' : 'Resultados',
                             style: AppTypography.labelSmall.copyWith(
                               color: AppColors.gameRust,
                               fontWeight: FontWeight.bold,
@@ -159,26 +154,23 @@ class _GameSelectorState extends State<GameSelector> {
                           child: ListView.separated(
                             shrinkWrap: true,
                             itemCount: widget.filteredGames.length,
-                            separatorBuilder: (context, index) =>
-                                const Divider(height: 1),
+                            separatorBuilder: (context, index) => const Divider(height: 1),
                             itemBuilder: (context, index) {
                               final game = widget.filteredGames[index];
                               return ListTile(
                                 leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(
+                                    AppTheme.radiusXs,
+                                  ),
                                   child: CachedNetworkImage(
-                                    imageUrl: game.images.isNotEmpty
-                                        ? game.images.first
-                                        : '',
+                                    imageUrl: game.images.isNotEmpty ? game.images.first : '',
                                     width: 40,
                                     height: 40,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) =>
-                                        const ColoredBox(
-                                          color: AppColors.gameCream,
-                                        ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.image_not_supported),
+                                    placeholder: (context, url) => const ColoredBox(
+                                      color: AppColors.gameCream,
+                                    ),
+                                    errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
                                   ),
                                 ),
                                 title: Text(
@@ -230,25 +222,23 @@ class _SelectedGameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SurfaceCard(
       variant: SurfaceCardVariant.subtle,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       borderColor: AppColors.gameRust.withOpacityValue(0.3),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             child: CachedNetworkImage(
               imageUrl: game.images.isNotEmpty ? game.images.first : '',
               width: 60,
               height: 60,
               fit: BoxFit.cover,
-              placeholder: (_, url) =>
-                  const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (_, url, error) =>
-                  const Icon(Icons.image_not_supported),
+              placeholder: (_, url) => const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (_, url, error) => const Icon(Icons.image_not_supported),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

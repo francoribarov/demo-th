@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 
 /// Shared app-bar icon action with optional circular background style.
+///
+/// For accessibility, pass [tooltip] or [semanticLabel] so screen readers
+/// can announce a meaningful label for icon-only buttons.
 class AppBarIconAction extends StatelessWidget {
   /// Creates an [AppBarIconAction].
   const AppBarIconAction({
@@ -14,7 +18,7 @@ class AppBarIconAction extends StatelessWidget {
     this.iconColor,
     this.backgroundColor,
     this.withCircularBackground = false,
-    this.padding = const EdgeInsets.all(8),
+    this.padding = const EdgeInsets.all(AppTheme.spacingSm),
   });
 
   final IconData icon;
@@ -37,8 +41,7 @@ class AppBarIconAction extends StatelessWidget {
         ? Container(
             padding: padding,
             decoration: BoxDecoration(
-              color:
-                  backgroundColor ?? Colors.white.withOpacityValue(0.9),
+              color: backgroundColor ?? AppColors.card.withOpacityValue(0.9),
               shape: BoxShape.circle,
             ),
             child: actionIcon,

@@ -37,7 +37,7 @@ class TimePickerField extends StatelessWidget {
             Text(
               label,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.7),
+                color: AppColors.textTertiary,
               ),
             ),
             const SizedBox(height: 4),

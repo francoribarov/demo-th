@@ -67,7 +67,11 @@ class SuccessStateView extends StatelessWidget {
                       color: AppColors.success,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, size: 48, color: Colors.white),
+                    child: Icon(
+                      icon,
+                      size: 48,
+                      color: AppColors.primaryForeground,
+                    ),
                   ),
                 ),
               ),
@@ -81,7 +85,7 @@ class SuccessStateView extends StatelessWidget {
               Text(
                 subtitle,
                 style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.gameBrown.withOpacityValue(0.7),
+                  color: AppColors.textTertiary,
                 ),
                 textAlign: TextAlign.center,
               ),

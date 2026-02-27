@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/numeric_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
@@ -24,8 +26,7 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
 
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _addressNameController = TextEditingController();
-  final TextEditingController _addressNumberController =
-      TextEditingController();
+  final TextEditingController _addressNumberController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
   @override
@@ -133,16 +134,16 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
                   child: TimePickerField(
                     label: 'Hasta',
                     value: _finishPickupTime,
-                    onChanged: (time) =>
-                        setState(() => _finishPickupTime = time),
+                    onChanged: (time) => setState(() => _finishPickupTime = time),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppTheme.spacing2xl),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: AppPrimaryButton(
+                label: 'Agregar',
                 onPressed: () {
                   widget.onAdd(
                     DeliveryMethod(
@@ -158,10 +159,9 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
                   );
                   Navigator.of(context).pop();
                 },
-                child: const Text('Agregar'),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppTheme.spacing2xl),
           ],
         ),
       ),

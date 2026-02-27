@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
-import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/steps/edit_data_step.dart';
@@ -67,9 +66,7 @@ class EditPublicationPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete_outline),
               color: AppColors.destructive,
-              onPressed: state.isDeleting
-                  ? null
-                  : () => _showDeleteConfirmation(context),
+              onPressed: state.isDeleting ? null : () => _showDeleteConfirmation(context),
             ),
           ],
           currentStep: state.currentStep,
@@ -82,14 +79,12 @@ class EditPublicationPage extends StatelessWidget {
                 condition: state.condition,
                 conditions: PublicationCondition.values,
                 selectedGame: state.selectedGame,
-                onDescriptionChanged: (v) =>
-                    context.read<EditPublicationBloc>().add(
-                      EditPublicationEvent.descriptionChanged(v),
-                    ),
-                onConditionChanged: (v) =>
-                    context.read<EditPublicationBloc>().add(
-                      EditPublicationEvent.conditionChanged(v),
-                    ),
+                onDescriptionChanged: (v) => context.read<EditPublicationBloc>().add(
+                  EditPublicationEvent.descriptionChanged(v),
+                ),
+                onConditionChanged: (v) => context.read<EditPublicationBloc>().add(
+                  EditPublicationEvent.conditionChanged(v),
+                ),
               ),
               EditPhotosStep(
                 images: state.images,
@@ -108,10 +103,9 @@ class EditPublicationPage extends StatelessWidget {
                 onPriceChanged: (v) => context.read<EditPublicationBloc>().add(
                   EditPublicationEvent.priceChanged(v),
                 ),
-                onDeliveryMethodsChanged: (v) =>
-                    context.read<EditPublicationBloc>().add(
-                      EditPublicationEvent.deliveryMethodsChanged(v),
-                    ),
+                onDeliveryMethodsChanged: (v) => context.read<EditPublicationBloc>().add(
+                  EditPublicationEvent.deliveryMethodsChanged(v),
+                ),
               ),
               EditReviewStep(
                 selectedGame: state.selectedGame,
@@ -122,13 +116,8 @@ class EditPublicationPage extends StatelessWidget {
               ),
             ],
           ),
-          inlineErrorMessage:
-              state.errorMessage != null && state.publication != null
-              ? state.errorMessage
-              : null,
-          primaryLabel: state.currentStep == 3
-              ? 'Guardar Cambios'
-              : 'Siguiente',
+          inlineErrorMessage: state.errorMessage != null && state.publication != null ? state.errorMessage : null,
+          primaryLabel: state.currentStep == 3 ? 'Guardar Cambios' : 'Siguiente',
           onPrimaryPressed: (!state.canProceed || state.isSubmitting)
               ? null
               : () {
@@ -179,8 +168,7 @@ class EditPublicationPage extends StatelessWidget {
     final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Eliminar publicación?',
-      message:
-          'Esta acción no se puede deshacer. ¿Estás seguro que quieres eliminar esta publicación?',
+      message: 'Esta acción no se puede deshacer. ¿Estás seguro que quieres eliminar esta publicación?',
       confirmLabel: 'Eliminar',
       cancelLabel: 'Cancelar',
       isDestructive: true,
@@ -228,17 +216,6 @@ class _ErrorView extends StatelessWidget {
         icon: Icons.error_outline,
         primaryActionLabel: 'Reintentar',
         onPrimaryAction: onRetry,
-        primaryActionStyle: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.gameRust,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 12,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          ),
-        ),
       ),
     );
   }

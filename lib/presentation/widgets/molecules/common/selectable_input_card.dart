@@ -98,8 +98,7 @@ class SelectableInputCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveSelectedColor = selectedBorderColor ?? AppColors.gameRust;
-    final effectiveUnselectedColor =
-        unselectedBorderColor ?? AppColors.gameBrown.withOpacityValue(0.2);
+    final effectiveUnselectedColor = unselectedBorderColor ?? AppColors.gameBrown.withOpacityValue(0.2);
 
     final effectiveSelectedText = selectedTextColor ?? AppColors.gameRust;
     final effectiveUnselectedText = unselectedTextColor ?? AppColors.gameBrown;
@@ -107,8 +106,7 @@ class SelectableInputCard extends StatelessWidget {
     final effectiveSelectedIcon = selectedIconColor ?? AppColors.gameRust;
     final effectiveUnselectedIcon = unselectedIconColor ?? AppColors.gameBrown;
 
-    final effectiveBorderRadius =
-        borderRadius ?? BorderRadius.circular(AppTheme.radiusLg);
+    final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(AppTheme.radiusLg);
 
     final indicator = _buildIndicator(
       selectedColor: effectiveSelectedColor,
@@ -128,9 +126,7 @@ class SelectableInputCard extends StatelessWidget {
               : (unselectedBackgroundColor ?? AppColors.card),
           borderRadius: effectiveBorderRadius,
           border: Border.all(
-            color: isSelected
-                ? effectiveSelectedColor
-                : effectiveUnselectedColor,
+            color: isSelected ? effectiveSelectedColor : effectiveUnselectedColor,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -182,9 +178,7 @@ class SelectableInputCard extends StatelessWidget {
     if (layout == SelectableInputCardLayout.stacked) {
       return Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: centerStackedContent
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
+        crossAxisAlignment: centerStackedContent ? CrossAxisAlignment.center : CrossAxisAlignment.start,
         children: [
           if (indicatorPosition == SelectableInputIndicatorPosition.leading &&
               indicatorMode != SelectableInputIndicatorMode.none)
@@ -205,9 +199,7 @@ class SelectableInputCard extends StatelessWidget {
                   AppTypography.labelMedium.copyWith(
                     color: isSelected ? selectedTextColor : unselectedTextColor,
                   ),
-              textAlign: centerStackedContent
-                  ? TextAlign.center
-                  : TextAlign.start,
+              textAlign: centerStackedContent ? TextAlign.center : TextAlign.start,
             ),
           if (subtitleWidget != null) ...[
             const SizedBox(height: 4),
@@ -245,9 +237,7 @@ class SelectableInputCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ...?titleWidget == null ? null : [titleWidget],
-                ...?subtitleWidget == null
-                    ? null
-                    : [const SizedBox(height: 2), subtitleWidget],
+                ...?subtitleWidget == null ? null : [const SizedBox(height: 2), subtitleWidget],
               ],
             ),
           )
@@ -287,7 +277,11 @@ class SelectableInputCard extends StatelessWidget {
             ),
           ),
           child: isSelected
-              ? const Icon(Icons.check, size: 16, color: Colors.white)
+              ? const Icon(
+                  Icons.check,
+                  size: 16,
+                  color: AppColors.primaryForeground,
+                )
               : null,
         );
       case SelectableInputIndicatorMode.checkbox:
@@ -304,7 +298,11 @@ class SelectableInputCard extends StatelessWidget {
             ),
           ),
           child: isSelected
-              ? const Icon(Icons.check, size: 16, color: Colors.white)
+              ? const Icon(
+                  Icons.check,
+                  size: 16,
+                  color: AppColors.primaryForeground,
+                )
               : null,
         );
       case SelectableInputIndicatorMode.none:

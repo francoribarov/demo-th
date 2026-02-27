@@ -10,6 +10,7 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
   const PublicationDetailsInfoHeader({
     required this.publication,
     required this.gameDetail,
+    required this.ownerDisplayName,
     required this.tabController,
     required this.onOwnerTap,
     super.key,
@@ -17,13 +18,12 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
 
   final PublicationListing publication;
   final Game gameDetail;
+
+  /// Display name for the owner (computed by page/bloc).
+  final String ownerDisplayName;
+
   final TabController tabController;
   final VoidCallback onOwnerTap;
-
-  String _ownerDisplayName(String ownerId) {
-    if (ownerId.isEmpty) return 'Propietario';
-    return 'Usuario $ownerId';
-  }
 
   String _ownerInitial(String ownerLabel) {
     final trimmed = ownerLabel.trim();
@@ -48,7 +48,12 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+        padding: const EdgeInsets.fromLTRB(
+          AppTheme.spacingXl,
+          AppTheme.spacing2xl,
+          AppTheme.spacingXl,
+          AppTheme.spacingMd,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -58,8 +63,8 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                    horizontal: AppTheme.spacingMd,
+                    vertical: AppTheme.spacingXs + 2,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.gameCream,
@@ -74,8 +79,8 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
+                    horizontal: AppTheme.spacingMd - 2,
+                    vertical: AppTheme.spacingXs + 2,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.card,
@@ -94,7 +99,7 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.spacingLg),
 
             // Title
             Text(
@@ -102,13 +107,13 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
               style: AppTypography.displaySmall,
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingMd),
 
             // Owner card
             GestureDetector(
               onTap: onOwnerTap,
               child: Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppTheme.spacingMd),
                 decoration: BoxDecoration(
                   color: AppColors.card.withOpacityValue(0.9),
                   borderRadius: BorderRadius.circular(
@@ -117,24 +122,13 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
                   border: Border.all(
                     color: AppColors.gameBrown.withOpacityValue(0.08),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.shadow.withOpacityValue(
-                        0.04,
-                      ),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  boxShadow: AppTheme.shadowMd,
                 ),
                 child: Row(
                   children: [
                     Builder(
                       builder: (context) {
-                        final ownerName = _ownerDisplayName(
-                          publication.ownerId,
-                        );
-                        final ownerInitial = _ownerInitial(ownerName);
+                        final ownerInitial = _ownerInitial(ownerDisplayName);
                         return CircleAvatar(
                           radius: 20,
                           backgroundColor: AppColors.gameBrown,
@@ -147,19 +141,19 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _ownerDisplayName(publication.ownerId),
+                            ownerDisplayName,
                             style: AppTypography.titleSmall,
                           ),
                           Text(
                             publication.ownerId,
                             style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.7),
+                              color: AppColors.textTertiary,
                             ),
                           ),
                         ],
@@ -174,11 +168,11 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppTheme.spacingXl),
 
             // Tabs
             Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(AppTheme.spacingXs),
               decoration: BoxDecoration(
                 color: AppColors.gameCream.withOpacityValue(
                   0.7,
@@ -190,11 +184,11 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
               child: TabBar(
                 controller: tabController,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 6,
-                  vertical: 2,
+                  horizontal: AppTheme.spacingXs + 2,
+                  vertical: AppTheme.spacingXs / 2,
                 ),
                 labelPadding: const EdgeInsets.symmetric(
-                  horizontal: 10,
+                  horizontal: AppTheme.spacingMd - 2,
                 ),
                 labelStyle: AppTypography.labelLarge,
                 unselectedLabelStyle: AppTypography.labelLarge,
@@ -217,8 +211,8 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
                   ],
                 ),
                 indicatorPadding: const EdgeInsets.symmetric(
-                  horizontal: 6,
-                  vertical: 2,
+                  horizontal: AppTheme.spacingXs + 2,
+                  vertical: AppTheme.spacingXs / 2,
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 tabs: const [

@@ -3,6 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/rental/availability_date_selector.dart';
 
@@ -42,40 +43,36 @@ class AvailabilityChecker extends StatelessWidget {
     return SurfaceCard(
       variant: SurfaceCardVariant.subtle,
       borderColor: AppColors.gameBrown.withOpacityValue(0.1),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppTheme.spacingLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               const Icon(Icons.event_available, color: AppColors.gameRust),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppTheme.spacingSm),
               Text('Consultá disponibilidad', style: AppTypography.titleMedium),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.spacingLg),
           AvailabilityDateSelector(
             publication: publication,
             startDate: startDate,
             endDate: endDate,
             onRangeChanged: onRangeSelected,
           ),
-          const SizedBox(height: 12),
-          ElevatedButton(
+          const SizedBox(height: AppTheme.spacingMd),
+          AppPrimaryButton(
+            label: 'Verificar disponibilidad',
             onPressed: onCheck,
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 48),
-            ),
-            child: const Text('Verificar disponibilidad'),
+            minimumSize: const Size(double.infinity, 48),
           ),
           if (result != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingMd),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppTheme.spacingMd),
               decoration: BoxDecoration(
-                color: result!
-                    ? AppColors.successSurface
-                    : AppColors.errorSurface,
+                color: result! ? AppColors.successSurface : AppColors.errorSurface,
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               child: Row(
@@ -84,16 +81,12 @@ class AvailabilityChecker extends StatelessWidget {
                     result! ? Icons.check_circle : Icons.cancel,
                     color: result! ? AppColors.gameSage : AppColors.destructive,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(
-                      result!
-                          ? '¡Disponible para esas fechas!'
-                          : 'No disponible para esas fechas',
+                      result! ? '¡Disponible para esas fechas!' : 'No disponible para esas fechas',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: result!
-                            ? AppColors.gameSage
-                            : AppColors.destructive,
+                        color: result! ? AppColors.gameSage : AppColors.destructive,
                       ),
                     ),
                   ),

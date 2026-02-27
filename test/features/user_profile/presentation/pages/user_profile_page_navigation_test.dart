@@ -8,8 +8,7 @@ import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/use
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockUserProfileBloc extends MockBloc<UserProfileEvent, UserProfileState>
-    implements UserProfileBloc {}
+class MockUserProfileBloc extends MockBloc<UserProfileEvent, UserProfileState> implements UserProfileBloc {}
 
 void main() {
   late MockUserProfileBloc userProfileBloc;
@@ -56,8 +55,7 @@ void main() {
         ),
         GoRoute(
           path: '/publications/:id',
-          builder: (context, state) =>
-              Text('publication-page:${state.pathParameters['id']}'),
+          builder: (context, state) => Text('publication-page:${state.pathParameters['id']}'),
         ),
       ],
     );

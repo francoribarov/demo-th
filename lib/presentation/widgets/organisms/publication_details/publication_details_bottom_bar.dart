@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/widgets/atoms/game_atoms.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
 
 /// Bottom bar for the game details page with price and rent button.
 class PublicationDetailsBottomBar extends StatelessWidget {
@@ -21,34 +23,22 @@ class PublicationDetailsBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppTheme.spacingLg),
       decoration: BoxDecoration(
         color: AppColors.card,
         border: Border(
           top: BorderSide(color: AppColors.gameBrown.withOpacityValue(0.1)),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacityValue(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        boxShadow: AppTheme.shadowUp,
       ),
       child: SafeArea(
         child: Row(
           children: [
             GamePriceLabel(price: publication.price),
             const Spacer(),
-            ElevatedButton(
+            AppPrimaryButton(
+              label: 'Alquilar ahora',
               onPressed: onRent,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 16,
-                ),
-              ),
-              child: const Text('Alquilar ahora'),
             ),
           ],
         ),

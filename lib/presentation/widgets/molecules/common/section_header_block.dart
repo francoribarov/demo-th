@@ -47,7 +47,7 @@ class SectionHeaderBlock extends StatelessWidget {
                     style:
                         subtitleStyle ??
                         AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                          color: AppColors.textTertiary,
                         ),
                   ),
                 ],

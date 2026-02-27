@@ -1,9 +1,10 @@
 export 'auth/auth_error_text.dart';
 export 'auth/auth_submit_button.dart';
 export 'common/app_bar_icon_action.dart';
+export 'common/app_primary_button.dart';
+export 'common/app_secondary_button.dart';
 export 'common/button_loading_indicator.dart';
 export 'common/inline_feedback_text.dart';
 export 'common/media_placeholder.dart';
 export 'common/selectable_chip.dart';
-export 'common/suggestion_chip.dart';
 export 'common/surface_card.dart';

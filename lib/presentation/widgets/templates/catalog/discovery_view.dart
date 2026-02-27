@@ -15,6 +15,10 @@ class DiscoveryView extends StatelessWidget {
     required this.filterShortcuts,
     required this.filteredPublications,
     required this.availableTodayPublications,
+    required this.cooperativePublications,
+    required this.familyPublications,
+    required this.partyPublications,
+    required this.strategyPublications,
     required this.onRefresh,
     required this.onCategorySelected,
     required this.onShortcutSelected,
@@ -28,6 +32,19 @@ class DiscoveryView extends StatelessWidget {
   final List<FilterShortcut> filterShortcuts;
   final List<PublicationListing> filteredPublications;
   final List<PublicationListing> availableTodayPublications;
+
+  /// Pre-filtered cooperative games (curated in CatalogBloc state).
+  final List<PublicationListing> cooperativePublications;
+
+  /// Pre-filtered family games (curated in CatalogBloc state).
+  final List<PublicationListing> familyPublications;
+
+  /// Pre-filtered party / fiesta games (curated in CatalogBloc state).
+  final List<PublicationListing> partyPublications;
+
+  /// Pre-filtered strategy / expert / deck-builder games (curated in CatalogBloc state).
+  final List<PublicationListing> strategyPublications;
+
   final Future<void> Function() onRefresh;
   final ValueChanged<String> onCategorySelected;
   final ValueChanged<FilterShortcut> onShortcutSelected;
@@ -48,9 +65,7 @@ class DiscoveryView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'DESCUBRÍ TU PRÓXIMO JUEGO',
-              style: AppTypography.sectionHeader.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.9),
-              ),
+              style: AppTypography.sectionHeader,
             ),
           ),
 
@@ -70,8 +85,7 @@ class DiscoveryView extends StatelessWidget {
           if (filteredPublications.isNotEmpty) ...[
             PublicationSection(
               title: 'Recomendados para vos',
-              description:
-                  'Nuestra mezcla favorita de clásicos y estrenos recientes.',
+              description: 'Nuestra mezcla favorita de clásicos y estrenos recientes.',
               publications: filteredPublications.take(6).toList(),
               variant: PublicationSectionVariant.carousel,
               onPublicationTap: onPublicationTap,
@@ -92,14 +106,7 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Cooperativos populares',
             description: 'Perfectos para ganar (o perder) todos juntos.',
-            publications: filteredPublications
-                .where(
-                  (p) => p.game.categories.any(
-                    (c) => c.name.toLowerCase().contains('cooper'),
-                  ),
-                )
-                .take(4)
-                .toList(),
+            publications: cooperativePublications,
             variant: PublicationSectionVariant.carousel,
           ),
 
@@ -107,16 +114,8 @@ class DiscoveryView extends StatelessWidget {
           _buildCategorySection(
             context,
             title: 'Para jugar en familia',
-            description:
-                'Reglas simples y partidas ágiles para todas las edades.',
-            publications: filteredPublications
-                .where(
-                  (p) => p.game.categories.any(
-                    (c) => c.name.toLowerCase().contains('familiar'),
-                  ),
-                )
-                .take(4)
-                .toList(),
+            description: 'Reglas simples y partidas ágiles para todas las edades.',
+            publications: familyPublications,
             variant: PublicationSectionVariant.grid,
           ),
 
@@ -125,14 +124,7 @@ class DiscoveryView extends StatelessWidget {
             context,
             title: 'Fiesta y party games',
             description: 'Animá tu reunión con risas y creatividad.',
-            publications: filteredPublications
-                .where(
-                  (p) => p.game.categories.any(
-                    (c) => c.name.toLowerCase().contains('fiesta'),
-                  ),
-                )
-                .take(4)
-                .toList(),
+            publications: partyPublications,
             variant: PublicationSectionVariant.carousel,
           ),
 
@@ -140,20 +132,8 @@ class DiscoveryView extends StatelessWidget {
           _buildCategorySection(
             context,
             title: 'Noches estratégicas',
-            description:
-                'Opciones para quienes buscan desafíos bien profundos.',
-            publications: filteredPublications
-                .where(
-                  (p) => p.game.categories.any(
-                    (c) => [
-                      'estrategia',
-                      'experto',
-                      'deck',
-                    ].any((tag) => c.name.toLowerCase().contains(tag)),
-                  ),
-                )
-                .take(4)
-                .toList(),
+            description: 'Opciones para quienes buscan desafíos bien profundos.',
+            publications: strategyPublications,
             variant: PublicationSectionVariant.grid,
           ),
 

@@ -5,8 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/media_placeholder.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart'
-    as common_inputs;
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart' as common_inputs;
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
 /// Step for editing publication data (description and condition).
@@ -71,17 +70,16 @@ class EditDataStep extends StatelessWidget {
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, error, stackTrace) =>
-                              const MediaPlaceholder(
-                                width: 60,
-                                height: 60,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(AppTheme.radiusSm),
-                                ),
-                                backgroundOpacity: 0.3,
-                                icon: Icons.extension,
-                                iconSize: 30,
-                              ),
+                          errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(
+                            width: 60,
+                            height: 60,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(AppTheme.radiusSm),
+                            ),
+                            backgroundOpacity: 0.3,
+                            icon: Icons.extension,
+                            iconSize: 30,
+                          ),
                         )
                       : const MediaPlaceholder(
                           width: 60,

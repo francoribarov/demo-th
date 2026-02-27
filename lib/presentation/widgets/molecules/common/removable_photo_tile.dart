@@ -26,8 +26,7 @@ class RemovablePhotoTile extends StatelessWidget {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius:
-              borderRadius ?? BorderRadius.circular(AppTheme.radiusMd),
+          borderRadius: borderRadius ?? BorderRadius.circular(AppTheme.radiusMd),
           child: Image.network(
             imageUrl,
             fit: BoxFit.cover,
@@ -51,14 +50,14 @@ class RemovablePhotoTile extends StatelessWidget {
             onTap: onRemove,
             child: Container(
               padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: Colors.black54,
+              decoration: BoxDecoration(
+                color: AppColors.shadow.withOpacityValue(0.54),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.close,
                 size: 16,
-                color: Colors.white,
+                color: AppColors.primaryForeground,
               ),
             ),
           ),
@@ -76,7 +75,7 @@ class RemovablePhotoTile extends StatelessWidget {
               child: Text(
                 primaryLabel,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.primaryForeground,
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                 ),

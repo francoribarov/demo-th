@@ -22,13 +22,18 @@ class MyPublicationsGrid extends StatelessWidget {
         // Header with count
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.fromLTRB(
+              AppTheme.spacingLg,
+              AppTheme.spacingLg,
+              AppTheme.spacingLg,
+              AppTheme.spacingSm,
+            ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                    horizontal: AppTheme.spacingMd,
+                    vertical: AppTheme.spacingXs + 2,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.gameRust.withOpacityValue(0.1),
@@ -49,12 +54,17 @@ class MyPublicationsGrid extends StatelessWidget {
 
         // Publications grid
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+          padding: const EdgeInsets.fromLTRB(
+            AppTheme.spacingLg,
+            AppTheme.spacingSm,
+            AppTheme.spacingLg,
+            AppTheme.spacingScrollBottom,
+          ),
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
               childAspectRatio: 1.35,
-              mainAxisSpacing: 16,
+              mainAxisSpacing: AppTheme.spacingLg,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {

@@ -7,12 +7,21 @@ import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
 class DeliveryMethodCard extends StatelessWidget {
   const DeliveryMethodCard({
     required this.method,
+    required this.priceLabel,
+    this.priceLabelColor,
     this.isSelected = false,
     this.onTap,
     super.key,
   });
 
   final DeliveryMethod method;
+
+  /// Pre-formatted price label, e.g. "Gratis" or "Costo: \$150".
+  final String priceLabel;
+
+  /// Text colour for [priceLabel]. Defaults to [AppColors.textTertiary].
+  final Color? priceLabelColor;
+
   final bool isSelected;
   final VoidCallback? onTap;
 
@@ -27,9 +36,7 @@ class DeliveryMethodCard extends StatelessWidget {
           color: isSelected ? AppColors.gameCream : AppColors.card,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: isSelected
-                ? AppColors.gameRust
-                : AppColors.gameBrown.withOpacityValue(0.2),
+            color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -48,46 +55,35 @@ class DeliveryMethodCard extends StatelessWidget {
                     method.deliveryType.displayName,
                     style: AppTypography.titleSmall,
                   ),
-                  if (method.deliveryType == DeliveryType.pickupInPerson &&
-                      method.address != null) ...[
+                  if (method.deliveryType == DeliveryType.pickupInPerson && method.address != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       '${method.address} ${method.addressNumber ?? ''}',
                       style: AppTypography.bodySmall,
                     ),
-                    if (method.addressName != null &&
-                        method.addressName!.isNotEmpty)
+                    if (method.addressName != null && method.addressName!.isNotEmpty)
                       Text(
                         method.addressName!,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                          color: AppColors.textTertiary,
                         ),
                       ),
                   ],
-                  if (method.initPickupTime != null &&
-                      method.finishPickupTime != null) ...[
+                  if (method.initPickupTime != null && method.finishPickupTime != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       '${method.initPickupTime} - ${method.finishPickupTime}',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.7),
+                        color: AppColors.textTertiary,
                       ),
                     ),
                   ],
-                  if (method.price > 0)
-                    Text(
-                      'Costo: \$${method.price}',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.7),
-                      ),
-                    )
-                  else
-                    Text(
-                      'Gratis',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameSage,
-                      ),
+                  Text(
+                    priceLabel,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: priceLabelColor ?? AppColors.textTertiary,
                     ),
+                  ),
                 ],
               ),
             ),
@@ -97,9 +93,9 @@ class DeliveryMethodCard extends StatelessWidget {
                 color: AppColors.gameRust,
               )
             else
-              Icon(
+              const Icon(
                 Icons.circle_outlined,
-                color: AppColors.gameBrown.withOpacityValue(0.5),
+                color: AppColors.textPlaceholder,
               ),
           ],
         ),

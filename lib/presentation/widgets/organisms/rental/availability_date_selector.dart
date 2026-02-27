@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
@@ -7,6 +8,10 @@ import 'package:mobile_table_hopping/presentation/widgets/molecules/common/date_
 
 /// A unified date range selector widget for game availability.
 /// Used in both Game Details and Rental Confirmation flows.
+///
+/// This widget is purely presentational: it shows the date picker and calls
+/// [onRangeChanged] with the selected range. Validation (minimum duration,
+/// availability) is the caller's responsibility (typically a BLoC).
 class AvailabilityDateSelector extends StatelessWidget {
   /// Creates an availability date selector.
   const AvailabilityDateSelector({
@@ -17,7 +22,7 @@ class AvailabilityDateSelector extends StatelessWidget {
     super.key,
   });
 
-  /// The publication whose availability should be respected.
+  /// The publication whose booked dates are used to disable days in the picker.
   final PublicationListing publication;
 
   /// Currently selected start date string.
@@ -42,74 +47,33 @@ class AvailabilityDateSelector extends StatelessWidget {
       initialRange = DateTimeRange(start: initialStart, end: initialEnd);
     }
 
-    // Allow booking up to a year in advance
-    final firstDate = today;
     final lastDate = today.add(const Duration(days: 365));
 
     final picked = await showDateRangePicker(
       context: context,
       initialDateRange: initialRange,
-      firstDate: firstDate,
+      firstDate: today,
       lastDate: lastDate,
       locale: const Locale('es', 'UY'),
       helpText: 'Seleccioná el rango (mínimo 3 días)',
       selectableDayPredicate: (day, start, end) {
         if (day.isBefore(today)) return false;
-        // Day is available if it is NOT in any booked range
         return !booked.any(
           (range) => !day.isBefore(range.$1) && !day.isAfter(range.$2),
         );
       },
     );
 
-    if (picked != null) {
-      final startStr = DateFormatter.toIsoString(picked.start);
-      final endStr = DateFormatter.toIsoString(picked.end);
-
-      final duration = picked.end.difference(picked.start).inDays + 1;
-      if (duration < 3) {
-        if (context.mounted) {
-          final messenger = ScaffoldMessenger.maybeOf(context);
-          if (messenger != null) {
-            messenger
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text('El alquiler mínimo es de 3 días.'),
-                ),
-              );
-          }
-        }
-        return;
-      }
-
-      if (!publication.isAvailableFor(startStr, endStr)) {
-        if (context.mounted) {
-          final messenger = ScaffoldMessenger.maybeOf(context);
-          if (messenger != null) {
-            messenger
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'El rango seleccionado contiene días no disponibles.',
-                  ),
-                ),
-              );
-          }
-        }
-        return;
-      }
-
-      onRangeChanged(startStr, endStr);
+    if (picked != null && context.mounted) {
+      onRangeChanged(
+        DateFormatter.toIsoString(picked.start),
+        DateFormatter.toIsoString(picked.end),
+      );
     }
   }
 
   List<(DateTime, DateTime)> _normalizedBookedDates() {
-    final booked = publication.bookedDates;
-    if (booked.isEmpty) return const [];
-
-    return booked
+    return publication.bookedDates
         .map((range) {
           final from = DateTime.tryParse(range.from);
           final to = DateTime.tryParse(range.to);
@@ -135,7 +99,7 @@ class AvailabilityDateSelector extends StatelessWidget {
                 onClear: () => onRangeChanged(null, null),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppTheme.spacingLg),
             Expanded(
               child: DatePickerField(
                 label: 'Fin',
@@ -146,19 +110,19 @@ class AvailabilityDateSelector extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppTheme.spacingSm),
         Row(
           children: [
-            Icon(
+            const Icon(
               Icons.info_outline,
               size: 14,
-              color: AppColors.gameBrown.withOpacityValue(0.6),
+              color: AppColors.textMuted,
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppTheme.spacingXs + 2),
             Text(
               'Alquiler mínimo: 3 días. Sujeto a disponibilidad.',
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.6),
+                color: AppColors.textMuted,
                 fontSize: 11,
               ),
             ),

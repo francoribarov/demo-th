@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mobile_table_hopping/core/routing/navigation.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/auth/auth_error_text.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/auth/auth_submit_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
@@ -80,8 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listenWhen: (previous, current) =>
-          previous.status != current.status && current.isAuthenticated,
+      listenWhen: (previous, current) => previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
         final redirectTo = widget.from;
         if (redirectTo != null &&
@@ -101,30 +101,26 @@ class _RegisterPageState extends State<RegisterPage> {
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final horizontalPadding = constraints.maxWidth >= 640
-                  ? constraints.maxWidth * 0.18
-                  : 24.0;
+              final horizontalPadding = constraints.maxWidth >= 640 ? constraints.maxWidth * 0.18 : 24.0;
 
               return BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   final isSubmitting = state.isSubmittingRegister;
-                  final errorMessage =
-                      state.registerErrorMessage ?? state.errorMessage;
+                  final errorMessage = state.registerErrorMessage ?? state.errorMessage;
                   final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
                   return SingleChildScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: EdgeInsets.fromLTRB(
                       horizontalPadding,
-                      16,
+                      AppTheme.spacingLg,
                       horizontalPadding,
-                      16 + keyboardInset,
+                      AppTheme.spacingLg + keyboardInset,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppTheme.spacing3xl),
                         Center(
                           child: Image.asset(
                             'assets/images/dice_logo.png',
@@ -132,13 +128,12 @@ class _RegisterPageState extends State<RegisterPage> {
                             width: 64,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppTheme.spacing2xl),
                         const AuthHeader(
                           title: 'Empecemos',
-                          subtitle:
-                              'Creá tu cuenta para publicar y alquilar juegos.',
+                          subtitle: 'Creá tu cuenta para publicar y alquilar juegos.',
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppTheme.spacing3xl),
                         Form(
                           key: _formKey,
                           autovalidateMode: AutovalidateMode.disabled,
@@ -157,17 +152,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.newUsername,
                                   ],
                                   labelText: 'Nombre',
-                                  validator: (value) =>
-                                      validateUsernameRequired(value ?? ''),
-                                  onChanged: (name) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerUsernameChanged(name),
-                                      ),
+                                  validator: (value) => validateUsernameRequired(value ?? ''),
+                                  onChanged: (name) => context.read<AuthBloc>().add(
+                                    AuthEvent.registerUsernameChanged(name),
+                                  ),
                                   onFieldSubmitted: (_) {
                                     _emailFocusNode.requestFocus();
                                   },
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppTheme.spacingLg),
                                 TextFormInputField(
                                   key: const Key('registerEmailField'),
                                   controller: _emailController,
@@ -182,17 +175,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ],
                                   labelText: 'Email',
                                   hintText: 'tu@email.com',
-                                  validator: (value) =>
-                                      validateEmail(value ?? ''),
-                                  onChanged: (email) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerEmailChanged(email),
-                                      ),
+                                  validator: (value) => validateEmail(value ?? ''),
+                                  onChanged: (email) => context.read<AuthBloc>().add(
+                                    AuthEvent.registerEmailChanged(email),
+                                  ),
                                   onFieldSubmitted: (_) {
                                     _passwordFocusNode.requestFocus();
                                   },
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppTheme.spacingLg),
                                 TextFormInputField(
                                   key: const Key('registerPasswordField'),
                                   controller: _passwordController,
@@ -211,36 +202,29 @@ class _RegisterPageState extends State<RegisterPage> {
                                     key: const Key(
                                       'registerPasswordVisibilityButton',
                                     ),
-                                    tooltip: _isPasswordVisible
-                                        ? 'Ocultar contraseña'
-                                        : 'Mostrar contraseña',
+                                    tooltip: _isPasswordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña',
                                     onPressed: isSubmitting
                                         ? null
                                         : () {
                                             setState(() {
-                                              _isPasswordVisible =
-                                                  !_isPasswordVisible;
+                                              _isPasswordVisible = !_isPasswordVisible;
                                             });
                                           },
                                     icon: Icon(
-                                      _isPasswordVisible
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
+                                      _isPasswordVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                                     ),
                                   ),
-                                  validator: (value) =>
-                                      validatePasswordMin8(value ?? ''),
-                                  onChanged: (password) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerPasswordChanged(
-                                          password,
-                                        ),
-                                      ),
+                                  validator: (value) => validatePasswordMin8(value ?? ''),
+                                  onChanged: (password) => context.read<AuthBloc>().add(
+                                    AuthEvent.registerPasswordChanged(
+                                      password,
+                                    ),
+                                  ),
                                   onFieldSubmitted: (_) {
                                     _confirmPasswordFocusNode.requestFocus();
                                   },
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: AppTheme.spacingLg),
                                 TextFormInputField(
                                   key: const Key(
                                     'registerConfirmPasswordField',
@@ -260,15 +244,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                     key: const Key(
                                       'registerConfirmPasswordVisibilityButton',
                                     ),
-                                    tooltip: _isConfirmPasswordVisible
-                                        ? 'Ocultar contraseña'
-                                        : 'Mostrar contraseña',
+                                    tooltip: _isConfirmPasswordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña',
                                     onPressed: isSubmitting
                                         ? null
                                         : () {
                                             setState(() {
-                                              _isConfirmPasswordVisible =
-                                                  !_isConfirmPasswordVisible;
+                                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
                                             });
                                           },
                                     icon: Icon(
@@ -277,63 +258,45 @@ class _RegisterPageState extends State<RegisterPage> {
                                           : Icons.visibility_outlined,
                                     ),
                                   ),
-                                  validator: (value) =>
-                                      validatePasswordConfirmation(
-                                        password: _passwordController.text,
-                                        confirmation: value ?? '',
-                                      ),
-                                  onChanged: (confirmPassword) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerPasswordConfirmChanged(
-                                          confirmPassword,
-                                        ),
-                                      ),
+                                  validator: (value) => validatePasswordConfirmation(
+                                    password: _passwordController.text,
+                                    confirmation: value ?? '',
+                                  ),
+                                  onChanged: (confirmPassword) => context.read<AuthBloc>().add(
+                                    AuthEvent.registerPasswordConfirmChanged(
+                                      confirmPassword,
+                                    ),
+                                  ),
                                   onFieldSubmitted: (_) => _submitRegister(
                                     isSubmitting: isSubmitting,
                                   ),
                                 ),
-                                // const SizedBox(height: 16),
-                                // TextFormField(
-                                //   key: const Key('registerLocationField'),
-                                //   controller: _locationController,
-                                //   focusNode: _locationFocusNode,
-                                //   enabled: !isSubmitting,
-                                //   textInputAction: TextInputAction.done,
-                                //   textCapitalization: TextCapitalization.words,
-                                //   autofillHints: const [AutofillHints.addressCity],
-                                //   decoration: const InputDecoration(
-                                //     labelText: 'Ubicación (opcional)',
-                                //     hintText: 'Ej: Palermo, CABA',
-                                //   ),
-                                //   onChanged: (location) => context.read<AuthBloc>().add(
-                                //     AuthEvent.registerLocationChanged(location),
-                                //   ),
-                                //   onFieldSubmitted: (_) => _submitRegister(isSubmitting: isSubmitting),
-                                // ),
                               ],
                             ),
                           ),
                         ),
                         if (errorMessage != null) ...[
-                          const SizedBox(height: 8),
-                          AuthErrorText(message: errorMessage),
+                          const SizedBox(height: AppTheme.spacingSm),
+                          InlineFeedbackText(
+                            message: errorMessage,
+                            padding: const EdgeInsets.only(
+                              top: AppTheme.spacingMd,
+                            ),
+                          ),
                         ],
-                        const SizedBox(height: 24),
-                        AuthSubmitButton(
+                        const SizedBox(height: AppTheme.spacing2xl),
+                        AppPrimaryButton(
                           key: const Key('registerSubmitButton'),
                           label: 'Crear cuenta',
                           isLoading: isSubmitting,
-                          onPressed: () =>
-                              _submitRegister(isSubmitting: isSubmitting),
+                          onPressed: () => _submitRegister(isSubmitting: isSubmitting),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppTheme.spacingLg),
                         AuthSwitchRow(
                           key: const Key('registerGoToLoginButton'),
                           prompt: 'Ya tenés cuenta? ',
                           actionLabel: 'Iniciá sesión',
-                          onAction: isSubmitting
-                              ? () {}
-                              : () => context.goToLogin(from: widget.from),
+                          onAction: isSubmitting ? () {} : () => context.goToLogin(from: widget.from),
                         ),
                       ],
                     ),

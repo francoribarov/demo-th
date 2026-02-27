@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/delivery_method_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/delivery_method_selectable_tile.dart';
 
 class DeliverySection extends StatelessWidget {
   const DeliverySection({
@@ -35,7 +36,7 @@ class DeliverySection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppTheme.spacingMd),
         if (availableMethods.isEmpty)
           _buildEmptyState()
         else
@@ -43,19 +44,41 @@ class DeliverySection extends StatelessWidget {
             final isSelected = selectedMethods.any(
               (m) => m.id == method.id && m.id != null,
             );
-            return DeliveryMethodCard(
-              method: method,
-              isSelected: isSelected,
-              onTap: () => onToggle(method),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: AppTheme.spacingMd),
+              child: DeliveryMethodSelectableTile(
+                data: _toDisplayData(method),
+                isSelected: isSelected,
+                onTap: () => onToggle(method),
+              ),
             );
           }),
       ],
     );
   }
 
+  DeliveryMethodDisplayData _toDisplayData(DeliveryMethod method) {
+    final parts = <String>[];
+    if (method.deliveryType == DeliveryType.pickupInPerson && method.address != null) {
+      parts.add('${method.address} ${method.addressNumber ?? ''}');
+    }
+    if (method.initPickupTime != null && method.finishPickupTime != null) {
+      parts.add('${method.initPickupTime} - ${method.finishPickupTime}');
+    }
+    final subtitle = parts.isNotEmpty ? parts.join('\n') : null;
+    final isFree = method.price <= 0;
+    return DeliveryMethodDisplayData(
+      icon: method.deliveryType.icon,
+      title: method.deliveryType.displayName,
+      subtitle: subtitle,
+      priceLabel: isFree ? 'Gratis' : 'Costo: \$${method.price}',
+      priceLabelColor: isFree ? AppColors.gameSage : null,
+    );
+  }
+
   Widget _buildEmptyState() {
     return SurfaceCard(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppTheme.spacing2xl),
       borderColor: AppColors.gameBrown.withOpacityValue(0.2),
       child: Center(
         child: Column(
@@ -65,19 +88,19 @@ class DeliverySection extends StatelessWidget {
               size: 48,
               color: AppColors.gameBrown.withOpacityValue(0.3),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingMd),
             Text(
               'No hay métodos de entrega configurados',
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.7),
+                color: AppColors.textTertiary,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.spacingSm),
             Text(
               'Agregá al menos un método para que los compradores puedan recibir el juego',
               textAlign: TextAlign.center,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.5),
+                color: AppColors.textPlaceholder,
               ),
             ),
           ],

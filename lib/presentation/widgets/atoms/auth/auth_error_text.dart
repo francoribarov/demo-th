@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
 
 /// Error text widget for authentication forms.
+///
+/// Prefer [InlineFeedbackText] with [InlineFeedbackTone.error] and
+/// `padding: EdgeInsets.only(top: AppTheme.spacingMd)`.
 class AuthErrorText extends StatelessWidget {
   /// Creates an auth error text widget.
   const AuthErrorText({
@@ -17,7 +21,7 @@ class AuthErrorText extends StatelessWidget {
   Widget build(BuildContext context) {
     return InlineFeedbackText(
       message: message,
-      padding: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.only(top: AppTheme.spacingMd),
     );
   }
 }

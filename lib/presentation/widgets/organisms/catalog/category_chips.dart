@@ -29,7 +29,10 @@ class CategoryChips extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16, bottom: 12),
+          padding: const EdgeInsets.only(
+            left: AppTheme.spacingLg,
+            bottom: AppTheme.spacingMd,
+          ),
           child: Text(
             'EXPLORÁ POR CATEGORÍA',
             style: AppTypography.sectionHeader,
@@ -39,29 +42,24 @@ class CategoryChips extends StatelessWidget {
           height: 110,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
             itemCount: categories.length + filterShortcuts.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            separatorBuilder: (_, _) => const SizedBox(width: AppTheme.spacingSm),
             itemBuilder: (context, index) {
               if (index < categories.length) {
                 final category = categories[index];
                 return _CategoryChip(
                   name: category.name,
                   icon: category.icon,
-                  gradient:
-                      AppColors.gradientPalette[index %
-                          AppColors.gradientPalette.length],
-                  onTap: () =>
-                      onCategorySelected(category.query ?? category.name),
+                  gradient: AppColors.gradientPalette[index % AppColors.gradientPalette.length],
+                  onTap: () => onCategorySelected(category.query ?? category.name),
                 );
               } else {
                 final shortcut = filterShortcuts[index - categories.length];
                 return _CategoryChip(
                   name: shortcut.name,
                   icon: shortcut.icon,
-                  gradient:
-                      AppColors.gradientPalette[index %
-                          AppColors.gradientPalette.length],
+                  gradient: AppColors.gradientPalette[index % AppColors.gradientPalette.length],
                   onTap: () => onShortcutSelected(shortcut),
                 );
               }
@@ -92,7 +90,7 @@ class _CategoryChip extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 100,
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppTheme.spacingMd),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: gradient,
@@ -100,14 +98,8 @@ class _CategoryChip extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(color: Colors.white.withOpacityValue(0.6)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacityValue(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(color: AppColors.card.withOpacityValue(0.6)),
+          boxShadow: AppTheme.shadowSm,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -116,21 +108,15 @@ class _CategoryChip extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacityValue(0.8),
+                color: AppColors.card.withOpacityValue(0.8),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacityValue(0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                boxShadow: AppTheme.shadowSm,
               ),
               child: Center(
                 child: Text(icon, style: const TextStyle(fontSize: 24)),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppTheme.spacingXs),
             Text(
               name,
               style: AppTypography.categoryChip,

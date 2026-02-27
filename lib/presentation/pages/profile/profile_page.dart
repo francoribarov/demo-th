@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
+import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 
 /// Personal profile tab page.
@@ -24,8 +25,8 @@ class ProfilePage extends StatelessWidget {
               icon: const Icon(Icons.logout),
               label: const Text('Cerrar Sesión'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.destructive,
+                foregroundColor: AppColors.primaryForeground,
               ),
             ),
           ],

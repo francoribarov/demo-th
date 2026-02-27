@@ -1,8 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_secondary_button.dart';
 
 /// Header for the search results view.
 class ResultsHeader extends StatelessWidget {
@@ -15,7 +16,7 @@ class ResultsHeader extends StatelessWidget {
     required this.sortOption,
     required this.onBack,
     required this.onOpenFilters,
-    required this.onSortChanged,
+    required this.onSortTap,
     required this.onOpenDates,
     super.key,
   });
@@ -41,8 +42,8 @@ class ResultsHeader extends StatelessWidget {
   /// Callback to open the filters sheet.
   final VoidCallback onOpenFilters;
 
-  /// Callback when the sort option changes.
-  final void Function(SortOption) onSortChanged;
+  /// Callback when the sort button is tapped (parent shows sort menu).
+  final VoidCallback onSortTap;
 
   /// Callback to open the date picker.
   final VoidCallback onOpenDates;
@@ -50,7 +51,7 @@ class ResultsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppTheme.spacingLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -67,7 +68,7 @@ class ResultsHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppTheme.spacingMd),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,21 +83,21 @@ class ResultsHeader extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppTheme.spacingSm),
                         Text(
                           '$count ${count == 1 ? 'juego' : 'juegos'}',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.gameBrown.withOpacityValue(0.6),
+                            color: AppColors.textMuted,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppTheme.spacingXs),
                     if (hasDateFilter)
                       Text(
                         'Ordenamos primero los disponibles en tus fechas.',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                          color: AppColors.textTertiary,
                         ),
                       )
                     else
@@ -117,36 +118,21 @@ class ResultsHeader extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.spacingLg),
 
           // Filter/sort row
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
+                child: AppSecondaryButton(
+                  label: filters.hasActiveFilters ? 'Filtros (${filters.activeFiltersCount})' : 'Filtros',
+                  icon: Icons.filter_list,
                   onPressed: onOpenFilters,
-                  icon: const Icon(Icons.filter_list, size: 18),
-                  label: Text(
-                    filters.hasActiveFilters
-                        ? 'Filtros (${filters.activeFiltersCount})'
-                        : 'Filtros',
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: filters.hasActiveFilters
-                        ? AppColors.gameRust
-                        : AppColors.gameBrown,
-                    side: BorderSide(
-                      color: filters.hasActiveFilters
-                          ? AppColors.gameRust
-                          : AppColors.gameBrown.withOpacityValue(0.2),
-                    ),
-                    backgroundColor: AppColors.card,
-                  ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppTheme.spacingSm),
               IconButton(
-                onPressed: () => _showSortMenu(context),
+                onPressed: onSortTap,
                 icon: const Icon(Icons.swap_vert),
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.card,
@@ -160,31 +146,6 @@ class ResultsHeader extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  void _showSortMenu(BuildContext context) {
-    unawaited(
-      showModalBottomSheet<void>(
-        context: context,
-        builder: (context) => SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: SortOption.values.map((option) {
-              return ListTile(
-                leading: sortOption == option
-                    ? const Icon(Icons.check, color: AppColors.gameRust)
-                    : const SizedBox(width: 24),
-                title: Text(option.label),
-                onTap: () {
-                  onSortChanged(option);
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
-          ),
-        ),
       ),
     );
   }

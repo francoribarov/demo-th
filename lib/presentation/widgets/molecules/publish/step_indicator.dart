@@ -30,9 +30,7 @@ class StepIndicator extends StatelessWidget {
             return Expanded(
               child: Container(
                 height: 2,
-                color: index ~/ 2 < currentStep
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.2),
+                color: index ~/ 2 < currentStep ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
               ),
             );
           }
@@ -47,9 +45,7 @@ class StepIndicator extends StatelessWidget {
               color: isActive ? AppColors.gameRust : Colors.transparent,
               shape: BoxShape.circle,
               border: Border.all(
-                color: isActive
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.3),
+                color: isActive ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.3),
                 width: 2,
               ),
             ),
@@ -57,7 +53,7 @@ class StepIndicator extends StatelessWidget {
               child: Text(
                 '${stepIndex + 1}',
                 style: AppTypography.labelMedium.copyWith(
-                  color: isActive ? Colors.white : AppColors.gameBrown,
+                  color: isActive ? AppColors.primaryForeground : AppColors.gameBrown,
                 ),
               ),
             ),

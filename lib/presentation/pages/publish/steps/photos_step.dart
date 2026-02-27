@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/media_upload_tile.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/removable_photo_tile.dart';
@@ -33,14 +34,14 @@ class PhotosStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Fotos', style: AppTypography.headlineMedium),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppTheme.spacingSm),
         Text(
           'Agregá fotos del juego para que los inquilinos lo vean',
           style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
+            color: AppColors.textTertiary,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppTheme.spacing2xl),
 
         // Photo upload placeholder
         MediaUploadTile(
@@ -50,7 +51,7 @@ class PhotosStep extends StatelessWidget {
           isUploading: isUploading,
         ),
 
-        const SizedBox(height: 24),
+        const SizedBox(height: AppTheme.spacing2xl),
 
         if (images.isNotEmpty)
           GridView.builder(
@@ -58,8 +59,8 @@ class PhotosStep extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              crossAxisSpacing: AppTheme.spacingMd,
+              mainAxisSpacing: AppTheme.spacingMd,
             ),
             itemCount: images.length,
             itemBuilder: (context, index) {
@@ -71,7 +72,7 @@ class PhotosStep extends StatelessWidget {
             },
           ),
 
-        const SizedBox(height: 100),
+        const SizedBox(height: AppTheme.spacingScrollBottom),
       ],
     );
   }

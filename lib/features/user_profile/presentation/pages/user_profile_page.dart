@@ -7,6 +7,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/molecules/review_widgets.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/common/rating_summary_card.dart';
 
 /// User profile page matching UserProfile.tsx
 class UserProfilePage extends StatelessWidget {
@@ -62,15 +63,13 @@ class UserProfilePage extends StatelessWidget {
           (
             name: 'Diego M.',
             rating: 5.0,
-            comment:
-                'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
+            comment: 'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
             date: 'hace 1 mes',
           ),
           (
             name: 'Camila S.',
             rating: 4.0,
-            comment:
-                'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
+            comment: 'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
             date: 'hace 1 mes',
           ),
         ];
@@ -105,7 +104,7 @@ class UserProfilePage extends StatelessWidget {
                         child: Text(
                           ownerName[0],
                           style: AppTypography.displayMedium.copyWith(
-                            color: Colors.white,
+                            color: AppColors.primaryForeground,
                           ),
                         ),
                       ),
@@ -191,64 +190,15 @@ class UserProfilePage extends StatelessWidget {
                 // Rating summary
                 Text('VALORACIONES', style: AppTypography.sectionHeader),
                 const SizedBox(height: 12),
-                Container(
+                RatingSummaryCard(
+                  rating: rating,
+                  reviewsCount: totalReviews,
+                  ratingBreakdown: ratingBreakdown,
+                  backgroundColor: AppColors.card,
+                  border: Border.all(
+                    color: AppColors.gameBrown.withOpacityValue(0.1),
+                  ),
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.card,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                    border: Border.all(
-                      color: AppColors.gameBrown.withOpacityValue(0.1),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      // Overall rating
-                      Column(
-                        children: [
-                          Text(
-                            rating.toStringAsFixed(1),
-                            style: AppTypography.displayLarge,
-                          ),
-                          Row(
-                            children: List.generate(5, (i) {
-                              return Icon(
-                                i < rating.floor()
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                color: AppColors.gameGold,
-                                size: 20,
-                              );
-                            }),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '$totalReviews reseñas',
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.7),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 32),
-                      // Rating breakdown
-                      Expanded(
-                        child: Column(
-                          children: List.generate(5, (i) {
-                            final stars = 5 - i;
-                            final count = ratingBreakdown[stars] ?? 0;
-                            final percentage = totalReviews > 0
-                                ? count / totalReviews
-                                : 0.0;
-                            return ReviewRatingBar(
-                              stars: stars,
-                              percentage: percentage,
-                              count: count,
-                            );
-                          }),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -303,7 +253,7 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.gameBrown.withOpacityValue(0.7),
+              color: AppColors.textTertiary,
             ),
             textAlign: TextAlign.center,
           ),

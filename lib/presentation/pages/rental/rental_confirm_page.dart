@@ -13,7 +13,7 @@ import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/button_loading_indicator.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/label_value_row.dart';
@@ -41,8 +41,7 @@ class RentalConfirmPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (previous, current) =>
-          previous.feedbackNotice != current.feedbackNotice &&
-          current.feedbackNotice != null,
+          previous.feedbackNotice != current.feedbackNotice && current.feedbackNotice != null,
       listener: (context, state) {
         final notice = state.feedbackNotice;
         if (notice == null) return;
@@ -63,8 +62,7 @@ class RentalConfirmPage extends StatelessWidget {
           return Scaffold(
             appBar: PageAppBar(
               title: const Text('Solicitar alquiler'),
-              onLeadingPressed: () =>
-                  context.popOrGo('/publications/$publicationId'),
+              onLeadingPressed: () => context.popOrGo('/publications/$publicationId'),
             ),
             body: Center(
               child: Text(state.errorMessage ?? 'Publicación no encontrada'),
@@ -86,8 +84,7 @@ class RentalConfirmPage extends StatelessWidget {
         return Scaffold(
           appBar: PageAppBar(
             title: const Text('Solicitar alquiler'),
-            onLeadingPressed: () =>
-                context.popOrGo('/publications/$publicationId'),
+            onLeadingPressed: () => context.popOrGo('/publications/$publicationId'),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -109,13 +106,12 @@ class RentalConfirmPage extends StatelessWidget {
                   publication: publication,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  onRangeChanged: (start, end) =>
-                      context.read<RentalBloc>().add(
-                        RentalEvent.dateRangeChanged(
-                          startDate: start,
-                          endDate: end,
-                        ),
-                      ),
+                  onRangeChanged: (start, end) => context.read<RentalBloc>().add(
+                    RentalEvent.dateRangeChanged(
+                      startDate: start,
+                      endDate: end,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -130,9 +126,8 @@ class RentalConfirmPage extends StatelessWidget {
                   isDelivery: state.isDelivery,
                   address: state.deliveryAddress,
                   comments: state.deliveryComments,
-                  onDeliveryChanged: ({required bool isDelivery}) => context
-                      .read<RentalBloc>()
-                      .add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
+                  onDeliveryChanged: ({required bool isDelivery}) =>
+                      context.read<RentalBloc>().add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
                   onAddressChanged: (value) => context.read<RentalBloc>().add(
                     RentalEvent.deliveryAddressChanged(address: value),
                   ),
@@ -184,31 +179,26 @@ class RentalConfirmPage extends StatelessWidget {
                   total: state.total,
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: AppTheme.spacing2xl),
 
                 if (state.errorMessage != null) ...[
                   InlineFeedbackText(
                     message: state.errorMessage!,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppTheme.spacingMd),
                 ],
 
                 // Confirm button
-                ElevatedButton(
-                  onPressed: state.isSubmitting
-                      ? null
-                      : () => context.read<RentalBloc>().add(
-                          const RentalEvent.submitted(),
-                        ),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),
+                AppPrimaryButton(
+                  label: 'Enviar solicitud',
+                  onPressed: () => context.read<RentalBloc>().add(
+                    const RentalEvent.submitted(),
                   ),
-                  child: state.isSubmitting
-                      ? const ButtonLoadingIndicator()
-                      : const Text('Enviar solicitud'),
+                  isLoading: state.isSubmitting,
+                  minimumSize: const Size(double.infinity, 56),
                 ),
 
-                const SizedBox(height: 100),
+                const SizedBox(height: AppTheme.spacingScrollBottom),
               ],
             ),
           ),
@@ -237,10 +227,8 @@ class _PublicationSummary extends StatelessWidget {
               width: 80,
               height: 80,
               fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (context, url, error) =>
-                  const Icon(Icons.image_not_supported),
+              placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
             ),
           ),
           const SizedBox(width: 16),
@@ -258,7 +246,7 @@ class _PublicationSummary extends StatelessWidget {
                 Text(
                   publication.categoryName,
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.7),
+                    color: AppColors.textTertiary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -379,7 +367,7 @@ class _FoodBundleSelector extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.card,
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Center(
@@ -460,17 +448,16 @@ class _PriceBreakdown extends StatelessWidget {
       child: Column(
         children: [
           LabelValueRow(
-            label:
-                '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
+            label: '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
             value: CurrencyFormatter.formatUYU(subtotal),
-            labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+            labelColor: AppColors.textTertiary,
             valueStyle: AppTypography.bodyMedium,
           ),
           const SizedBox(height: 8),
           LabelValueRow(
             label: 'Tarifa de servicio',
             value: CurrencyFormatter.formatUYU(serviceFee),
-            labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+            labelColor: AppColors.textTertiary,
             valueStyle: AppTypography.bodyMedium,
           ),
           if (deliveryFee > 0) ...[
@@ -478,7 +465,7 @@ class _PriceBreakdown extends StatelessWidget {
             LabelValueRow(
               label: 'Envío a domicilio',
               value: CurrencyFormatter.formatUYU(deliveryFee),
-              labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+              labelColor: AppColors.textTertiary,
               valueStyle: AppTypography.bodyMedium,
             ),
           ],
@@ -487,7 +474,7 @@ class _PriceBreakdown extends StatelessWidget {
             LabelValueRow(
               label: 'Snacks',
               value: CurrencyFormatter.formatUYU(foodTotal),
-              labelColor: AppColors.gameBrown.withOpacityValue(0.7),
+              labelColor: AppColors.textTertiary,
               valueStyle: AppTypography.bodyMedium,
             ),
           ],

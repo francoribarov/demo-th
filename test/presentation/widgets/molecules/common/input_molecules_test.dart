@@ -1,3 +1,4 @@
+// RegExp deprecation is for implementers; normal usage is still valid (dart-lang/sdk#62012).
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/dropdown_form_input_field.dart';
@@ -147,8 +148,7 @@ void main() {
                         DropdownMenuItem(value: 'two', child: Text('Two')),
                       ],
                       onChanged: (value) => setState(() => selected = value),
-                      validator: (value) =>
-                          value == null ? 'Selección requerida' : null,
+                      validator: (value) => value == null ? 'Selección requerida' : null,
                     ),
                     ElevatedButton(
                       onPressed: () => formKey.currentState?.validate(),
@@ -271,9 +271,7 @@ class _PasswordFieldHarnessState extends State<_PasswordFieldHarness> {
               key: const Key('passwordVisibilityButton'),
               onPressed: () => setState(() => _isVisible = !_isVisible),
               icon: Icon(
-                _isVisible
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
+                _isVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
               ),
             ),
             validator: (value) {

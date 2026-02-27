@@ -1,52 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_table_hopping/core/di/injection.dart';
-import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 
 /// Main scaffold with bottom navigation.
+///
+/// This widget is purely presentational. Navigation logic (including auth
+/// guards) is the caller's responsibility via [onItemTapped].
 class AppScaffold extends StatelessWidget {
   /// Creates an [AppScaffold] with the provided [navigationShell].
-  const AppScaffold({required this.navigationShell, super.key});
+  const AppScaffold({
+    required this.navigationShell,
+    required this.onItemTapped,
+    super.key,
+  });
 
   /// Shell that holds the navigation branches.
   final StatefulNavigationShell navigationShell;
 
-  static const _protectedBranchIndexes = {1, 2, 3};
-
-  String _targetLocationForBranch(int index) {
-    switch (index) {
-      case 0:
-        return AppRoutes.home;
-      case 1:
-        return AppRoutes.myPublications;
-      case 2:
-        return AppRoutes.publish;
-      case 3:
-        return AppRoutes.profile;
-      default:
-        return AppRoutes.home;
-    }
-  }
-
-  void _onItemTapped(BuildContext context, int index) {
-    final targetLocation = _targetLocationForBranch(index);
-
-    if (_protectedBranchIndexes.contains(index)) {
-      final authBloc = getIt<AuthBloc>();
-      if (!authBloc.state.isAuthenticated) {
-        context.goToLogin(from: targetLocation);
-        return;
-      }
-    }
-
-    navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
-  }
+  /// Called when a bottom-nav item is tapped. Receives the branch index.
+  final void Function(int index) onItemTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +34,7 @@ class AppScaffold extends StatelessWidget {
           border: const Border(
             top: BorderSide(color: AppColors.border),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadow.withOpacityValue(0.06),
-              blurRadius: 10,
-              offset: const Offset(0, -4),
-            ),
-          ],
+          boxShadow: AppTheme.shadowUp,
         ),
         child: SafeArea(
           child: Padding(
@@ -79,28 +47,28 @@ class AppScaffold extends StatelessWidget {
                   activeIcon: Icons.home,
                   label: 'Inicio',
                   isSelected: selectedIndex == 0,
-                  onTap: () => _onItemTapped(context, 0),
+                  onTap: () => onItemTapped(0),
                 ),
                 _NavItem(
                   icon: Icons.casino_outlined,
                   activeIcon: Icons.casino,
                   label: 'Mis Publicaciones',
                   isSelected: selectedIndex == 1,
-                  onTap: () => _onItemTapped(context, 1),
+                  onTap: () => onItemTapped(1),
                 ),
                 _NavItem(
                   icon: Icons.add_circle_outline,
                   activeIcon: Icons.add_circle,
                   label: 'Publicar',
                   isSelected: selectedIndex == 2,
-                  onTap: () => _onItemTapped(context, 2),
+                  onTap: () => onItemTapped(2),
                 ),
                 _NavItem(
                   icon: Icons.person_outline,
                   activeIcon: Icons.person,
                   label: 'Perfil',
                   isSelected: selectedIndex == 3,
-                  onTap: () => _onItemTapped(context, 3),
+                  onTap: () => onItemTapped(3),
                 ),
               ],
             ),
@@ -130,7 +98,7 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/catalog/publication_card.dart';
@@ -51,6 +52,37 @@ class ResultsView extends StatelessWidget {
     return 'Resultados de tu búsqueda';
   }
 
+  void _showSortModal(BuildContext context) {
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (ctx) => FocusScope(
+          child: SafeArea(
+            child: Semantics(
+              label: 'Ordenar resultados',
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: SortOption.values.map((option) {
+                  return ListTile(
+                    leading: sortOption == option
+                        ? const Icon(Icons.check, color: AppColors.gameRust)
+                        : const SizedBox(width: AppTheme.spacing2xl),
+                    title: Text(option.label),
+                    onTap: () {
+                      onSortChanged(option);
+                      Navigator.pop(ctx);
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final noResults = filteredPublications.isEmpty;
@@ -73,7 +105,7 @@ class ResultsView extends StatelessWidget {
           sortOption: sortOption,
           onBack: onClearSearch,
           onOpenFilters: () => unawaited(onOpenFilters()),
-          onSortChanged: onSortChanged,
+          onSortTap: () => _showSortModal(context),
           onOpenDates: () => unawaited(onOpenDates()),
         ),
 
@@ -83,11 +115,11 @@ class ResultsView extends StatelessWidget {
             onRefresh: onRefresh,
             color: AppColors.gameRust,
             child: GridView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppTheme.spacingLg),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1,
                 childAspectRatio: 0.85,
-                mainAxisSpacing: 16,
+                mainAxisSpacing: AppTheme.spacingLg,
               ),
               itemCount: filteredPublications.length,
               itemBuilder: (context, index) {

@@ -40,9 +40,7 @@ class PublicationReviewsTabContent extends StatelessWidget {
                     Row(
                       children: List.generate(5, (i) {
                         return Icon(
-                          i < gameDetail.rating.floor()
-                              ? Icons.star
-                              : Icons.star_border,
+                          i < gameDetail.rating.floor() ? Icons.star : Icons.star_border,
                           color: AppColors.gameGold,
                           size: 16,
                         );

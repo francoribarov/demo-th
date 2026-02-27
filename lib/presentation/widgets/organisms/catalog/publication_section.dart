@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/catalog/publication_card.dart';
@@ -52,7 +53,7 @@ class PublicationSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -61,11 +62,11 @@ class PublicationSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(title, style: AppTypography.headlineMedium),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppTheme.spacingXs),
                     Text(
                       description,
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.7),
+                        color: AppColors.textTertiary,
                       ),
                     ),
                   ],
@@ -74,7 +75,7 @@ class PublicationSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppTheme.spacingLg),
         if (variant == PublicationSectionVariant.carousel)
           SizedBox(
             height: 280, // Height for PublicationCardHorizontal or Vertical?
@@ -84,9 +85,11 @@ class PublicationSection extends StatelessWidget {
             // Based on design, carousels usually show vertical cards.
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.spacingLg,
+              ),
               itemCount: publications.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 12),
+              separatorBuilder: (_, _) => const SizedBox(width: AppTheme.spacingMd),
               itemBuilder: (context, index) {
                 final publication = publications[index];
                 return SizedBox(
@@ -102,11 +105,11 @@ class PublicationSection extends StatelessWidget {
           )
         else
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
             child: Column(
               children: publications.map((publication) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
                   child: PublicationCard(
                     publication: publication,
                     onTap: () => onPublicationTap?.call(publication),

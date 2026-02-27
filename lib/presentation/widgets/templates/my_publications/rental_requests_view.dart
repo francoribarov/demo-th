@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
@@ -40,10 +41,10 @@ class RentalRequestsView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.inbox_outlined,
               size: 64,
-              color: AppColors.gameBrown.withOpacityValue(0.5),
+              color: AppColors.textPlaceholder,
             ),
             const SizedBox(height: 16),
             Text(
@@ -56,19 +57,28 @@ class RentalRequestsView extends StatelessWidget {
             Text(
               'Tus solicitudes de alquiler aparecerán aquí',
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.7),
+                color: AppColors.textTertiary,
               ),
             ),
           ],
         ),
       );
     }
+    final dateFormat = DateFormat('dd/MM/yyyy');
     return ListView.builder(
       itemCount: requests.length,
       itemBuilder: (context, index) {
         final request = requests[index];
+        final duration = request.endDate.difference(request.startDate).inDays;
+        final isPending = request.status == RentalRequestStatus.pending;
+        final isAccepted = request.status == RentalRequestStatus.accepted;
         return RentalRequestCard(
           request: request,
+          dateRangeText: '${dateFormat.format(request.startDate)} - ${dateFormat.format(request.endDate)}',
+          durationText: '$duration días',
+          showActions: isPending,
+          statusLabel: isPending ? null : (isAccepted ? 'Aceptada' : 'Rechazada'),
+          statusIsSuccess: isAccepted,
           isProcessing: processingRequestId == request.id,
           onAccept: () => _confirmAccept(context, request),
           onReject: () => _confirmReject(context, request),
@@ -84,8 +94,7 @@ class RentalRequestsView extends StatelessWidget {
     final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Aceptar solicitud?',
-      message:
-          '¿Confirmas que quieres aceptar la solicitud de ${request.requester.username}?',
+      message: '¿Confirmas que quieres aceptar la solicitud de ${request.requester.username}?',
       confirmLabel: 'Aceptar',
       cancelLabel: 'Cancelar',
     );
@@ -101,8 +110,7 @@ class RentalRequestsView extends StatelessWidget {
     final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Rechazar solicitud?',
-      message:
-          '¿Confirmas que quieres rechazar la solicitud de ${request.requester.username}?',
+      message: '¿Confirmas que quieres rechazar la solicitud de ${request.requester.username}?',
       confirmLabel: 'Rechazar',
       cancelLabel: 'Cancelar',
       isDestructive: true,

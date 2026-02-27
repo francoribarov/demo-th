@@ -7,8 +7,7 @@ import 'package:mobile_table_hopping/data/mapper/my_publications/publish_deliver
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart'
-    as publish;
+import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart' as publish;
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
@@ -20,19 +19,15 @@ import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_pub
 import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetPublicationDetailUseCase extends Mock
-    implements GetPublicationDetailUseCase {}
+class MockGetPublicationDetailUseCase extends Mock implements GetPublicationDetailUseCase {}
 
-class MockUpdatePublicationUseCase extends Mock
-    implements UpdatePublicationUseCase {}
+class MockUpdatePublicationUseCase extends Mock implements UpdatePublicationUseCase {}
 
-class MockDeletePublicationUseCase extends Mock
-    implements DeletePublicationUseCase {}
+class MockDeletePublicationUseCase extends Mock implements DeletePublicationUseCase {}
 
 class MockGetGames extends Mock implements GetGamesUseCase {}
 
-class MockGetDeliveryMethods extends Mock
-    implements GetDeliveryMethodsUseCase {}
+class MockGetDeliveryMethods extends Mock implements GetDeliveryMethodsUseCase {}
 
 class MockImagePickerGateway extends Mock implements ImagePickerGateway {}
 
@@ -99,23 +94,26 @@ void main() {
         tPublishDeliveryMethod,
       ]),
     );
-    when(() => imagePickerGateway.pickImageFromGallery())
-        .thenAnswer((_) async => null);
-    when(() => imagePickerGateway.pickMultipleImages())
-        .thenAnswer((_) async => []);
-    when(() => uploadImages(any<List<String>>()))
-        .thenAnswer((_) async => const Right<DomainException, List<String>>([]));
+    when(
+      () => imagePickerGateway.pickImageFromGallery(),
+    ).thenAnswer((_) async => null);
+    when(
+      () => imagePickerGateway.pickMultipleImages(),
+    ).thenAnswer((_) async => []);
+    when(
+      () => uploadImages(any<List<String>>()),
+    ).thenAnswer((_) async => const Right<DomainException, List<String>>([]));
   });
 
   EditPublicationBloc buildBloc() => EditPublicationBloc(
-        getPublicationDetail: getPublicationDetail,
-        updatePublication: updatePublication,
-        deletePublication: deletePublication,
-        getGames: getGames,
-        getDeliveryMethods: getDeliveryMethods,
-        imagePickerGateway: imagePickerGateway,
-        uploadImages: uploadImages,
-      );
+    getPublicationDetail: getPublicationDetail,
+    updatePublication: updatePublication,
+    deletePublication: deletePublication,
+    getGames: getGames,
+    getDeliveryMethods: getDeliveryMethods,
+    imagePickerGateway: imagePickerGateway,
+    uploadImages: uploadImages,
+  );
 
   blocTest<EditPublicationBloc, EditPublicationState>(
     'started sets errorMessage when publication detail use case returns Left',

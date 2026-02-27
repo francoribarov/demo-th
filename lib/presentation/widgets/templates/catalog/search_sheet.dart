@@ -5,7 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/suggestion_chip.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/selectable_chip.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/date_picker_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/search_input_field.dart';
@@ -26,15 +26,13 @@ class SearchSheet extends StatefulWidget {
   final String initialQuery;
   final String? initialStartDate;
   final String? initialEndDate;
-  final void Function(String query, String? startDate, String? endDate)
-  onSearch;
+  final void Function(String query, String? startDate, String? endDate) onSearch;
   final VoidCallback onClear;
   final VoidCallback? onSurprise;
 
   static Future<void> show({
     required BuildContext context,
-    required void Function(String query, String? startDate, String? endDate)
-    onSearch,
+    required void Function(String query, String? startDate, String? endDate) onSearch,
     required VoidCallback onClear,
     String initialQuery = '',
     String? initialStartDate,
@@ -152,13 +150,10 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
     if (hasStart && hasEnd) {
       final parsedStart = DateTime.tryParse(start);
       final parsedEnd = DateTime.tryParse(end);
-      if (parsedStart != null &&
-          parsedEnd != null &&
-          !parsedEnd.isAfter(parsedStart)) {
+      if (parsedStart != null && parsedEnd != null && !parsedEnd.isAfter(parsedStart)) {
         emit(
           state.copyWith(
-            dateError:
-                'La fecha de fin tiene que ser posterior a la de inicio.',
+            dateError: 'La fecha de fin tiene que ser posterior a la de inicio.',
           ),
         );
         return false;
@@ -212,14 +207,8 @@ class _SearchSheetState extends State<SearchSheet> {
     final cubit = context.read<_SearchSheetCubit>();
     final now = DateTime.now();
     final initialDate = isStart
-        ? (cubit.state.startDate != null
-                  ? DateTime.tryParse(cubit.state.startDate!)
-                  : now) ??
-              now
-        : (cubit.state.endDate != null
-                  ? DateTime.tryParse(cubit.state.endDate!)
-                  : now) ??
-              now;
+        ? (cubit.state.startDate != null ? DateTime.tryParse(cubit.state.startDate!) : now) ?? now
+        : (cubit.state.endDate != null ? DateTime.tryParse(cubit.state.endDate!) : now) ?? now;
 
     final picked = await showDatePicker(
       context: context,
@@ -256,7 +245,7 @@ class _SearchSheetState extends State<SearchSheet> {
           title: Text(
             'BUSCÁ JUEGOS',
             style: AppTypography.sectionHeader.copyWith(
-              color: AppColors.gameBrown.withOpacityValue(0.6),
+              color: AppColors.textMuted,
             ),
           ),
           trailing: IconButton(
@@ -275,8 +264,7 @@ class _SearchSheetState extends State<SearchSheet> {
                   context.read<_SearchSheetCubit>().queryChanged('');
                   setState(() {});
                 },
-                onChanged: (v) =>
-                    context.read<_SearchSheetCubit>().queryChanged(v),
+                onChanged: (v) => context.read<_SearchSheetCubit>().queryChanged(v),
                 onSubmitted: (_) => _handleSearch(),
               ),
               const SizedBox(height: 16),
@@ -284,8 +272,11 @@ class _SearchSheetState extends State<SearchSheet> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  SuggestionChip(
+                  SelectableChip(
                     label: 'Cooperativos para 4 jugadores',
+                    isSelected: false,
+                    variant: SelectableChipVariant.suggestion,
+                    icon: Icons.auto_awesome,
                     onTap: () {
                       _queryController.text = 'Cooperativo';
                       context.read<_SearchSheetCubit>().queryChanged(
@@ -294,8 +285,11 @@ class _SearchSheetState extends State<SearchSheet> {
                       _handleSearch();
                     },
                   ),
-                  SuggestionChip(
+                  SelectableChip(
                     label: 'Para jugar en familia',
+                    isSelected: false,
+                    variant: SelectableChipVariant.suggestion,
+                    icon: Icons.auto_awesome,
                     onTap: () {
                       _queryController.text = 'Familiar';
                       context.read<_SearchSheetCubit>().queryChanged(
@@ -304,16 +298,22 @@ class _SearchSheetState extends State<SearchSheet> {
                       _handleSearch();
                     },
                   ),
-                  SuggestionChip(
+                  SelectableChip(
                     label: 'Juegos de fiesta',
+                    isSelected: false,
+                    variant: SelectableChipVariant.suggestion,
+                    icon: Icons.auto_awesome,
                     onTap: () {
                       _queryController.text = 'Fiesta';
                       context.read<_SearchSheetCubit>().queryChanged('Fiesta');
                       _handleSearch();
                     },
                   ),
-                  SuggestionChip(
+                  SelectableChip(
                     label: 'Desafíos expertos',
+                    isSelected: false,
+                    variant: SelectableChipVariant.suggestion,
+                    icon: Icons.auto_awesome,
                     onTap: () {
                       _queryController.text = 'Experto';
                       context.read<_SearchSheetCubit>().queryChanged('Experto');
@@ -360,7 +360,7 @@ class _SearchSheetState extends State<SearchSheet> {
                       Text(
                         'Agregá tus días',
                         style: AppTypography.labelSmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.7),
+                          color: AppColors.textTertiary,
                         ),
                       ),
                     ],
@@ -401,13 +401,12 @@ class _SearchSheetState extends State<SearchSheet> {
                           child: Text(
                             'Agregá un rango para ver solo lo disponible en esos días.',
                             style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.7),
+                              color: AppColors.textTertiary,
                             ),
                           ),
                         ),
                         TextButton(
-                          onPressed: () =>
-                              context.read<_SearchSheetCubit>().clearDates(),
+                          onPressed: () => context.read<_SearchSheetCubit>().clearDates(),
                           child: Text(
                             'Reiniciá las fechas',
                             style: AppTypography.labelSmall.copyWith(
@@ -447,7 +446,7 @@ class _SearchSheetState extends State<SearchSheet> {
           footer: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacityValue(0.9),
+              color: AppColors.card.withOpacityValue(0.9),
               border: Border(
                 top: BorderSide(
                   color: AppColors.gameBrown.withOpacityValue(0.1),
@@ -476,7 +475,7 @@ class _SearchSheetState extends State<SearchSheet> {
                     label: const Text('Buscá'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.gameRust,
-                      foregroundColor: Colors.white,
+                      foregroundColor: AppColors.primaryForeground,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,

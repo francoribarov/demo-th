@@ -12,8 +12,7 @@ import 'package:mocktail/mocktail.dart';
 
 class MockAuthBloc extends Mock implements AuthBloc {}
 
-class MockPublicationDetailsBloc extends Mock
-    implements PublicationDetailsBloc {}
+class MockPublicationDetailsBloc extends Mock implements PublicationDetailsBloc {}
 
 void main() {
   late MockPublicationDetailsBloc mockPublicationDetailsBloc;

@@ -125,14 +125,14 @@ print_header "Step 4: Formatting"
 if [ "$CI_MODE" = true ]; then
   # In CI, distinct check mode
   log_info "Checking formatting on all files..."
-  $DART_CMD format --output=none --set-exit-if-changed . || { 
-    log_error "Formatting issues found. Run 'dart format .' locally."; 
+  $DART_CMD format --line-length=120 --output=none --set-exit-if-changed . || { 
+    log_error "Formatting issues found. Run 'make format' or 'dart format --line-length=120 .' locally."; 
     exit 1; 
   }
 else
   # Locally, apply fixes
   log_info "Applying formatting..."
-  $DART_CMD format . 
+  $DART_CMD format --line-length=120 . 
 fi
 log_success "Formatting check passed."
 

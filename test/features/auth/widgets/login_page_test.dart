@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/auth/login_page.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/auth/auth_error_text.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
@@ -168,7 +168,7 @@ void main() {
 
     await tester.pumpWidget(buildSubject());
 
-    expect(find.byType(AuthErrorText), findsOneWidget);
+    expect(find.byType(InlineFeedbackText), findsOneWidget);
     expect(find.text('Login failed'), findsOneWidget);
     expect(find.text('Unexpected error'), findsNothing);
   });

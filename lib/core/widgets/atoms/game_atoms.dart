@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 
@@ -20,14 +21,14 @@ class GameRatingBadge extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Icon(Icons.star, color: AppColors.gameGold, size: 16),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppTheme.spacingXs),
         Text(rating.toStringAsFixed(1), style: AppTypography.labelLarge),
         if (reviewCount != null) ...[
-          const SizedBox(width: 4),
+          const SizedBox(width: AppTheme.spacingXs),
           Text(
             '($reviewCount)',
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.gameBrown.withOpacityValue(0.6),
+              color: AppColors.textMuted,
             ),
           ),
         ],
@@ -36,17 +37,21 @@ class GameRatingBadge extends StatelessWidget {
   }
 }
 
-/// A consistent label for showing game prices.
+/// A consistent label for showing prices. Generic atom; domain copy is passed via [leadingLabel] and [perUnit].
 class GamePriceLabel extends StatelessWidget {
   /// Creates a price label.
   const GamePriceLabel({
     required this.price,
+    this.leadingLabel = 'Desde',
     this.perUnit = '/ día',
     super.key,
   });
 
   /// The price value.
   final num price;
+
+  /// Leading label above the price (e.g., "Desde" for rental).
+  final String leadingLabel;
 
   /// The unit of the price (e.g., '/ día').
   final String perUnit;
@@ -58,9 +63,9 @@ class GamePriceLabel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Desde',
+          leadingLabel,
           style: AppTypography.labelSmall.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.6),
+            color: AppColors.textMuted,
             letterSpacing: 1,
           ),
         ),
@@ -72,11 +77,11 @@ class GamePriceLabel extends StatelessWidget {
               CurrencyFormatter.formatUYU(price),
               style: AppTypography.price,
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppTheme.spacingXs),
             Text(
               perUnit,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.7),
+                color: AppColors.textTertiary,
               ),
             ),
           ],

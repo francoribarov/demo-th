@@ -14,13 +14,11 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGetCategories extends Mock implements GetCategoriesUseCase {}
 
-class MockGetFilterShortcuts extends Mock
-    implements GetFilterShortcutsUseCase {}
+class MockGetFilterShortcuts extends Mock implements GetFilterShortcutsUseCase {}
 
 class MockGetPublications extends Mock implements GetPublicationsUseCase {}
 
-class MockFilterPublications extends Mock
-    implements FilterPublicationsUseCase {}
+class MockFilterPublications extends Mock implements FilterPublicationsUseCase {}
 
 void main() {
   late MockGetCategories mockGetCategories;

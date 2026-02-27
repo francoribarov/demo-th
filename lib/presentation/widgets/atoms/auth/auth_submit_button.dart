@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/button_loading_indicator.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
 
 /// Submit button with loading state for authentication forms.
+/// Uses [AppPrimaryButton] for consistent styling.
 class AuthSubmitButton extends StatelessWidget {
   /// Creates an auth submit button.
   const AuthSubmitButton({
@@ -23,9 +24,10 @@ class AuthSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
-      child: isLoading ? const ButtonLoadingIndicator() : Text(label),
+    return AppPrimaryButton(
+      label: label,
+      onPressed: onPressed,
+      isLoading: isLoading,
     );
   }
 }

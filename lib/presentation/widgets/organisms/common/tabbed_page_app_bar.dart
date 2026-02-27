@@ -36,7 +36,12 @@ class TabbedPageAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(64),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          padding: const EdgeInsets.fromLTRB(
+            AppTheme.spacingLg,
+            0,
+            AppTheme.spacingLg,
+            AppTheme.spacingMd,
+          ),
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.gameBrown.withOpacityValue(0.1),
@@ -49,10 +54,10 @@ class TabbedPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                 borderRadius: BorderRadius.circular(AppTheme.radiusXl),
               ),
               indicatorSize: TabBarIndicatorSize.tab,
-              labelColor: Colors.white,
+              labelColor: AppColors.primaryForeground,
               unselectedLabelColor: AppColors.gameBrown,
-              dividerColor: Colors.transparent,
-              overlayColor: WidgetStateProperty.all(Colors.transparent),
+              dividerColor: const Color(0x00000000),
+              overlayColor: WidgetStateProperty.all(const Color(0x00000000)),
             ),
           ),
         ),

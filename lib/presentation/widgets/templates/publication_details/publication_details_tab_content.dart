@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
@@ -59,13 +60,7 @@ class PublicationDetailsTabContent extends StatelessWidget {
           SurfaceCard(
             padding: const EdgeInsets.all(16),
             borderColor: AppColors.gameBrown.withOpacityValue(0.1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacityValue(0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: AppTheme.shadowMd,
             child: Column(
               children: [
                 GameDetailRow(

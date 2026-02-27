@@ -40,18 +40,18 @@ class ReviewStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Revisión', style: AppTypography.headlineMedium),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppTheme.spacingSm),
         Text(
           'Revisá que todo esté correcto antes de publicar',
           style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
+            color: AppColors.textTertiary,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppTheme.spacing2xl),
 
         // Preview card
         SurfaceCard(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppTheme.spacingLg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -70,21 +70,20 @@ class ReviewStep extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTheme.spacingLg),
 
               Text('Juego ID: $gameId', style: AppTypography.headlineMedium),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppTheme.spacingSm),
               Text(
                 description.isEmpty ? 'Sin descripción' : description,
                 style: AppTypography.bodyMedium,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 16),
-              if (condition != null)
-                InfoChip(icon: Icons.grade, label: condition!.label),
+              const SizedBox(height: AppTheme.spacingLg),
+              if (condition != null) InfoChip(icon: Icons.grade, label: condition!.label),
 
-              const Divider(height: 32),
+              const Divider(height: AppTheme.spacing3xl),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -94,7 +93,7 @@ class ReviewStep extends StatelessWidget {
                       Text(
                         'Precio',
                         style: AppTypography.labelSmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.6),
+                          color: AppColors.textMuted,
                         ),
                       ),
                       Text(
@@ -109,7 +108,7 @@ class ReviewStep extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 100),
+        const SizedBox(height: AppTheme.spacingScrollBottom),
       ],
     );
   }

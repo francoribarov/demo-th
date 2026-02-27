@@ -45,10 +45,12 @@ class MediaPlaceholder extends StatelessWidget {
         borderRadius: radius,
       ),
       child: Center(
-        child: Icon(
-          icon,
-          size: iconSize,
-          color: AppColors.mutedForeground,
+        child: ExcludeSemantics(
+          child: Icon(
+            icon,
+            size: iconSize,
+            color: AppColors.mutedForeground,
+          ),
         ),
       ),
     );

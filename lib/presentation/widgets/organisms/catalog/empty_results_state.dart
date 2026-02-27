@@ -23,21 +23,25 @@ class EmptyResultsState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppTheme.spacing3xl),
         child: SurfaceCard(
           borderRadius: BorderRadius.circular(AppTheme.radius3xl),
           borderColor: AppColors.gameBrown.withOpacityValue(0.4),
-          padding: const EdgeInsets.all(32),
-          child: StateFeedbackView(
-            variant: StateFeedbackVariant.empty,
-            padding: EdgeInsets.zero,
-            leading: const SizedBox.shrink(),
-            title: 'No encontramos juegos con estos filtros.',
-            message: 'Probá cambiar las fechas o borrar algunos filtros.',
-            primaryActionLabel: 'Cambiá las fechas',
-            onPrimaryAction: onChangeDates,
-            secondaryActionLabel: 'Borrá filtros',
-            onSecondaryAction: onClearFilters,
+          padding: const EdgeInsets.all(AppTheme.spacing3xl),
+          child: Semantics(
+            label:
+                'Sin resultados. No encontramos juegos con estos filtros. Probá cambiar las fechas o borrar algunos filtros.',
+            child: StateFeedbackView(
+              variant: StateFeedbackVariant.empty,
+              padding: EdgeInsets.zero,
+              leading: const SizedBox.shrink(),
+              title: 'No encontramos juegos con estos filtros.',
+              message: 'Probá cambiar las fechas o borrar algunos filtros.',
+              primaryActionLabel: 'Cambiá las fechas',
+              onPrimaryAction: onChangeDates,
+              secondaryActionLabel: 'Borrá filtros',
+              onSecondaryAction: onClearFilters,
+            ),
           ),
         ),
       ),

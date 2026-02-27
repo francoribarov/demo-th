@@ -46,16 +46,16 @@ class SearchHeader extends StatelessWidget {
     return Container(
       color: AppColors.card,
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 16,
-        bottom: 16,
-        left: 16,
-        right: 16,
+        top: MediaQuery.of(context).padding.top + AppTheme.spacingLg,
+        bottom: AppTheme.spacingLg,
+        left: AppTheme.spacingLg,
+        right: AppTheme.spacingLg,
       ),
       child: Row(
         children: [
           // Logo
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             child: Image.asset(
               'assets/images/dice_logo.png',
               height: 40,
@@ -66,13 +66,17 @@ class SearchHeader extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: AppColors.gameRust,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
-                child: const Icon(Icons.casino, color: Colors.white, size: 24),
+                child: const Icon(
+                  Icons.casino,
+                  color: AppColors.primaryForeground,
+                  size: 24,
+                ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppTheme.spacingMd),
 
           // Search pill
           Expanded(
@@ -80,8 +84,8 @@ class SearchHeader extends StatelessWidget {
               onTap: onTap,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+                  horizontal: AppTheme.spacingLg,
+                  vertical: AppTheme.spacingMd,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.card,
@@ -89,13 +93,7 @@ class SearchHeader extends StatelessWidget {
                   border: Border.all(
                     color: AppColors.gameBrown.withOpacityValue(0.2),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacityValue(0.08),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  boxShadow: AppTheme.shadowSm,
                 ),
                 child: Row(
                   children: [
@@ -107,11 +105,11 @@ class SearchHeader extends StatelessWidget {
                             'Buscá un juego de mesa',
                             style: AppTypography.labelLarge,
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppTheme.spacingXs / 2),
                           Text(
                             _pillSecondaryText,
                             style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.7),
+                              color: AppColors.textTertiary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -128,7 +126,7 @@ class SearchHeader extends StatelessWidget {
                       ),
                       child: const Icon(
                         Icons.search,
-                        color: Colors.white,
+                        color: AppColors.primaryForeground,
                         size: 16,
                       ),
                     ),

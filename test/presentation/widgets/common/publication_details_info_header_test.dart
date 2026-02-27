@@ -48,6 +48,7 @@ void main() {
                 body: PublicationDetailsInfoHeader(
                   publication: publication,
                   gameDetail: game,
+                  ownerDisplayName: 'Usuario owner-12345',
                   tabController: DefaultTabController.of(context),
                   onOwnerTap: () {},
                 ),
@@ -78,6 +79,7 @@ void main() {
                 body: PublicationDetailsInfoHeader(
                   publication: publication,
                   gameDetail: game,
+                  ownerDisplayName: 'Usuario owner-12345',
                   tabController: DefaultTabController.of(context),
                   onOwnerTap: () => tapped = true,
                 ),

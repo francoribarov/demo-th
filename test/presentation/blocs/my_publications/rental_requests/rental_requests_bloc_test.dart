@@ -11,14 +11,11 @@ import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.d
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetRentalRequestsUseCase extends Mock
-    implements GetRentalRequestsUseCase {}
+class MockGetRentalRequestsUseCase extends Mock implements GetRentalRequestsUseCase {}
 
-class MockAcceptRentalRequestUseCase extends Mock
-    implements AcceptRentalRequestUseCase {}
+class MockAcceptRentalRequestUseCase extends Mock implements AcceptRentalRequestUseCase {}
 
-class MockRejectRentalRequestUseCase extends Mock
-    implements RejectRentalRequestUseCase {}
+class MockRejectRentalRequestUseCase extends Mock implements RejectRentalRequestUseCase {}
 
 void main() {
   late MockGetRentalRequestsUseCase getRentalRequests;

@@ -19,7 +19,7 @@ class MyPublicationsErrorView extends StatelessWidget {
     return StateFeedbackView(
       variant: StateFeedbackVariant.error,
       leading: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppTheme.spacingXl),
         decoration: BoxDecoration(
           color: AppColors.error.withOpacityValue(0.1),
           shape: BoxShape.circle,
@@ -40,17 +40,6 @@ class MyPublicationsErrorView extends StatelessWidget {
       ),
       primaryActionLabel: 'Reintentar',
       onPrimaryAction: onRetry,
-      primaryActionStyle: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.gameRust,
-        foregroundColor: AppColors.primaryForeground,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 12,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        ),
-      ),
     );
   }
 }

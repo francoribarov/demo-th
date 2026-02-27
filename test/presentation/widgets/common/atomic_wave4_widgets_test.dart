@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/auth/auth_error_text.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/button_loading_indicator.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
 import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
@@ -155,17 +154,19 @@ void main() {
       await tester.pump();
       snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
       expect(find.text('warning-msg'), findsOneWidget);
-      expect(snackBar.backgroundColor, AppColors.gameRust);
+      expect(snackBar.backgroundColor, AppColors.warning);
     },
   );
 
-  testWidgets('AuthErrorText preserves destructive style compatibility', (
+  testWidgets('InlineFeedbackText error tone preserves destructive style', (
     tester,
   ) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
-          body: AuthErrorText(message: 'Auth failed'),
+          body: InlineFeedbackText(
+            message: 'Auth failed',
+          ),
         ),
       ),
     );

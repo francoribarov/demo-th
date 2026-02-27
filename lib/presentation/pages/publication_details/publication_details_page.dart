@@ -25,8 +25,7 @@ class PublicationDetailsPage extends StatefulWidget {
   State<PublicationDetailsPage> createState() => _PublicationDetailsPageState();
 }
 
-class _PublicationDetailsPageState extends State<PublicationDetailsPage>
-    with SingleTickerProviderStateMixin {
+class _PublicationDetailsPageState extends State<PublicationDetailsPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -68,9 +67,8 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
                 publication: publication,
                 isWishlisted: state.isWishlisted,
                 onBack: () => context.popOrGo(AppRoutes.home),
-                onToggleWishlist: () => context
-                    .read<PublicationDetailsBloc>()
-                    .add(const PublicationDetailsEvent.toggleWishlist()),
+                onToggleWishlist: () =>
+                    context.read<PublicationDetailsBloc>().add(const PublicationDetailsEvent.toggleWishlist()),
                 onShare: () => FeedbackMessenger.showInfo(
                   context,
                   message: 'Compartir próximamente',
@@ -86,6 +84,9 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
                       PublicationDetailsInfoHeader(
                         publication: publication,
                         gameDetail: gameDetail,
+                        ownerDisplayName: publication.ownerId.isEmpty
+                            ? 'Propietario'
+                            : 'Usuario ${publication.ownerId}',
                         tabController: _tabController,
                         onOwnerTap: () => context.goToGameOwner(publication.id),
                       ),
@@ -117,13 +118,10 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
                                     const PublicationDetailsEvent.checkAvailabilityPressed(),
                                   );
                                 },
-                                onViewRules: () =>
-                                    context.goToGameRules(publication.id),
-                                onOpenRecommendation:
-                                    (recommendedPublication) =>
-                                        context.goToPublication(
-                                          recommendedPublication.id,
-                                        ),
+                                onViewRules: () => context.goToGameRules(publication.id),
+                                onOpenRecommendation: (recommendedPublication) => context.goToPublication(
+                                  recommendedPublication.id,
+                                ),
                               ),
                               // Reviews tab
                               PublicationReviewsTabContent(

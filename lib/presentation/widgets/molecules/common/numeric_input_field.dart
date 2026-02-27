@@ -69,8 +69,7 @@ class NumericInputField extends StatelessWidget {
       variant: variant,
       isDense: isDense,
       contentPadding: contentPadding,
-      inputFormatters:
-          inputFormatters ?? [FilteringTextInputFormatter.digitsOnly],
+      inputFormatters: inputFormatters ?? [FilteringTextInputFormatter.digitsOnly],
       onChanged: (value) {
         onChanged?.call(value);
         onChangedValue?.call(int.tryParse(value.trim()));

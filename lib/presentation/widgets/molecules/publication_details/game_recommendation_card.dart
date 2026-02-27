@@ -30,13 +30,7 @@ class GameRecommendationCard extends StatelessWidget {
           color: AppColors.card,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacityValue(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: AppTheme.shadowMd,
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(

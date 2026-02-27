@@ -91,7 +91,7 @@ class FeedbackMessenger {
     return switch (tone) {
       FeedbackMessageTone.success => AppColors.success,
       FeedbackMessageTone.error => AppColors.destructive,
-      FeedbackMessageTone.warning => AppColors.gameRust,
+      FeedbackMessageTone.warning => AppColors.warning,
       FeedbackMessageTone.info => null,
     };
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_secondary_button.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/catalog/publication_card.dart';
 
 /// Section displaying publications available for rent today.
@@ -35,7 +37,7 @@ class AvailableTodaySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -46,31 +48,31 @@ class AvailableTodaySection extends StatelessWidget {
                     '¡Alquilá para hoy!',
                     style: AppTypography.headlineMedium,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppTheme.spacingXs),
                   Text(
                     'Listos para $todayLabel.',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.gameBrown.withOpacityValue(0.7),
+                      color: AppColors.textTertiary,
                     ),
                   ),
                 ],
               ),
-              OutlinedButton.icon(
+              AppSecondaryButton(
+                label: 'Ver más',
+                icon: Icons.chevron_right,
                 onPressed: onSeeMore,
-                icon: const Icon(Icons.chevron_right, size: 18),
-                label: const Text('Ver más'),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppTheme.spacingLg),
         SizedBox(
           height: 200,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
             itemCount: publications.take(8).length,
-            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            separatorBuilder: (_, _) => const SizedBox(width: AppTheme.spacingMd),
             itemBuilder: (context, index) {
               final publication = publications[index];
               return SizedBox(

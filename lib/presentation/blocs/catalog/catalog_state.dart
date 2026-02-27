@@ -59,4 +59,46 @@ abstract class CatalogState with _$CatalogState {
 
   /// Whether a date filter is active.
   bool get hasDateFilter => startDate != null && endDate != null;
+
+  /// Publications in the cooperative category (up to 4).
+  List<PublicationListing> get cooperativePublications => filteredPublications
+      .where(
+        (p) => p.game.categories.any(
+          (c) => c.name.toLowerCase().contains('cooper'),
+        ),
+      )
+      .take(4)
+      .toList();
+
+  /// Publications in the family category (up to 4).
+  List<PublicationListing> get familyPublications => filteredPublications
+      .where(
+        (p) => p.game.categories.any(
+          (c) => c.name.toLowerCase().contains('familiar'),
+        ),
+      )
+      .take(4)
+      .toList();
+
+  /// Publications in the party / fiesta category (up to 4).
+  List<PublicationListing> get partyPublications => filteredPublications
+      .where(
+        (p) => p.game.categories.any(
+          (c) => c.name.toLowerCase().contains('fiesta'),
+        ),
+      )
+      .take(4)
+      .toList();
+
+  /// Publications in the strategy / expert / deck-builder category (up to 4).
+  List<PublicationListing> get strategyPublications => filteredPublications
+      .where(
+        (p) => p.game.categories.any(
+          (c) => ['estrategia', 'experto', 'deck'].any(
+            (tag) => c.name.toLowerCase().contains(tag),
+          ),
+        ),
+      )
+      .take(4)
+      .toList();
 }

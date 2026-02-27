@@ -21,4 +21,6 @@ export 'publication_details/game_recommendation_card.dart';
 export 'publication_details/game_review_card.dart';
 export 'publication_details/publication_detail_row.dart';
 export 'publish/delivery_method_card.dart';
+export 'publish/delivery_method_selectable_tile.dart';
+export 'publish/price_section.dart';
 export 'publish/step_indicator.dart';

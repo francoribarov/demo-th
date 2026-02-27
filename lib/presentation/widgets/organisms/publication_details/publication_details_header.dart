@@ -28,12 +28,14 @@ class PublicationDetailsHeader extends StatelessWidget {
       actions: [
         AppBarIconAction(
           icon: isWishlisted ? Icons.favorite : Icons.favorite_border,
-          iconColor: isWishlisted ? Colors.red : AppColors.gameBrown,
+          iconColor: isWishlisted ? AppColors.destructive : AppColors.gameBrown,
+          tooltip: isWishlisted ? 'Quitar de favoritos' : 'Añadir a favoritos',
           withCircularBackground: true,
           onPressed: onToggleWishlist,
         ),
         AppBarIconAction(
           icon: Icons.share,
+          tooltip: 'Compartir',
           withCircularBackground: true,
           onPressed: onShare,
         ),
@@ -44,8 +46,7 @@ class PublicationDetailsHeader extends StatelessWidget {
           CachedNetworkImage(
             imageUrl: publication.heroImage,
             fit: BoxFit.cover,
-            placeholder: (context, url) =>
-                const ColoredBox(color: AppColors.gameCream),
+            placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
             errorWidget: (context, url, error) => const ColoredBox(
               color: AppColors.gameCream,
               child: Icon(Icons.image_not_supported),
@@ -57,8 +58,8 @@ class PublicationDetailsHeader extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacityValue(0.35),
-                  Colors.transparent,
+                  AppColors.shadow.withOpacityValue(0.35),
+                  const Color(0x00000000),
                   AppColors.background.withOpacityValue(0.95),
                 ],
                 stops: const [0, 0.55, 1],

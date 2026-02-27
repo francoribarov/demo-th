@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/suggestion_chip.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/common/selectable_chip.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/info_chip.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/label_value_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/media_upload_tile.dart';
@@ -256,14 +256,18 @@ void main() {
     expect(closeTapped, isTrue);
   });
 
-  testWidgets('SuggestionChip triggers tap callback', (tester) async {
+  testWidgets('SelectableChip suggestion variant triggers tap callback', (
+    tester,
+  ) async {
     var tapped = false;
 
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: SuggestionChip(
+          body: SelectableChip(
             label: 'Cooperativos',
+            isSelected: false,
+            variant: SelectableChipVariant.suggestion,
             onTap: () => tapped = true,
           ),
         ),

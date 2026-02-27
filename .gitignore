@@ -67,6 +67,10 @@ ios/.symlinks/
 *.env
 *.env.*
 
+# Format check temp files
+.tmp_check/
+.tmp_fmt.dart
+
 # Local agent guide (generated per workspace)
 AGENTS.md
 .freezed.dart

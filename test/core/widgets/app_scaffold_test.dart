@@ -45,7 +45,26 @@ void main() {
       routes: [
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
-            return AppScaffold(navigationShell: navigationShell);
+            return AppScaffold(
+              navigationShell: navigationShell,
+              onItemTapped: (index) {
+                const protectedIndexes = {1, 2, 3};
+                final targets = {
+                  0: AppRoutes.home,
+                  1: AppRoutes.myPublications,
+                  2: AppRoutes.publish,
+                  3: AppRoutes.profile,
+                };
+                if (protectedIndexes.contains(index) && !getIt<AuthBloc>().state.isAuthenticated) {
+                  context.goToLogin(from: targets[index]);
+                  return;
+                }
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
+            );
           },
           branches: [
             StatefulShellBranch(
@@ -60,8 +79,7 @@ void main() {
               routes: [
                 GoRoute(
                   path: AppRoutes.myPublications,
-                  builder: (_, _) =>
-                      const Scaffold(body: Text('my-publications-page')),
+                  builder: (_, _) => const Scaffold(body: Text('my-publications-page')),
                 ),
               ],
             ),
