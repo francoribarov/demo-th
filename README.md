@@ -44,7 +44,7 @@ The `pre-push` hook mirrors the Azure pipeline checks:
 
 And `pre-commit` runs fast staged-file checks:
 - `dart fix --apply` on staged `.dart` files (excluding generated files)
-- `dart format --line-length=120` on staged `.dart` files
+- `dart format --line-length=80` on staged `.dart` files
 - `flutter analyze` for staged `.dart` files
 
 ## API configuration
