@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -13,15 +12,15 @@ abstract class AuthService {
   @factoryMethod
   factory AuthService(Dio dio) = _AuthService;
 
-  @POST(ApiConstants.login)
+  @POST('/api/auth/login')
   Future<AuthResponse> login(@Body() Map<String, dynamic> body);
 
-  @POST(ApiConstants.register)
+  @POST('/api/auth/register')
   Future<AuthResponse> register(@Body() Map<String, dynamic> body);
 
-  @POST(ApiConstants.refreshToken)
+  @POST('/api/auth/refresh')
   Future<TokenResponse> refreshToken(@Body() Map<String, dynamic> body);
 
-  @POST(ApiConstants.logout)
+  @POST('/api/auth/logout')
   Future<void> logout();
 }

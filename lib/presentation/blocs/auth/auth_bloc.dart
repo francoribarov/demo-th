@@ -5,20 +5,19 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/login.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/logout.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/refresh_token.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/register.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 @lazySingleton
-
 /// BLoC orchestrating authentication state and form submissions.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   /// Creates an [AuthBloc] wired with auth use cases.
@@ -28,12 +27,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required Register register,
     required Logout logout,
     required RefreshToken refreshToken,
-  })  : _getAuthStatus = getAuthStatus,
-        _login = login,
-        _register = register,
-        _logout = logout,
-        _refreshToken = refreshToken,
-        super(const AuthState()) {
+  }) : _getAuthStatus = getAuthStatus,
+       _login = login,
+       _register = register,
+       _logout = logout,
+       _refreshToken = refreshToken,
+       super(const AuthState()) {
     on<_Started>(_onStarted);
     on<_LoginEmailChanged>(_onLoginEmailChanged);
     on<_LoginPasswordChanged>(_onLoginPasswordChanged);
@@ -53,8 +52,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     add(const AuthEvent.started());
   }
-
-  static final RegExp _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
   final GetAuthStatus _getAuthStatus;
   final Login _login;
@@ -125,16 +122,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final email = state.loginEmail.trim();
     final password = state.loginPassword;
 
-    final emailError = _validateEmail(email);
+    final emailError = validateEmail(email);
     if (emailError != null) {
       emit(state.copyWith(loginErrorMessage: emailError, errorMessage: null));
       return;
     }
 
-    final passwordError = _validatePassword(
-      password,
-      emptyMessage: AppStrings.authPasswordRequired,
-    );
+    final passwordError = validatePasswordMin8(password);
     if (passwordError != null) {
       emit(
         state.copyWith(loginErrorMessage: passwordError, errorMessage: null),
@@ -167,7 +161,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isSubmittingLogin: false,
           loginErrorMessage: _friendlyMessage(
             e,
-            fallback: AppStrings.authLoginError,
+            fallback: 'No pudimos iniciar sesión. Intenta nuevamente.',
           ),
         ),
       );
@@ -262,7 +256,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final username = state.registerUsername.trim();
     final location = state.registerLocation.trim();
 
-    final usernameError = _validateUsername(username);
+    final usernameError = validateUsernameRequired(username);
     if (usernameError != null) {
       emit(
         state.copyWith(registerErrorMessage: usernameError, errorMessage: null),
@@ -270,7 +264,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
-    final emailError = _validateEmail(email);
+    final emailError = validateEmail(email);
     if (emailError != null) {
       emit(
         state.copyWith(registerErrorMessage: emailError, errorMessage: null),
@@ -278,10 +272,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
-    final passwordError = _validatePassword(
-      password,
-      emptyMessage: AppStrings.authPasswordRequired,
-    );
+    final passwordError = validatePasswordMin8(password);
     if (passwordError != null) {
       emit(
         state.copyWith(registerErrorMessage: passwordError, errorMessage: null),
@@ -289,10 +280,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
 
-    if (password != confirmPassword) {
+    final confirmationError = validatePasswordConfirmation(
+      password: password,
+      confirmation: confirmPassword,
+    );
+    if (confirmationError != null) {
       emit(
         state.copyWith(
-          registerErrorMessage: AppStrings.authPasswordsDontMatch,
+          registerErrorMessage: confirmationError,
           errorMessage: null,
         ),
       );
@@ -330,7 +325,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           isSubmittingRegister: false,
           registerErrorMessage: _friendlyMessage(
             e,
-            fallback: AppStrings.authRegisterError,
+            fallback: 'No pudimos crear tu cuenta. Intenta nuevamente.',
           ),
         ),
       );
@@ -366,7 +361,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         state.copyWith(
           errorMessage: _friendlyMessage(
             e,
-            fallback: AppStrings.authRefreshError,
+            fallback: 'Error al refrescar sesión.',
           ),
         ),
       );
@@ -381,33 +376,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         registerErrorMessage: null,
       ),
     );
-  }
-
-  String? _validateEmail(String email) {
-    if (email.isEmpty) {
-      return AppStrings.authEmailRequired;
-    }
-    if (!_emailPattern.hasMatch(email)) {
-      return AppStrings.authEmailInvalid;
-    }
-    return null;
-  }
-
-  String? _validatePassword(String password, {required String emptyMessage}) {
-    if (password.isEmpty) {
-      return emptyMessage;
-    }
-    if (password.length < 8) {
-      return AppStrings.authPasswordTooShort;
-    }
-    return null;
-  }
-
-  String? _validateUsername(String username) {
-    if (username.isEmpty) {
-      return AppStrings.authNameRequired;
-    }
-    return null;
   }
 
   String _friendlyMessage(Object error, {required String fallback}) {

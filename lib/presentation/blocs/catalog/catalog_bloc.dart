@@ -8,6 +8,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/filter_publications_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_categories_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_filter_shortcuts_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publications_use_case.dart';
@@ -22,9 +23,11 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
     required GetPublicationsUseCase getPublications,
     required GetCategoriesUseCase getCategories,
     required GetFilterShortcutsUseCase getFilterShortcuts,
+    required FilterPublicationsUseCase filterPublications,
   })  : _getPublications = getPublications,
         _getCategories = getCategories,
         _getFilterShortcuts = getFilterShortcuts,
+        _filterPublications = filterPublications,
         super(const CatalogState()) {
     on<LoadGames>(_onLoadGames);
     on<SearchCatalog>(_onSearch);
@@ -38,6 +41,7 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
   final GetPublicationsUseCase _getPublications;
   final GetCategoriesUseCase _getCategories;
   final GetFilterShortcutsUseCase _getFilterShortcuts;
+  final FilterPublicationsUseCase _filterPublications;
 
   Future<void> _onLoadGames(LoadGames event, Emitter<CatalogState> emit) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
@@ -160,35 +164,17 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
   }
 
   void _applyFilters(Emitter<CatalogState> emit) {
-    var filtered = state.allPublications;
-
-    // 1. Text Query
-    if (state.query.isNotEmpty) {
-      final q = state.query.toLowerCase();
-      filtered = filtered
-          .where(
-            (p) =>
-                p.title.toLowerCase().contains(q) ||
-                p.game.categories.any((c) => c.name.toLowerCase().contains(q)),
-          )
-          .toList();
-    }
-
-    // 2. Category
-    if (state.selectedCategory != null) {
-      filtered = filtered
-          .where(
-            (p) =>
-                p.game.categories.any((c) => c.name == state.selectedCategory),
-          )
-          .toList();
-    }
-
-    // 3. Price Filter
-    if (state.filters.priceMax != null) {
-      filtered =
-          filtered.where((p) => p.price <= state.filters.priceMax!).toList();
-    }
+    final filtered = _filterPublications(
+      FilterPublicationsParams(
+        publications: state.allPublications,
+        query: state.query,
+        selectedCategory: state.selectedCategory,
+        filters: state.filters,
+        sortOption: state.sortOption,
+        startDate: state.startDate,
+        endDate: state.endDate,
+      ),
+    );
 
     emit(state.copyWith(isLoading: false, filteredPublications: filtered));
   }

@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
+import 'package:mobile_table_hopping/data/datasource/auth/auth_local_data_source.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
 import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
@@ -14,8 +13,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MockAuthRemoteDatasource extends Mock implements AuthRemoteDatasource {}
 
+class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
+
 void main() {
   late AuthRemoteDatasource remote;
+  late AuthLocalDataSource local;
   late SharedPreferences prefs;
   late TokenStorage tokenStorage;
   late AuthRepositoryImpl repository;
@@ -33,6 +35,7 @@ void main() {
   );
 
   setUpAll(() {
+    registerFallbackValue(userModel);
     registerFallbackValue(
       const LoginRequest(email: 'fallback@example.com', password: 'password'),
     );
@@ -54,7 +57,13 @@ void main() {
     prefs = await SharedPreferences.getInstance();
     tokenStorage = TokenStorage(prefs);
     remote = MockAuthRemoteDatasource();
-    repository = AuthRepositoryImpl(remote, tokenStorage, prefs);
+    local = MockAuthLocalDataSource();
+    repository = AuthRepositoryImpl(remote, tokenStorage, local);
+
+    // Setup default mock behaviors
+    when(() => local.saveUser(any())).thenAnswer((_) async {});
+    when(() => local.clearUser()).thenAnswer((_) async {});
+    when(() => local.getCachedUser()).thenReturn(null);
   });
 
   test('login persists tokens and caches user', () async {
@@ -71,11 +80,7 @@ void main() {
     expect(session.tokens.accessToken, 'access-token');
     expect(tokenStorage.getAccessToken(), 'access-token');
     expect(tokenStorage.getRefreshToken(), 'refresh-token');
-
-    final cachedUser = prefs.getString('auth_user');
-    expect(cachedUser, isNotNull);
-    final cachedJson = jsonDecode(cachedUser!) as Map<String, dynamic>;
-    expect(cachedJson['id'], 'user-1');
+    verify(() => local.saveUser(userModel)).called(1);
 
     verify(
       () => remote.login(
@@ -98,7 +103,7 @@ void main() {
 
     expect(session.tokens.refreshToken, 'refresh-token');
     expect(tokenStorage.getAccessToken(), 'access-token');
-    expect(prefs.getString('auth_user'), isNotNull);
+    verify(() => local.saveUser(userModel)).called(1);
 
     verify(
       () => remote.register(
@@ -144,12 +149,11 @@ void main() {
       ),
     );
     await tokenStorage.saveTokens('access-token', 'refresh-token');
-    await prefs.setString('auth_user', jsonEncode(userModel.toJson()));
 
     await repository.logout();
 
     expect(tokenStorage.getAccessToken(), isNull);
     expect(tokenStorage.getRefreshToken(), isNull);
-    expect(prefs.getString('auth_user'), isNull);
+    verify(() => local.clearUser()).called(1);
   });
 }

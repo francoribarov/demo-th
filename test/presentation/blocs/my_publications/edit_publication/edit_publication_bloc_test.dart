@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/services/image_upload_service.dart';
 import 'package:mobile_table_hopping/data/dto/my_publications/publication_detail_model.dart';
 import 'package:mobile_table_hopping/data/mapper/my_publications/publish_delivery_method_to_my_publications.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
@@ -16,7 +15,9 @@ import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publi
 import 'package:mobile_table_hopping/domain/usecase/my_publications/get_publication_detail_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publication_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/publish/get_delivery_methods_use_case.dart';
+import 'package:mobile_table_hopping/domain/usecase/upload/upload_images_use_case.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
+import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetPublicationDetailUseCase extends Mock
@@ -33,7 +34,9 @@ class MockGetGames extends Mock implements GetGamesUseCase {}
 class MockGetDeliveryMethods extends Mock
     implements GetDeliveryMethodsUseCase {}
 
-class MockImageUploadService extends Mock implements ImageUploadService {}
+class MockImagePickerGateway extends Mock implements ImagePickerGateway {}
+
+class MockUploadImages extends Mock implements UploadImagesUseCase {}
 
 void main() {
   late MockGetPublicationDetailUseCase getPublicationDetail;
@@ -41,7 +44,8 @@ void main() {
   late MockDeletePublicationUseCase deletePublication;
   late MockGetGames getGames;
   late MockGetDeliveryMethods getDeliveryMethods;
-  late MockImageUploadService imageUploadService;
+  late MockImagePickerGateway imagePickerGateway;
+  late MockUploadImages uploadImages;
 
   const tDomainPublication = PublicationDetail(
     id: 'p-1',
@@ -84,7 +88,8 @@ void main() {
     deletePublication = MockDeletePublicationUseCase();
     getGames = MockGetGames();
     getDeliveryMethods = MockGetDeliveryMethods();
-    imageUploadService = MockImageUploadService();
+    imagePickerGateway = MockImagePickerGateway();
+    uploadImages = MockUploadImages();
 
     when(() => getGames()).thenAnswer(
       (_) async => const Right<DomainException, List<Game>>([tGame]),
@@ -94,12 +99,12 @@ void main() {
         tPublishDeliveryMethod,
       ]),
     );
-    when(() => imageUploadService.pickImageFromGallery())
+    when(() => imagePickerGateway.pickImageFromGallery())
         .thenAnswer((_) async => null);
-    when(() => imageUploadService.pickMultipleImages())
+    when(() => imagePickerGateway.pickMultipleImages())
         .thenAnswer((_) async => []);
-    when(() => imageUploadService.uploadImages(any()))
-        .thenAnswer((_) async => []);
+    when(() => uploadImages(any<List<String>>()))
+        .thenAnswer((_) async => const Right<DomainException, List<String>>([]));
   });
 
   EditPublicationBloc buildBloc() => EditPublicationBloc(
@@ -108,7 +113,8 @@ void main() {
         deletePublication: deletePublication,
         getGames: getGames,
         getDeliveryMethods: getDeliveryMethods,
-        imageUploadService: imageUploadService,
+        imagePickerGateway: imagePickerGateway,
+        uploadImages: uploadImages,
       );
 
   blocTest<EditPublicationBloc, EditPublicationState>(

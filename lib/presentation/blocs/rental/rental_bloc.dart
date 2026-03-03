@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publication_by_id_use_case.dart';
@@ -12,16 +11,15 @@ part 'rental_event.dart';
 part 'rental_state.dart';
 
 @injectable
-
 /// Bloc coordinating rental confirmation state and side effects.
 class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
   RentalBloc({
     required GetPublicationByIdUseCase getPublicationById,
     required ConfirmRentalUseCase confirmRentalUseCase,
-  })  : _getPublicationById = getPublicationById,
-        _confirmRentalUseCase = confirmRentalUseCase,
-        super(const RentalState()) {
+  }) : _getPublicationById = getPublicationById,
+       _confirmRentalUseCase = confirmRentalUseCase,
+       super(const RentalState()) {
     on<_Started>(_onStarted);
     on<_StartDateChanged>(_onStartDateChanged);
     on<_EndDateChanged>(_onEndDateChanged);
@@ -57,7 +55,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       (error) => emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: '${AppStrings.errorLoadingGame}: ${error.message}',
+          errorMessage: 'Error al cargar el juego.: ${error.message}',
         ),
       ),
       (publication) => emit(
@@ -85,7 +83,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     // If start date is moved past end date, clear end date
     if (start != null && end != null && !end.isAfter(start)) {
       newEnd = null;
-      snackbar = AppStrings.rentalChooseLaterEnd;
+      snackbar = 'Elegí una fecha de fin posterior al inicio.';
     }
 
     final errorMessage = _validateDates(
@@ -99,13 +97,16 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       final startDate = DateTime.tryParse(newStart);
       if (startDate != null) {
         final minEndDate = startDate.add(const Duration(days: 2));
-        if (!state.publication!
-            .isAvailableFor(newStart, minEndDate.toIso8601String())) {
+        if (!state.publication!.isAvailableFor(
+          newStart,
+          minEndDate.toIso8601String(),
+        )) {
           return emit(
             state.copyWith(
               startDate: null,
               endDate: null,
-              snackbarMessage: AppStrings.rentalMinAvailability,
+              snackbarMessage:
+                  'El juego debe estar disponible por al menos 3 días.',
             ),
           );
         }
@@ -224,13 +225,17 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final ownerId = publication.ownerId;
     if (ownerId.isEmpty) {
       emit(
-        state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError),
+        state.copyWith(
+          snackbarMessage: 'No pudimos identificar al dueño del juego.',
+        ),
       );
       return;
     }
 
     if (start == null || end == null) {
-      emit(state.copyWith(snackbarMessage: AppStrings.rentalSelectDates));
+      emit(
+        state.copyWith(snackbarMessage: 'Seleccioná las fechas del alquiler.'),
+      );
       return;
     }
 
@@ -263,7 +268,8 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       (error) => emit(
         state.copyWith(
           isSubmitting: false,
-          errorMessage: '${AppStrings.rentalConfirmError}: ${error.message}',
+          errorMessage:
+              'No se pudo enviar la solicitud de alquiler.: ${error.message}',
         ),
       ),
       // Right: success case
@@ -351,17 +357,17 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     // Check minimum duration (3 days)
     final durationInDays = end.difference(start).inDays + 1;
     if (durationInDays < 3) {
-      return AppStrings.rentalMinDays;
+      return 'El alquiler mínimo es de 3 días (ej: Lun a Jue).';
     }
 
     // Check maximum duration (30 days)
     if (durationInDays > 30) {
-      return AppStrings.rentalMaxDays;
+      return 'El alquiler no puede superar los 30 días.';
     }
 
     // Check availability
     if (!publication.isAvailableFor(startDate, endDate)) {
-      return AppStrings.rentalUnavailableRange;
+      return 'Las fechas seleccionadas no están disponibles en su totalidad.';
     }
 
     return null;

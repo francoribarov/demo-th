@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/auth_interceptor.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/logging_interceptor.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/refresh_interceptor.dart';
@@ -15,7 +15,7 @@ class DioClient {
   /// Creates a configured Dio client with interceptors.
   DioClient(this._tokenStorage) : _dio = Dio() {
     final baseOptions = BaseOptions(
-      baseUrl: ApiConstants.baseUrl,
+      baseUrl: _resolveBaseUrl(),
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
@@ -140,10 +140,8 @@ class DioClient {
     if (data == null) return options;
 
     final baseOptions = options ?? Options();
-    final headers = Map<String, dynamic>.from(baseOptions.headers ?? {});
-    headers
-      ..remove('Content-Type')
-      ..remove('content-type');
+    final headers = Map<String, dynamic>.from(baseOptions.headers ?? {})
+      ..remove('Content-Type');
 
     final contentType = data is FormData
         ? Headers.multipartFormDataContentType
@@ -153,4 +151,30 @@ class DioClient {
       contentType: contentType,
     );
   }
+}
+
+String _resolveBaseUrl() {
+  const overrideUrl = String.fromEnvironment('API_BASE_URL');
+  if (overrideUrl.isNotEmpty) {
+    return _normalizeBaseUrl(overrideUrl);
+  }
+
+  if (kIsWeb) return 'http://localhost:8000';
+
+  switch (defaultTargetPlatform) {
+    case TargetPlatform.android:
+      return 'http://10.0.2.2:8000';
+    case TargetPlatform.iOS:
+      return 'http://localhost:8000';
+    case TargetPlatform.macOS:
+    case TargetPlatform.windows:
+    case TargetPlatform.linux:
+    case TargetPlatform.fuchsia:
+      return 'http://localhost:8000';
+  }
+}
+
+String _normalizeBaseUrl(String url) {
+  if (url.endsWith('/')) return url.substring(0, url.length - 1);
+  return url;
 }

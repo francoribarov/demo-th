@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
-import 'package:mobile_table_hopping/core/theme/app_colors.dart';
-import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
+import 'package:mobile_table_hopping/presentation/widgets/auth/auth_error_text.dart';
+import 'package:mobile_table_hopping/presentation/widgets/auth/auth_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/auth/auth_submit_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/auth/auth_switch_row.dart';
 
 /// Login screen for email/password authentication.
 class LoginPage extends StatefulWidget {
@@ -20,6 +23,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  bool _isPasswordVisible = false;
   bool _didClearErrors = false;
 
   @override
@@ -29,6 +39,29 @@ class _LoginPageState extends State<LoginPage> {
       _didClearErrors = true;
       context.read<AuthBloc>().add(const AuthEvent.clearErrors());
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _submitLogin({required bool isSubmitting}) {
+    if (isSubmitting) {
+      return;
+    }
+
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) {
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+    context.read<AuthBloc>().add(const AuthEvent.loginSubmitted());
   }
 
   @override
@@ -56,130 +89,154 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                final isSubmitting = state.isSubmittingLogin;
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final horizontalPadding = constraints.maxWidth >= 640
+                  ? constraints.maxWidth * 0.18
+                  : 24.0;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Bienvenido/a',
-                      style: AppTypography.headlineMedium,
-                      textAlign: TextAlign.center,
+              return BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  final isSubmitting = state.isSubmittingLogin;
+                  final errorMessage =
+                      state.loginErrorMessage ?? state.errorMessage;
+                  final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+
+                  return SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      16,
+                      horizontalPadding,
+                      16 + keyboardInset,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Ingresá tus datos para continuar.',
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.gameBrown.withOpacityValue(0.7),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    AutofillGroup(
-                      child: Column(
-                        children: [
-                          TextField(
-                            enabled: !isSubmitting,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            autofillHints: const [AutofillHints.email],
-                            autocorrect: false,
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              hintText: 'tu@email.com',
-                            ),
-                            onChanged: (email) => context.read<AuthBloc>().add(
-                                  AuthEvent.loginEmailChanged(email),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 32),
+                        Center(
+                          child: Image.asset(
+                            'assets/images/dice_logo.png',
+                            height: 64,
+                            width: 64,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        const AuthHeader(
+                          title: 'Bienvenido/a',
+                          subtitle: 'Ingresá tus datos para continuar.',
+                        ),
+                        const SizedBox(height: 32),
+                        Form(
+                          key: _formKey,
+                          autovalidateMode: AutovalidateMode.disabled,
+                          child: AutofillGroup(
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  key: const Key('loginEmailField'),
+                                  controller: _emailController,
+                                  focusNode: _emailFocusNode,
+                                  enabled: !isSubmitting,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  autofillHints: const [
+                                    AutofillHints.username,
+                                    AutofillHints.email,
+                                  ],
+                                  autocorrect: false,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Email',
+                                    hintText: 'tu@email.com',
+                                  ),
+                                  validator: (value) =>
+                                      validateEmail(value ?? ''),
+                                  onChanged: (email) =>
+                                      context.read<AuthBloc>().add(
+                                        AuthEvent.loginEmailChanged(email),
+                                      ),
+                                  onFieldSubmitted: (_) {
+                                    _passwordFocusNode.requestFocus();
+                                  },
                                 ),
-                          ),
-                          const SizedBox(height: 12),
-                          TextField(
-                            enabled: !isSubmitting,
-                            obscureText: true,
-                            textInputAction: TextInputAction.done,
-                            autofillHints: const [AutofillHints.password],
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            decoration: const InputDecoration(
-                              labelText: 'Contraseña',
-                            ),
-                            onChanged: (password) =>
-                                context.read<AuthBloc>().add(
-                                      AuthEvent.loginPasswordChanged(password),
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  key: const Key('loginPasswordField'),
+                                  controller: _passwordController,
+                                  focusNode: _passwordFocusNode,
+                                  enabled: !isSubmitting,
+                                  obscureText: !_isPasswordVisible,
+                                  textInputAction: TextInputAction.done,
+                                  autofillHints: const [AutofillHints.password],
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  decoration: InputDecoration(
+                                    labelText: 'Contraseña',
+                                    helperText: 'Mínimo 8 caracteres.',
+                                    suffixIcon: IconButton(
+                                      key: const Key(
+                                        'loginPasswordVisibilityButton',
+                                      ),
+                                      tooltip: _isPasswordVisible
+                                          ? 'Ocultar contraseña'
+                                          : 'Mostrar contraseña',
+                                      onPressed: isSubmitting
+                                          ? null
+                                          : () {
+                                              setState(() {
+                                                _isPasswordVisible =
+                                                    !_isPasswordVisible;
+                                              });
+                                            },
+                                      icon: Icon(
+                                        _isPasswordVisible
+                                            ? Icons.visibility_off_outlined
+                                            : Icons.visibility_outlined,
+                                      ),
                                     ),
-                            onSubmitted: (_) {
-                              if (!isSubmitting) {
-                                context.read<AuthBloc>().add(
-                                      const AuthEvent.loginSubmitted(),
-                                    );
-                              }
-                            },
+                                  ),
+                                  validator: (value) =>
+                                      validatePasswordMin8(value ?? ''),
+                                  onChanged: (password) =>
+                                      context.read<AuthBloc>().add(
+                                        AuthEvent.loginPasswordChanged(
+                                          password,
+                                        ),
+                                      ),
+                                  onFieldSubmitted: (_) =>
+                                      _submitLogin(isSubmitting: isSubmitting),
+                                ),
+                              ],
+                            ),
                           ),
+                        ),
+                        if (errorMessage != null) ...[
+                          const SizedBox(height: 8),
+                          AuthErrorText(message: errorMessage),
                         ],
-                      ),
-                    ),
-                    if (state.loginErrorMessage != null) ...[
-                      const SizedBox(height: 12),
-                      Text(
-                        state.loginErrorMessage!,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.destructive,
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(height: 24),
+                        AuthSubmitButton(
+                          key: const Key('loginSubmitButton'),
+                          label: 'Ingresar',
+                          isLoading: isSubmitting,
+                          onPressed: () =>
+                              _submitLogin(isSubmitting: isSubmitting),
                         ),
-                      ),
-                    ],
-                    if (state.errorMessage != null) ...[
-                      const SizedBox(height: 12),
-                      Text(
-                        state.errorMessage!,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.destructive,
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(height: 16),
+                        AuthSwitchRow(
+                          prompt: 'No tenés cuenta? ',
+                          actionLabel: 'Registrate',
+                          onAction: isSubmitting
+                              ? () {}
+                              : () => context.goToRegister(from: widget.from),
                         ),
-                      ),
-                    ],
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: isSubmitting
-                          ? null
-                          : () => context.read<AuthBloc>().add(
-                                const AuthEvent.loginSubmitted(),
-                              ),
-                      child: isSubmitting
-                          ? const SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text('Ingresar'),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: isSubmitting
-                          ? null
-                          : () {
-                              final from = widget.from;
-                              final encodedFrom = from != null
-                                  ? Uri.encodeComponent(from)
-                                  : null;
-                              final query = encodedFrom != null
-                                  ? '?from=$encodedFrom'
-                                  : '';
-                              context.go('${AppRoutes.register}$query');
-                            },
-                      child: const Text('Crear cuenta'),
-                    ),
-                  ],
-                );
-              },
-            ),
+                  );
+                },
+              );
+            },
           ),
         ),
       ),

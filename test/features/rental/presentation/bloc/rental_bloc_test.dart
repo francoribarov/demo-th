@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
@@ -63,10 +62,12 @@ void main() {
       act: (bloc) =>
           bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
       expect: () => [
-        isA<RentalState>().having((s) => s.endDate, 'endDate', null).having(
+        isA<RentalState>()
+            .having((s) => s.endDate, 'endDate', null)
+            .having(
               (s) => s.snackbarMessage,
               'message',
-              AppStrings.rentalMinDays,
+              'El alquiler mínimo es de 3 días (ej: Lun a Jue).',
             ),
       ],
     );
@@ -84,10 +85,12 @@ void main() {
       act: (bloc) =>
           bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
       expect: () => [
-        isA<RentalState>().having((s) => s.startDate, 'startDate', null).having(
+        isA<RentalState>()
+            .having((s) => s.startDate, 'startDate', null)
+            .having(
               (s) => s.snackbarMessage,
               'message',
-              AppStrings.rentalMinAvailability,
+              'El juego debe estar disponible por al menos 3 días.',
             ),
       ],
     );
@@ -108,7 +111,7 @@ void main() {
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
           'message',
-          AppStrings.rentalUnavailableRange,
+          'Las fechas seleccionadas no están disponibles en su totalidad.',
         ),
       ],
     );
@@ -128,7 +131,7 @@ void main() {
         isA<RentalState>().having(
           (s) => s.snackbarMessage,
           'message',
-          AppStrings.rentalMaxDays,
+          'El alquiler no puede superar los 30 días.',
         ),
       ],
     );
@@ -150,7 +153,7 @@ void main() {
             .having(
               (s) => s.snackbarMessage,
               'message',
-              AppStrings.rentalChooseLaterEnd,
+              'Elegí una fecha de fin posterior al inicio.',
             ),
       ],
     );
