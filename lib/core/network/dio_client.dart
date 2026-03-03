@@ -140,10 +140,8 @@ class DioClient {
     if (data == null) return options;
 
     final baseOptions = options ?? Options();
-    final headers = Map<String, dynamic>.from(baseOptions.headers ?? {});
-    headers
-      ..remove('Content-Type')
-      ..remove('content-type');
+    final headers = Map<String, dynamic>.from(baseOptions.headers ?? {})
+      ..remove('Content-Type');
 
     final contentType = data is FormData
         ? Headers.multipartFormDataContentType
