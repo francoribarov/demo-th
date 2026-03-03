@@ -150,8 +150,9 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Iniciá sesión'));
-    await tester.tap(find.text('Iniciá sesión'));
+    final goToLoginAction = find.text('Iniciá sesión');
+    await tester.ensureVisible(goToLoginAction);
+    await tester.tap(goToLoginAction);
     await tester.pumpAndSettle();
 
     expect(find.text('login:/publish'), findsOneWidget);
