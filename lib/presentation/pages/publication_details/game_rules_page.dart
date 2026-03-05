@@ -37,7 +37,9 @@ class _GameRulesPageState extends State<GameRulesPage> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.popOrGo('/games/${widget.gameId}'),
+                onPressed: () => context.popOrGo(
+                  AppRoutes.publicationDetailsPath(widget.gameId),
+                ),
               ),
             ),
             body: Center(
@@ -50,8 +52,9 @@ class _GameRulesPageState extends State<GameRulesPage> {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () =>
-                  context.popOrGo('/publications/${widget.gameId}'),
+              onPressed: () => context.popOrGo(
+                AppRoutes.publicationDetailsPath(widget.gameId),
+              ),
             ),
             title: Text('Reglas de ${game.title}'),
           ),

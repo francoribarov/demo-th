@@ -79,7 +79,9 @@ class UserProfilePage extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.popOrGo('/publication/$gameId'),
+              onPressed: () => context.popOrGo(
+                AppRoutes.publicationDetailsPath(gameId),
+              ),
             ),
             title: const Text('Perfil del dueño'),
           ),
@@ -234,8 +236,9 @@ class UserProfilePage extends StatelessWidget {
                           children: List.generate(5, (i) {
                             final stars = 5 - i;
                             final count = ratingBreakdown[stars] ?? 0;
-                            final percentage =
-                                totalReviews > 0 ? count / totalReviews : 0.0;
+                            final percentage = totalReviews > 0
+                                ? count / totalReviews
+                                : 0.0;
                             return ReviewRatingBar(
                               stars: stars,
                               percentage: percentage,

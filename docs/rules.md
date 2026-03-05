@@ -41,7 +41,7 @@
 - Keep tests small and focused on behavior, not implementation details.
 
 ## Quality
-- Format with `dart format --line-length=120`.
+- Format with `dart format --line-length=80`.
 - Run `make format`, `make analyze`, and `make test` before merging changes.
 - Avoid unused files or dead code; remove them if no longer needed.
 
