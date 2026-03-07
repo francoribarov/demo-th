@@ -28,13 +28,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _locationController = TextEditingController();
 
   final _nameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _confirmPasswordFocusNode = FocusNode();
-  final _locationFocusNode = FocusNode();
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -51,13 +49,11 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _locationController.dispose();
 
     _nameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
-    _locationFocusNode.dispose();
     super.dispose();
   }
 
@@ -301,24 +297,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                     isSubmitting: isSubmitting,
                                   ),
                                 ),
-                                // const SizedBox(height: 16),
-                                // TextFormField(
-                                //   key: const Key('registerLocationField'),
-                                //   controller: _locationController,
-                                //   focusNode: _locationFocusNode,
-                                //   enabled: !isSubmitting,
-                                //   textInputAction: TextInputAction.done,
-                                //   textCapitalization: TextCapitalization.words,
-                                //   autofillHints: const [AutofillHints.addressCity],
-                                //   decoration: const InputDecoration(
-                                //     labelText: 'Ubicación (opcional)',
-                                //     hintText: 'Ej: Palermo, CABA',
-                                //   ),
-                                //   onChanged: (location) => context.read<AuthBloc>().add(
-                                //     AuthEvent.registerLocationChanged(location),
-                                //   ),
-                                //   onFieldSubmitted: (_) => _submitRegister(isSubmitting: isSubmitting),
-                                // ),
                               ],
                             ),
                           ),
