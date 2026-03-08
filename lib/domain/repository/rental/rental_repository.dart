@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
 
 /// Repository interface for rental operations.
@@ -10,8 +11,6 @@ import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.
 /// Returns [Either<DomainException, T>] to provide explicit error handling:
 /// - [Left] contains [DomainException] on failure
 /// - [Right] contains the success value
-// Repository contracts may intentionally start with a single method.
-// ignore: one_member_abstracts
 abstract class RentalRepository {
   /// Confirms a rental request.
   ///
@@ -32,4 +31,14 @@ abstract class RentalRepository {
   Future<Either<DomainException, void>> confirmRental(
     ConfirmRentalParams params,
   );
+
+  /// Retrieves all rentals for the current user.
+  Future<Either<DomainException, List<RentalRequest>>> getMyRentals();
+
+  /// Initiates the drop-off process by uploading a proof image.
+  Future<Either<DomainException, void>> dropOffRental(
+    String rentalId,
+    String imagePath,
+  );
 }
+

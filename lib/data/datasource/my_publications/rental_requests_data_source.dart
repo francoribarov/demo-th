@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
-import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_model.dart';
+import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
 import 'package:mobile_table_hopping/data/services/my_publications/rental_requests_service.dart';
 
 /// Remote datasource contract for rental requests operations.
@@ -14,7 +14,7 @@ abstract class RentalRequestsRemoteDataSource {
   /// Returns:
   /// - [ApiResult.success] with list of rental request models if successful
   /// - [ApiResult.failure] with error details if the operation failed
-  Future<ApiResult<List<RentalRequestModel>>> getRentalRequests();
+  Future<ApiResult<List<MyRentalModel>>> getRentalRequests();
 
   /// Accepts a rental request.
   ///
@@ -59,8 +59,8 @@ class RentalRequestsRemoteDataSourceImpl extends BaseDataSource
   final RentalRequestsService _service;
 
   @override
-  Future<ApiResult<List<RentalRequestModel>>> getRentalRequests() {
-    return getStateOf<List<RentalRequestModel>>(
+  Future<ApiResult<List<MyRentalModel>>> getRentalRequests() {
+    return getStateOf<List<MyRentalModel>>(
       request: _service.getRentalRequests,
     );
   }

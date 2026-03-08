@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_model.dart';
+import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'rental_requests_service.g.dart';
@@ -25,7 +25,7 @@ abstract class RentalRequestsService {
   ///
   /// Throws [DioException] on network or server errors.
   @GET('/api/rentals/requests')
-  Future<List<RentalRequestModel>> getRentalRequests();
+  Future<List<MyRentalModel>> getRentalRequests();
 
   /// Accepts a rental request.
   ///

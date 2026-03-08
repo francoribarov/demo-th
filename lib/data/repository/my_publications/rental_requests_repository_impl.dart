@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/data/datasource/my_publications/rental_requests_data_source.dart';
-import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_model.dart';
+import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
 import 'package:mobile_table_hopping/domain/repository/my_publications/rental_requests_repository.dart';
 
@@ -30,7 +30,7 @@ class RentalRequestsRepositoryImpl extends BaseRepository
   @override
   Future<Either<DomainException, List<RentalRequest>>>
       getRentalRequests() async {
-    return executeDataSourceList<RentalRequestModel, RentalRequest>(
+    return executeDataSourceList<MyRentalModel, RentalRequest>(
       function: _dataSource.getRentalRequests,
     );
   }

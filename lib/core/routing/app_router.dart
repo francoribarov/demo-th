@@ -23,6 +23,7 @@ import 'package:mobile_table_hopping/presentation/pages/auth/register_page.dart'
 import 'package:mobile_table_hopping/presentation/pages/catalog/home_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/edit_publication_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/my_publications_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/my_rentals/my_rentals_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/profile/profile_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publication_details/game_reviews_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publication_details/game_rules_page.dart';
@@ -48,6 +49,9 @@ class AppRoutes {
 
   /// My PUBLICATIONS route.
   static const String myPublications = '/my-publications';
+
+  /// My rentals dashboard route.
+  static const String myRentals = '/my-rentals';
 
   /// Personal profile route.
   static const String profile = '/profile';
@@ -78,6 +82,9 @@ class AppRoutes {
 
   /// My publications route name.
   static const String myPublicationsName = 'my-publications';
+
+  /// My rentals dashboard route name.
+  static const String myRentalsName = 'my-rentals';
 
   /// Profile route name.
   static const String profileName = 'profile';
@@ -175,13 +182,14 @@ class AppRouter {
 
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
   static final _homeNavigatorKey = GlobalKey<NavigatorState>();
+  static final _myRentalsNavigatorKey = GlobalKey<NavigatorState>();
   static final _myPublicationsNavigatorKey = GlobalKey<NavigatorState>();
-  static final _publishNavigatorKey = GlobalKey<NavigatorState>();
   static final _profileNavigatorKey = GlobalKey<NavigatorState>();
 
   static bool _isProtectedLocation(String location) {
     if (location == AppRoutes.publish ||
         location == AppRoutes.myPublications ||
+        location == AppRoutes.myRentals ||
         location == AppRoutes.profile) {
       return true;
     }
@@ -237,6 +245,7 @@ class AppRouter {
           return AppScaffold(navigationShell: navigationShell);
         },
         branches: [
+          // 0 – Inicio
           StatefulShellBranch(
             navigatorKey: _homeNavigatorKey,
             routes: [
@@ -252,6 +261,20 @@ class AppRouter {
               ),
             ],
           ),
+          // 1 – Alquileres
+          StatefulShellBranch(
+            navigatorKey: _myRentalsNavigatorKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.myRentals,
+                name: AppRoutes.myRentalsName,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: MyRentalsPage(),
+                ),
+              ),
+            ],
+          ),
+          // 2 – Publicaciones
           StatefulShellBranch(
             navigatorKey: _myPublicationsNavigatorKey,
             routes: [
@@ -278,33 +301,7 @@ class AppRouter {
               ),
             ],
           ),
-          StatefulShellBranch(
-            navigatorKey: _publishNavigatorKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.publish,
-                name: AppRoutes.publishName,
-                pageBuilder: (context, state) => NoTransitionPage(
-                  child: MultiBlocProvider(
-                    providers: [
-                      BlocProvider<PublishBloc>(
-                        create: (_) =>
-                            getIt<PublishBloc>()
-                              ..add(const PublishEvent.started()),
-                      ),
-                      BlocProvider<DeliveryMethodBloc>(
-                        create: (_) => getIt<DeliveryMethodBloc>(),
-                      ),
-                      BlocProvider<ImageUploadBloc>(
-                        create: (_) => getIt<ImageUploadBloc>(),
-                      ),
-                    ],
-                    child: const PublishGamePage(),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // 3 – Perfil
           StatefulShellBranch(
             navigatorKey: _profileNavigatorKey,
             routes: [
@@ -335,6 +332,28 @@ class AppRouter {
           final from = state.uri.queryParameters['from'];
           return RegisterPage(from: from);
         },
+      ),
+      // Publish route (full-screen, no bottom nav)
+      GoRoute(
+        path: AppRoutes.publish,
+        name: AppRoutes.publishName,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider<PublishBloc>(
+              create: (_) =>
+                  getIt<PublishBloc>()
+                    ..add(const PublishEvent.started()),
+            ),
+            BlocProvider<DeliveryMethodBloc>(
+              create: (_) => getIt<DeliveryMethodBloc>(),
+            ),
+            BlocProvider<ImageUploadBloc>(
+              create: (_) => getIt<ImageUploadBloc>(),
+            ),
+          ],
+          child: const PublishGamePage(),
+        ),
       ),
       // Routes outside of shell (no bottom nav)
       GoRoute(

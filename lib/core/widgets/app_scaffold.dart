@@ -21,9 +21,9 @@ class AppScaffold extends StatelessWidget {
       case 0:
         return AppRoutes.home;
       case 1:
-        return AppRoutes.myPublications;
+        return AppRoutes.myRentals;
       case 2:
-        return AppRoutes.publish;
+        return AppRoutes.myPublications;
       case 3:
         return AppRoutes.profile;
       default:
@@ -82,16 +82,16 @@ class AppScaffold extends StatelessWidget {
                   onTap: () => _onItemTapped(context, 0),
                 ),
                 _NavItem(
-                  icon: Icons.casino_outlined,
-                  activeIcon: Icons.casino,
-                  label: 'Mis Publicaciones',
+                  icon: Icons.receipt_long_outlined,
+                  activeIcon: Icons.receipt_long,
+                  label: 'Alquileres',
                   isSelected: selectedIndex == 1,
                   onTap: () => _onItemTapped(context, 1),
                 ),
                 _NavItem(
-                  icon: Icons.add_circle_outline,
-                  activeIcon: Icons.add_circle,
-                  label: 'Publicar',
+                  icon: Icons.casino_outlined,
+                  activeIcon: Icons.casino,
+                  label: 'Publicaciones',
                   isSelected: selectedIndex == 2,
                   onTap: () => _onItemTapped(context, 2),
                 ),

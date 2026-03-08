@@ -3,7 +3,10 @@ import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/data/datasource/rental/rental_data_source.dart';
+import 'package:mobile_table_hopping/data/dto/rental/drop_off_body.dart';
+import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
 import 'package:mobile_table_hopping/data/mapper/rental/rental_to_data_model.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
 import 'package:mobile_table_hopping/domain/repository/rental/rental_repository.dart';
 
@@ -35,4 +38,28 @@ class RentalRepositoryImpl extends BaseRepository implements RentalRepository {
       function: () => _dataSource.createRental(body),
     );
   }
+
+  @override
+  Future<Either<DomainException, List<RentalRequest>>> getMyRentals() {
+    return executeDataSourceList<MyRentalModel, RentalRequest>(
+      function: _dataSource.getMyRentals,
+    );
+  }
+
+  @override
+  Future<Either<DomainException, void>> dropOffRental(
+    String rentalId,
+    String imagePath,
+  ) {
+    return executeVoidDataSource(
+      function: () => _dataSource.dropOffRental(
+        rentalId,
+        DropOffBody(
+          dropOffDate: DateTime.now().toIso8601String().split('T').first,
+          images: [imagePath],
+        ),
+      ),
+    );
+  }
 }
+
