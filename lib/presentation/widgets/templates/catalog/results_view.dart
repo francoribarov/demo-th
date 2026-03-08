@@ -114,14 +114,11 @@ class ResultsView extends StatelessWidget {
           child: RefreshIndicator(
             onRefresh: onRefresh,
             color: AppColors.gameRust,
-            child: GridView.builder(
+            child: ListView.separated(
               padding: const EdgeInsets.all(AppTheme.spacingLg),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 0.85,
-                mainAxisSpacing: AppTheme.spacingLg,
-              ),
               itemCount: filteredPublications.length,
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: AppTheme.spacingLg),
               itemBuilder: (context, index) {
                 final publication = filteredPublications[index];
                 return PublicationCard(

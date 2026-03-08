@@ -60,18 +60,21 @@ class MyPublicationsGrid extends StatelessWidget {
             AppTheme.spacingLg,
             AppTheme.spacingScrollBottom,
           ),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              childAspectRatio: 1.35,
-              mainAxisSpacing: AppTheme.spacingLg,
-            ),
+          sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final publication = publications[index];
-                return PublicationCard(
+                final card = PublicationCard(
                   publication: publication,
                   onTap: () => onEditPublication(publication.id),
+                );
+
+                if (index == publications.length - 1) {
+                  return card;
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
+                  child: card,
                 );
               },
               childCount: publications.length,
