@@ -64,6 +64,51 @@ void main() {
     );
   }
 
+  Finder startDateButtonFinder() {
+    return find.descendant(
+      of: find.byType(AvailabilityDateSelector),
+      matching: find.text('Inicio'),
+    );
+  }
+
+  Future<void> openDateRangePicker(WidgetTester tester) async {
+    await tester.tap(startDateButtonFinder().first);
+    await tester.pumpAndSettle();
+    expect(find.byType(DateRangePickerDialog), findsOneWidget);
+  }
+
+  Future<void> switchToInputMode(WidgetTester tester) async {
+    final outlinedIcon = find.byIcon(Icons.edit_outlined);
+    final filledIcon = find.byIcon(Icons.edit);
+    if (outlinedIcon.evaluate().isNotEmpty) {
+      await tester.tap(outlinedIcon.first);
+    } else if (filledIcon.evaluate().isNotEmpty) {
+      await tester.tap(filledIcon.first);
+    }
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> confirmDateRangeDialog(WidgetTester tester) async {
+    final saveLabels = ['Guardar', 'ACEPTAR', 'Aceptar', 'OK'];
+    for (final label in saveLabels) {
+      final finder = find.widgetWithText(TextButton, label);
+      if (finder.evaluate().isNotEmpty) {
+        await tester.tap(finder.first);
+        await tester.pumpAndSettle();
+        return;
+      }
+    }
+
+    final textButtons = find.descendant(
+      of: find.byType(DateRangePickerDialog),
+      matching: find.byType(TextButton),
+    );
+    if (textButtons.evaluate().isNotEmpty) {
+      await tester.tap(textButtons.last);
+      await tester.pumpAndSettle();
+    }
+  }
+
   group('RentalConfirmPage Calendar Logic', () {
     testWidgets('should open range picker and Jan 5 should be enabled', (
       tester,
@@ -77,9 +122,7 @@ void main() {
       await tester.ensureVisible(selector);
       await tester.pumpAndSettle();
 
-      // Tap the Inicio button (specifically the one with text 'Inicio')
-      await tester.tap(find.text('Inicio'));
-      await tester.pumpAndSettle();
+      await openDateRangePicker(tester);
 
       expect(find.text('5'), findsWidgets);
     });
@@ -95,39 +138,18 @@ void main() {
         await tester.ensureVisible(selector);
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Inicio'));
-        await tester.pumpAndSettle();
+        await openDateRangePicker(tester);
 
-        // Switch to Input Mode to avoid calendar scrolling / visibility issues
-        try {
-          await tester.tap(find.byIcon(Icons.edit_outlined));
-        } on Object catch (_) {
-          await tester.tap(find.byIcon(Icons.edit));
-        }
-        await tester.pumpAndSettle();
+        await switchToInputMode(tester);
 
-        // Enter valid future dates (tPublication is available 2024-2030)
-        // Format for es_UY is likely dd/mm/yyyy
-        // Input fields: Start Date, End Date.
-        final inputs = find.byType(TextField);
-        expect(inputs, findsNWidgets(2));
+        final inputs = find.byType(EditableText);
+        expect(inputs, findsAtLeastNWidgets(2));
 
         await tester.enterText(inputs.first, '10/06/2026');
         await tester.enterText(inputs.last, '14/06/2026');
         await tester.pumpAndSettle();
 
-        // Heuristic: The positive action button (Save/OK) is usually the last TextButton in the dialog.
-        final textButtons = find.byType(TextButton);
-        if (tester.widgetList(textButtons).isNotEmpty) {
-          await tester.tap(textButtons.last);
-        } else {
-          // Fallback if no TextButton found (unlikely in Material dialog)
-          debugPrint(
-            'Warning: No TextButton found for date picker save action',
-          );
-        }
-
-        await tester.pumpAndSettle();
+        await confirmDateRangeDialog(tester);
 
         verify(
           () => mockRentalBloc.add(any(that: isA<RentalEvent>())),

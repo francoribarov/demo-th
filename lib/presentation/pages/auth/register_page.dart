@@ -31,13 +31,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _locationController = TextEditingController();
 
   final _nameFocusNode = FocusNode();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _confirmPasswordFocusNode = FocusNode();
-  final _locationFocusNode = FocusNode();
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
@@ -54,13 +52,11 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _locationController.dispose();
 
     _nameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
-    _locationFocusNode.dispose();
     super.dispose();
   }
 
