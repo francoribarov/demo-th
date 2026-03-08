@@ -13,7 +13,6 @@ enum AuthStatus {
 }
 
 @freezed
-
 /// State for authentication and auth-related forms.
 abstract class AuthState with _$AuthState {
   /// Creates the current authentication state snapshot.

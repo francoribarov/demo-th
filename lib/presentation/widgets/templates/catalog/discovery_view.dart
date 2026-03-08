@@ -85,7 +85,8 @@ class DiscoveryView extends StatelessWidget {
           if (filteredPublications.isNotEmpty) ...[
             PublicationSection(
               title: 'Recomendados para vos',
-              description: 'Nuestra mezcla favorita de clásicos y estrenos recientes.',
+              description:
+                  'Nuestra mezcla favorita de clásicos y estrenos recientes.',
               publications: filteredPublications.take(6).toList(),
               variant: PublicationSectionVariant.carousel,
               onPublicationTap: onPublicationTap,
@@ -114,7 +115,8 @@ class DiscoveryView extends StatelessWidget {
           _buildCategorySection(
             context,
             title: 'Para jugar en familia',
-            description: 'Reglas simples y partidas ágiles para todas las edades.',
+            description:
+                'Reglas simples y partidas ágiles para todas las edades.',
             publications: familyPublications,
             variant: PublicationSectionVariant.grid,
           ),
@@ -132,7 +134,8 @@ class DiscoveryView extends StatelessWidget {
           _buildCategorySection(
             context,
             title: 'Noches estratégicas',
-            description: 'Opciones para quienes buscan desafíos bien profundos.',
+            description:
+                'Opciones para quienes buscan desafíos bien profundos.',
             publications: strategyPublications,
             variant: PublicationSectionVariant.grid,
           ),

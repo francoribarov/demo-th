@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Shared removable photo tile with optional primary badge.
 class RemovablePhotoTile extends StatelessWidget {
@@ -26,20 +27,16 @@ class RemovablePhotoTile extends StatelessWidget {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: borderRadius ?? BorderRadius.circular(AppTheme.radiusMd),
+          borderRadius:
+              borderRadius ?? BorderRadius.circular(AppTheme.radiusMd),
           child: Image.network(
             imageUrl,
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
-            errorBuilder: (context, error, stackTrace) => ColoredBox(
-              color: AppColors.muted.withOpacityValue(0.2),
-              child: const Center(
-                child: Icon(
-                  Icons.broken_image,
-                  color: AppColors.mutedForeground,
-                ),
-              ),
+            errorBuilder: (context, error, stackTrace) => MediaPlaceholder(
+              borderRadius:
+                  borderRadius ?? BorderRadius.circular(AppTheme.radiusMd),
             ),
           ),
         ),

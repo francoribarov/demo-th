@@ -19,6 +19,7 @@ class AppBarIconAction extends StatelessWidget {
     this.backgroundColor,
     this.withCircularBackground = false,
     this.padding = const EdgeInsets.all(AppTheme.spacingSm),
+    this.style,
   });
 
   final IconData icon;
@@ -29,6 +30,7 @@ class AppBarIconAction extends StatelessWidget {
   final Color? backgroundColor;
   final bool withCircularBackground;
   final EdgeInsetsGeometry padding;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,7 @@ class AppBarIconAction extends StatelessWidget {
     return IconButton(
       tooltip: tooltip,
       onPressed: onPressed,
+      style: style,
       icon: Semantics(
         label: semanticLabel,
         button: true,

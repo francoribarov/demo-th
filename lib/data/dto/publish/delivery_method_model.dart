@@ -45,16 +45,16 @@ sealed class DeliveryMethodModel
 
   @override
   DeliveryMethod toDomainModel() => DeliveryMethod(
-        id: id,
-        deliveryType: deliveryType,
-        price: price,
-        address: address,
-        addressName: addressName,
-        addressNumber: addressNumber,
-        additionalNotes: additionalNotes,
-        initPickupTime: initPickupTime,
-        finishPickupTime: finishPickupTime,
-        createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
-        updatedAt: updatedAt != null ? DateTime.tryParse(updatedAt!) : null,
-      );
+    id: id,
+    deliveryType: deliveryType,
+    price: price,
+    address: address,
+    addressName: addressName,
+    addressNumber: addressNumber,
+    additionalNotes: additionalNotes,
+    initPickupTime: initPickupTime,
+    finishPickupTime: finishPickupTime,
+    createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
+    updatedAt: updatedAt != null ? DateTime.tryParse(updatedAt!) : null,
+  );
 }

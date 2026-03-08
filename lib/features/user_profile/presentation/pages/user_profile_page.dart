@@ -7,6 +7,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/molecules/review_widgets.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/common/rating_summary_card.dart';
 
 /// User profile page matching UserProfile.tsx
@@ -63,21 +64,23 @@ class UserProfilePage extends StatelessWidget {
           (
             name: 'Diego M.',
             rating: 5.0,
-            comment: 'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
+            comment:
+                'Muy recomendable. La comunicación fue rápida y el juego estaba impecable.',
             date: 'hace 1 mes',
           ),
           (
             name: 'Camila S.',
             rating: 4.0,
-            comment: 'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
+            comment:
+                'Buen servicio, el juego estaba completo. La entrega demoró un poco pero todo bien.',
             date: 'hace 1 mes',
           ),
         ];
 
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+            leading: AppBarIconAction(
+              icon: Icons.arrow_back,
               onPressed: () => context.popOrGo(
                 AppRoutes.publicationDetailsPath(gameId),
               ),

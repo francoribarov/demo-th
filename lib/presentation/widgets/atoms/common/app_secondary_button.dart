@@ -14,6 +14,7 @@ class AppSecondaryButton extends StatelessWidget {
     this.loadingChild,
     this.icon,
     this.minimumSize,
+    this.style,
   });
 
   /// Button label text.
@@ -33,12 +34,20 @@ class AppSecondaryButton extends StatelessWidget {
 
   /// Optional minimum size.
   final Size? minimumSize;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
+    final minimumSizeStyle = minimumSize == null
+        ? null
+        : OutlinedButton.styleFrom(minimumSize: minimumSize);
+    final resolvedStyle = style == null
+        ? minimumSizeStyle
+        : style!.merge(minimumSizeStyle);
+
     return OutlinedButton(
       onPressed: isLoading ? null : onPressed,
-      style: minimumSize != null ? OutlinedButton.styleFrom(minimumSize: minimumSize) : null,
+      style: resolvedStyle,
       child: isLoading
           ? (loadingChild ?? const ButtonLoadingIndicator())
           : icon != null

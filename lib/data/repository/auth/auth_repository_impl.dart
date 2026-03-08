@@ -12,7 +12,6 @@ import 'package:mobile_table_hopping/domain/model/auth/user.dart';
 import 'package:mobile_table_hopping/domain/repository/auth/auth_repository.dart';
 
 @LazySingleton(as: AuthRepository)
-
 /// Default implementation of [AuthRepository].
 class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   /// Creates an [AuthRepositoryImpl].

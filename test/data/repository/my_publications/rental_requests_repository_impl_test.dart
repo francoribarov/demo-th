@@ -7,7 +7,8 @@ import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_mod
 import 'package:mobile_table_hopping/data/repository/my_publications/rental_requests_repository_impl.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockRentalRequestsRemoteDataSource extends Mock implements RentalRequestsRemoteDataSource {}
+class MockRentalRequestsRemoteDataSource extends Mock
+    implements RentalRequestsRemoteDataSource {}
 
 void main() {
   late MockRentalRequestsRemoteDataSource dataSource;

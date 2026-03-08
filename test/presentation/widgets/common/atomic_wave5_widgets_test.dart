@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/catalog/empty_results_state.dart';
 import 'package:mobile_table_hopping/presentation/widgets/templates/common/wizard_scaffold.dart';
 
@@ -39,6 +40,8 @@ void main() {
       await tester.tap(find.text('Continuar'));
       await tester.pump();
       expect(primaryTapped, isTrue);
+      expect(find.byType(AppPrimaryButton), findsOneWidget);
+      expect(find.byType(AppSecondaryButton), findsOneWidget);
     },
   );
 
@@ -60,10 +63,11 @@ void main() {
     );
 
     expect(find.text('Algo salió mal'), findsOneWidget);
+    expect(find.byType(AppPrimaryButton), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    final saveButton = tester.widget<ElevatedButton>(
-      find.byType(ElevatedButton),
+    final saveButton = tester.widget<AppPrimaryButton>(
+      find.byType(AppPrimaryButton),
     );
     expect(saveButton.onPressed, isNull);
   });

@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_bar_icon_action.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/sliver_page_app_bar.dart';
 
 class PublicationDetailsHeader extends StatelessWidget {
@@ -46,10 +46,12 @@ class PublicationDetailsHeader extends StatelessWidget {
           CachedNetworkImage(
             imageUrl: publication.heroImage,
             fit: BoxFit.cover,
-            placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
-            errorWidget: (context, url, error) => const ColoredBox(
-              color: AppColors.gameCream,
-              child: Icon(Icons.image_not_supported),
+            placeholder: (context, url) =>
+                const ColoredBox(color: AppColors.gameCream),
+            errorWidget: (context, url, error) => const MediaPlaceholder(
+              icon: Icons.image_not_supported,
+              backgroundColor: AppColors.gameCream,
+              iconColor: AppColors.gameBrown,
             ),
           ),
           DecoratedBox(

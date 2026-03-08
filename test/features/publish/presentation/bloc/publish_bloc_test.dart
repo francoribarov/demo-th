@@ -75,7 +75,8 @@ void main() {
     blocTest<PublishBloc, PublishState>(
       'updates gameId and isStepValid status',
       build: () => publishBloc,
-      act: (bloc) => bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
+      act: (bloc) =>
+          bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
       expect: () => [
         const PublishState(gameId: 'game-uuid-123'),
       ],

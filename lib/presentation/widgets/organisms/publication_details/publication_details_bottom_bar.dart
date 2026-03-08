@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
-import 'package:mobile_table_hopping/core/widgets/atoms/game_atoms.dart';
+import 'package:mobile_table_hopping/core/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Bottom bar for the game details page with price and rent button.
 class PublicationDetailsBottomBar extends StatelessWidget {

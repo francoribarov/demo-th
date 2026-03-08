@@ -22,17 +22,17 @@ sealed class GameRulesModel
       _$GameRulesModelFromJson(json);
 
   factory GameRulesModel.fromEntity(GameRules? entity) => GameRulesModel(
-        videoUrl: entity?.videoUrl ?? '',
-        ruleCompleteUrl: entity?.ruleCompleteUrl ?? '',
-        summaryRules: entity?.summaryRules ?? '',
-      );
+    videoUrl: entity?.videoUrl ?? '',
+    ruleCompleteUrl: entity?.ruleCompleteUrl ?? '',
+    summaryRules: entity?.summaryRules ?? '',
+  );
 
   @override
   GameRules toDomainModel() => GameRules(
-        videoUrl: videoUrl,
-        ruleCompleteUrl: ruleCompleteUrl,
-        summaryRules: summaryRules,
-      );
+    videoUrl: videoUrl,
+    ruleCompleteUrl: ruleCompleteUrl,
+    summaryRules: summaryRules,
+  );
 }
 
 /// Data transfer object for game review
@@ -51,12 +51,12 @@ sealed class GameReviewModel with _$GameReviewModel {
       _$GameReviewModelFromJson(json);
 
   GameReview toDomainModel() => GameReview(
-        id: id,
-        userId: '', // Not provided in public details
-        rating: rating,
-        comment: comment,
-        userName: username,
-      );
+    id: id,
+    userId: '', // Not provided in public details
+    rating: rating,
+    comment: comment,
+    userName: username,
+  );
 }
 
 /// Data transfer object for Game entity
@@ -83,34 +83,34 @@ sealed class GameModel with _$GameModel implements BaseDtoResponse<Game> {
       _$GameModelFromJson(json);
 
   factory GameModel.fromEntity(Game game) => GameModel(
-        id: game.id,
-        title: game.title,
-        rating: game.rating,
-        reviews: [], // Not supported in reverse mapping yet
-        description: game.description,
-        players: game.players,
-        difficulty: game.difficulty,
-        categories: game.categories.map(GameCategoryModel.fromEntity).toList(),
-        images: game.images.map((url) => GameImageModel(url: url)).toList(),
-        duration: game.duration,
-        rules: GameRulesModel.fromEntity(game.rules),
-      );
+    id: game.id,
+    title: game.title,
+    rating: game.rating,
+    reviews: [], // Not supported in reverse mapping yet
+    description: game.description,
+    players: game.players,
+    difficulty: game.difficulty,
+    categories: game.categories.map(GameCategoryModel.fromEntity).toList(),
+    images: game.images.map((url) => GameImageModel(url: url)).toList(),
+    duration: game.duration,
+    rules: GameRulesModel.fromEntity(game.rules),
+  );
 
   @override
   Game toDomainModel() => Game(
-        id: id,
-        title: title,
-        categories: categories.map((c) => c.toDomainModel()).toList(),
-        images: images.map((i) => i.url).toList(),
-        rating: rating,
-        reviewsCount: reviews.length,
-        description: description,
-        duration: duration,
-        players: players,
-        difficulty: difficulty,
-        rules: rules.toDomainModel(),
-        reviews: reviews.map((r) => r.toDomainModel()).toList(),
-      );
+    id: id,
+    title: title,
+    categories: categories.map((c) => c.toDomainModel()).toList(),
+    images: images.map((i) => i.url).toList(),
+    rating: rating,
+    reviewsCount: reviews.length,
+    description: description,
+    duration: duration,
+    players: players,
+    difficulty: difficulty,
+    rules: rules.toDomainModel(),
+    reviews: reviews.map((r) => r.toDomainModel()).toList(),
+  );
 }
 
 /// Data transfer object for category
@@ -142,12 +142,12 @@ sealed class GameCategoryModel
 
   @override
   GameCategory toDomainModel() => GameCategory(
-        id: id,
-        name: name,
-        icon: icon,
-        query: query,
-        description: description,
-      );
+    id: id,
+    name: name,
+    icon: icon,
+    query: query,
+    description: description,
+  );
 }
 
 /// Data transfer object for filter shortcut
@@ -171,13 +171,13 @@ sealed class FilterShortcutModel
 
   @override
   FilterShortcut toDomainModel() => FilterShortcut(
-        id: id,
-        name: name,
-        icon: icon,
-        type: type,
-        query: query,
-        value: value,
-      );
+    id: id,
+    name: name,
+    icon: icon,
+    type: type,
+    query: query,
+    value: value,
+  );
 }
 
 /// Data transfer object for game images

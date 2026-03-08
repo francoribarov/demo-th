@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_bar_icon_action.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Shared sliver app bar wrapper for publication detail-like headers.
 class SliverPageAppBar extends StatelessWidget {

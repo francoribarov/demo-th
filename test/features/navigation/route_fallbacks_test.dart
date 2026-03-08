@@ -12,11 +12,14 @@ import 'package:mobile_table_hopping/presentation/pages/publication_details/game
 import 'package:mobile_table_hopping/presentation/pages/publication_details/game_rules_page.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGameRulesBloc extends MockBloc<GameRulesEvent, GameRulesState> implements GameRulesBloc {}
+class MockGameRulesBloc extends MockBloc<GameRulesEvent, GameRulesState>
+    implements GameRulesBloc {}
 
-class MockGameReviewsBloc extends MockBloc<GameReviewsEvent, GameReviewsState> implements GameReviewsBloc {}
+class MockGameReviewsBloc extends MockBloc<GameReviewsEvent, GameReviewsState>
+    implements GameReviewsBloc {}
 
-class MockUserProfileBloc extends MockBloc<UserProfileEvent, UserProfileState> implements UserProfileBloc {}
+class MockUserProfileBloc extends MockBloc<UserProfileEvent, UserProfileState>
+    implements UserProfileBloc {}
 
 void main() {
   const gameId = '42';

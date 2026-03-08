@@ -27,18 +27,18 @@ class PublicationsQueryParams {
   final int limit;
 
   Map<String, String> toQueryMap() => <String, String>{
-        'q': ?query,
-        'category': ?category,
-        'players': ?players,
-        'duration': ?duration,
-        if (priceMin != null) 'price_min': priceMin.toString(),
-        if (priceMax != null) 'price_max': priceMax.toString(),
-        'start_date': ?startDate,
-        'end_date': ?endDate,
-        'sort_by': ?sortBy,
-        'page': page.toString(),
-        'limit': limit.toString(),
-      };
+    'q': ?query,
+    'category': ?category,
+    'players': ?players,
+    'duration': ?duration,
+    if (priceMin != null) 'price_min': priceMin.toString(),
+    if (priceMax != null) 'price_max': priceMax.toString(),
+    'start_date': ?startDate,
+    'end_date': ?endDate,
+    'sort_by': ?sortBy,
+    'page': page.toString(),
+    'limit': limit.toString(),
+  };
 }
 
 /// Request params wrapper for "available today" query.
@@ -59,9 +59,9 @@ class RecommendedPublicationsQueryParams {
   final int limit;
 
   Map<String, String> toQueryMap() => <String, String>{
-        'game_id': gameId,
-        'limit': limit.toString(),
-      };
+    'game_id': gameId,
+    'limit': limit.toString(),
+  };
 }
 
 /// Request params wrapper for publication listings query.
@@ -96,13 +96,13 @@ class SearchGamesQueryParams {
   final String? sortBy;
 
   Map<String, String> toQueryMap() => <String, String>{
-        'q': ?query,
-        'players': ?players,
-        'duration': ?duration,
-        'difficulty': ?difficulty,
-        'category': ?category,
-        'start_date': ?startDate,
-        'end_date': ?endDate,
-        'sort_by': ?sortBy,
-      };
+    'q': ?query,
+    'players': ?players,
+    'duration': ?duration,
+    'difficulty': ?difficulty,
+    'category': ?category,
+    'start_date': ?startDate,
+    'end_date': ?endDate,
+    'sort_by': ?sortBy,
+  };
 }

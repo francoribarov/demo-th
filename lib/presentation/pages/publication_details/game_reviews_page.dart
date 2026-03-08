@@ -5,7 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/widgets/molecules/review_widgets.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_reviews_bloc.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/selectable_chip.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/common/rating_summary_card.dart';
 
 /// Game reviews page matching GameReviews.tsx
@@ -32,8 +32,8 @@ class GameReviewsPage extends StatelessWidget {
         if (game == null) {
           return Scaffold(
             appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
+              leading: AppBarIconAction(
+                icon: Icons.arrow_back,
                 onPressed: () => context.popOrGo(
                   AppRoutes.publicationDetailsPath(gameId),
                 ),
@@ -56,8 +56,8 @@ class GameReviewsPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+            leading: AppBarIconAction(
+              icon: Icons.arrow_back,
               onPressed: () => context.popOrGo(
                 AppRoutes.publicationDetailsPath(gameId),
               ),

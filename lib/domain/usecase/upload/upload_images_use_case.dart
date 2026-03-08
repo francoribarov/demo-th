@@ -4,7 +4,6 @@ import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/domain/repository/upload/upload_repository.dart';
 
 @injectable
-
 /// Use case for uploading multiple images.
 class UploadImagesUseCase {
   /// Creates an [UploadImagesUseCase].

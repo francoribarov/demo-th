@@ -12,6 +12,8 @@ class MediaPlaceholder extends StatelessWidget {
     this.height,
     this.borderRadius,
     this.backgroundOpacity = 0.2,
+    this.backgroundColor,
+    this.iconColor,
     super.key,
   });
 
@@ -33,6 +35,12 @@ class MediaPlaceholder extends StatelessWidget {
   /// Placeholder background opacity over [AppColors.muted].
   final double backgroundOpacity;
 
+  /// Optional solid background color. Overrides [backgroundOpacity] behavior.
+  final Color? backgroundColor;
+
+  /// Optional icon color.
+  final Color? iconColor;
+
   @override
   Widget build(BuildContext context) {
     final radius = borderRadius;
@@ -41,7 +49,9 @@ class MediaPlaceholder extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.muted.withOpacityValue(backgroundOpacity),
+        color:
+            backgroundColor ??
+            AppColors.muted.withOpacityValue(backgroundOpacity),
         borderRadius: radius,
       ),
       child: Center(
@@ -49,7 +59,7 @@ class MediaPlaceholder extends StatelessWidget {
           child: Icon(
             icon,
             size: iconSize,
-            color: AppColors.mutedForeground,
+            color: iconColor ?? AppColors.mutedForeground,
           ),
         ),
       ),

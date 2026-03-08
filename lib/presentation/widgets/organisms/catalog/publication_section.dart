@@ -89,7 +89,8 @@ class PublicationSection extends StatelessWidget {
                 horizontal: AppTheme.spacingLg,
               ),
               itemCount: publications.length,
-              separatorBuilder: (_, _) => const SizedBox(width: AppTheme.spacingMd),
+              separatorBuilder: (_, _) =>
+                  const SizedBox(width: AppTheme.spacingMd),
               itemBuilder: (context, index) {
                 final publication = publications[index];
                 return SizedBox(

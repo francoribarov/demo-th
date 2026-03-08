@@ -33,7 +33,7 @@ class DeliveryMethodRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<DomainException, List<DeliveryMethod>>>
-      getDeliveryMethods() async {
+  getDeliveryMethods() async {
     return executeDataSourceList<DeliveryMethodModel, DeliveryMethod>(
       function: _dataSource.getDeliveryMethods,
     );

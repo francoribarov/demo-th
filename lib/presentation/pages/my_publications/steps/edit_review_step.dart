@@ -6,8 +6,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/media_placeholder.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/label_value_row.dart';
 
 /// Final review step before submitting publication changes.
@@ -109,7 +108,8 @@ class EditReviewStep extends StatelessWidget {
                     LabelValueRow(
                       leadingIcon: Icons.photo_library_outlined,
                       label: 'Fotos',
-                      value: '${images.length} imagen${images.length != 1 ? 'es' : ''}',
+                      value:
+                          '${images.length} imagen${images.length != 1 ? 'es' : ''}',
                     ),
 
                     if (description.isNotEmpty) ...[
@@ -178,13 +178,15 @@ class EditReviewStep extends StatelessWidget {
       return Image.network(
         heroUrl,
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(iconSize: 48),
+        errorBuilder: (_, error, stackTrace) =>
+            const MediaPlaceholder(iconSize: 48),
       );
     } else {
       return Image.file(
         File(heroUrl),
         fit: BoxFit.cover,
-        errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(iconSize: 48),
+        errorBuilder: (_, error, stackTrace) =>
+            const MediaPlaceholder(iconSize: 48),
       );
     }
   }

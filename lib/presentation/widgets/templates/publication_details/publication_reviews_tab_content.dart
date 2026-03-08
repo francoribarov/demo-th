@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/publication_details/game_review_card.dart';
 
 class PublicationReviewsTabContent extends StatelessWidget {
@@ -40,7 +40,9 @@ class PublicationReviewsTabContent extends StatelessWidget {
                     Row(
                       children: List.generate(5, (i) {
                         return Icon(
-                          i < gameDetail.rating.floor() ? Icons.star : Icons.star_border,
+                          i < gameDetail.rating.floor()
+                              ? Icons.star
+                              : Icons.star_border,
                           color: AppColors.gameGold,
                           size: 16,
                         );
@@ -69,17 +71,13 @@ class PublicationReviewsTabContent extends StatelessWidget {
           }),
 
           // See all reviews
-          OutlinedButton(
+          AppSecondaryButton(
             onPressed: onViewAllReviews,
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(
-                double.infinity,
-                48,
-              ),
+            minimumSize: const Size(
+              double.infinity,
+              48,
             ),
-            child: const Text(
-              'Ver todas las reseñas',
-            ),
+            label: 'Ver todas las reseñas',
           ),
 
           const SizedBox(height: 100),

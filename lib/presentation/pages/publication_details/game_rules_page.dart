@@ -5,7 +5,9 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_rules_bloc.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/info_chip.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Game rules page matching GameRules.tsx
 class GameRulesPage extends StatelessWidget {
@@ -31,8 +33,8 @@ class GameRulesPage extends StatelessWidget {
         if (game == null) {
           return Scaffold(
             appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
+              leading: AppBarIconAction(
+                icon: Icons.arrow_back,
                 onPressed: () => context.popOrGo(
                   AppRoutes.publicationDetailsPath(gameId),
                 ),
@@ -46,8 +48,8 @@ class GameRulesPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+            leading: AppBarIconAction(
+              icon: Icons.arrow_back,
               onPressed: () => context.popOrGo(
                 AppRoutes.publicationDetailsPath(gameId),
               ),
@@ -181,21 +183,16 @@ class GameRulesPage extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // PDF download
-                OutlinedButton.icon(
+                AppSecondaryButton(
                   onPressed: () {
-                    ScaffoldMessenger.of(
+                    FeedbackMessenger.showInfo(
                       context,
-                    ).showSnackBar(
-                      const SnackBar(
-                        content: Text('Descarga de PDF próximamente'),
-                      ),
+                      message: 'Descarga de PDF próximamente',
                     );
                   },
-                  icon: const Icon(Icons.picture_as_pdf),
-                  label: const Text('Descargar manual completo (PDF)'),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                  ),
+                  icon: Icons.picture_as_pdf,
+                  label: 'Descargar manual completo (PDF)',
+                  minimumSize: const Size(double.infinity, 48),
                 ),
 
                 const SizedBox(height: 100),

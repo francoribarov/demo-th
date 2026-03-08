@@ -66,7 +66,8 @@ class HomePage extends StatelessWidget {
                         onRefresh: () async {
                           context.read<CatalogBloc>().add(const LoadGames());
                         },
-                        onPublicationTap: (publication) => context.goToPublication(publication.id),
+                        onPublicationTap: (publication) =>
+                            context.goToPublication(publication.id),
                         onCategoryTap: (categoryName) {
                           context.read<CatalogBloc>().add(
                             SelectCategory(categoryName),
@@ -77,7 +78,8 @@ class HomePage extends StatelessWidget {
                         categories: state.categories,
                         filterShortcuts: state.filterShortcuts,
                         filteredPublications: state.filteredPublications,
-                        availableTodayPublications: state.availableTodayPublications,
+                        availableTodayPublications:
+                            state.availableTodayPublications,
                         cooperativePublications: state.cooperativePublications,
                         familyPublications: state.familyPublications,
                         partyPublications: state.partyPublications,
@@ -90,7 +92,8 @@ class HomePage extends StatelessWidget {
                             SelectCategory(category),
                           );
                         },
-                        onShortcutSelected: (shortcut) => _handleShortcut(context, shortcut),
+                        onShortcutSelected: (shortcut) =>
+                            _handleShortcut(context, shortcut),
                         onSeeMoreToday: () {
                           final today = DateFormatter.toIsoString(
                             DateTime.now(),
@@ -99,7 +102,8 @@ class HomePage extends StatelessWidget {
                             SetDates(startDate: today, endDate: today),
                           );
                         },
-                        onPublicationTap: (publication) => context.goToPublication(publication.id),
+                        onPublicationTap: (publication) =>
+                            context.goToPublication(publication.id),
                         onPublicationCategoryTap: (categoryName) {
                           context.read<CatalogBloc>().add(
                             SelectCategory(categoryName),
@@ -134,7 +138,9 @@ class HomePage extends StatelessWidget {
       },
       onSurprise: () {
         // Random pick from filtered publications
-        final pubs = state.filteredPublications.isNotEmpty ? state.filteredPublications : state.allPublications;
+        final pubs = state.filteredPublications.isNotEmpty
+            ? state.filteredPublications
+            : state.allPublications;
         if (pubs.isNotEmpty) {
           final random = pubs[DateTime.now().millisecond % pubs.length];
           context.goToPublication(random.id);

@@ -28,11 +28,11 @@ sealed class PublicationImageModel
 
   @override
   PublicationImage toDomainModel() => PublicationImage(
-        url: url,
-        type: type,
-        width: width,
-        height: height,
-      );
+    url: url,
+    type: type,
+    width: width,
+    height: height,
+  );
 }
 
 /// Data transfer object for game images within publications
@@ -54,11 +54,11 @@ sealed class GameImageModel
 
   @override
   GameImage toDomainModel() => GameImage(
-        url: url,
-        type: type,
-        width: width,
-        height: height,
-      );
+    url: url,
+    type: type,
+    width: width,
+    height: height,
+  );
 }
 
 /// Data transfer object for publication list items
@@ -82,25 +82,25 @@ sealed class PublicationListItemModel
 
   @override
   PublicationListItem toDomainModel() => PublicationListItem(
-        id: id,
-        description: description,
-        condition: condition,
-        price: price,
-        images: images.map((i) => i.toDomainModel()).toList(),
-        game: game.toDomainModel(),
-      );
+    id: id,
+    description: description,
+    condition: condition,
+    price: price,
+    images: images.map((i) => i.toDomainModel()).toList(),
+    game: game.toDomainModel(),
+  );
 
   /// Flatten publication + nested game into a Game entity for backwards compatibility
   Game toGameEntity() => Game(
-        id: id, // We use publication ID as the flattened Game ID for legacy tracking
-        title: game.title,
-        categories: game.categories.map((c) => c.toDomainModel()).toList(),
-        description: description,
-        duration: game.duration,
-        players: game.players,
-        difficulty: game.difficulty,
-        rules: game.rules.toDomainModel(),
-      );
+    id: id, // We use publication ID as the flattened Game ID for legacy tracking
+    title: game.title,
+    categories: game.categories.map((c) => c.toDomainModel()).toList(),
+    description: description,
+    duration: game.duration,
+    players: game.players,
+    difficulty: game.difficulty,
+    rules: game.rules.toDomainModel(),
+  );
 }
 
 /// Data transfer object for publication details
@@ -128,13 +128,13 @@ sealed class PublicationDetailModel
 
   /// Flatten detailed publication into a Game entity
   Game toGameEntity() => Game(
-        id: id,
-        title: game.title,
-        categories: game.categories.map((c) => c.toDomainModel()).toList(),
-        description: description,
-        duration: game.duration,
-        players: game.players,
-        difficulty: game.difficulty,
-        rules: game.rules.toDomainModel(),
-      );
+    id: id,
+    title: game.title,
+    categories: game.categories.map((c) => c.toDomainModel()).toList(),
+    description: description,
+    duration: game.duration,
+    players: game.players,
+    difficulty: game.difficulty,
+    rules: game.rules.toDomainModel(),
+  );
 }

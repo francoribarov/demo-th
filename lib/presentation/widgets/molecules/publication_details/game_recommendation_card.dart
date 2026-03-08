@@ -4,6 +4,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// A small card for recommending other games.
 class GameRecommendationCard extends StatelessWidget {
@@ -24,46 +25,45 @@ class GameRecommendationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: 140,
-        decoration: BoxDecoration(
-          color: AppColors.card,
+        child: SurfaceCard(
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+          borderColor: AppColors.gameBrown.withOpacityValue(0.1),
           boxShadow: AppTheme.shadowMd,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CachedNetworkImage(
-              imageUrl: publication.heroImage,
-              height: 100,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    publication.title,
-                    style: AppTypography.labelMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    publication.game.players,
-                    style: AppTypography.labelSmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CachedNetworkImage(
+                imageUrl: publication.heroImage,
+                height: 100,
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      publication.title,
+                      style: AppTypography.labelMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      publication.game.players,
+                      style: AppTypography.labelSmall,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

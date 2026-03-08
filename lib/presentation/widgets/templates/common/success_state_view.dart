@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Shared success-state full-page template.
 class SuccessStateView extends StatelessWidget {
@@ -90,21 +91,18 @@ class SuccessStateView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 48),
-              ElevatedButton(
+              AppPrimaryButton(
+                label: primaryActionLabel,
                 onPressed: onPrimaryAction,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 56),
-                ),
-                child: Text(primaryActionLabel),
+                minimumSize: const Size(double.infinity, 56),
               ),
-              if (secondaryActionLabel != null && onSecondaryAction != null) ...[
+              if (secondaryActionLabel != null &&
+                  onSecondaryAction != null) ...[
                 const SizedBox(height: 16),
-                OutlinedButton(
+                AppSecondaryButton(
+                  label: secondaryActionLabel!,
                   onPressed: onSecondaryAction,
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),
-                  ),
-                  child: Text(secondaryActionLabel!),
+                  minimumSize: const Size(double.infinity, 56),
                 ),
               ],
             ],

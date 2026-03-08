@@ -82,7 +82,8 @@ void main() {
         ),
         GoRoute(
           path: '/publications/:id',
-          builder: (context, state) => Text('publication ${state.pathParameters['id']}'),
+          builder: (context, state) =>
+              Text('publication ${state.pathParameters['id']}'),
         ),
       ],
     );
@@ -112,7 +113,8 @@ void main() {
         ),
         GoRoute(
           path: '/publications/:id',
-          builder: (context, state) => Text('publication ${state.pathParameters['id']}'),
+          builder: (context, state) =>
+              Text('publication ${state.pathParameters['id']}'),
         ),
       ],
     );

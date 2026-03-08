@@ -80,13 +80,19 @@ class _PublishGamePageState extends State<PublishGamePage> {
                         onGameIdChanged: (v) => context.read<PublishBloc>().add(
                           PublishEvent.gameIdChanged(v),
                         ),
-                        onGameSearchChanged: (v) => context.read<PublishBloc>().add(PublishEvent.searchGames(v)),
-                        onGameSearchCleared: () => context.read<PublishBloc>().add(
-                          const PublishEvent.searchGames(''),
-                        ),
-                        onDescriptionChanged: (v) =>
-                            context.read<PublishBloc>().add(PublishEvent.descriptionChanged(v)),
-                        onConditionChanged: (v) => context.read<PublishBloc>().add(PublishEvent.conditionChanged(v)),
+                        onGameSearchChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.searchGames(v)),
+                        onGameSearchCleared: () =>
+                            context.read<PublishBloc>().add(
+                              const PublishEvent.searchGames(''),
+                            ),
+                        onDescriptionChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.descriptionChanged(v)),
+                        onConditionChanged: (v) => context
+                            .read<PublishBloc>()
+                            .add(PublishEvent.conditionChanged(v)),
                       ),
                       PhotosStep(
                         images: imageState.images,
@@ -94,23 +100,27 @@ class _PublishGamePageState extends State<PublishGamePage> {
                         onAddImage: () => context.read<ImageUploadBloc>().add(
                           const ImageUploadEvent.pickAndUpload(),
                         ),
-                        onRemoveImage: (index) =>
-                            context.read<ImageUploadBloc>().add(ImageUploadEvent.imageRemoved(index)),
+                        onRemoveImage: (index) => context
+                            .read<ImageUploadBloc>()
+                            .add(ImageUploadEvent.imageRemoved(index)),
                       ),
                       PriceStep(
                         formVersion: publishState.formVersion,
                         price: publishState.price,
                         deliveryMethods: deliveryState.selectedMethods,
-                        availableDeliveryMethods: deliveryState.availableMethods,
+                        availableDeliveryMethods:
+                            deliveryState.availableMethods,
                         onPriceChanged: (v) => context.read<PublishBloc>().add(
                           PublishEvent.priceChanged(v),
                         ),
-                        onToggleDeliveryMethod: (method) => context.read<DeliveryMethodBloc>().add(
-                          DeliveryMethodEvent.methodToggled(method),
-                        ),
-                        onAddDeliveryMethod: (method) => context.read<DeliveryMethodBloc>().add(
-                          DeliveryMethodEvent.methodCreated(method),
-                        ),
+                        onToggleDeliveryMethod: (method) =>
+                            context.read<DeliveryMethodBloc>().add(
+                              DeliveryMethodEvent.methodToggled(method),
+                            ),
+                        onAddDeliveryMethod: (method) =>
+                            context.read<DeliveryMethodBloc>().add(
+                              DeliveryMethodEvent.methodCreated(method),
+                            ),
                       ),
                       ReviewStep(
                         gameId: publishState.gameId,
@@ -122,8 +132,11 @@ class _PublishGamePageState extends State<PublishGamePage> {
                     ],
                   ),
                   inlineErrorMessage: publishState.errorMessage,
-                  primaryLabel: publishState.currentStep == 3 ? 'Publicar' : 'Siguiente',
-                  onPrimaryPressed: (!publishState.isStepValid || publishState.isSubmitting)
+                  primaryLabel: publishState.currentStep == 3
+                      ? 'Publicar'
+                      : 'Siguiente',
+                  onPrimaryPressed:
+                      (!publishState.isStepValid || publishState.isSubmitting)
                       ? null
                       : () {
                           if (publishState.currentStep == 3) {
@@ -139,7 +152,9 @@ class _PublishGamePageState extends State<PublishGamePage> {
                             );
                           }
                         },
-                  secondaryLabel: publishState.currentStep > 0 ? 'Anterior' : null,
+                  secondaryLabel: publishState.currentStep > 0
+                      ? 'Anterior'
+                      : null,
                   onSecondaryPressed: publishState.currentStep > 0
                       ? () => context.read<PublishBloc>().add(
                           const PublishEvent.previousStep(),

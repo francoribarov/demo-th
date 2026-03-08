@@ -103,7 +103,8 @@ void main() {
       ),
     ).called(1);
     verify(
-      () => authBloc.add(const AuthEvent.registerPasswordChanged('password123')),
+      () =>
+          authBloc.add(const AuthEvent.registerPasswordChanged('password123')),
     ).called(1);
     verify(
       () => authBloc.add(

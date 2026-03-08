@@ -45,7 +45,8 @@ class DeliveryMethodSelectableTile extends StatelessWidget {
               vertical: AppTheme.spacingXs,
             ),
             decoration: BoxDecoration(
-              color: (data.priceLabelColor ?? AppColors.gameBrown).withOpacityValue(0.2),
+              color: (data.priceLabelColor ?? AppColors.gameBrown)
+                  .withOpacityValue(0.2),
               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
             child: Text(

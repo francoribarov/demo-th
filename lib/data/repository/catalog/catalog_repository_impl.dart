@@ -43,17 +43,17 @@ class CatalogRepositoryImpl extends BaseRepository
     return executeDataSourceList<PublicationListingModel, PublicationListing>(
       function: () => _dataSource.getPublications(
         PublicationsQueryParams(
-        query: query,
-        category: category,
-        players: players,
-        duration: duration,
-        priceMin: priceMin,
-        priceMax: priceMax,
-        startDate: startDate,
-        endDate: endDate,
-        sortBy: sortBy,
-        page: page,
-        limit: limit,
+          query: query,
+          category: category,
+          players: players,
+          duration: duration,
+          priceMin: priceMin,
+          priceMax: priceMax,
+          startDate: startDate,
+          endDate: endDate,
+          sortBy: sortBy,
+          page: page,
+          limit: limit,
         ),
       ),
     );
@@ -70,7 +70,7 @@ class CatalogRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<DomainException, List<PublicationListing>>>
-      getPublicationsAvailableToday({
+  getPublicationsAvailableToday({
     int limit = 10,
   }) async {
     return executeDataSourceList<PublicationListingModel, PublicationListing>(
@@ -82,7 +82,7 @@ class CatalogRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<DomainException, List<PublicationListing>>>
-      getRecommendedPublications(String gameId) async {
+  getRecommendedPublications(String gameId) async {
     return executeDataSourceList<PublicationListingModel, PublicationListing>(
       function: () => _dataSource.getRecommendedPublications(
         RecommendedPublicationsQueryParams(gameId: gameId),
@@ -92,7 +92,7 @@ class CatalogRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<DomainException, List<PublicationListing>>>
-      getMyPublications() async {
+  getMyPublications() async {
     return executeDataSourceList<PublicationListingModel, PublicationListing>(
       function: _dataSource.getMyPublications,
     );
@@ -107,7 +107,7 @@ class CatalogRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<DomainException, List<FilterShortcut>>>
-      getFilterShortcuts() async {
+  getFilterShortcuts() async {
     return executeDataSourceList<FilterShortcutModel, FilterShortcut>(
       function: _dataSource.getFilterShortcuts,
     );
@@ -115,7 +115,7 @@ class CatalogRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<DomainException, List<PublicationListing>>>
-      getPublicationListings({
+  getPublicationListings({
     String? query,
   }) async {
     return executeDataSourceList<PublicationListingModel, PublicationListing>(

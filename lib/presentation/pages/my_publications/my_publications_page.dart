@@ -84,7 +84,8 @@ class _PublicationsTab extends StatelessWidget {
           },
           child: MyPublicationsGrid(
             publications: state.publications,
-            onEditPublication: (publicationId) => context.goToEditPublication(publicationId),
+            onEditPublication: (publicationId) =>
+                context.goToEditPublication(publicationId),
           ),
         );
       },
@@ -133,21 +134,22 @@ class _RentalRequestsTab extends StatelessWidget {
             onAcceptRequest: (_) {},
             onRejectRequest: (_) {},
           ),
-          success: (requests, processingRequestId, feedbackNotice) => RentalRequestsView(
-            isLoading: false,
-            requests: requests,
-            processingRequestId: processingRequestId,
-            onAcceptRequest: (requestId) {
-              context.read<RentalRequestsBloc>().add(
-                RentalRequestsEvent.accepted(requestId),
-              );
-            },
-            onRejectRequest: (requestId) {
-              context.read<RentalRequestsBloc>().add(
-                RentalRequestsEvent.rejected(requestId),
-              );
-            },
-          ),
+          success: (requests, processingRequestId, feedbackNotice) =>
+              RentalRequestsView(
+                isLoading: false,
+                requests: requests,
+                processingRequestId: processingRequestId,
+                onAcceptRequest: (requestId) {
+                  context.read<RentalRequestsBloc>().add(
+                    RentalRequestsEvent.accepted(requestId),
+                  );
+                },
+                onRejectRequest: (requestId) {
+                  context.read<RentalRequestsBloc>().add(
+                    RentalRequestsEvent.rejected(requestId),
+                  );
+                },
+              ),
         );
       },
     );

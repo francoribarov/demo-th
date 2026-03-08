@@ -4,7 +4,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/search_input_field.dart';
 
 /// Widget to search and select a game from the catalog.
@@ -60,7 +60,9 @@ class _GameSelectorState extends State<GameSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedGame = widget.allGames.where((g) => g.id == widget.selectedGameId).firstOrNull;
+    final selectedGame = widget.allGames
+        .where((g) => g.id == widget.selectedGameId)
+        .firstOrNull;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +145,9 @@ class _GameSelectorState extends State<GameSelector> {
                             AppTheme.spacingXs,
                           ),
                           child: Text(
-                            _searchController.text.isEmpty ? 'Sugerencias' : 'Resultados',
+                            _searchController.text.isEmpty
+                                ? 'Sugerencias'
+                                : 'Resultados',
                             style: AppTypography.labelSmall.copyWith(
                               color: AppColors.gameRust,
                               fontWeight: FontWeight.bold,
@@ -154,7 +158,8 @@ class _GameSelectorState extends State<GameSelector> {
                           child: ListView.separated(
                             shrinkWrap: true,
                             itemCount: widget.filteredGames.length,
-                            separatorBuilder: (context, index) => const Divider(height: 1),
+                            separatorBuilder: (context, index) =>
+                                const Divider(height: 1),
                             itemBuilder: (context, index) {
                               final game = widget.filteredGames[index];
                               return ListTile(
@@ -163,14 +168,22 @@ class _GameSelectorState extends State<GameSelector> {
                                     AppTheme.radiusXs,
                                   ),
                                   child: CachedNetworkImage(
-                                    imageUrl: game.images.isNotEmpty ? game.images.first : '',
+                                    imageUrl: game.images.isNotEmpty
+                                        ? game.images.first
+                                        : '',
                                     width: 40,
                                     height: 40,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => const ColoredBox(
-                                      color: AppColors.gameCream,
-                                    ),
-                                    errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
+                                    placeholder: (context, url) =>
+                                        const ColoredBox(
+                                          color: AppColors.gameCream,
+                                        ),
+                                    errorWidget: (context, url, error) =>
+                                        const MediaPlaceholder(
+                                          icon: Icons.image_not_supported,
+                                          backgroundColor: AppColors.gameCream,
+                                          iconColor: AppColors.gameBrown,
+                                        ),
                                   ),
                                 ),
                                 title: Text(
@@ -234,8 +247,13 @@ class _SelectedGameCard extends StatelessWidget {
               width: 60,
               height: 60,
               fit: BoxFit.cover,
-              placeholder: (_, url) => const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (_, url, error) => const Icon(Icons.image_not_supported),
+              placeholder: (_, url) =>
+                  const ColoredBox(color: AppColors.gameCream),
+              errorWidget: (_, url, error) => const MediaPlaceholder(
+                icon: Icons.image_not_supported,
+                backgroundColor: AppColors.gameCream,
+                iconColor: AppColors.gameBrown,
+              ),
             ),
           ),
           const SizedBox(width: AppTheme.spacingMd),

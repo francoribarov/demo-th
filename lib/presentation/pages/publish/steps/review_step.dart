@@ -4,7 +4,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/info_chip.dart';
 
 /// Final step in the publish flow for reviewing the listing before submission.
@@ -81,7 +81,8 @@ class ReviewStep extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: AppTheme.spacingLg),
-              if (condition != null) InfoChip(icon: Icons.grade, label: condition!.label),
+              if (condition != null)
+                InfoChip(icon: Icons.grade, label: condition!.label),
 
               const Divider(height: AppTheme.spacing3xl),
               Row(

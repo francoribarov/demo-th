@@ -36,7 +36,9 @@ class DeliveryMethodCard extends StatelessWidget {
           color: isSelected ? AppColors.gameCream : AppColors.card,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: isSelected ? AppColors.gameRust : AppColors.gameBrown.withOpacityValue(0.2),
+            color: isSelected
+                ? AppColors.gameRust
+                : AppColors.gameBrown.withOpacityValue(0.2),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -55,13 +57,15 @@ class DeliveryMethodCard extends StatelessWidget {
                     method.deliveryType.displayName,
                     style: AppTypography.titleSmall,
                   ),
-                  if (method.deliveryType == DeliveryType.pickupInPerson && method.address != null) ...[
+                  if (method.deliveryType == DeliveryType.pickupInPerson &&
+                      method.address != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       '${method.address} ${method.addressNumber ?? ''}',
                       style: AppTypography.bodySmall,
                     ),
-                    if (method.addressName != null && method.addressName!.isNotEmpty)
+                    if (method.addressName != null &&
+                        method.addressName!.isNotEmpty)
                       Text(
                         method.addressName!,
                         style: AppTypography.bodySmall.copyWith(
@@ -69,7 +73,8 @@ class DeliveryMethodCard extends StatelessWidget {
                         ),
                       ),
                   ],
-                  if (method.initPickupTime != null && method.finishPickupTime != null) ...[
+                  if (method.initPickupTime != null &&
+                      method.finishPickupTime != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       '${method.initPickupTime} - ${method.finishPickupTime}',

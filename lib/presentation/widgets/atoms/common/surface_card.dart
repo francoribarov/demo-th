@@ -29,6 +29,7 @@ class SurfaceCard extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.boxShadow,
+    this.clipBehavior = Clip.none,
   });
 
   final Widget child;
@@ -40,6 +41,7 @@ class SurfaceCard extends StatelessWidget {
   final Color? borderColor;
   final double? borderWidth;
   final List<BoxShadow>? boxShadow;
+  final Clip clipBehavior;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,7 @@ class SurfaceCard extends StatelessWidget {
     return Container(
       margin: margin,
       padding: padding,
+      clipBehavior: clipBehavior,
       decoration: BoxDecoration(
         color: backgroundColor ?? resolvedBackground,
         borderRadius: borderRadius ?? BorderRadius.circular(AppTheme.radiusLg),

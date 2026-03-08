@@ -4,7 +4,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/publication_details/game_recommendation_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/publication_details/publication_detail_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/publication_details/availability_checker.dart';
@@ -87,19 +87,13 @@ class PublicationDetailsTabContent extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Rules link
-          OutlinedButton.icon(
+          AppSecondaryButton(
             onPressed: onViewRules,
-            icon: const Icon(
-              Icons.menu_book_outlined,
-            ),
-            label: const Text(
-              'Ver reglas y tutorial',
-            ),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(
-                double.infinity,
-                48,
-              ),
+            icon: Icons.menu_book_outlined,
+            label: 'Ver reglas y tutorial',
+            minimumSize: const Size(
+              double.infinity,
+              48,
             ),
           ),
 

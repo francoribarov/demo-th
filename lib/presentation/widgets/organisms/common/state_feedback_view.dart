@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_secondary_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Grouped actions for [StateFeedbackView] to reduce prop count.
 class StateFeedbackActions {
@@ -81,7 +80,8 @@ class StateFeedbackView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              leading ?? const CircularProgressIndicator(color: AppColors.gameRust),
+              leading ??
+                  const CircularProgressIndicator(color: AppColors.gameRust),
               if (title != null) ...[
                 SizedBox(height: spacing),
                 Text(
@@ -124,14 +124,22 @@ class StateFeedbackView extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppTheme.spacingXl),
                   decoration: BoxDecoration(
-                    color: (variant == StateFeedbackVariant.error ? AppColors.error : AppColors.gameCream)
-                        .withOpacityValue(0.12),
+                    color:
+                        (variant == StateFeedbackVariant.error
+                                ? AppColors.error
+                                : AppColors.gameCream)
+                            .withOpacityValue(0.12),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    icon ?? (variant == StateFeedbackVariant.error ? Icons.error_outline : Icons.inbox_outlined),
+                    icon ??
+                        (variant == StateFeedbackVariant.error
+                            ? Icons.error_outline
+                            : Icons.inbox_outlined),
                     size: 48,
-                    color: variant == StateFeedbackVariant.error ? AppColors.error : AppColors.gameBrown,
+                    color: variant == StateFeedbackVariant.error
+                        ? AppColors.error
+                        : AppColors.gameBrown,
                   ),
                 ),
             if (title != null) ...[

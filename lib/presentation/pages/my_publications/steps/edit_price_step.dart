@@ -125,7 +125,9 @@ class EditPriceStep extends StatelessWidget {
 
   DeliveryMethodDisplayData _toDisplayData(DeliveryMethod method) {
     final subtitle =
-        method.deliveryType == DeliveryType.pickupInPerson && method.address != null && method.address!.isNotEmpty
+        method.deliveryType == DeliveryType.pickupInPerson &&
+            method.address != null &&
+            method.address!.isNotEmpty
         ? '${method.address} ${method.addressNumber ?? ''}'
         : null;
     return DeliveryMethodDisplayData(

@@ -132,11 +132,13 @@ class DataStep extends StatelessWidget {
                       },
                       isSelected: field.value == c,
                       indicatorMode: SelectableInputIndicatorMode.radio,
-                      indicatorPosition: SelectableInputIndicatorPosition.leading,
+                      indicatorPosition:
+                          SelectableInputIndicatorPosition.leading,
                       title: c.label,
                       subtitle: c.description,
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      selectedBackgroundColor: AppColors.gameRust.withOpacityValue(0.1),
+                      selectedBackgroundColor: AppColors.gameRust
+                          .withOpacityValue(0.1),
                       unselectedBorderColor: AppColors.border,
                       selectedTextColor: AppColors.gameRust,
                       unselectedTextColor: AppColors.foreground,

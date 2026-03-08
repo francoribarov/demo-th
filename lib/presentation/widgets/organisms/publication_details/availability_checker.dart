@@ -3,8 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/rental/availability_date_selector.dart';
 
 /// Widget to check game availability for a date range.
@@ -72,7 +71,9 @@ class AvailabilityChecker extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppTheme.spacingMd),
               decoration: BoxDecoration(
-                color: result! ? AppColors.successSurface : AppColors.errorSurface,
+                color: result!
+                    ? AppColors.successSurface
+                    : AppColors.errorSurface,
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               child: Row(
@@ -84,9 +85,13 @@ class AvailabilityChecker extends StatelessWidget {
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
                     child: Text(
-                      result! ? '¡Disponible para esas fechas!' : 'No disponible para esas fechas',
+                      result!
+                          ? '¡Disponible para esas fechas!'
+                          : 'No disponible para esas fechas',
                       style: AppTypography.bodyMedium.copyWith(
-                        color: result! ? AppColors.gameSage : AppColors.destructive,
+                        color: result!
+                            ? AppColors.gameSage
+                            : AppColors.destructive,
                       ),
                     ),
                   ),

@@ -44,22 +44,28 @@ class CategoryChips extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
             itemCount: categories.length + filterShortcuts.length,
-            separatorBuilder: (_, _) => const SizedBox(width: AppTheme.spacingSm),
+            separatorBuilder: (_, _) =>
+                const SizedBox(width: AppTheme.spacingSm),
             itemBuilder: (context, index) {
               if (index < categories.length) {
                 final category = categories[index];
                 return _CategoryChip(
                   name: category.name,
                   icon: category.icon,
-                  gradient: AppColors.gradientPalette[index % AppColors.gradientPalette.length],
-                  onTap: () => onCategorySelected(category.query ?? category.name),
+                  gradient:
+                      AppColors.gradientPalette[index %
+                          AppColors.gradientPalette.length],
+                  onTap: () =>
+                      onCategorySelected(category.query ?? category.name),
                 );
               } else {
                 final shortcut = filterShortcuts[index - categories.length];
                 return _CategoryChip(
                   name: shortcut.name,
                   icon: shortcut.icon,
-                  gradient: AppColors.gradientPalette[index % AppColors.gradientPalette.length],
+                  gradient:
+                      AppColors.gradientPalette[index %
+                          AppColors.gradientPalette.length],
                   onTap: () => onShortcutSelected(shortcut),
                 );
               }

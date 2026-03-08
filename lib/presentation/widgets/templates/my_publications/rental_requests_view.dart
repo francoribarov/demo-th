@@ -74,10 +74,13 @@ class RentalRequestsView extends StatelessWidget {
         final isAccepted = request.status == RentalRequestStatus.accepted;
         return RentalRequestCard(
           request: request,
-          dateRangeText: '${dateFormat.format(request.startDate)} - ${dateFormat.format(request.endDate)}',
+          dateRangeText:
+              '${dateFormat.format(request.startDate)} - ${dateFormat.format(request.endDate)}',
           durationText: '$duration días',
           showActions: isPending,
-          statusLabel: isPending ? null : (isAccepted ? 'Aceptada' : 'Rechazada'),
+          statusLabel: isPending
+              ? null
+              : (isAccepted ? 'Aceptada' : 'Rechazada'),
           statusIsSuccess: isAccepted,
           isProcessing: processingRequestId == request.id,
           onAccept: () => _confirmAccept(context, request),
@@ -94,7 +97,8 @@ class RentalRequestsView extends StatelessWidget {
     final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Aceptar solicitud?',
-      message: '¿Confirmas que quieres aceptar la solicitud de ${request.requester.username}?',
+      message:
+          '¿Confirmas que quieres aceptar la solicitud de ${request.requester.username}?',
       confirmLabel: 'Aceptar',
       cancelLabel: 'Cancelar',
     );
@@ -110,7 +114,8 @@ class RentalRequestsView extends StatelessWidget {
     final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Rechazar solicitud?',
-      message: '¿Confirmas que quieres rechazar la solicitud de ${request.requester.username}?',
+      message:
+          '¿Confirmas que quieres rechazar la solicitud de ${request.requester.username}?',
       confirmLabel: 'Rechazar',
       cancelLabel: 'Cancelar',
       isDestructive: true,

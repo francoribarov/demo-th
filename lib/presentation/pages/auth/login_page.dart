@@ -6,8 +6,7 @@ import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
@@ -70,7 +69,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listenWhen: (previous, current) => previous.status != current.status && current.isAuthenticated,
+      listenWhen: (previous, current) =>
+          previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
         final redirectTo = widget.from;
         if (redirectTo != null &&
@@ -91,16 +91,20 @@ class _LoginPageState extends State<LoginPage> {
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final horizontalPadding = constraints.maxWidth >= 640 ? constraints.maxWidth * 0.18 : 24.0;
+              final horizontalPadding = constraints.maxWidth >= 640
+                  ? constraints.maxWidth * 0.18
+                  : 24.0;
 
               return BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
                   final isSubmitting = state.isSubmittingLogin;
-                  final errorMessage = state.loginErrorMessage ?? state.errorMessage;
+                  final errorMessage =
+                      state.loginErrorMessage ?? state.errorMessage;
                   final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
                   return SingleChildScrollView(
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: EdgeInsets.fromLTRB(
                       horizontalPadding,
                       AppTheme.spacingLg,
@@ -144,10 +148,12 @@ class _LoginPageState extends State<LoginPage> {
                                   autocorrect: false,
                                   labelText: 'Email',
                                   hintText: 'tu@email.com',
-                                  validator: (value) => validateEmail(value ?? ''),
-                                  onChanged: (email) => context.read<AuthBloc>().add(
-                                    AuthEvent.loginEmailChanged(email),
-                                  ),
+                                  validator: (value) =>
+                                      validateEmail(value ?? ''),
+                                  onChanged: (email) =>
+                                      context.read<AuthBloc>().add(
+                                        AuthEvent.loginEmailChanged(email),
+                                      ),
                                   onFieldSubmitted: (_) {
                                     _passwordFocusNode.requestFocus();
                                   },
@@ -169,25 +175,33 @@ class _LoginPageState extends State<LoginPage> {
                                     key: const Key(
                                       'loginPasswordVisibilityButton',
                                     ),
-                                    tooltip: _isPasswordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña',
+                                    tooltip: _isPasswordVisible
+                                        ? 'Ocultar contraseña'
+                                        : 'Mostrar contraseña',
                                     onPressed: isSubmitting
                                         ? null
                                         : () {
                                             setState(() {
-                                              _isPasswordVisible = !_isPasswordVisible;
+                                              _isPasswordVisible =
+                                                  !_isPasswordVisible;
                                             });
                                           },
                                     icon: Icon(
-                                      _isPasswordVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                      _isPasswordVisible
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                     ),
                                   ),
-                                  validator: (value) => validatePasswordMin8(value ?? ''),
-                                  onChanged: (password) => context.read<AuthBloc>().add(
-                                    AuthEvent.loginPasswordChanged(
-                                      password,
-                                    ),
-                                  ),
-                                  onFieldSubmitted: (_) => _submitLogin(isSubmitting: isSubmitting),
+                                  validator: (value) =>
+                                      validatePasswordMin8(value ?? ''),
+                                  onChanged: (password) =>
+                                      context.read<AuthBloc>().add(
+                                        AuthEvent.loginPasswordChanged(
+                                          password,
+                                        ),
+                                      ),
+                                  onFieldSubmitted: (_) =>
+                                      _submitLogin(isSubmitting: isSubmitting),
                                 ),
                               ],
                             ),
@@ -207,13 +221,16 @@ class _LoginPageState extends State<LoginPage> {
                           key: const Key('loginSubmitButton'),
                           label: 'Ingresar',
                           isLoading: isSubmitting,
-                          onPressed: () => _submitLogin(isSubmitting: isSubmitting),
+                          onPressed: () =>
+                              _submitLogin(isSubmitting: isSubmitting),
                         ),
                         const SizedBox(height: AppTheme.spacingLg),
                         AuthSwitchRow(
                           prompt: 'No tenés cuenta? ',
                           actionLabel: 'Registrate',
-                          onAction: isSubmitting ? () {} : () => context.goToRegister(from: widget.from),
+                          onAction: isSubmitting
+                              ? () {}
+                              : () => context.goToRegister(from: widget.from),
                         ),
                       ],
                     ),

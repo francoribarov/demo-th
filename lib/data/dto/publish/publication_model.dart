@@ -63,16 +63,16 @@ sealed class PublicationModel
 
   @override
   Publication toDomainModel() => Publication(
-        id: id,
-        gameId: gameId,
-        ownerId: ownerId,
-        description: description,
-        condition: condition,
-        price: price,
-        images: images
-            .map((url) => PublicationImage(url: url, type: 'gallery'))
-            .toList(),
-      );
+    id: id,
+    gameId: gameId,
+    ownerId: ownerId,
+    description: description,
+    condition: condition,
+    price: price,
+    images: images
+        .map((url) => PublicationImage(url: url, type: 'gallery'))
+        .toList(),
+  );
 }
 
 /// Request model used for publication creation.
@@ -114,16 +114,15 @@ sealed class PublicationCreateRequestModel
   factory PublicationCreateRequestModel.fromEntity(
     PublicationDraft entity, {
     required String ownerId,
-  }) =>
-      PublicationCreateRequestModel(
-        ownerId: ownerId,
-        gameId: entity.gameId,
-        description: entity.description,
-        price: entity.price,
-        condition: entity.condition,
-        images: entity.images.map((img) => img.url).toList(),
-        deliveryMethods: entity.deliveryMethods
-            .map((dm) => dm.deliveryType.displayName)
-            .toList(),
-      );
+  }) => PublicationCreateRequestModel(
+    ownerId: ownerId,
+    gameId: entity.gameId,
+    description: entity.description,
+    price: entity.price,
+    condition: entity.condition,
+    images: entity.images.map((img) => img.url).toList(),
+    deliveryMethods: entity.deliveryMethods
+        .map((dm) => dm.deliveryType.displayName)
+        .toList(),
+  );
 }

@@ -10,7 +10,8 @@ import 'package:mobile_table_hopping/domain/model/my_publications/publication_pr
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockPublicationDetailRemoteDataSource extends Mock implements PublicationDetailRemoteDataSource {}
+class MockPublicationDetailRemoteDataSource extends Mock
+    implements PublicationDetailRemoteDataSource {}
 
 void main() {
   late MockPublicationDetailRemoteDataSource dataSource;

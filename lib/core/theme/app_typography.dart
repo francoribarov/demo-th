@@ -9,7 +9,8 @@ class AppTypography {
   static const String _fontFamily = 'Inter';
 
   /// Returns the Inter text theme for the app.
-  static TextTheme get textTheme => Typography.material2021().black.apply(fontFamily: _fontFamily);
+  static TextTheme get textTheme =>
+      Typography.material2021().black.apply(fontFamily: _fontFamily);
 
   static TextStyle _style({
     required double fontSize,

@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_secondary_button.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Header for the search results view.
 class ResultsHeader extends StatelessWidget {
@@ -58,9 +58,9 @@ class ResultsHeader extends StatelessWidget {
           // Title row
           Row(
             children: [
-              IconButton(
+              AppBarIconAction(
                 onPressed: onBack,
-                icon: const Icon(Icons.arrow_back),
+                icon: Icons.arrow_back,
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.card,
                   side: BorderSide(
@@ -125,15 +125,17 @@ class ResultsHeader extends StatelessWidget {
             children: [
               Expanded(
                 child: AppSecondaryButton(
-                  label: filters.hasActiveFilters ? 'Filtros (${filters.activeFiltersCount})' : 'Filtros',
+                  label: filters.hasActiveFilters
+                      ? 'Filtros (${filters.activeFiltersCount})'
+                      : 'Filtros',
                   icon: Icons.filter_list,
                   onPressed: onOpenFilters,
                 ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
-              IconButton(
+              AppBarIconAction(
                 onPressed: onSortTap,
-                icon: const Icon(Icons.swap_vert),
+                icon: Icons.swap_vert,
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.card,
                   side: BorderSide(

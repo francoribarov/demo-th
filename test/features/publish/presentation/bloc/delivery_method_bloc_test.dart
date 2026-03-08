@@ -8,9 +8,11 @@ import 'package:mobile_table_hopping/domain/usecase/publish/get_delivery_methods
 import 'package:mobile_table_hopping/presentation/blocs/publish/delivery_method_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockCreateDeliveryMethodUseCase extends Mock implements CreateDeliveryMethodUseCase {}
+class MockCreateDeliveryMethodUseCase extends Mock
+    implements CreateDeliveryMethodUseCase {}
 
-class MockGetDeliveryMethodsUseCase extends Mock implements GetDeliveryMethodsUseCase {}
+class MockGetDeliveryMethodsUseCase extends Mock
+    implements GetDeliveryMethodsUseCase {}
 
 class FakeDeliveryMethod extends Fake implements DeliveryMethod {}
 
@@ -91,7 +93,8 @@ void main() {
       );
       return deliveryMethodBloc;
     },
-    act: (bloc) => bloc.add(const DeliveryMethodEvent.methodCreated(deliveryMethod)),
+    act: (bloc) =>
+        bloc.add(const DeliveryMethodEvent.methodCreated(deliveryMethod)),
     expect: () => [
       const DeliveryMethodState(isCreating: true),
       const DeliveryMethodState(
@@ -108,7 +111,8 @@ void main() {
       ).thenThrow(Exception('unexpected'));
       return deliveryMethodBloc;
     },
-    act: (bloc) => bloc.add(const DeliveryMethodEvent.methodCreated(deliveryMethod)),
+    act: (bloc) =>
+        bloc.add(const DeliveryMethodEvent.methodCreated(deliveryMethod)),
     expect: () => [
       const DeliveryMethodState(isCreating: true),
       const DeliveryMethodState(

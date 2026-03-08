@@ -1,7 +1,6 @@
 part of 'publication_details_bloc.dart';
 
 @freezed
-
 /// State for [PublicationDetailsBloc].
 abstract class PublicationDetailsState with _$PublicationDetailsState {
   /// Creates a [PublicationDetailsState].

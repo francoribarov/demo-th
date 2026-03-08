@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// A card widget to display a publication listing.
 class PublicationCard extends StatelessWidget {
@@ -29,13 +30,10 @@ class PublicationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-          border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-          boxShadow: AppTheme.shadowMd,
-        ),
+      child: SurfaceCard(
+        borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+        borderColor: AppColors.gameBrown.withOpacityValue(0.1),
+        boxShadow: AppTheme.shadowMd,
         clipBehavior: Clip.antiAlias,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,13 +55,12 @@ class PublicationCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    errorWidget: (context, url, error) => const ColoredBox(
-                      color: AppColors.gameCream,
-                      child: Icon(
-                        Icons.image_not_supported_outlined,
-                        color: AppColors.gameBrown,
-                      ),
-                    ),
+                    errorWidget: (context, url, error) =>
+                        const MediaPlaceholder(
+                          icon: Icons.image_not_supported_outlined,
+                          backgroundColor: AppColors.gameCream,
+                          iconColor: AppColors.gameBrown,
+                        ),
                   ),
                 ),
                 // Category badge
@@ -209,13 +206,10 @@ class PublicationCardHorizontal extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-          boxShadow: AppTheme.shadowSm,
-        ),
+      child: SurfaceCard(
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        borderColor: AppColors.gameBrown.withOpacityValue(0.1),
+        boxShadow: AppTheme.shadowSm,
         clipBehavior: Clip.antiAlias,
         child: Row(
           children: [
@@ -229,12 +223,10 @@ class PublicationCardHorizontal extends StatelessWidget {
                 placeholder: (context, url) => const ColoredBox(
                   color: AppColors.gameCream,
                 ),
-                errorWidget: (context, url, error) => const ColoredBox(
-                  color: AppColors.gameCream,
-                  child: Icon(
-                    Icons.image_not_supported_outlined,
-                    color: AppColors.gameBrown,
-                  ),
+                errorWidget: (context, url, error) => const MediaPlaceholder(
+                  icon: Icons.image_not_supported_outlined,
+                  backgroundColor: AppColors.gameCream,
+                  iconColor: AppColors.gameBrown,
                 ),
               ),
             ),

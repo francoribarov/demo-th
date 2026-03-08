@@ -7,9 +7,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/selectable_chip.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/numeric_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/section_header_block.dart';
 import 'package:mobile_table_hopping/presentation/widgets/templates/common/bottom_sheet_shell.dart';
@@ -67,7 +65,8 @@ class _FiltersSheetState {
 }
 
 class _FiltersSheetCubit extends Cubit<_FiltersSheetState> {
-  _FiltersSheetCubit(FiltersState initialFilters) : super(_FiltersSheetState(filters: initialFilters, version: 0));
+  _FiltersSheetCubit(FiltersState initialFilters)
+    : super(_FiltersSheetState(filters: initialFilters, version: 0));
 
   void updateFilters(FiltersState Function(FiltersState) update) {
     emit(state.copyWith(filters: update(state.filters)));
@@ -192,7 +191,8 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                         label: 'Mínimo (UYU)',
                         value: _filters.priceMin,
                         version: _version,
-                        onChanged: (value) => _updateFilters((f) => f.copyWith(priceMin: value)),
+                        onChanged: (value) =>
+                            _updateFilters((f) => f.copyWith(priceMin: value)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -201,7 +201,8 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                         label: 'Máximo (UYU)',
                         value: _filters.priceMax,
                         version: _version,
-                        onChanged: (value) => _updateFilters((f) => f.copyWith(priceMax: value)),
+                        onChanged: (value) =>
+                            _updateFilters((f) => f.copyWith(priceMax: value)),
                       ),
                     ),
                   ],
@@ -219,7 +220,8 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                     return SelectableChip(
                       label: option.label,
                       isSelected: _filters.difficulty == option,
-                      onTap: () => _updateFilters((f) => f.copyWith(difficulty: option)),
+                      onTap: () =>
+                          _updateFilters((f) => f.copyWith(difficulty: option)),
                     );
                   }).toList(),
                 ),
@@ -287,7 +289,9 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                         ),
                       ),
                       Switch(
-                        value: _filters.onlyAvailableInDates && widget.hasDateFilter,
+                        value:
+                            _filters.onlyAvailableInDates &&
+                            widget.hasDateFilter,
                         onChanged: widget.hasDateFilter
                             ? (value) => _updateFilters(
                                 (f) => f.copyWith(onlyAvailableInDates: value),
@@ -353,7 +357,9 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      previewCount == 1 ? 'Se encontró 1 juego' : 'Se encontraron $previewCount juegos',
+                      previewCount == 1
+                          ? 'Se encontró 1 juego'
+                          : 'Se encontraron $previewCount juegos',
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.textTertiary,
                       ),

@@ -1,7 +1,6 @@
 part of 'publication_details_bloc.dart';
 
 @freezed
-
 /// Events for [PublicationDetailsBloc].
 abstract class PublicationDetailsEvent with _$PublicationDetailsEvent {
   /// Starts loading the publication details.

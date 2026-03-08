@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_primary_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/app_secondary_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/step_indicator.dart';
 
@@ -30,7 +28,8 @@ class WizardScaffold extends StatelessWidget {
     this.submittingChild,
     EdgeInsetsGeometry? contentPadding,
     this.extendBottomSafeArea = true,
-  }) : _contentPadding = contentPadding ?? const EdgeInsets.all(AppTheme.spacingLg);
+  }) : _contentPadding =
+           contentPadding ?? const EdgeInsets.all(AppTheme.spacingLg);
 
   final String title;
   final PageAppBarLeadingType leadingType;
@@ -52,7 +51,10 @@ class WizardScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasSecondary = secondaryLabel != null && secondaryLabel!.isNotEmpty && onSecondaryPressed != null;
+    final hasSecondary =
+        secondaryLabel != null &&
+        secondaryLabel!.isNotEmpty &&
+        onSecondaryPressed != null;
 
     return Scaffold(
       appBar: PageAppBar(

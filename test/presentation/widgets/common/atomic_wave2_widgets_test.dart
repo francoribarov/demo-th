@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/selectable_chip.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/info_chip.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/label_value_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/media_upload_tile.dart';
@@ -275,6 +275,32 @@ void main() {
     );
 
     await tester.tap(find.text('Cooperativos'));
+    await tester.pump();
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('AppBarIconAction exposes callback and tooltip', (tester) async {
+    var tapped = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(
+            actions: [
+              AppBarIconAction(
+                icon: Icons.share,
+                tooltip: 'Compartir',
+                withCircularBackground: true,
+                onPressed: () => tapped = true,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byTooltip('Compartir'), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.share));
     await tester.pump();
     expect(tapped, isTrue);
   });

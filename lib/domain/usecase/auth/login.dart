@@ -4,7 +4,6 @@ import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/repository/auth/auth_repository.dart';
 
 @injectable
-
 /// Use case for authenticating with email and password.
 class Login {
   /// Creates a [Login] use case.

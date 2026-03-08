@@ -55,7 +55,8 @@ void main() {
                   2: AppRoutes.publish,
                   3: AppRoutes.profile,
                 };
-                if (protectedIndexes.contains(index) && !getIt<AuthBloc>().state.isAuthenticated) {
+                if (protectedIndexes.contains(index) &&
+                    !getIt<AuthBloc>().state.isAuthenticated) {
                   context.goToLogin(from: targets[index]);
                   return;
                 }
@@ -79,7 +80,8 @@ void main() {
               routes: [
                 GoRoute(
                   path: AppRoutes.myPublications,
-                  builder: (_, _) => const Scaffold(body: Text('my-publications-page')),
+                  builder: (_, _) =>
+                      const Scaffold(body: Text('my-publications-page')),
                 ),
               ],
             ),

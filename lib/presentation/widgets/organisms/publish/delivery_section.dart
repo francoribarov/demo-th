@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/surface_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/delivery_method_selectable_tile.dart';
 
 class DeliverySection extends StatelessWidget {
@@ -59,7 +59,8 @@ class DeliverySection extends StatelessWidget {
 
   DeliveryMethodDisplayData _toDisplayData(DeliveryMethod method) {
     final parts = <String>[];
-    if (method.deliveryType == DeliveryType.pickupInPerson && method.address != null) {
+    if (method.deliveryType == DeliveryType.pickupInPerson &&
+        method.address != null) {
       parts.add('${method.address} ${method.addressNumber ?? ''}');
     }
     if (method.initPickupTime != null && method.finishPickupTime != null) {

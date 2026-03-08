@@ -38,7 +38,6 @@ abstract class DeliveryMethodState with _$DeliveryMethodState {
 }
 
 @injectable
-
 /// Bloc for managing delivery methods.
 class DeliveryMethodBloc
     extends Bloc<DeliveryMethodEvent, DeliveryMethodState> {
@@ -46,9 +45,9 @@ class DeliveryMethodBloc
   DeliveryMethodBloc({
     required CreateDeliveryMethodUseCase createDeliveryMethod,
     required GetDeliveryMethodsUseCase getDeliveryMethods,
-  })  : _createDeliveryMethod = createDeliveryMethod,
-        _getDeliveryMethods = getDeliveryMethods,
-        super(const DeliveryMethodState()) {
+  }) : _createDeliveryMethod = createDeliveryMethod,
+       _getDeliveryMethods = getDeliveryMethods,
+       super(const DeliveryMethodState()) {
     on<_Started>(_onStarted);
     on<_MethodToggled>(_onMethodToggled);
     on<_MethodCreated>(_onMethodCreated);
@@ -96,13 +95,15 @@ class DeliveryMethodBloc
     _MethodToggled event,
     Emitter<DeliveryMethodState> emit,
   ) {
-    final exists = state.selectedMethods
-        .any((m) => m.id == event.method.id && m.id != null);
+    final exists = state.selectedMethods.any(
+      (m) => m.id == event.method.id && m.id != null,
+    );
 
     List<DeliveryMethod> updated;
     if (exists) {
-      updated =
-          state.selectedMethods.where((m) => m.id != event.method.id).toList();
+      updated = state.selectedMethods
+          .where((m) => m.id != event.method.id)
+          .toList();
     } else {
       updated = [...state.selectedMethods, event.method];
     }

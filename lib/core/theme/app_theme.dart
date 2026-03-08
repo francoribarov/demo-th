@@ -127,7 +127,8 @@ class AppTheme {
           AppColors.gameRust.withOpacityValue(0.1),
         ),
         dayForegroundColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return AppColors.primaryForeground;
+          if (states.contains(WidgetState.selected))
+            return AppColors.primaryForeground;
           return AppColors.gameBrown;
         }),
         todayForegroundColor: WidgetStateProperty.all(AppColors.gameRust),

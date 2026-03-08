@@ -4,6 +4,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 class RentalRequestCard extends StatelessWidget {
   const RentalRequestCard({
@@ -43,18 +44,15 @@ class RentalRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SurfaceCard(
       margin: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingLg,
         vertical: AppTheme.spacingSm,
       ),
       padding: const EdgeInsets.all(AppTheme.spacingLg),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-        border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
-        boxShadow: AppTheme.shadowMd,
-      ),
+      borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+      borderColor: AppColors.gameBrown.withOpacityValue(0.1),
+      boxShadow: AppTheme.shadowMd,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -62,7 +60,9 @@ class RentalRequestCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 backgroundColor: AppColors.gameCream,
-                backgroundImage: request.requester.imageUrl != null ? NetworkImage(request.requester.imageUrl!) : null,
+                backgroundImage: request.requester.imageUrl != null
+                    ? NetworkImage(request.requester.imageUrl!)
+                    : null,
                 child: request.requester.imageUrl == null
                     ? Text(
                         request.requester.username[0].toUpperCase(),
@@ -130,16 +130,16 @@ class RentalRequestCard extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
+                    child: AppSecondaryButton(
                       onPressed: onReject,
-                      child: const Text('Rechazar'),
+                      label: 'Rechazar',
                     ),
                   ),
                   const SizedBox(width: AppTheme.spacingMd),
                   Expanded(
-                    child: FilledButton(
+                    child: AppPrimaryButton(
                       onPressed: onAccept,
-                      child: const Text('Aceptar'),
+                      label: 'Aceptar',
                     ),
                   ),
                 ],
@@ -149,14 +149,18 @@ class RentalRequestCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(AppTheme.spacingSm),
               decoration: BoxDecoration(
-                color: statusIsSuccess ? AppColors.successSurface : AppColors.errorSurface,
+                color: statusIsSuccess
+                    ? AppColors.successSurface
+                    : AppColors.errorSurface,
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
               child: Text(
                 statusLabel!,
                 textAlign: TextAlign.center,
                 style: AppTypography.labelLarge.copyWith(
-                  color: statusIsSuccess ? AppColors.gameSage : AppColors.destructive,
+                  color: statusIsSuccess
+                      ? AppColors.gameSage
+                      : AppColors.destructive,
                   fontWeight: FontWeight.bold,
                 ),
               ),

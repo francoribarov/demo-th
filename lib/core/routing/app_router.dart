@@ -29,6 +29,7 @@ import 'package:mobile_table_hopping/presentation/pages/publication_details/game
 import 'package:mobile_table_hopping/presentation/pages/publication_details/publication_details_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/publish_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Route paths for type-safe navigation.
 class AppRoutes {
@@ -458,9 +459,9 @@ class AppRouter {
             const SizedBox(height: 16),
             const Text('Página no encontrada'),
             const SizedBox(height: 24),
-            ElevatedButton(
+            AppPrimaryButton(
+              label: 'Volver al inicio',
               onPressed: () => context.go(AppRoutes.home),
-              child: const Text('Volver al inicio'),
             ),
           ],
         ),

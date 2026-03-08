@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Leading behavior variants for [PageAppBar].
 enum PageAppBarLeadingType {
@@ -57,9 +58,12 @@ class PageAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottom: bottom,
       leading: leadingIcon == null
           ? null
-          : IconButton(
-              icon: Icon(leadingIcon),
-              color: foregroundColor ?? AppColors.gameBrown,
+          : AppBarIconAction(
+              icon: leadingIcon,
+              semanticLabel: leadingType == PageAppBarLeadingType.back
+                  ? 'Volver'
+                  : 'Cerrar',
+              iconColor: foregroundColor ?? AppColors.gameBrown,
               onPressed: onLeadingPressed,
             ),
       automaticallyImplyLeading: leadingType != PageAppBarLeadingType.none,
@@ -68,5 +72,6 @@ class PageAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 }

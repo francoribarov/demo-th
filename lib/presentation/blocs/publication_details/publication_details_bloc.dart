@@ -12,7 +12,6 @@ part 'publication_details_event.dart';
 part 'publication_details_state.dart';
 
 @injectable
-
 /// Bloc for loading and presenting publication details.
 class PublicationDetailsBloc
     extends Bloc<PublicationDetailsEvent, PublicationDetailsState> {
@@ -21,10 +20,10 @@ class PublicationDetailsBloc
     required GetPublicationByIdUseCase getPublicationById,
     required GetGameByIdUseCase getGameById,
     required GetRecommendedPublicationsUseCase getRecommendedPublications,
-  })  : _getPublicationById = getPublicationById,
-        _getGameById = getGameById,
-        _getRecommendedPublications = getRecommendedPublications,
-        super(const PublicationDetailsState()) {
+  }) : _getPublicationById = getPublicationById,
+       _getGameById = getGameById,
+       _getRecommendedPublications = getRecommendedPublications,
+       super(const PublicationDetailsState()) {
     on<_Started>(_onStarted);
     on<_ToggleWishlist>(_onToggleWishlist);
     on<_CheckStartDateChanged>(_onCheckStartDateChanged);
@@ -58,8 +57,9 @@ class PublicationDetailsBloc
         final gameResult = await _getGameById(publication.gameId);
         final game = gameResult.fold((_) => null, (value) => value);
 
-        final recommendedResult =
-            await _getRecommendedPublications(publication.gameId);
+        final recommendedResult = await _getRecommendedPublications(
+          publication.gameId,
+        );
         final recommendations = recommendedResult.fold(
           (_) => const <PublicationListing>[],
           (v) => v,

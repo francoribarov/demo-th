@@ -14,6 +14,7 @@ class AppPrimaryButton extends StatelessWidget {
     this.loadingChild,
     this.icon,
     this.minimumSize,
+    this.style,
   });
 
   /// Button label text.
@@ -33,12 +34,20 @@ class AppPrimaryButton extends StatelessWidget {
 
   /// Optional minimum size (e.g. Size(double.infinity, 56) for full width).
   final Size? minimumSize;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
+    final minimumSizeStyle = minimumSize == null
+        ? null
+        : ElevatedButton.styleFrom(minimumSize: minimumSize);
+    final resolvedStyle = style == null
+        ? minimumSizeStyle
+        : style!.merge(minimumSizeStyle);
+
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
-      style: minimumSize != null ? ElevatedButton.styleFrom(minimumSize: minimumSize) : null,
+      style: resolvedStyle,
       child: isLoading
           ? (loadingChild ?? const ButtonLoadingIndicator())
           : icon != null

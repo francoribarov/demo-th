@@ -43,7 +43,8 @@ class MyPublicationsEmptyView extends StatelessWidget {
         ),
       ),
       title: 'Aún no tienes publicaciones',
-      message: '¡Publica tu primer juego de mesa y comienza a ganar dinero compartiéndolo con otros jugadores!',
+      message:
+          '¡Publica tu primer juego de mesa y comienza a ganar dinero compartiéndolo con otros jugadores!',
       primaryActionLabel: 'Publicar mi primer juego',
       onPrimaryAction: onPublish,
       titleStyle: AppTypography.titleLarge.copyWith(

@@ -78,7 +78,9 @@ class DatePickerField extends StatelessWidget {
                   child: Text(
                     value ?? 'Seleccionar',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: value != null ? AppColors.gameBrown : AppColors.textPlaceholder,
+                      color: value != null
+                          ? AppColors.gameBrown
+                          : AppColors.textPlaceholder,
                     ),
                   ),
                 ),

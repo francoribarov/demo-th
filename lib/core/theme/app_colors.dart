@@ -106,7 +106,8 @@ class AppColors {
 
   // Opacity variations for gameBrown
   /// Returns [gameBrown] with the provided opacity.
-  static Color gameBrownWithOpacity(double opacity) => gameBrown.withOpacityValue(opacity);
+  static Color gameBrownWithOpacity(double opacity) =>
+      gameBrown.withOpacityValue(opacity);
 
   // Gradient palette for category cards (from Home.tsx)
   /// Gradient palette for category cards.

@@ -74,7 +74,9 @@ class SelectableChip extends StatelessWidget {
       );
     } else {
       color = AppColors.card;
-      borderColor = isOutline ? AppColors.gameBrown.withOpacityValue(0.3) : AppColors.gameBrown.withOpacityValue(0.2);
+      borderColor = isOutline
+          ? AppColors.gameBrown.withOpacityValue(0.3)
+          : AppColors.gameBrown.withOpacityValue(0.2);
       borderWidth = 1;
       textStyle = AppTypography.labelMedium.copyWith(
         color: AppColors.textTertiary,
