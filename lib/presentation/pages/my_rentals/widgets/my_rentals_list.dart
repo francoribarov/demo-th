@@ -32,7 +32,9 @@ class MyRentalsList extends StatelessWidget {
             onDropOff: () async {
               await showDropOffBottomSheet(context, rental.id);
               if (context.mounted) {
-                context.read<MyRentalsBloc>().add(const MyRentalsEvent.refresh());
+                context.read<MyRentalsBloc>().add(
+                  const MyRentalsEvent.refresh(),
+                );
               }
             },
           );

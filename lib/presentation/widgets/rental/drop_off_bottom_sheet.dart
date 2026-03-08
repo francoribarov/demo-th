@@ -77,9 +77,9 @@ class _DropOffContent extends StatelessWidget {
               builder: (context, state) {
                 return _ImagePickerArea(
                   imagePath: state.imagePath,
-                  onPick: () => context
-                      .read<DropOffBloc>()
-                      .add(const DropOffEvent.pickImage()),
+                  onPick: () => context.read<DropOffBloc>().add(
+                    const DropOffEvent.pickImage(),
+                  ),
                 );
               },
             ),
@@ -90,9 +90,9 @@ class _DropOffContent extends StatelessWidget {
                   onPressed: state.isSubmitting
                       ? null
                       : () {
-                          context
-                              .read<DropOffBloc>()
-                              .add(DropOffEvent.submit(rentalId));
+                          context.read<DropOffBloc>().add(
+                            DropOffEvent.submit(rentalId),
+                          );
                         },
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.gameRust,

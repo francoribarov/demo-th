@@ -35,7 +35,7 @@ class DropOffBloc extends Bloc<DropOffEvent, DropOffState> {
   ) async {
     final file = await _gateway.pickImageFromCamera();
     if (file == null) return;
-    
+
     emit(
       state.copyWith(
         imagePath: file,

@@ -19,8 +19,8 @@ class MyRentalsEmptyState extends StatelessWidget {
           Text(
             'No tenés alquileres',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.gameBrown,
-                ),
+              color: AppColors.gameBrown,
+            ),
           ),
         ],
       ),

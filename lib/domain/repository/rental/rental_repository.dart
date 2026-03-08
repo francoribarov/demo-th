@@ -41,4 +41,3 @@ abstract class RentalRepository {
     String imagePath,
   );
 }
-

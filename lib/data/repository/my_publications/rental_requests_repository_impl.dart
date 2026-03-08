@@ -29,7 +29,7 @@ class RentalRequestsRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<DomainException, List<RentalRequest>>>
-      getRentalRequests() async {
+  getRentalRequests() async {
     return executeDataSourceList<MyRentalModel, RentalRequest>(
       function: _dataSource.getRentalRequests,
     );

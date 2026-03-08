@@ -10,8 +10,8 @@ abstract class DropOffState with _$DropOffState {
   }) = _DropOffState;
 
   factory DropOffState.initial() => const DropOffState(
-        imagePath: null,
-        isSubmitting: false,
-        isSuccess: false,
-      );
+    imagePath: null,
+    isSubmitting: false,
+    isSuccess: false,
+  );
 }

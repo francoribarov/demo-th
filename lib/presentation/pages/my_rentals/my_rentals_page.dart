@@ -13,7 +13,8 @@ class MyRentalsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<MyRentalsBloc>()..add(const MyRentalsEvent.started()),
+      create: (context) =>
+          getIt<MyRentalsBloc>()..add(const MyRentalsEvent.started()),
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
@@ -33,7 +34,9 @@ class MyRentalsPage extends StatelessWidget {
                   behavior: SnackBarBehavior.floating,
                 ),
               );
-              context.read<MyRentalsBloc>().add(const MyRentalsEvent.messageDismissed());
+              context.read<MyRentalsBloc>().add(
+                const MyRentalsEvent.messageDismissed(),
+              );
             }
           },
           builder: (context, state) {

@@ -62,4 +62,3 @@ class RentalRepositoryImpl extends BaseRepository implements RentalRepository {
     );
   }
 }
-

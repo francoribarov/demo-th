@@ -348,8 +348,7 @@ class AppRouter {
           providers: [
             BlocProvider<PublishBloc>(
               create: (_) =>
-                  getIt<PublishBloc>()
-                    ..add(const PublishEvent.started()),
+                  getIt<PublishBloc>()..add(const PublishEvent.started()),
             ),
             BlocProvider<DeliveryMethodBloc>(
               create: (_) => getIt<DeliveryMethodBloc>(),
