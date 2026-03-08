@@ -176,7 +176,6 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
                   widget.onAdd(
                     DeliveryMethod(
                       deliveryType: _selectedType,
-                      price: 0,
                       address: _addressController.text,
                       addressName: _aliasController.text,
                       addressNumber: _addressNumberController.text,
