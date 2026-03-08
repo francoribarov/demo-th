@@ -5,7 +5,6 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
 import 'package:mobile_table_hopping/domain/validators/publish/publication_validator.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/publish/game_selector.dart';
 
@@ -106,59 +105,128 @@ class DataStep extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.spacing2xl),
 
-        // Condition
-        Text('Estado del juego', style: AppTypography.titleMedium),
-        const SizedBox(height: AppTheme.spacingMd),
+        // Condition Selector
         FormField<PublicationCondition>(
           initialValue: condition,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
-            if (value == null) {
-              return 'Debes seleccionar el estado del juego';
-            }
             return null;
           },
           builder: (field) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...conditions.map(
-                  (c) => Padding(
-                    padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-                    child: SelectableInputCard(
-                      onTap: () {
-                        field.didChange(c);
-                        onConditionChanged(c);
-                      },
-                      isSelected: field.value == c,
-                      indicatorMode: SelectableInputIndicatorMode.radio,
-                      indicatorPosition:
-                          SelectableInputIndicatorPosition.leading,
-                      title: c.label,
-                      subtitle: c.description,
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      selectedBackgroundColor: AppColors.gameRust
-                          .withOpacityValue(0.1),
-                      unselectedBorderColor: AppColors.border,
-                      selectedTextColor: AppColors.gameRust,
-                      unselectedTextColor: AppColors.foreground,
+            return InkWell(
+              key: ValueKey('publish_condition_${formVersion}_$gameId'),
+              onTap: () async {
+                FocusScope.of(context).unfocus();
+                
+                final selected = await showModalBottomSheet<PublicationCondition>(
+                  context: context,
+                  backgroundColor: AppColors.card,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(AppTheme.radius2xl),
                     ),
+                  ),
+                  builder: (context) {
+                    return SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingLg),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
+                              child: Text(
+                                'Estado del juego',
+                                style: AppTypography.titleSmall.copyWith(
+                                  color: AppColors.gameBrown,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppTheme.spacingMd),
+                            ...conditions.map((c) {
+                              final isSelected = field.value == c;
+                              return InkWell(
+                                onTap: () => Navigator.pop(context, c),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppTheme.spacingLg,
+                                    vertical: AppTheme.spacingMd,
+                                  ),
+                                  color: isSelected
+                                      ? const Color(0xFFE5E5E5)
+                                      : Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              c.label,
+                                              style: AppTypography.bodyLarge.copyWith(
+                                                color: AppColors.gameBrown,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.w600
+                                                    : FontWeight.normal,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              c.description,
+                                              style: AppTypography.bodySmall.copyWith(
+                                                color: AppColors.textTertiary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      if (isSelected)
+                                        const Icon(
+                                          Icons.check_circle,
+                                          color: AppColors.gameRust,
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                if (selected != null) {
+                  field.didChange(selected);
+                  onConditionChanged(selected);
+                }
+              },
+              borderRadius: BorderRadius.circular(AppTheme.radius2xl),
+              child: InputDecorator(
+                decoration: buildTextInputDecoration(
+                  variant: TextInputVisualVariant.surface,
+                  hintText: 'Selecciona el estado...',
+                ).copyWith(
+                  errorText: field.errorText,
+                  suffixIcon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: AppColors.textTertiary,
                   ),
                 ),
-                if (field.hasError)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: AppTheme.spacingXs,
-                      left: AppTheme.spacingMd,
-                    ),
-                    child: Text(
-                      field.errorText!,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.destructive,
+                isEmpty: field.value == null,
+                child: field.value == null
+                    ? const SizedBox.shrink()
+                    : Text(
+                        field.value!.label,
+                        style: AppTypography.bodyLarge.copyWith(
+                          color: AppColors.gameBrown,
+                        ),
                       ),
-                    ),
-                  ),
-              ],
+              ),
             );
           },
         ),
