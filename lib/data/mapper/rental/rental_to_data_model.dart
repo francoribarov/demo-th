@@ -26,8 +26,9 @@ extension RentalToDataModel on ConfirmRentalParams {
       endDate: endDate,
       selectedDelivery: isDelivery ? 'Delivery' : 'Retiro en persona',
       paymentMethod: paymentMethod,
-      deliveryAddress:
-          isDelivery && deliveryAddress.isNotEmpty ? deliveryAddress : null,
+      deliveryAddress: isDelivery && deliveryAddress.isNotEmpty
+          ? deliveryAddress
+          : null,
       foodBundleIds: foodBundleIds.isEmpty ? null : foodBundleIds,
     );
   }

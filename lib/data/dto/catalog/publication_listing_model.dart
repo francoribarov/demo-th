@@ -41,12 +41,12 @@ sealed class PublicationCategoryModel with _$PublicationCategoryModel {
       _$PublicationCategoryModelFromJson(json);
 
   GameCategory toDomainModel() => GameCategory(
-        id: id,
-        name: name,
-        icon: icon,
-        query: query,
-        description: description,
-      );
+    id: id,
+    name: name,
+    icon: icon,
+    query: query,
+    description: description,
+  );
 }
 
 /// Nested game data model within a publication listing.
@@ -69,14 +69,14 @@ sealed class PublicationGameDataModel with _$PublicationGameDataModel {
       _$PublicationGameDataModelFromJson(json);
 
   PublicationGameData toDomainModel() => PublicationGameData(
-        players: players,
-        duration: duration,
-        categories: categories.map((c) => c.toDomainModel()).toList(),
-        description: description,
-        rating: rating,
-        reviewsCount: reviewsCount,
-        difficulty: difficulty,
-      );
+    players: players,
+    duration: duration,
+    categories: categories.map((c) => c.toDomainModel()).toList(),
+    description: description,
+    rating: rating,
+    reviewsCount: reviewsCount,
+    difficulty: difficulty,
+  );
 }
 
 /// Publication listing model as returned by GET /api/publications.
@@ -112,19 +112,19 @@ sealed class PublicationListingModel
 
   @override
   PublicationListing toDomainModel() => PublicationListing(
-        id: id,
-        ownerId: ownerId,
-        gameId: gameId,
-        title: title,
-        condition: condition,
-        price: price,
-        deposit: deposit,
-        images: images,
-        isActive: isActive,
-        bookedDates: bookedRanges.map((a) => a.toDomainModel()).toList(),
-        createdAt: createdAt,
-        game: (game ?? const PublicationGameDataModel()).toDomainModel(),
-      );
+    id: id,
+    ownerId: ownerId,
+    gameId: gameId,
+    title: title,
+    condition: condition,
+    price: price,
+    deposit: deposit,
+    images: images,
+    isActive: isActive,
+    bookedDates: bookedRanges.map((a) => a.toDomainModel()).toList(),
+    createdAt: createdAt,
+    game: (game ?? const PublicationGameDataModel()).toDomainModel(),
+  );
 
   Game toGameEntity() {
     final gameData = game ?? const PublicationGameDataModel();

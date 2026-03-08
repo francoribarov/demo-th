@@ -21,7 +21,6 @@ abstract class AuthRemoteDatasource {
 }
 
 @LazySingleton(as: AuthRemoteDatasource)
-
 /// Dio-backed implementation of [AuthRemoteDatasource].
 class AuthRemoteDatasourceImpl extends BaseDataSource
     implements AuthRemoteDatasource {

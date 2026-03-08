@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile_table_hopping/core/routing/app_router.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_error_text.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_header.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_submit_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_switch_row.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
 /// Registration screen for new users.
 class RegisterPage extends StatefulWidget {
@@ -88,12 +90,9 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
+        appBar: PageAppBar(
           title: const Text('Crear cuenta'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.goToLogin(from: widget.from),
-          ),
+          onLeadingPressed: () => context.goToLogin(from: widget.from),
         ),
         body: SafeArea(
           child: LayoutBuilder(
@@ -114,14 +113,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: EdgeInsets.fromLTRB(
                       horizontalPadding,
-                      16,
+                      AppTheme.spacingLg,
                       horizontalPadding,
-                      16 + keyboardInset,
+                      AppTheme.spacingLg + keyboardInset,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppTheme.spacing3xl),
                         Center(
                           child: Image.asset(
                             'assets/images/dice_logo.png',
@@ -129,20 +128,20 @@ class _RegisterPageState extends State<RegisterPage> {
                             width: 64,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppTheme.spacing2xl),
                         const AuthHeader(
                           title: 'Empecemos',
                           subtitle:
                               'Creá tu cuenta para publicar y alquilar juegos.',
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppTheme.spacing3xl),
                         Form(
                           key: _formKey,
                           autovalidateMode: AutovalidateMode.disabled,
                           child: AutofillGroup(
                             child: Column(
                               children: [
-                                TextFormField(
+                                TextFormInputField(
                                   key: const Key('registerNameField'),
                                   controller: _nameController,
                                   focusNode: _nameFocusNode,
@@ -153,9 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.name,
                                     AutofillHints.newUsername,
                                   ],
-                                  decoration: const InputDecoration(
-                                    labelText: 'Nombre',
-                                  ),
+                                  labelText: 'Nombre',
                                   validator: (value) =>
                                       validateUsernameRequired(value ?? ''),
                                   onChanged: (name) =>
@@ -166,8 +163,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     _emailFocusNode.requestFocus();
                                   },
                                 ),
-                                const SizedBox(height: 16),
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingLg),
+                                TextFormInputField(
                                   key: const Key('registerEmailField'),
                                   controller: _emailController,
                                   focusNode: _emailFocusNode,
@@ -179,10 +176,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.email,
                                     AutofillHints.newUsername,
                                   ],
-                                  decoration: const InputDecoration(
-                                    labelText: 'Email',
-                                    hintText: 'tu@email.com',
-                                  ),
+                                  labelText: 'Email',
+                                  hintText: 'tu@email.com',
                                   validator: (value) =>
                                       validateEmail(value ?? ''),
                                   onChanged: (email) =>
@@ -193,8 +188,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     _passwordFocusNode.requestFocus();
                                   },
                                 ),
-                                const SizedBox(height: 16),
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingLg),
+                                TextFormInputField(
                                   key: const Key('registerPasswordField'),
                                   controller: _passwordController,
                                   focusNode: _passwordFocusNode,
@@ -206,29 +201,27 @@ class _RegisterPageState extends State<RegisterPage> {
                                   autofillHints: const [
                                     AutofillHints.newPassword,
                                   ],
-                                  decoration: InputDecoration(
-                                    labelText: 'Contraseña',
-                                    helperText: 'Mínimo 8 caracteres.',
-                                    suffixIcon: IconButton(
-                                      key: const Key(
-                                        'registerPasswordVisibilityButton',
-                                      ),
-                                      tooltip: _isPasswordVisible
-                                          ? 'Ocultar contraseña'
-                                          : 'Mostrar contraseña',
-                                      onPressed: isSubmitting
-                                          ? null
-                                          : () {
-                                              setState(() {
-                                                _isPasswordVisible =
-                                                    !_isPasswordVisible;
-                                              });
-                                            },
-                                      icon: Icon(
-                                        _isPasswordVisible
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                      ),
+                                  labelText: 'Contraseña',
+                                  helperText: 'Mínimo 8 caracteres.',
+                                  suffixIcon: IconButton(
+                                    key: const Key(
+                                      'registerPasswordVisibilityButton',
+                                    ),
+                                    tooltip: _isPasswordVisible
+                                        ? 'Ocultar contraseña'
+                                        : 'Mostrar contraseña',
+                                    onPressed: isSubmitting
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              _isPasswordVisible =
+                                                  !_isPasswordVisible;
+                                            });
+                                          },
+                                    icon: Icon(
+                                      _isPasswordVisible
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                     ),
                                   ),
                                   validator: (value) =>
@@ -243,8 +236,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     _confirmPasswordFocusNode.requestFocus();
                                   },
                                 ),
-                                const SizedBox(height: 16),
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingLg),
+                                TextFormInputField(
                                   key: const Key(
                                     'registerConfirmPasswordField',
                                   ),
@@ -258,28 +251,26 @@ class _RegisterPageState extends State<RegisterPage> {
                                   autofillHints: const [
                                     AutofillHints.newPassword,
                                   ],
-                                  decoration: InputDecoration(
-                                    labelText: 'Repetí la contraseña',
-                                    suffixIcon: IconButton(
-                                      key: const Key(
-                                        'registerConfirmPasswordVisibilityButton',
-                                      ),
-                                      tooltip: _isConfirmPasswordVisible
-                                          ? 'Ocultar contraseña'
-                                          : 'Mostrar contraseña',
-                                      onPressed: isSubmitting
-                                          ? null
-                                          : () {
-                                              setState(() {
-                                                _isConfirmPasswordVisible =
-                                                    !_isConfirmPasswordVisible;
-                                              });
-                                            },
-                                      icon: Icon(
-                                        _isConfirmPasswordVisible
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                      ),
+                                  labelText: 'Repetí la contraseña',
+                                  suffixIcon: IconButton(
+                                    key: const Key(
+                                      'registerConfirmPasswordVisibilityButton',
+                                    ),
+                                    tooltip: _isConfirmPasswordVisible
+                                        ? 'Ocultar contraseña'
+                                        : 'Mostrar contraseña',
+                                    onPressed: isSubmitting
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              _isConfirmPasswordVisible =
+                                                  !_isConfirmPasswordVisible;
+                                            });
+                                          },
+                                    icon: Icon(
+                                      _isConfirmPasswordVisible
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                     ),
                                   ),
                                   validator: (value) =>
@@ -302,18 +293,23 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                         if (errorMessage != null) ...[
-                          const SizedBox(height: 8),
-                          AuthErrorText(message: errorMessage),
+                          const SizedBox(height: AppTheme.spacingSm),
+                          InlineFeedbackText(
+                            message: errorMessage,
+                            padding: const EdgeInsets.only(
+                              top: AppTheme.spacingMd,
+                            ),
+                          ),
                         ],
-                        const SizedBox(height: 24),
-                        AuthSubmitButton(
+                        const SizedBox(height: AppTheme.spacing2xl),
+                        AppPrimaryButton(
                           key: const Key('registerSubmitButton'),
                           label: 'Crear cuenta',
                           isLoading: isSubmitting,
                           onPressed: () =>
                               _submitRegister(isSubmitting: isSubmitting),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppTheme.spacingLg),
                         AuthSwitchRow(
                           key: const Key('registerGoToLoginButton'),
                           prompt: 'Ya tenés cuenta? ',

@@ -3,7 +3,6 @@ import 'package:mobile_table_hopping/domain/model/auth/user.dart';
 import 'package:mobile_table_hopping/domain/repository/auth/auth_repository.dart';
 
 @injectable
-
 /// Use case for retrieving the cached user.
 class GetCachedUser {
   /// Creates a [GetCachedUser] use case.

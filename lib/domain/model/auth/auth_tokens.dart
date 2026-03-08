@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'auth_tokens.freezed.dart';
 
 @freezed
-
 /// Domain entity containing auth access/refresh tokens.
 abstract class AuthTokens with _$AuthTokens {
   /// Creates an [AuthTokens] instance.

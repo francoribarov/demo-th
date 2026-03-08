@@ -106,8 +106,9 @@ void main() {
   blocTest<DeliveryMethodBloc, DeliveryMethodState>(
     'emits fallback message when createDeliveryMethod throws unexpectedly',
     build: () {
-      when(() => mockCreateDeliveryMethod(any()))
-          .thenThrow(Exception('unexpected'));
+      when(
+        () => mockCreateDeliveryMethod(any()),
+      ).thenThrow(Exception('unexpected'));
       return deliveryMethodBloc;
     },
     act: (bloc) =>

@@ -35,22 +35,21 @@ sealed class PublicationDetailModel
 
   @override
   PublicationDetail toDomainModel() => PublicationDetail(
-        id: id,
-        gameId: gameId,
-        ownerId: ownerId,
-        description: description,
-        condition: condition,
-        price: price,
-        images: images
-            .map((url) => PublicationImage(url: url, type: 'gallery'))
-            .toList(),
-        deliveryMethods:
-            deliveryMethods.map((dm) => dm.toDomainModel()).toList(),
-        gameTitle: gameTitle,
-        gameImageUrl: gameImageUrl,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-      );
+    id: id,
+    gameId: gameId,
+    ownerId: ownerId,
+    description: description,
+    condition: condition,
+    price: price,
+    images: images
+        .map((url) => PublicationImage(url: url, type: 'gallery'))
+        .toList(),
+    deliveryMethods: deliveryMethods.map((dm) => dm.toDomainModel()).toList(),
+    gameTitle: gameTitle,
+    gameImageUrl: gameImageUrl,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
 }
 
 /// Model for delivery methods in publication detail.
@@ -77,16 +76,16 @@ sealed class DeliveryMethodDetailModel
 
   @override
   DeliveryMethod toDomainModel() => DeliveryMethod(
-        id: id,
-        deliveryType: _parseDeliveryType(deliveryType),
-        price: price,
-        address: address,
-        addressName: addressName,
-        addressNumber: addressNumber,
-        additionalNotes: additionalNotes,
-        initPickupTime: initPickupTime,
-        finishPickupTime: finishPickupTime,
-      );
+    id: id,
+    deliveryType: _parseDeliveryType(deliveryType),
+    price: price,
+    address: address,
+    addressName: addressName,
+    addressNumber: addressNumber,
+    additionalNotes: additionalNotes,
+    initPickupTime: initPickupTime,
+    finishPickupTime: finishPickupTime,
+  );
 
   static DeliveryType _parseDeliveryType(String value) {
     switch (value.toLowerCase()) {

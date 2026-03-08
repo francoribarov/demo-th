@@ -21,7 +21,6 @@ part 'edit_publication_event.dart';
 part 'edit_publication_state.dart';
 
 @injectable
-
 /// Bloc that manages the edit publication flow.
 class EditPublicationBloc
     extends Bloc<EditPublicationEvent, EditPublicationState> {
@@ -34,14 +33,14 @@ class EditPublicationBloc
     required GetDeliveryMethodsUseCase getDeliveryMethods,
     required ImagePickerGateway imagePickerGateway,
     required UploadImagesUseCase uploadImages,
-  })  : _getPublicationDetail = getPublicationDetail,
-        _updatePublication = updatePublication,
-        _deletePublication = deletePublication,
-        _getGames = getGames,
-        _getDeliveryMethods = getDeliveryMethods,
-        _gateway = imagePickerGateway,
-        _uploadImages = uploadImages,
-        super(const EditPublicationState()) {
+  }) : _getPublicationDetail = getPublicationDetail,
+       _updatePublication = updatePublication,
+       _deletePublication = deletePublication,
+       _getGames = getGames,
+       _getDeliveryMethods = getDeliveryMethods,
+       _gateway = imagePickerGateway,
+       _uploadImages = uploadImages,
+       super(const EditPublicationState()) {
     _registerEventHandlers();
   }
 
@@ -110,18 +109,19 @@ class EditPublicationBloc
         (value) => value,
       );
       final deliveryMethodsResult = await _getDeliveryMethods();
-      final deliveryMethods =
-          deliveryMethodsResult.fold<List<publish.DeliveryMethod>>(
-        (_) => const [],
-        (value) => value,
-      );
+      final deliveryMethods = deliveryMethodsResult
+          .fold<List<publish.DeliveryMethod>>(
+            (_) => const [],
+            (value) => value,
+          );
       final mappedDeliveryMethods = deliveryMethods
           .map((method) => method.toMyPublicationsModel())
           .toList();
 
       // Load publication details using Either pattern
-      final publicationResult =
-          await _getPublicationDetail(event.publicationId);
+      final publicationResult = await _getPublicationDetail(
+        event.publicationId,
+      );
 
       publicationResult.fold(
         // Error case
@@ -200,13 +200,15 @@ class EditPublicationBloc
     _ToggleDeliveryMethod event,
     Emitter<EditPublicationState> emit,
   ) {
-    final exists = state.deliveryMethods
-        .any((m) => m.id == event.method.id && m.id != null);
+    final exists = state.deliveryMethods.any(
+      (m) => m.id == event.method.id && m.id != null,
+    );
 
     List<DeliveryMethod> updated;
     if (exists) {
-      updated =
-          state.deliveryMethods.where((m) => m.id != event.method.id).toList();
+      updated = state.deliveryMethods
+          .where((m) => m.id != event.method.id)
+          .toList();
     } else {
       updated = [...state.deliveryMethods, event.method];
     }

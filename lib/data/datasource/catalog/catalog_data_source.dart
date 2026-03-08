@@ -20,7 +20,7 @@ abstract class CatalogRemoteDataSource {
 
   /// Fetches publications available for rental today.
   Future<ApiResult<List<PublicationListingModel>>>
-      getPublicationsAvailableToday(AvailableTodayQueryParams params);
+  getPublicationsAvailableToday(AvailableTodayQueryParams params);
 
   /// Fetches recommended publications based on a game ID.
   Future<ApiResult<List<PublicationListingModel>>> getRecommendedPublications(
@@ -88,7 +88,7 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
 
   @override
   Future<ApiResult<List<PublicationListingModel>>>
-      getPublicationsAvailableToday(AvailableTodayQueryParams params) {
+  getPublicationsAvailableToday(AvailableTodayQueryParams params) {
     return getStateOf<List<PublicationListingModel>>(
       request: () async {
         final response = await _service.getPublicationsAvailableToday(
@@ -181,7 +181,9 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
     return getStateOf<List<PublicationListItemModel>>(
       request: () async {
         final response = await _service.searchGames(params.toQueryMap());
-        return PublicationListItemCollectionResponse.fromDynamic(response).items;
+        return PublicationListItemCollectionResponse.fromDynamic(
+          response,
+        ).items;
       },
     );
   }
@@ -192,5 +194,4 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
       request: () => _service.getRecommendedGames(gameId),
     );
   }
-
 }

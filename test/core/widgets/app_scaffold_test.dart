@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
-import 'package:mobile_table_hopping/core/widgets/app_scaffold.dart';
+import 'package:mobile_table_hopping/core/widgets/templates/app_scaffold.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -45,7 +45,27 @@ void main() {
       routes: [
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
-            return AppScaffold(navigationShell: navigationShell);
+            return AppScaffold(
+              navigationShell: navigationShell,
+              onItemTapped: (index) {
+                const protectedIndexes = {1, 2, 3};
+                final targets = {
+                  0: AppRoutes.home,
+                  1: AppRoutes.myPublications,
+                  2: AppRoutes.publish,
+                  3: AppRoutes.profile,
+                };
+                if (protectedIndexes.contains(index) &&
+                    !getIt<AuthBloc>().state.isAuthenticated) {
+                  context.goToLogin(from: targets[index]);
+                  return;
+                }
+                navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                );
+              },
+            );
           },
           branches: [
             StatefulShellBranch(

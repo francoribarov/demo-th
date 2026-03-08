@@ -61,7 +61,6 @@ class DataException implements Exception {
   @override
   String toString() =>
       'DataException(message: $message, statusCode: $statusCode)';
-
 }
 
 DataException _fromBadResponse(DioException error) {
@@ -101,7 +100,8 @@ DataException _fromBadResponse(DioException error) {
 }
 
 DataException _fromUnknown(DioException error) {
-  if (error.error is Exception && error.error.toString().contains('SocketException')) {
+  if (error.error is Exception &&
+      error.error.toString().contains('SocketException')) {
     return DataException(message: 'No internet connection');
   }
 

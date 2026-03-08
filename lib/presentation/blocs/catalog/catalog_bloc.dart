@@ -24,11 +24,11 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
     required GetCategoriesUseCase getCategories,
     required GetFilterShortcutsUseCase getFilterShortcuts,
     required FilterPublicationsUseCase filterPublications,
-  })  : _getPublications = getPublications,
-        _getCategories = getCategories,
-        _getFilterShortcuts = getFilterShortcuts,
-        _filterPublications = filterPublications,
-        super(const CatalogState()) {
+  }) : _getPublications = getPublications,
+       _getCategories = getCategories,
+       _getFilterShortcuts = getFilterShortcuts,
+       _filterPublications = filterPublications,
+       super(const CatalogState()) {
     on<LoadGames>(_onLoadGames);
     on<SearchCatalog>(_onSearch);
     on<ApplyFilters>(_onApplyFilters);

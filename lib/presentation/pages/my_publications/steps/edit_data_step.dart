@@ -4,6 +4,10 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart'
+    as common_inputs;
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
 /// Step for editing publication data (description and condition).
 class EditDataStep extends StatelessWidget {
@@ -68,9 +72,27 @@ class EditDataStep extends StatelessWidget {
                           height: 60,
                           fit: BoxFit.cover,
                           errorBuilder: (_, error, stackTrace) =>
-                              _GamePlaceholder(),
+                              const MediaPlaceholder(
+                                width: 60,
+                                height: 60,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(AppTheme.radiusSm),
+                                ),
+                                backgroundOpacity: 0.3,
+                                icon: Icons.extension,
+                                iconSize: 30,
+                              ),
                         )
-                      : _GamePlaceholder(),
+                      : const MediaPlaceholder(
+                          width: 60,
+                          height: 60,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(AppTheme.radiusSm),
+                          ),
+                          backgroundOpacity: 0.3,
+                          icon: Icons.extension,
+                          iconSize: 30,
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -120,27 +142,12 @@ class EditDataStep extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        TextFormField(
+        TextFormInputField(
           initialValue: description,
           maxLines: 4,
           maxLength: 500,
-          decoration: InputDecoration(
-            hintText: 'Describe el estado y cualquier detalle importante...',
-            filled: true,
-            fillColor: AppColors.background,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppColors.gameRust, width: 2),
-            ),
-          ),
+          hintText: 'Describe el estado y cualquier detalle importante...',
+          variant: TextInputVisualVariant.subtle,
           onChanged: onDescriptionChanged,
         ),
         const SizedBox(height: 24),
@@ -168,26 +175,8 @@ class EditDataStep extends StatelessWidget {
   }
 }
 
-class _GamePlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: AppColors.muted.withOpacityValue(0.3),
-        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-      ),
-      child: const Icon(
-        Icons.extension,
-        color: AppColors.mutedForeground,
-        size: 30,
-      ),
-    );
-  }
-}
-
 class _ConditionOption extends StatelessWidget {
+  // Thin adapter to keep condition-specific styling and wording centralized.
   const _ConditionOption({
     required this.condition,
     required this.isSelected,
@@ -200,66 +189,18 @@ class _ConditionOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return common_inputs.SelectableInputCard(
       onTap: onTap,
+      isSelected: isSelected,
+      indicatorMode: common_inputs.SelectableInputIndicatorMode.radio,
+      indicatorPosition: common_inputs.SelectableInputIndicatorPosition.leading,
+      title: condition.label,
+      subtitle: condition.description,
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.gameRust.withOpacityValue(0.1)
-              : AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(
-            color: isSelected ? AppColors.gameRust : AppColors.border,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isSelected ? AppColors.gameRust : Colors.transparent,
-                border: Border.all(
-                  color: isSelected ? AppColors.gameRust : AppColors.border,
-                  width: 2,
-                ),
-              ),
-              child: isSelected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
-                  : null,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    condition.label,
-                    style: AppTypography.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: isSelected
-                          ? AppColors.gameRust
-                          : AppColors.foreground,
-                    ),
-                  ),
-                  Text(
-                    condition.description,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.mutedForeground,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      selectedBackgroundColor: AppColors.gameRust.withOpacityValue(0.1),
+      unselectedBorderColor: AppColors.border,
+      selectedTextColor: AppColors.gameRust,
+      unselectedTextColor: AppColors.foreground,
     );
   }
 }

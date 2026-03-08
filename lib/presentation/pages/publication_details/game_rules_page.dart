@@ -5,20 +5,18 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_rules_bloc.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/info_chip.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Game rules page matching GameRules.tsx
-class GameRulesPage extends StatefulWidget {
+class GameRulesPage extends StatelessWidget {
   /// Creates a [GameRulesPage] for the provided game id.
   const GameRulesPage({required this.gameId, super.key});
 
   /// Game id used to load the rules.
   final String gameId;
 
-  @override
-  State<GameRulesPage> createState() => _GameRulesPageState();
-}
-
-class _GameRulesPageState extends State<GameRulesPage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GameRulesBloc, GameRulesState>(
@@ -35,10 +33,10 @@ class _GameRulesPageState extends State<GameRulesPage> {
         if (game == null) {
           return Scaffold(
             appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
+              leading: AppBarIconAction(
+                icon: Icons.arrow_back,
                 onPressed: () => context.popOrGo(
-                  AppRoutes.publicationDetailsPath(widget.gameId),
+                  AppRoutes.publicationDetailsPath(gameId),
                 ),
               ),
             ),
@@ -50,10 +48,10 @@ class _GameRulesPageState extends State<GameRulesPage> {
 
         return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+            leading: AppBarIconAction(
+              icon: Icons.arrow_back,
               onPressed: () => context.popOrGo(
-                AppRoutes.publicationDetailsPath(widget.gameId),
+                AppRoutes.publicationDetailsPath(gameId),
               ),
             ),
             title: Text('Reglas de ${game.title}'),
@@ -73,12 +71,24 @@ class _GameRulesPageState extends State<GameRulesPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _InfoChip(
+                      InfoChip(
                         icon: Icons.timer,
                         label: '${game.duration} min',
+                        layout: InfoChipLayout.column,
+                        textStyle: AppTypography.labelMedium,
                       ),
-                      _InfoChip(icon: Icons.people, label: game.players),
-                      _InfoChip(icon: Icons.psychology, label: game.difficulty),
+                      InfoChip(
+                        icon: Icons.people,
+                        label: game.players,
+                        layout: InfoChipLayout.column,
+                        textStyle: AppTypography.labelMedium,
+                      ),
+                      InfoChip(
+                        icon: Icons.psychology,
+                        label: game.difficulty,
+                        layout: InfoChipLayout.column,
+                        textStyle: AppTypography.labelMedium,
+                      ),
                     ],
                   ),
                 ),
@@ -98,16 +108,16 @@ class _GameRulesPageState extends State<GameRulesPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.play_circle_outline,
                           size: 48,
-                          color: AppColors.gameBrown.withOpacityValue(0.5),
+                          color: AppColors.textPlaceholder,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Video tutorial de YouTube',
                           style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.gameBrown.withOpacityValue(0.7),
+                            color: AppColors.textTertiary,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -115,14 +125,14 @@ class _GameRulesPageState extends State<GameRulesPage> {
                           Text(
                             '(próximamente)',
                             style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.5),
+                              color: AppColors.textPlaceholder,
                             ),
                           )
                         else
                           Text(
                             game.rules?.videoUrl ?? '',
                             style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.gameBrown.withOpacityValue(0.5),
+                              color: AppColors.textPlaceholder,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -173,21 +183,16 @@ class _GameRulesPageState extends State<GameRulesPage> {
                 const SizedBox(height: 24),
 
                 // PDF download
-                OutlinedButton.icon(
+                AppSecondaryButton(
                   onPressed: () {
-                    ScaffoldMessenger.of(
+                    FeedbackMessenger.showInfo(
                       context,
-                    ).showSnackBar(
-                      const SnackBar(
-                        content: Text('Descarga de PDF próximamente'),
-                      ),
+                      message: 'Descarga de PDF próximamente',
                     );
                   },
-                  icon: const Icon(Icons.picture_as_pdf),
-                  label: const Text('Descargar manual completo (PDF)'),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                  ),
+                  icon: Icons.picture_as_pdf,
+                  label: 'Descargar manual completo (PDF)',
+                  minimumSize: const Size(double.infinity, 48),
                 ),
 
                 const SizedBox(height: 100),
@@ -200,7 +205,6 @@ class _GameRulesPageState extends State<GameRulesPage> {
   }
 
   String _generateCheatSheetContent(String title, String section) {
-    // Generate dynamic content based on game
     switch (section) {
       case 'win':
         return 'El objetivo principal del juego es acumular la mayor cantidad de puntos siguiendo las reglas específicas de $title.';
@@ -211,23 +215,6 @@ class _GameRulesPageState extends State<GameRulesPage> {
       default:
         return '';
     }
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  const _InfoChip({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, color: AppColors.gameBrown),
-        const SizedBox(height: 4),
-        Text(label, style: AppTypography.labelMedium),
-      ],
-    );
   }
 }
 

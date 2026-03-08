@@ -125,14 +125,14 @@ print_header "Step 4: Formatting"
 if [ "$CI_MODE" = true ]; then
   # In CI, distinct check mode
   log_info "Checking formatting on all files..."
-  $DART_CMD format --output=none --set-exit-if-changed . || { 
-    log_error "Formatting issues found. Run 'dart format .' locally."; 
+  $DART_CMD format --line-length=120 --output=none --set-exit-if-changed . || { 
+    log_error "Formatting issues found. Run 'make format' or 'dart format --line-length=120 .' locally."; 
     exit 1; 
   }
 else
   # Locally, apply fixes
   log_info "Applying formatting..."
-  $DART_CMD format . 
+  $DART_CMD format --line-length=120 . 
 fi
 log_success "Formatting check passed."
 
@@ -143,6 +143,25 @@ print_header "Step 5: Static Analysis"
 log_info "Running analyzer..."
 $DART_CMD analyze --fatal-infos || { log_error "Analysis failed."; exit 1; }
 log_success "Analysis passed."
+
+# Step 5.1: Atomic guardrails (report-only)
+# ------------------------------------------------------------------------------
+print_header "Step 5.1: Atomic Guardrails (Report Only)"
+if [ -x "./scripts/atomic_guardrails.sh" ]; then
+  if [ "$CI_MODE" = true ]; then
+    log_info "CI Mode: enforcing atomic guardrails in strict mode..."
+    ./scripts/atomic_guardrails.sh --strict || {
+      log_error "Atomic guardrails failed in strict mode."
+      exit 1
+    }
+  else
+    if ! ./scripts/atomic_guardrails.sh; then
+      log_warn "Atomic guardrails reported issues."
+    fi
+  fi
+else
+  log_warn "atomic_guardrails.sh not found or not executable; skipping."
+fi
 
 # Step 6: Testing
 # ------------------------------------------------------------------------------

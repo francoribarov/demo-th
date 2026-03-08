@@ -6,7 +6,6 @@ import 'package:mobile_table_hopping/domain/model/auth/user.dart';
 part 'auth_session.freezed.dart';
 
 @freezed
-
 /// Domain entity representing an authenticated session.
 abstract class AuthSession with _$AuthSession {
   /// Creates an [AuthSession] instance.

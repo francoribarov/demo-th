@@ -7,6 +7,7 @@ import 'package:mobile_table_hopping/domain/model/my_publications/rental_request
 import 'package:mobile_table_hopping/domain/usecase/my_publications/accept_rental_request_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/get_rental_requests_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/reject_rental_request_use_case.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -51,10 +52,10 @@ void main() {
   });
 
   RentalRequestsBloc buildBloc() => RentalRequestsBloc(
-        getRentalRequests,
-        acceptRentalRequest,
-        rejectRentalRequest,
-      );
+    getRentalRequests,
+    acceptRentalRequest,
+    rejectRentalRequest,
+  );
 
   blocTest<RentalRequestsBloc, RentalRequestsState>(
     'started emits failure when getRentalRequests returns Left',
@@ -88,7 +89,10 @@ void main() {
       ),
       RentalRequestsState.success(
         [tRequest],
-        feedbackMessage: 'Error al procesar la solicitud',
+        feedbackNotice: const FeedbackNotice(
+          message: 'Error al procesar la solicitud',
+          severity: FeedbackSeverity.error,
+        ),
       ),
     ],
   );
@@ -110,7 +114,60 @@ void main() {
       ),
       RentalRequestsState.success(
         [tRequest],
-        feedbackMessage: 'Error al procesar la solicitud',
+        feedbackNotice: const FeedbackNotice(
+          message: 'Error al procesar la solicitud',
+          severity: FeedbackSeverity.error,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<RentalRequestsBloc, RentalRequestsState>(
+    'accepted emits success severity feedback when request is accepted',
+    build: () {
+      when(
+        () => acceptRentalRequest('r-1'),
+      ).thenAnswer((_) async => const Right<DomainException, void>(null));
+      return buildBloc();
+    },
+    seed: () => RentalRequestsState.success([tRequest]),
+    act: (bloc) => bloc.add(const RentalRequestsEvent.accepted('r-1')),
+    expect: () => [
+      RentalRequestsState.success(
+        [tRequest],
+        processingRequestId: 'r-1',
+      ),
+      RentalRequestsState.success(
+        [tRequest.copyWith(status: RentalRequestStatus.accepted)],
+        feedbackNotice: const FeedbackNotice(
+          message: 'Solicitud aceptada',
+          severity: FeedbackSeverity.success,
+        ),
+      ),
+    ],
+  );
+
+  blocTest<RentalRequestsBloc, RentalRequestsState>(
+    'rejected emits success severity feedback when request is rejected',
+    build: () {
+      when(
+        () => rejectRentalRequest('r-1'),
+      ).thenAnswer((_) async => const Right<DomainException, void>(null));
+      return buildBloc();
+    },
+    seed: () => RentalRequestsState.success([tRequest]),
+    act: (bloc) => bloc.add(const RentalRequestsEvent.rejected('r-1')),
+    expect: () => [
+      RentalRequestsState.success(
+        [tRequest],
+        processingRequestId: 'r-1',
+      ),
+      RentalRequestsState.success(
+        [tRequest.copyWith(status: RentalRequestStatus.rejected)],
+        feedbackNotice: const FeedbackNotice(
+          message: 'Solicitud rechazada',
+          severity: FeedbackSeverity.success,
+        ),
       ),
     ],
   );
