@@ -7,7 +7,7 @@ class RentalRequestsState with _$RentalRequestsState {
   const factory RentalRequestsState.success(
     List<RentalRequest> requests, {
     @Default(null) String? processingRequestId,
-    @Default(null) String? feedbackMessage,
+    @Default(null) FeedbackNotice? feedbackNotice,
   }) = _Success;
   const factory RentalRequestsState.failure(String message) = _Failure;
 }

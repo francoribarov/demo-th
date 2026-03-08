@@ -48,8 +48,9 @@ void main() {
     );
 
     // Stub GetGamesUseCase call since it might be called
-    when(() => mockGetGames())
-        .thenAnswer((_) async => const Right<DomainException, List<Game>>([]));
+    when(
+      () => mockGetGames(),
+    ).thenAnswer((_) async => const Right<DomainException, List<Game>>([]));
 
     publishBloc = PublishBloc(
       createPublication: mockCreatePublication,

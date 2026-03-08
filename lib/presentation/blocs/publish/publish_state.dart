@@ -1,7 +1,6 @@
 part of 'publish_bloc.dart';
 
 @freezed
-
 /// State for the publish flow.
 abstract class PublishState with _$PublishState {
   /// Creates a publish state snapshot.

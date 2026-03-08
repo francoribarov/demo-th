@@ -30,16 +30,15 @@ abstract class ImageUploadState with _$ImageUploadState {
 }
 
 @injectable
-
 /// Bloc for managing image uploads.
 class ImageUploadBloc extends Bloc<ImageUploadEvent, ImageUploadState> {
   /// Creates an [ImageUploadBloc].
   ImageUploadBloc({
     required ImagePickerGateway imagePickerGateway,
     required UploadImagesUseCase uploadImages,
-  })  : _gateway = imagePickerGateway,
-        _uploadImages = uploadImages,
-        super(const ImageUploadState()) {
+  }) : _gateway = imagePickerGateway,
+       _uploadImages = uploadImages,
+       super(const ImageUploadState()) {
     on<_PickAndUpload>(_onPickAndUpload);
     on<_ImageRemoved>(_onImageRemoved);
     on<_Reset>(_onReset);

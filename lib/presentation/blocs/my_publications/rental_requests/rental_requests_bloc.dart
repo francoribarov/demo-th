@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/domain/model/my_publications/rental_request
 import 'package:mobile_table_hopping/domain/usecase/my_publications/accept_rental_request_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/get_rental_requests_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/reject_rental_request_use_case.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 
 part 'rental_requests_event.dart';
 part 'rental_requests_state.dart';
@@ -65,7 +66,10 @@ class RentalRequestsBloc
         emit(
           currentState.copyWith(
             processingRequestId: null,
-            feedbackMessage: 'Error al procesar la solicitud',
+            feedbackNotice: const FeedbackNotice(
+              message: 'Error al procesar la solicitud',
+              severity: FeedbackSeverity.error,
+            ),
           ),
         );
       },
@@ -80,7 +84,10 @@ class RentalRequestsBloc
         emit(
           RentalRequestsState.success(
             updatedRequests,
-            feedbackMessage: 'Solicitud aceptada',
+            feedbackNotice: const FeedbackNotice(
+              message: 'Solicitud aceptada',
+              severity: FeedbackSeverity.success,
+            ),
           ),
         );
       },
@@ -104,7 +111,10 @@ class RentalRequestsBloc
         emit(
           currentState.copyWith(
             processingRequestId: null,
-            feedbackMessage: 'Error al procesar la solicitud',
+            feedbackNotice: const FeedbackNotice(
+              message: 'Error al procesar la solicitud',
+              severity: FeedbackSeverity.error,
+            ),
           ),
         );
       },
@@ -119,7 +129,10 @@ class RentalRequestsBloc
         emit(
           RentalRequestsState.success(
             updatedRequests,
-            feedbackMessage: 'Solicitud rechazada',
+            feedbackNotice: const FeedbackNotice(
+              message: 'Solicitud rechazada',
+              severity: FeedbackSeverity.success,
+            ),
           ),
         );
       },
@@ -132,6 +145,6 @@ class RentalRequestsBloc
   ) {
     final currentState = state;
     if (currentState is! _Success) return;
-    emit(currentState.copyWith(feedbackMessage: null));
+    emit(currentState.copyWith(feedbackNotice: null));
   }
 }

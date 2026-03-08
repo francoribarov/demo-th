@@ -5,8 +5,10 @@ import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publication_by_id_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -14,6 +16,8 @@ class MockGetPublicationById extends Mock
     implements GetPublicationByIdUseCase {}
 
 class MockConfirmRentalUseCase extends Mock implements ConfirmRentalUseCase {}
+
+class FakeConfirmRentalParams extends Fake implements ConfirmRentalParams {}
 
 void main() {
   late MockGetPublicationById mockGetPublicationById;
@@ -37,6 +41,7 @@ void main() {
   );
 
   setUp(() {
+    registerFallbackValue(FakeConfirmRentalParams());
     mockGetPublicationById = MockGetPublicationById();
     mockConfirmRentalUseCase = MockConfirmRentalUseCase();
     rentalBloc = RentalBloc(
@@ -65,9 +70,12 @@ void main() {
         isA<RentalState>()
             .having((s) => s.endDate, 'endDate', null)
             .having(
-              (s) => s.snackbarMessage,
+              (s) => s.feedbackNotice,
               'message',
-              'El alquiler mínimo es de 3 días (ej: Lun a Jue).',
+              const FeedbackNotice(
+                message: 'El alquiler mínimo es de 3 días (ej: Lun a Jue).',
+                severity: FeedbackSeverity.warning,
+              ),
             ),
       ],
     );
@@ -88,9 +96,12 @@ void main() {
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', null)
             .having(
-              (s) => s.snackbarMessage,
+              (s) => s.feedbackNotice,
               'message',
-              'El juego debe estar disponible por al menos 3 días.',
+              const FeedbackNotice(
+                message: 'El juego debe estar disponible por al menos 3 días.',
+                severity: FeedbackSeverity.warning,
+              ),
             ),
       ],
     );
@@ -109,9 +120,13 @@ void main() {
           bloc.add(const RentalEvent.endDateChanged(endDate: '2026-06-05')),
       expect: () => [
         isA<RentalState>().having(
-          (s) => s.snackbarMessage,
+          (s) => s.feedbackNotice,
           'message',
-          'Las fechas seleccionadas no están disponibles en su totalidad.',
+          const FeedbackNotice(
+            message:
+                'Las fechas seleccionadas no están disponibles en su totalidad.',
+            severity: FeedbackSeverity.warning,
+          ),
         ),
       ],
     );
@@ -129,9 +144,12 @@ void main() {
           bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
       expect: () => [
         isA<RentalState>().having(
-          (s) => s.snackbarMessage,
+          (s) => s.feedbackNotice,
           'message',
-          'El alquiler no puede superar los 30 días.',
+          const FeedbackNotice(
+            message: 'El alquiler no puede superar los 30 días.',
+            severity: FeedbackSeverity.warning,
+          ),
         ),
       ],
     );
@@ -151,13 +169,51 @@ void main() {
             .having((s) => s.startDate, 'startDate', '2026-01-15')
             .having((s) => s.endDate, 'endDate', null)
             .having(
-              (s) => s.snackbarMessage,
+              (s) => s.feedbackNotice,
               'message',
-              'Elegí una fecha de fin posterior al inicio.',
+              const FeedbackNotice(
+                message: 'Elegí una fecha de fin posterior al inicio.',
+                severity: FeedbackSeverity.warning,
+              ),
             ),
       ],
     );
   });
+
+  group('RentalBloc Feedback Severity', () {
+    blocTest<RentalBloc, RentalState>(
+      'emits error severity feedback when rental submission fails',
+      build: () {
+        when(() => mockConfirmRentalUseCase(any())).thenAnswer(
+          (_) async => const Left(DomainException(message: 'submit failed')),
+        );
+        return rentalBloc;
+      },
+      seed: () => RentalState(
+        publication: tPublication,
+        startDate: '2026-06-01',
+        endDate: '2026-06-03',
+      ),
+      act: (bloc) => bloc.add(const RentalEvent.submitted()),
+      expect: () => [
+        isA<RentalState>()
+            .having((s) => s.isSubmitting, 'isSubmitting', true)
+            .having((s) => s.feedbackNotice, 'feedbackNotice', null),
+        isA<RentalState>()
+            .having((s) => s.isSubmitting, 'isSubmitting', false)
+            .having(
+              (s) => s.feedbackNotice,
+              'feedbackNotice',
+              const FeedbackNotice(
+                message:
+                    'No se pudo enviar la solicitud de alquiler.: submit failed',
+                severity: FeedbackSeverity.error,
+              ),
+            ),
+      ],
+    );
+  });
+
   group('RentalBloc Price Calculations', () {
     blocTest<RentalBloc, RentalState>(
       'should calculate 3 days rental price correctly',

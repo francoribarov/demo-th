@@ -73,11 +73,36 @@ class AppColors {
   /// Warning state color.
   static const Color warning = Color(0xFFEAB308);
 
-  /// Error state color.
-  static const Color error = Color(0xFFEF4444);
+  /// Error state color (alias for [destructive]).
+  static const Color error = destructive;
 
   /// Informational state color.
   static const Color info = Color(0xFF3B82F6);
+
+  /// Reusable shadow color for elevation.
+  static const Color shadow = Color(0xFF3D2E1F);
+
+  /// Soft success background surface.
+  static const Color successSurface = Color(0xFFEAF7EA);
+
+  /// Soft error background surface.
+  static const Color errorSurface = Color(0xFFFDECEC);
+
+  /// Border token for highlighted chips.
+  static const Color goldBorder = Color(0xFFF3D58A);
+
+  // Semantic text colors (gameBrown at fixed opacities)
+  /// Secondary text — gameBrown at 80% opacity.
+  static const Color textSecondary = Color(0xCC805D40);
+
+  /// Tertiary text — gameBrown at 70% opacity.
+  static const Color textTertiary = Color(0xB3805D40);
+
+  /// Muted text — gameBrown at 60% opacity.
+  static const Color textMuted = Color(0x99805D40);
+
+  /// Placeholder / hint text — gameBrown at 50% opacity.
+  static const Color textPlaceholder = Color(0x80805D40);
 
   // Opacity variations for gameBrown
   /// Returns [gameBrown] with the provided opacity.

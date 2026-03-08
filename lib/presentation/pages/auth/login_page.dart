@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile_table_hopping/core/routing/app_router.dart';
+import 'package:mobile_table_hopping/core/routing/navigation.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_error_text.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_header.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_submit_button.dart';
-import 'package:mobile_table_hopping/presentation/widgets/auth/auth_switch_row.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
 /// Login screen for email/password authentication.
 class LoginPage extends StatefulWidget {
@@ -81,12 +83,10 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
+        appBar: PageAppBar(
           title: const Text('Iniciar sesión'),
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => context.popOrGo(AppRoutes.home),
-          ),
+          leadingType: PageAppBarLeadingType.close,
+          onLeadingPressed: () => context.popOrGo(AppRoutes.home),
         ),
         body: SafeArea(
           child: LayoutBuilder(
@@ -107,14 +107,14 @@ class _LoginPageState extends State<LoginPage> {
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: EdgeInsets.fromLTRB(
                       horizontalPadding,
-                      16,
+                      AppTheme.spacingLg,
                       horizontalPadding,
-                      16 + keyboardInset,
+                      AppTheme.spacingLg + keyboardInset,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppTheme.spacing3xl),
                         Center(
                           child: Image.asset(
                             'assets/images/dice_logo.png',
@@ -122,19 +122,19 @@ class _LoginPageState extends State<LoginPage> {
                             width: 64,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppTheme.spacing2xl),
                         const AuthHeader(
                           title: 'Bienvenido/a',
                           subtitle: 'Ingresá tus datos para continuar.',
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: AppTheme.spacing3xl),
                         Form(
                           key: _formKey,
                           autovalidateMode: AutovalidateMode.disabled,
                           child: AutofillGroup(
                             child: Column(
                               children: [
-                                TextFormField(
+                                TextFormInputField(
                                   key: const Key('loginEmailField'),
                                   controller: _emailController,
                                   focusNode: _emailFocusNode,
@@ -146,10 +146,8 @@ class _LoginPageState extends State<LoginPage> {
                                     AutofillHints.email,
                                   ],
                                   autocorrect: false,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Email',
-                                    hintText: 'tu@email.com',
-                                  ),
+                                  labelText: 'Email',
+                                  hintText: 'tu@email.com',
                                   validator: (value) =>
                                       validateEmail(value ?? ''),
                                   onChanged: (email) =>
@@ -160,8 +158,8 @@ class _LoginPageState extends State<LoginPage> {
                                     _passwordFocusNode.requestFocus();
                                   },
                                 ),
-                                const SizedBox(height: 16),
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingLg),
+                                TextFormInputField(
                                   key: const Key('loginPasswordField'),
                                   controller: _passwordController,
                                   focusNode: _passwordFocusNode,
@@ -171,29 +169,27 @@ class _LoginPageState extends State<LoginPage> {
                                   autofillHints: const [AutofillHints.password],
                                   autocorrect: false,
                                   enableSuggestions: false,
-                                  decoration: InputDecoration(
-                                    labelText: 'Contraseña',
-                                    helperText: 'Mínimo 8 caracteres.',
-                                    suffixIcon: IconButton(
-                                      key: const Key(
-                                        'loginPasswordVisibilityButton',
-                                      ),
-                                      tooltip: _isPasswordVisible
-                                          ? 'Ocultar contraseña'
-                                          : 'Mostrar contraseña',
-                                      onPressed: isSubmitting
-                                          ? null
-                                          : () {
-                                              setState(() {
-                                                _isPasswordVisible =
-                                                    !_isPasswordVisible;
-                                              });
-                                            },
-                                      icon: Icon(
-                                        _isPasswordVisible
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                      ),
+                                  labelText: 'Contraseña',
+                                  helperText: 'Mínimo 8 caracteres.',
+                                  suffixIcon: IconButton(
+                                    key: const Key(
+                                      'loginPasswordVisibilityButton',
+                                    ),
+                                    tooltip: _isPasswordVisible
+                                        ? 'Ocultar contraseña'
+                                        : 'Mostrar contraseña',
+                                    onPressed: isSubmitting
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              _isPasswordVisible =
+                                                  !_isPasswordVisible;
+                                            });
+                                          },
+                                    icon: Icon(
+                                      _isPasswordVisible
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                     ),
                                   ),
                                   validator: (value) =>
@@ -212,18 +208,23 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         if (errorMessage != null) ...[
-                          const SizedBox(height: 8),
-                          AuthErrorText(message: errorMessage),
+                          const SizedBox(height: AppTheme.spacingSm),
+                          InlineFeedbackText(
+                            message: errorMessage,
+                            padding: const EdgeInsets.only(
+                              top: AppTheme.spacingMd,
+                            ),
+                          ),
                         ],
-                        const SizedBox(height: 24),
-                        AuthSubmitButton(
+                        const SizedBox(height: AppTheme.spacing2xl),
+                        AppPrimaryButton(
                           key: const Key('loginSubmitButton'),
                           label: 'Ingresar',
                           isLoading: isSubmitting,
                           onPressed: () =>
                               _submitLogin(isSubmitting: isSubmitting),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppTheme.spacingLg),
                         AuthSwitchRow(
                           prompt: 'No tenés cuenta? ',
                           actionLabel: 'Registrate',

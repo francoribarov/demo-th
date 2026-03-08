@@ -59,8 +59,8 @@ class FilterPublicationsUseCase {
     if (params.selectedCategory != null) {
       filtered = filtered
           .where(
-            (p) => p.game.categories
-                .any((c) => c.name == params.selectedCategory),
+            (p) =>
+                p.game.categories.any((c) => c.name == params.selectedCategory),
           )
           .toList();
     }

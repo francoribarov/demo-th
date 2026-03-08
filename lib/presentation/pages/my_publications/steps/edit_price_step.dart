@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/numeric_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/delivery_method_selectable_tile.dart';
 
 /// Step for editing publication price and delivery methods.
 class EditPriceStep extends StatelessWidget {
@@ -53,41 +55,13 @@ class EditPriceStep extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        TextFormField(
+        NumericInputField(
           initialValue: price > 0 ? price.toString() : '',
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-          ],
-          decoration: InputDecoration(
-            prefixText: r'\$ ',
-            prefixStyle: AppTypography.titleMedium.copyWith(
-              color: AppColors.foreground,
-            ),
-            suffixText: 'UYU / día',
-            suffixStyle: AppTypography.bodyMedium.copyWith(
-              color: AppColors.mutedForeground,
-            ),
-            hintText: '0',
-            filled: true,
-            fillColor: AppColors.background,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppColors.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppColors.gameRust, width: 2),
-            ),
-          ),
-          onChanged: (value) {
-            final parsed = int.tryParse(value) ?? 0;
-            onPriceChanged(parsed);
-          },
+          prefixText: r'$ ',
+          suffixText: 'UYU / día',
+          hintText: '0',
+          variant: TextInputVisualVariant.subtle,
+          onChangedValue: (value) => onPriceChanged(value ?? 0),
         ),
 
         const SizedBox(height: 32),
@@ -137,15 +111,31 @@ class EditPriceStep extends StatelessWidget {
         else
           ...availableDeliveryMethods.map(
             (method) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _DeliveryMethodTile(
-                method: method,
+              padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+              child: DeliveryMethodSelectableTile(
+                data: _toDisplayData(method),
                 isSelected: deliveryMethods.any((m) => m.id == method.id),
                 onTap: () => _toggleMethod(method),
               ),
             ),
           ),
       ],
+    );
+  }
+
+  DeliveryMethodDisplayData _toDisplayData(DeliveryMethod method) {
+    final subtitle =
+        method.deliveryType == DeliveryType.pickupInPerson &&
+            method.address != null &&
+            method.address!.isNotEmpty
+        ? '${method.address} ${method.addressNumber ?? ''}'
+        : null;
+    return DeliveryMethodDisplayData(
+      icon: method.deliveryType.icon,
+      title: method.deliveryType.displayName,
+      subtitle: subtitle,
+      priceLabel: method.price > 0 ? '\$${method.price}' : 'Gratis',
+      priceLabelColor: method.price <= 0 ? AppColors.gameSage : null,
     );
   }
 
@@ -158,106 +148,5 @@ class EditPriceStep extends StatelessWidget {
       updated = [...deliveryMethods, method];
     }
     onDeliveryMethodsChanged(updated);
-  }
-}
-
-class _DeliveryMethodTile extends StatelessWidget {
-  const _DeliveryMethodTile({
-    required this.method,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final DeliveryMethod method;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.gameRust.withOpacityValue(0.1)
-              : AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(
-            color: isSelected ? AppColors.gameRust : AppColors.border,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: isSelected ? AppColors.gameRust : Colors.transparent,
-                border: Border.all(
-                  color: isSelected ? AppColors.gameRust : AppColors.border,
-                  width: 2,
-                ),
-              ),
-              child: isSelected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
-                  : null,
-            ),
-            const SizedBox(width: 16),
-            Text(
-              method.deliveryType.icon,
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    method.deliveryType.displayName,
-                    style: AppTypography.bodyMedium.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: isSelected
-                          ? AppColors.gameRust
-                          : AppColors.foreground,
-                    ),
-                  ),
-                  if (method.address != null && method.address!.isNotEmpty)
-                    Text(
-                      method.address!,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.mutedForeground,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            if (method.price > 0)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.gameGold.withOpacityValue(0.2),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                ),
-                child: Text(
-                  '\$${method.price}',
-                  style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.gameBrown,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/go_router_refresh_stream.dart';
-import 'package:mobile_table_hopping/core/widgets/app_scaffold.dart';
+import 'package:mobile_table_hopping/core/widgets/templates/app_scaffold.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
@@ -30,6 +30,7 @@ import 'package:mobile_table_hopping/presentation/pages/publication_details/game
 import 'package:mobile_table_hopping/presentation/pages/publication_details/publication_details_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/publish_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Route paths for type-safe navigation.
 class AppRoutes {
@@ -242,7 +243,12 @@ class AppRouter {
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return AppScaffold(navigationShell: navigationShell);
+          return AppScaffold(
+            navigationShell: navigationShell,
+            onItemTapped: (index) {
+              navigationShell.goBranch(index);
+            },
+          );
         },
         branches: [
           // 0 – Inicio
@@ -472,9 +478,9 @@ class AppRouter {
             const SizedBox(height: 16),
             const Text('Página no encontrada'),
             const SizedBox(height: 24),
-            ElevatedButton(
+            AppPrimaryButton(
+              label: 'Volver al inicio',
               onPressed: () => context.go(AppRoutes.home),
-              child: const Text('Volver al inicio'),
             ),
           ],
         ),

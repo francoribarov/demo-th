@@ -153,19 +153,21 @@ void main() {
     expect(data.first.query, 'Abstracto');
   });
 
-  test('getPublicationListings returns empty list on unexpected payload',
-      () async {
-    when(() => service.getPublicationListings(any())).thenAnswer(
-      (_) async => 'unexpected',
-    );
+  test(
+    'getPublicationListings returns empty list on unexpected payload',
+    () async {
+      when(() => service.getPublicationListings(any())).thenAnswer(
+        (_) async => 'unexpected',
+      );
 
-    final result = await dataSource.getPublicationListings(
-      const PublicationListingsQueryParams(query: 'abc'),
-    );
+      final result = await dataSource.getPublicationListings(
+        const PublicationListingsQueryParams(query: 'abc'),
+      );
 
-    final data = expectSuccess<List<PublicationListingModel>>(result);
-    expect(data, isEmpty);
-  });
+      final data = expectSuccess<List<PublicationListingModel>>(result);
+      expect(data, isEmpty);
+    },
+  );
 
   test('searchGames sends q param and parses list response', () async {
     when(
@@ -197,7 +199,7 @@ T expectSuccess<T>(ApiResult<T> state) {
   return switch (state) {
     Success<T>(:final data) => data,
     Failure<T>(:final dataException) => fail(
-        'Expected success, got error: ${dataException.message}',
-      ),
+      'Expected success, got error: ${dataException.message}',
+    ),
   };
 }

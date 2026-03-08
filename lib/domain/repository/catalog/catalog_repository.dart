@@ -31,13 +31,13 @@ abstract class CatalogRepository {
 
   /// Fetches publications available for rental today.
   Future<Either<DomainException, List<PublicationListing>>>
-      getPublicationsAvailableToday({
+  getPublicationsAvailableToday({
     int limit = 10,
   });
 
   /// Fetches recommended publications based on a game ID.
   Future<Either<DomainException, List<PublicationListing>>>
-      getRecommendedPublications(String gameId);
+  getRecommendedPublications(String gameId);
 
   /// Fetches the current user's publications.
   Future<Either<DomainException, List<PublicationListing>>> getMyPublications();
@@ -50,7 +50,7 @@ abstract class CatalogRepository {
 
   /// Fetches publication listings with optional query filter.
   Future<Either<DomainException, List<PublicationListing>>>
-      getPublicationListings({
+  getPublicationListings({
     String? query,
   });
 

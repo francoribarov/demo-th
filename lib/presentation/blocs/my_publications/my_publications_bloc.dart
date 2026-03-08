@@ -15,8 +15,8 @@ class MyPublicationsBloc
     extends Bloc<MyPublicationsEvent, MyPublicationsState> {
   MyPublicationsBloc({
     required GetMyPublicationsUseCase getMyPublications,
-  })  : _getMyPublications = getMyPublications,
-        super(const MyPublicationsState()) {
+  }) : _getMyPublications = getMyPublications,
+       super(const MyPublicationsState()) {
     on<_Started>(_onStarted);
     on<_Refresh>(_onRefresh);
   }

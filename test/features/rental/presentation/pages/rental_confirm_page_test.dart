@@ -10,7 +10,7 @@ import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
 
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
-import 'package:mobile_table_hopping/presentation/widgets/rental/availability_date_selector.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/rental/availability_date_selector.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockRentalBloc extends Mock implements RentalBloc {}
@@ -41,8 +41,9 @@ void main() {
 
   setUp(() {
     mockRentalBloc = MockRentalBloc();
-    when(() => mockRentalBloc.state)
-        .thenReturn(RentalState(publication: tPublication));
+    when(
+      () => mockRentalBloc.state,
+    ).thenReturn(RentalState(publication: tPublication));
     when(() => mockRentalBloc.stream).thenAnswer((_) => const Stream.empty());
     when(() => mockRentalBloc.close()).thenAnswer((_) async {});
   });

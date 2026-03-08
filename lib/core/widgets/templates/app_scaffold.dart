@@ -1,0 +1,161 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
+import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+
+/// Main scaffold with bottom navigation.
+///
+/// This widget is purely presentational. Navigation logic (including auth
+/// guards) is the caller's responsibility via [onItemTapped].
+class AppScaffold extends StatelessWidget {
+  /// Creates an [AppScaffold] with the provided [navigationShell].
+  const AppScaffold({
+    required this.navigationShell,
+    required this.onItemTapped,
+    super.key,
+  });
+
+  /// Shell that holds the navigation branches.
+  final StatefulNavigationShell navigationShell;
+
+  static const _protectedBranchIndexes = {1, 2, 3};
+
+  String _targetLocationForBranch(int index) {
+    switch (index) {
+      case 0:
+        return AppRoutes.home;
+      case 1:
+        return AppRoutes.myRentals;
+      case 2:
+        return AppRoutes.myPublications;
+      case 3:
+        return AppRoutes.profile;
+      default:
+        return AppRoutes.home;
+    }
+  }
+
+  void _onItemTapped(BuildContext context, int index) {
+    final targetLocation = _targetLocationForBranch(index);
+
+    if (_protectedBranchIndexes.contains(index)) {
+      final authBloc = getIt<AuthBloc>();
+      if (!authBloc.state.isAuthenticated) {
+        context.goToLogin(from: targetLocation);
+        return;
+      }
+    }
+
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedIndex = navigationShell.currentIndex;
+
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          border: const Border(
+            top: BorderSide(color: AppColors.border),
+          ),
+          boxShadow: AppTheme.shadowUp,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _NavItem(
+                  icon: Icons.home_outlined,
+                  activeIcon: Icons.home,
+                  label: 'Inicio',
+                  isSelected: selectedIndex == 0,
+                  onTap: () => onItemTapped(0),
+                ),
+                _NavItem(
+                  icon: Icons.receipt_long_outlined,
+                  activeIcon: Icons.receipt_long,
+                  label: 'Alquileres',
+                  isSelected: selectedIndex == 1,
+                  onTap: () => onItemTapped(1),
+                ),
+                _NavItem(
+                  icon: Icons.casino_outlined,
+                  activeIcon: Icons.casino,
+                  label: 'Publicaciones',
+                  isSelected: selectedIndex == 2,
+                  onTap: () => onItemTapped(2),
+                ),
+                _NavItem(
+                  icon: Icons.person_outline,
+                  activeIcon: Icons.person,
+                  label: 'Perfil',
+                  isSelected: selectedIndex == 3,
+                  onTap: () => onItemTapped(3),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  const _NavItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Icon(
+                  isSelected ? activeIcon : icon,
+                  size: 24,
+                  color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: AppTypography.labelSmall.copyWith(
+                color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

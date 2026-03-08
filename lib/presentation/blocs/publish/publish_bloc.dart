@@ -14,7 +14,6 @@ part 'publish_event.dart';
 part 'publish_state.dart';
 
 @injectable
-
 /// Coordinates publish flow actions and side effects.
 class PublishBloc extends Bloc<PublishEvent, PublishState> {
   /// Creates a publish bloc wired to the create publication use case.
@@ -22,10 +21,10 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     required CreatePublicationUseCase createPublication,
     required AuthBloc authBloc,
     required GetGamesUseCase getGames,
-  })  : _createPublication = createPublication,
-        _authBloc = authBloc,
-        _getGames = getGames,
-        super(const PublishState()) {
+  }) : _createPublication = createPublication,
+       _authBloc = authBloc,
+       _getGames = getGames,
+       super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
     on<_PreviousStep>(_onPreviousStep);

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/media_upload_tile.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/removable_photo_tile.dart';
 
 /// Step for editing publication photos.
 class EditPhotosStep extends StatelessWidget {
@@ -56,34 +58,10 @@ class EditPhotosStep extends StatelessWidget {
         const SizedBox(height: 24),
 
         // Add photo button
-        GestureDetector(
+        MediaUploadTile(
           onTap: () => _addImage(context),
-          child: Container(
-            height: 120,
-            decoration: BoxDecoration(
-              color: AppColors.gameCream.withOpacityValue(0.5),
-              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border:
-                  Border.all(color: AppColors.gameBrown.withOpacityValue(0.3)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.add_photo_alternate_outlined,
-                  size: 40,
-                  color: AppColors.gameBrown.withOpacityValue(0.5),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Agregar foto',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.7),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          title: 'Agregar foto',
+          height: 120,
         ),
 
         const SizedBox(height: 24),
@@ -107,10 +85,10 @@ class EditPhotosStep extends StatelessWidget {
             ),
             itemCount: images.length,
             itemBuilder: (context, index) {
-              return _PhotoTile(
+              return RemovablePhotoTile(
                 imageUrl: images[index],
                 onRemove: () => _removeImage(index),
-                isFirst: index == 0,
+                isPrimary: index == 0,
               );
             },
           ),
@@ -155,88 +133,6 @@ class EditPhotosStep extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ],
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _PhotoTile extends StatelessWidget {
-  const _PhotoTile({
-    required this.imageUrl,
-    required this.onRemove,
-    required this.isFirst,
-  });
-
-  final String imageUrl;
-  final VoidCallback onRemove;
-  final bool isFirst;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-            errorBuilder: (_, error, stackTrace) => ColoredBox(
-              color: AppColors.muted.withOpacityValue(0.2),
-              child: const Center(
-                child: Icon(
-                  Icons.broken_image,
-                  color: AppColors.mutedForeground,
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        // Remove button
-        Positioned(
-          top: 4,
-          right: 4,
-          child: GestureDetector(
-            onTap: onRemove,
-            child: ColoredBox(
-              color: Colors.black54,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.close,
-                  size: 16,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        // Main photo badge
-        if (isFirst)
-          Positioned(
-            bottom: 4,
-            left: 4,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.gameRust,
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              ),
-              child: Text(
-                'Principal',
-                style: AppTypography.labelSmall.copyWith(
-                  color: Colors.white,
-                  fontSize: 10,
-                ),
-              ),
             ),
           ),
       ],

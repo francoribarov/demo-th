@@ -99,23 +99,26 @@ void main() {
         tPublishDeliveryMethod,
       ]),
     );
-    when(() => imagePickerGateway.pickImageFromGallery())
-        .thenAnswer((_) async => null);
-    when(() => imagePickerGateway.pickMultipleImages())
-        .thenAnswer((_) async => []);
-    when(() => uploadImages(any<List<String>>()))
-        .thenAnswer((_) async => const Right<DomainException, List<String>>([]));
+    when(
+      () => imagePickerGateway.pickImageFromGallery(),
+    ).thenAnswer((_) async => null);
+    when(
+      () => imagePickerGateway.pickMultipleImages(),
+    ).thenAnswer((_) async => []);
+    when(
+      () => uploadImages(any<List<String>>()),
+    ).thenAnswer((_) async => const Right<DomainException, List<String>>([]));
   });
 
   EditPublicationBloc buildBloc() => EditPublicationBloc(
-        getPublicationDetail: getPublicationDetail,
-        updatePublication: updatePublication,
-        deletePublication: deletePublication,
-        getGames: getGames,
-        getDeliveryMethods: getDeliveryMethods,
-        imagePickerGateway: imagePickerGateway,
-        uploadImages: uploadImages,
-      );
+    getPublicationDetail: getPublicationDetail,
+    updatePublication: updatePublication,
+    deletePublication: deletePublication,
+    getGames: getGames,
+    getDeliveryMethods: getDeliveryMethods,
+    imagePickerGateway: imagePickerGateway,
+    uploadImages: uploadImages,
+  );
 
   blocTest<EditPublicationBloc, EditPublicationState>(
     'started sets errorMessage when publication detail use case returns Left',
