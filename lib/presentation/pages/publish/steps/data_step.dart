@@ -106,129 +106,118 @@ class DataStep extends StatelessWidget {
         const SizedBox(height: AppTheme.spacing2xl),
 
         // Condition Selector
-        FormField<PublicationCondition>(
-          initialValue: condition,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) {
-            return null;
-          },
-          builder: (field) {
-            return InkWell(
-              key: ValueKey('publish_condition_${formVersion}_$gameId'),
-              onTap: () async {
-                FocusScope.of(context).unfocus();
-                
-                final selected = await showModalBottomSheet<PublicationCondition>(
-                  context: context,
-                  backgroundColor: AppColors.card,
-                  isScrollControlled: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(AppTheme.radius2xl),
-                    ),
-                  ),
-                  builder: (context) {
-                    return SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingLg),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
-                              child: Text(
-                                'Estado del juego',
-                                style: AppTypography.titleSmall.copyWith(
-                                  color: AppColors.gameBrown,
-                                  fontWeight: FontWeight.w600,
-                                ),
+        InkWell(
+          key: ValueKey('publish_condition_${formVersion}_$gameId'),
+          onTap: () async {
+            FocusScope.of(context).unfocus();
+            
+            final selected = await showModalBottomSheet<PublicationCondition>(
+              context: context,
+              backgroundColor: AppColors.card,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(AppTheme.radius2xl),
+                ),
+              ),
+              builder: (context) {
+                return SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingLg),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
+                          child: Text(
+                            'Estado del juego',
+                            style: AppTypography.titleSmall.copyWith(
+                              color: AppColors.gameBrown,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.spacingMd),
+                        ...conditions.map((c) {
+                          final isSelected = condition == c;
+                          return InkWell(
+                            onTap: () => Navigator.pop(context, c),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.spacingLg,
+                                vertical: AppTheme.spacingMd,
+                              ),
+                              color: isSelected
+                                  ? const Color(0xFFE5E5E5)
+                                  : Colors.transparent,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          c.label,
+                                          style: AppTypography.bodyLarge.copyWith(
+                                            color: AppColors.gameBrown,
+                                            fontWeight: isSelected
+                                                ? FontWeight.w600
+                                                : FontWeight.normal,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          c.description,
+                                          style: AppTypography.bodySmall.copyWith(
+                                            color: AppColors.textTertiary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (isSelected)
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: AppColors.gameRust,
+                                    ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: AppTheme.spacingMd),
-                            ...conditions.map((c) {
-                              final isSelected = field.value == c;
-                              return InkWell(
-                                onTap: () => Navigator.pop(context, c),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppTheme.spacingLg,
-                                    vertical: AppTheme.spacingMd,
-                                  ),
-                                  color: isSelected
-                                      ? const Color(0xFFE5E5E5)
-                                      : Colors.transparent,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              c.label,
-                                              style: AppTypography.bodyLarge.copyWith(
-                                                color: AppColors.gameBrown,
-                                                fontWeight: isSelected
-                                                    ? FontWeight.w600
-                                                    : FontWeight.normal,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              c.description,
-                                              style: AppTypography.bodySmall.copyWith(
-                                                color: AppColors.textTertiary,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      if (isSelected)
-                                        const Icon(
-                                          Icons.check_circle,
-                                          color: AppColors.gameRust,
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-
-                if (selected != null) {
-                  field.didChange(selected);
-                  onConditionChanged(selected);
-                }
-              },
-              borderRadius: BorderRadius.circular(AppTheme.radius2xl),
-              child: InputDecorator(
-                decoration: buildTextInputDecoration(
-                  variant: TextInputVisualVariant.surface,
-                  hintText: 'Selecciona el estado...',
-                ).copyWith(
-                  errorText: field.errorText,
-                  suffixIcon: const Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColors.textTertiary,
+                          );
+                        }),
+                      ],
+                    ),
                   ),
-                ),
-                isEmpty: field.value == null,
-                child: field.value == null
-                    ? const SizedBox.shrink()
-                    : Text(
-                        field.value!.label,
-                        style: AppTypography.bodyLarge.copyWith(
-                          color: AppColors.gameBrown,
-                        ),
-                      ),
-              ),
+                );
+              },
             );
+
+            if (selected != null) {
+              onConditionChanged(selected);
+            }
           },
+          borderRadius: BorderRadius.circular(AppTheme.radius2xl),
+          child: InputDecorator(
+            decoration: buildTextInputDecoration(
+              variant: TextInputVisualVariant.surface,
+              hintText: 'Selecciona el estado...',
+            ).copyWith(
+              suffixIcon: const Icon(
+                Icons.arrow_drop_down,
+                color: AppColors.textTertiary,
+              ),
+            ),
+            isEmpty: condition == null,
+            child: condition == null
+                ? const SizedBox.shrink()
+                : Text(
+                    condition!.label,
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.gameBrown,
+                    ),
+                  ),
+          ),
         ),
       ],
     );
