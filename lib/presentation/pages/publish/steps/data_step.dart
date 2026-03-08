@@ -110,7 +110,7 @@ class DataStep extends StatelessWidget {
           key: ValueKey('publish_condition_${formVersion}_$gameId'),
           onTap: () async {
             FocusScope.of(context).unfocus();
-            
+
             final selected = await showModalBottomSheet<PublicationCondition>(
               context: context,
               backgroundColor: AppColors.card,
@@ -123,13 +123,17 @@ class DataStep extends StatelessWidget {
               builder: (context) {
                 return SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingLg),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppTheme.spacingLg,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.spacingLg,
+                          ),
                           child: Text(
                             'Estado del juego',
                             style: AppTypography.titleSmall.copyWith(
@@ -155,23 +159,26 @@ class DataStep extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           c.label,
-                                          style: AppTypography.bodyLarge.copyWith(
-                                            color: AppColors.gameBrown,
-                                            fontWeight: isSelected
-                                                ? FontWeight.w600
-                                                : FontWeight.normal,
-                                          ),
+                                          style: AppTypography.bodyLarge
+                                              .copyWith(
+                                                color: AppColors.gameBrown,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.w600
+                                                    : FontWeight.normal,
+                                              ),
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
                                           c.description,
-                                          style: AppTypography.bodySmall.copyWith(
-                                            color: AppColors.textTertiary,
-                                          ),
+                                          style: AppTypography.bodySmall
+                                              .copyWith(
+                                                color: AppColors.textTertiary,
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -199,15 +206,16 @@ class DataStep extends StatelessWidget {
           },
           borderRadius: BorderRadius.circular(AppTheme.radius2xl),
           child: InputDecorator(
-            decoration: buildTextInputDecoration(
-              variant: TextInputVisualVariant.surface,
-              hintText: 'Selecciona el estado...',
-            ).copyWith(
-              suffixIcon: const Icon(
-                Icons.arrow_drop_down,
-                color: AppColors.textTertiary,
-              ),
-            ),
+            decoration:
+                buildTextInputDecoration(
+                  variant: TextInputVisualVariant.surface,
+                  hintText: 'Selecciona el estado...',
+                ).copyWith(
+                  suffixIcon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
             isEmpty: condition == null,
             child: condition == null
                 ? const SizedBox.shrink()

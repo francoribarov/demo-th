@@ -21,7 +21,8 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
 
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _aliasController = TextEditingController();
-  final TextEditingController _addressNumberController = TextEditingController();
+  final TextEditingController _addressNumberController =
+      TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
   @override
@@ -36,7 +37,7 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
   void _showToast(BuildContext context, String message) {
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
-    
+
     entry = OverlayEntry(
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
@@ -100,7 +101,8 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+                  onPressed: () =>
+                      Navigator.of(context, rootNavigator: true).pop(),
                   icon: const Icon(Icons.close, color: AppColors.gameBrown),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),

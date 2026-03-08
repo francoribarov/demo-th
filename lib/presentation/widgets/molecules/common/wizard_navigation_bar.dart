@@ -78,9 +78,7 @@ class WizardNavigationBar extends StatelessWidget {
           ),
         ),
       ),
-      child: extendBottomSafeArea
-          ? SafeArea(top: false, child: child)
-          : child,
+      child: extendBottomSafeArea ? SafeArea(top: false, child: child) : child,
     );
   }
 }
