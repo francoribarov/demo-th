@@ -8,10 +8,11 @@ part 'image_upload_response.g.dart';
 @freezed
 abstract class ImageUploadResponse
     with _$ImageUploadResponse
-    implements BaseDtoResponse<String> {
+    implements BaseDtoResponse<List<String>> {
   /// Creates an [ImageUploadResponse].
   const factory ImageUploadResponse({
-    required String url,
+    required List<String> urls,
+    required String message,
   }) = _ImageUploadResponse;
 
   const ImageUploadResponse._();
@@ -21,5 +22,5 @@ abstract class ImageUploadResponse
       _$ImageUploadResponseFromJson(json);
 
   @override
-  String toDomainModel() => url;
+  List<String> toDomainModel() => urls;
 }

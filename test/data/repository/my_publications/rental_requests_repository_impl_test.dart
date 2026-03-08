@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/data/datasource/my_publications/rental_requests_data_source.dart';
-import 'package:mobile_table_hopping/data/dto/my_publications/rental_request_model.dart';
+import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
 import 'package:mobile_table_hopping/data/repository/my_publications/rental_requests_repository_impl.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -16,23 +16,17 @@ void main() {
 
   final dataException = DataException(message: 'boom-rental', statusCode: 503);
 
-  const tModel = RentalRequestModel(
+  const tModel = MyRentalModel(
     id: 'r-1',
-    game: RentalRequestGameModel(
-      id: 'g-1',
-      title: 'Chess',
-      price: 100,
-      images: [],
-    ),
-    requester: RentalRequestUserModel(
-      id: 'u-1',
-      email: 'u@test.com',
-      username: 'User',
-    ),
+    publicationId: 'g-1',
+    renterId: 'u-1',
+    ownerId: 'owner-1',
     startDate: '2026-01-10T00:00:00.000Z',
     endDate: '2026-01-12T00:00:00.000Z',
-    totalPrice: 300,
     status: 'PENDING',
+    finalPrice: 300,
+    renterName: 'User',
+    gameTitle: 'Chess',
   );
 
   setUp(() {

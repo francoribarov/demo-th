@@ -15,9 +15,14 @@ class UploadRepositoryImpl extends BaseRepository implements UploadRepository {
   final UploadRemoteDataSource _dataSource;
 
   @override
-  Future<Either<DomainException, String>> uploadImage(String filePath) {
-    return executeDataSource<ImageUploadResponse, String>(
+  Future<Either<DomainException, String>> uploadImage(String filePath) async {
+    final result = await executeDataSource<ImageUploadResponse, List<String>>(
       function: () => _dataSource.uploadImage(filePath),
+    );
+
+    return result.fold(
+      Left.new,
+      (urls) => Right(urls.first),
     );
   }
 
