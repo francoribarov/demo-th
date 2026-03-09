@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/domain/model/my_publications/rental_request
 
 part 'rental_request.freezed.dart';
 
-enum RentalRequestStatus { pending, accepted, rejected }
+enum RentalRequestStatus { pending, accepted, active, finished, cancelled, rejected }
 
 @freezed
 abstract class RentalRequest with _$RentalRequest {

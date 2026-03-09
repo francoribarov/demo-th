@@ -25,14 +25,39 @@ class MyPublicationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
+      initialIndex: 1, // Set 'Alquileres' as initial tab
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: const TabbedPageAppBar(
-          title: Text('Mis Publicaciones'),
+        appBar: TabbedPageAppBar(
+          title: const Text('Mis Publicaciones'),
           tabs: [
-            Tab(text: 'Solicitudes'),
-            Tab(text: 'Alquileres'),
-            Tab(text: 'Publicaciones'),
+            BlocBuilder<RentalRequestsBloc, RentalRequestsState>(
+              builder: (context, state) {
+                final count = state.mapOrNull(success: (s) => s.requests.length) ?? 0;
+                return Tab(
+                  child: count > 0
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('Solicitudes'),
+                              const SizedBox(width: 4),
+                              Badge(
+                                label: Text(count.toString()),
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                              ),
+                            ],
+                          ),
+                        )
+                      : const Text('Solicitudes'),
+                );
+              },
+            ),
+            const Tab(text: 'Alquileres'),
+            const Tab(text: 'Publicaciones'),
           ],
         ),
         body: const TabBarView(

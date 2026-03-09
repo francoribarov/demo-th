@@ -170,10 +170,19 @@ class _StatusBadge extends StatelessWidget {
         label = 'Pendiente';
       case RentalRequestStatus.accepted:
         color = Colors.green;
-        label = 'Activo';
+        label = 'Aceptado';
       case RentalRequestStatus.rejected:
         color = Colors.red;
-        label = 'Devuelto / Rechazado';
+        label = 'Rechazado';
+      case RentalRequestStatus.active:
+        color = Colors.blue;
+        label = 'Activo';
+      case RentalRequestStatus.finished:
+        color = Colors.grey;
+        label = 'Completado';
+      case RentalRequestStatus.cancelled:
+        color = Colors.red;
+        label = 'Cancelado';
     }
 
     return Container(
