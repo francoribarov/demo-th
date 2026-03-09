@@ -103,8 +103,7 @@ void main() {
       ),
     ).called(1);
     verify(
-      () =>
-          authBloc.add(const AuthEvent.registerPasswordChanged('password123')),
+      () => authBloc.add(const AuthEvent.registerPasswordChanged('password123')),
     ).called(1);
     verify(
       () => authBloc.add(
@@ -135,6 +134,36 @@ void main() {
     expect(find.text('Ingresá tu email.'), findsOneWidget);
     expect(find.text('Ingresá tu contraseña.'), findsOneWidget);
     expect(find.text('Repetí tu contraseña para continuar.'), findsOneWidget);
+    verifyNever(() => authBloc.add(const AuthEvent.registerSubmitted()));
+  });
+
+  testWidgets('validates password confirmation before submitting', (
+    tester,
+  ) async {
+    const state = AuthState(status: AuthStatus.unauthenticated);
+    whenListen(authBloc, const Stream<AuthState>.empty(), initialState: state);
+    when(() => authBloc.state).thenReturn(state);
+
+    await tester.pumpWidget(buildSubject());
+
+    await tester.enterText(find.byKey(const Key('registerNameField')), 'User');
+    await tester.enterText(
+      find.byKey(const Key('registerEmailField')),
+      'user@example.com',
+    );
+    await tester.enterText(
+      find.byKey(const Key('registerPasswordField')),
+      'password123',
+    );
+    await tester.enterText(
+      find.byKey(const Key('registerConfirmPasswordField')),
+      'different123',
+    );
+    await tester.ensureVisible(find.byKey(const Key('registerSubmitButton')));
+    await tester.tap(find.byKey(const Key('registerSubmitButton')));
+    await tester.pump();
+
+    expect(find.text('Las contraseñas no coinciden.'), findsOneWidget);
     verifyNever(() => authBloc.add(const AuthEvent.registerSubmitted()));
   });
 

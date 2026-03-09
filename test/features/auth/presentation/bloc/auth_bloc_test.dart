@@ -124,7 +124,7 @@ void main() {
   );
 
   blocTest<AuthBloc, AuthState>(
-    'emits validation error on invalid login email without calling login',
+    'emits validation error on invalid login without calling login',
     build: buildBloc,
     act: (bloc) => bloc
       ..add(const AuthEvent.loginEmailChanged('correo-invalido'))
