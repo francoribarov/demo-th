@@ -10,8 +10,8 @@ abstract class User with _$User {
   /// Creates a [User] entity.
   const factory User({
     required String id,
-    required String email,
     required String username,
+    @Default('') String email,
     String? imageUrl,
     DateTime? dateOfBirth,
     Address? address,
