@@ -246,7 +246,22 @@ class AppRouter {
           return AppScaffold(
             navigationShell: navigationShell,
             onItemTapped: (int index) {
-              navigationShell.goBranch(index);
+              const protectedIndexes = {1, 2, 3};
+              const targets = {
+                0: AppRoutes.home,
+                1: AppRoutes.myRentals,
+                2: AppRoutes.myPublications,
+                3: AppRoutes.profile,
+              };
+              if (protectedIndexes.contains(index) &&
+                  !getIt<AuthBloc>().state.isAuthenticated) {
+                context.goToLogin(from: targets[index]);
+                return;
+              }
+              navigationShell.goBranch(
+                index,
+                initialLocation: index == navigationShell.currentIndex,
+              );
             },
           );
         },

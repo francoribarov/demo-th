@@ -37,7 +37,7 @@ class RentalRemoteDataSourceImpl extends BaseDataSource
   @override
   Future<ApiResult<List<MyRentalModel>>> getMyRentals() {
     return getStateOf<List<MyRentalModel>>(
-      request: _service.getMyRentals,
+      request: () => _service.getMyRentals('renter'),
     );
   }
 

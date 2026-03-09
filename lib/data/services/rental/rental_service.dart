@@ -18,11 +18,11 @@ abstract class RentalService {
   @POST('/api/rentals')
   Future<void> createRental(@Body() Map<String, dynamic> body);
 
-  /// Retrieves all rentals for the current user (as owner and renter).
+  /// Retrieves all rentals for the current user filtered by [role].
   ///
-  /// GET /api/rentals
+  /// GET /api/rentals?role=renter
   @GET('/api/rentals')
-  Future<List<MyRentalModel>> getMyRentals();
+  Future<List<MyRentalModel>> getMyRentals(@Query('role') String role);
 
   /// Initiates the drop-off process for a rental.
   ///
