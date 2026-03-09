@@ -6,10 +6,6 @@ part 'publication.freezed.dart';
 /// Standard conditions for a publication.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum PublicationCondition {
-  /// Brand new, sealed.
-  @JsonValue('new')
-  newCondition('Nuevo', 'Sellado o usado una vez'),
-
   /// Like new, perfect condition.
   @JsonValue('like_new')
   likeNew('Como nuevo', 'Excelente estado, sin marcas'),
@@ -20,11 +16,7 @@ enum PublicationCondition {
 
   /// Fair condition, visible wear but playable.
   @JsonValue('fair')
-  fair('Aceptable', 'Desgaste visible pero funcional'),
-
-  /// Worn condition, heavy wear.
-  @JsonValue('worn')
-  worn('Usado', 'Muy jugado, puede faltar algo');
+  fair('Aceptable', 'Desgaste visible pero funcional');
 
   const PublicationCondition(this.label, this.description);
 
