@@ -12,8 +12,7 @@ import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.d
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetPublicationById extends Mock
-    implements GetPublicationByIdUseCase {}
+class MockGetPublicationById extends Mock implements GetPublicationByIdUseCase {}
 
 class MockConfirmRentalUseCase extends Mock implements ConfirmRentalUseCase {}
 
@@ -62,10 +61,8 @@ void main() {
     blocTest<RentalBloc, RentalState>(
       'should emit snackbar error when duration is less than 3 days',
       build: () => rentalBloc,
-      seed: () =>
-          RentalState(publication: tPublication, startDate: '2026-01-10'),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
+      seed: () => RentalState(publication: tPublication, startDate: '2026-01-10'),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-01-11')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.endDate, 'endDate', null)
@@ -90,8 +87,7 @@ void main() {
           ],
         ),
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
+      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-01')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', null)
@@ -116,15 +112,13 @@ void main() {
         ),
         startDate: '2026-05-25',
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-06-05')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-06-05')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.feedbackNotice,
           'message',
           const FeedbackNotice(
-            message:
-                'Las fechas seleccionadas no están disponibles en su totalidad.',
+            message: 'Las fechas seleccionadas no están disponibles en su totalidad.',
             severity: FeedbackSeverity.warning,
           ),
         ),
@@ -140,8 +134,7 @@ void main() {
         ),
         startDate: '2026-01-01',
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
+      act: (bloc) => bloc.add(const RentalEvent.endDateChanged(endDate: '2026-02-15')),
       expect: () => [
         isA<RentalState>().having(
           (s) => s.feedbackNotice,
@@ -162,8 +155,7 @@ void main() {
         startDate: '2026-01-05',
         endDate: '2026-01-10',
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-15')),
+      act: (bloc) => bloc.add(const RentalEvent.startDateChanged(startDate: '2026-01-15')),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.startDate, 'startDate', '2026-01-15')
@@ -205,11 +197,27 @@ void main() {
               (s) => s.feedbackNotice,
               'feedbackNotice',
               const FeedbackNotice(
-                message:
-                    'No se pudo enviar la solicitud de alquiler.: submit failed',
+                message: 'No se pudo enviar la solicitud de alquiler.: submit failed',
                 severity: FeedbackSeverity.error,
               ),
             ),
+      ],
+    );
+
+    blocTest<RentalBloc, RentalState>(
+      'clears submit errorMessage when user updates rental data',
+      build: () => rentalBloc,
+      seed: () => RentalState(
+        publication: tPublication,
+        startDate: '2026-06-01',
+        endDate: '2026-06-03',
+        errorMessage: 'Error de validación en los datos enviados.',
+      ),
+      act: (bloc) => bloc.add(const RentalEvent.deliveryCommentsChanged(comments: 'ok')),
+      expect: () => [
+        isA<RentalState>()
+            .having((s) => s.deliveryComments, 'deliveryComments', 'ok')
+            .having((s) => s.errorMessage, 'errorMessage', isNull),
       ],
     );
   });
@@ -246,8 +254,7 @@ void main() {
         serviceFee: 30,
         total: 330,
       ),
-      act: (bloc) =>
-          bloc.add(const RentalEvent.deliveryChanged(isDelivery: true)),
+      act: (bloc) => bloc.add(const RentalEvent.deliveryChanged(isDelivery: true)),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.isDelivery, 'isDelivery', true)
