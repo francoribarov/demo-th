@@ -14,13 +14,11 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGetCategories extends Mock implements GetCategoriesUseCase {}
 
-class MockGetFilterShortcuts extends Mock
-    implements GetFilterShortcutsUseCase {}
+class MockGetFilterShortcuts extends Mock implements GetFilterShortcutsUseCase {}
 
 class MockGetPublications extends Mock implements GetPublicationsUseCase {}
 
-class MockFilterPublications extends Mock
-    implements FilterPublicationsUseCase {}
+class MockFilterPublications extends Mock implements FilterPublicationsUseCase {}
 
 void main() {
   late MockGetCategories mockGetCategories;
@@ -47,7 +45,7 @@ void main() {
     ownerId: 'owner1',
     gameId: 'g1',
     title: 'Test Publication',
-    condition: PublicationCondition.newCondition,
+    condition: PublicationCondition.likeNew,
     price: 100,
     images: ['image.jpg'],
     createdAt: DateTime(2023),

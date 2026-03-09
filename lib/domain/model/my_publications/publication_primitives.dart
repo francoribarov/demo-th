@@ -3,18 +3,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'publication_primitives.freezed.dart';
 
 /// Standard conditions for a publication.
+/// Values: like_new, good, fair.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum PublicationCondition {
-  @JsonValue('new')
-  newCondition('Nuevo', 'Sellado o usado una vez'),
   @JsonValue('like_new')
   likeNew('Como nuevo', 'Excelente estado, sin marcas'),
   @JsonValue('good')
   good('Buen estado', 'Uso normal, todo completo'),
   @JsonValue('fair')
-  fair('Aceptable', 'Desgaste visible pero funcional'),
-  @JsonValue('worn')
-  worn('Usado', 'Muy jugado, puede faltar algo');
+  fair('Aceptable', 'Desgaste visible pero funcional');
 
   const PublicationCondition(this.label, this.description);
 
