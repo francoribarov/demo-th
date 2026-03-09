@@ -55,4 +55,7 @@ abstract class AuthEvent with _$AuthEvent {
 
   /// Clears any surfaced error messages.
   const factory AuthEvent.clearErrors() = _ClearErrors;
+
+  /// Notifies that the session expired due to an invalid refresh token.
+  const factory AuthEvent.sessionExpired() = _SessionExpired;
 }

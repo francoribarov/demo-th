@@ -1,4 +1,4 @@
-final RegExp _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+final Pattern _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
 /// Validates an email address and returns an error message when invalid.
 String? validateEmail(String email) {
@@ -6,7 +6,7 @@ String? validateEmail(String email) {
   if (normalizedEmail.isEmpty) {
     return 'Ingresá tu email.';
   }
-  if (!_emailPattern.hasMatch(normalizedEmail)) {
+  if (_emailPattern.allMatches(normalizedEmail).isEmpty) {
     return 'Ingresá un email válido.';
   }
   return null;

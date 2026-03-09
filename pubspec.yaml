@@ -11,6 +11,7 @@ dependencies:
   cached_network_image: 3.4.1
   dartz: ^0.10.1
   dio: ^5.9.0
+  encrypt: ^5.0.3
   flutter:
     sdk: flutter
 
@@ -24,6 +25,7 @@ dependencies:
   injectable: ^2.7.1+4
   intl: ^0.20.2
   json_annotation: 4.9.0
+  pointycastle: ^3.9.1
   pretty_dio_logger: ^1.4.0
   retrofit: 4.8.0
   shared_preferences: ^2.5.4

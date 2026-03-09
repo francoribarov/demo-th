@@ -1,17 +1,29 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 
 /// Interceptor that handles token refreshing on 401 errors.
 class RefreshInterceptor extends Interceptor {
   /// Creates a RefreshInterceptor with token storage and Dio clients.
-  RefreshInterceptor(this._tokenStorage, this._dio, this._refreshDio);
+  ///
+  /// [onSessionExpired] is called when a refresh attempt fails, signalling
+  /// that the user must re-authenticate.
+  RefreshInterceptor(
+    this._tokenStorage,
+    this._dio,
+    this._refreshDio, {
+    this.onSessionExpired,
+  });
 
   static const String _retryKey = 'refresh_retry';
 
   final TokenStorage _tokenStorage;
   final Dio _dio;
   final Dio _refreshDio;
+
+  /// Optional callback invoked when the session cannot be recovered.
+  final VoidCallback? onSessionExpired;
 
   Future<_TokenPair?>? _refreshing;
 
@@ -28,6 +40,7 @@ class RefreshInterceptor extends Interceptor {
       final tokens = await _refreshTokens();
       if (tokens == null) {
         await _tokenStorage.clearTokens();
+        onSessionExpired?.call();
         return handler.next(err);
       }
 
@@ -42,6 +55,7 @@ class RefreshInterceptor extends Interceptor {
       return handler.resolve(response);
     } on Exception catch (_) {
       await _tokenStorage.clearTokens();
+      onSessionExpired?.call();
       return handler.next(err);
     }
   }

@@ -65,17 +65,24 @@ class DateFormatter {
 class TextNormalizer {
   TextNormalizer._();
 
+  static final Pattern _aAccents = RegExp('[áàâäãāăąå]');
+  static final Pattern _eAccents = RegExp('[éèêëēėę]');
+  static final Pattern _iAccents = RegExp('[íìîïīį]');
+  static final Pattern _oAccents = RegExp('[óòôöõōőø]');
+  static final Pattern _uAccents = RegExp('[úùûüūů]');
+  static final Pattern _nAccents = RegExp('[ñ]');
+
   /// Normalizes text for search comparison.
   /// Removes accents and converts to lowercase.
   static String normalize(String value) {
     return value
         .toLowerCase()
-        .replaceAll(RegExp('[áàâä]'), 'a')
-        .replaceAll(RegExp('[éèêë]'), 'e')
-        .replaceAll(RegExp('[íìîï]'), 'i')
-        .replaceAll(RegExp('[óòôö]'), 'o')
-        .replaceAll(RegExp('[úùûü]'), 'u')
-        .replaceAll(RegExp('[ñ]'), 'n');
+        .replaceAll(_aAccents, 'a')
+        .replaceAll(_eAccents, 'e')
+        .replaceAll(_iAccents, 'i')
+        .replaceAll(_oAccents, 'o')
+        .replaceAll(_uAccents, 'u')
+        .replaceAll(_nAccents, 'n');
   }
 }
 
@@ -83,9 +90,11 @@ class TextNormalizer {
 class DurationParser {
   DurationParser._();
 
+  static final Pattern _digits = RegExp(r'\d+');
+
   /// Parses duration string (e.g., "60-90 min") to average minutes.
   static int? parseMinutes(String duration) {
-    final matches = RegExp(r'\d+').allMatches(duration);
+    final matches = _digits.allMatches(duration);
     final numbers = matches
         .map((m) => int.tryParse(m.group(0) ?? ''))
         .whereType<int>()
@@ -103,9 +112,11 @@ class DurationParser {
 class PlayersParser {
   PlayersParser._();
 
+  static final Pattern _digits = RegExp(r'\d+');
+
   /// Parses players string (e.g., "2-4 jugadores") to min/max range.
   static ({int? min, int? max}) parseRange(String players) {
-    final matches = RegExp(r'\d+').allMatches(players);
+    final matches = _digits.allMatches(players);
     final numbers = matches
         .map((m) => int.tryParse(m.group(0) ?? ''))
         .whereType<int>()
