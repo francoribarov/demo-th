@@ -8,12 +8,14 @@ import 'package:mobile_table_hopping/domain/model/my_publications/rental_request
 class MyRentalCard extends StatelessWidget {
   const MyRentalCard({
     required this.rental,
-    required this.onDropOff,
+    this.onDropOff,
+    this.showDropOffButton = true,
     super.key,
   });
 
   final RentalRequest rental;
-  final VoidCallback onDropOff;
+  final VoidCallback? onDropOff;
+  final bool showDropOffButton;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,8 @@ class MyRentalCard extends StatelessWidget {
     final duration = rental.endDate.difference(rental.startDate).inDays;
 
     // We can only drop off if the rental is accepted (which means it's active)
-    final canDropOff = rental.status == RentalRequestStatus.accepted;
+    final canDropOff =
+        showDropOffButton && rental.status == RentalRequestStatus.accepted;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

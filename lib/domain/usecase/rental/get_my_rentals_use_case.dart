@@ -11,6 +11,6 @@ class GetMyRentalsUseCase {
   final RentalRepository _repository;
 
   Future<Either<DomainException, List<RentalRequest>>> call() {
-    return _repository.getMyRentals();
+    return _repository.getMyRentals(role: 'renter');
   }
 }
