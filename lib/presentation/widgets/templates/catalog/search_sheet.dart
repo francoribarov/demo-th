@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/core/validators/optional_date_range_validator.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/date_picker_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/search_input_field.dart';
@@ -24,15 +25,13 @@ class SearchSheet extends StatefulWidget {
   final String initialQuery;
   final String? initialStartDate;
   final String? initialEndDate;
-  final void Function(String query, String? startDate, String? endDate)
-  onSearch;
+  final void Function(String query, String? startDate, String? endDate) onSearch;
   final VoidCallback onClear;
   final VoidCallback? onSurprise;
 
   static Future<void> show({
     required BuildContext context,
-    required void Function(String query, String? startDate, String? endDate)
-    onSearch,
+    required void Function(String query, String? startDate, String? endDate) onSearch,
     required VoidCallback onClear,
     String initialQuery = '',
     String? initialStartDate,
@@ -132,39 +131,12 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
   }
 
   bool validateDates() {
-    final start = state.startDate;
-    final end = state.endDate;
-
-    final hasStart = start != null && start.isNotEmpty;
-    final hasEnd = end != null && end.isNotEmpty;
-
-    if ((hasStart && !hasEnd) || (!hasStart && hasEnd)) {
-      emit(
-        state.copyWith(
-          dateError: 'Ingresá una fecha de inicio y de fin para continuar.',
-        ),
-      );
-      return false;
-    }
-
-    if (hasStart && hasEnd) {
-      final parsedStart = DateTime.tryParse(start);
-      final parsedEnd = DateTime.tryParse(end);
-      if (parsedStart != null &&
-          parsedEnd != null &&
-          !parsedEnd.isAfter(parsedStart)) {
-        emit(
-          state.copyWith(
-            dateError:
-                'La fecha de fin tiene que ser posterior a la de inicio.',
-          ),
-        );
-        return false;
-      }
-    }
-
-    emit(state.copyWith(dateError: null));
-    return true;
+    final error = OptionalDateRangeValidator.validate(
+      startDate: state.startDate,
+      endDate: state.endDate,
+    );
+    emit(state.copyWith(dateError: error));
+    return error == null;
   }
 }
 
@@ -210,14 +182,8 @@ class _SearchSheetState extends State<SearchSheet> {
     final cubit = context.read<_SearchSheetCubit>();
     final now = DateTime.now();
     final initialDate = isStart
-        ? (cubit.state.startDate != null
-                  ? DateTime.tryParse(cubit.state.startDate!)
-                  : now) ??
-              now
-        : (cubit.state.endDate != null
-                  ? DateTime.tryParse(cubit.state.endDate!)
-                  : now) ??
-              now;
+        ? (cubit.state.startDate != null ? DateTime.tryParse(cubit.state.startDate!) : now) ?? now
+        : (cubit.state.endDate != null ? DateTime.tryParse(cubit.state.endDate!) : now) ?? now;
 
     final picked = await showDatePicker(
       context: context,
@@ -273,8 +239,7 @@ class _SearchSheetState extends State<SearchSheet> {
                   context.read<_SearchSheetCubit>().queryChanged('');
                   setState(() {});
                 },
-                onChanged: (v) =>
-                    context.read<_SearchSheetCubit>().queryChanged(v),
+                onChanged: (v) => context.read<_SearchSheetCubit>().queryChanged(v),
                 onSubmitted: (_) => _handleSearch(),
               ),
               const SizedBox(height: 16),
@@ -416,8 +381,7 @@ class _SearchSheetState extends State<SearchSheet> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () =>
-                              context.read<_SearchSheetCubit>().clearDates(),
+                          onPressed: () => context.read<_SearchSheetCubit>().clearDates(),
                           child: Text(
                             'Reiniciá las fechas',
                             style: AppTypography.labelSmall.copyWith(
