@@ -5,8 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart'
-    as common_inputs;
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart' as common_inputs;
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
 /// Step for editing publication data (description and condition).
@@ -19,6 +18,8 @@ class EditDataStep extends StatelessWidget {
     required this.onDescriptionChanged,
     required this.onConditionChanged,
     this.selectedGame,
+    this.descriptionError,
+    this.conditionError,
     super.key,
   });
 
@@ -39,6 +40,12 @@ class EditDataStep extends StatelessWidget {
 
   /// Callback when condition changes.
   final ValueChanged<PublicationCondition> onConditionChanged;
+
+  /// Validation error for description from bloc.
+  final String? descriptionError;
+
+  /// Validation error for condition from bloc.
+  final String? conditionError;
 
   @override
   Widget build(BuildContext context) {
@@ -71,17 +78,16 @@ class EditDataStep extends StatelessWidget {
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, error, stackTrace) =>
-                              const MediaPlaceholder(
-                                width: 60,
-                                height: 60,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(AppTheme.radiusSm),
-                                ),
-                                backgroundOpacity: 0.3,
-                                icon: Icons.extension,
-                                iconSize: 30,
-                              ),
+                          errorBuilder: (_, error, stackTrace) => const MediaPlaceholder(
+                            width: 60,
+                            height: 60,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(AppTheme.radiusSm),
+                            ),
+                            backgroundOpacity: 0.3,
+                            icon: Icons.extension,
+                            iconSize: 30,
+                          ),
                         )
                       : const MediaPlaceholder(
                           width: 60,
@@ -148,6 +154,8 @@ class EditDataStep extends StatelessWidget {
           maxLength: 500,
           hintText: 'Describe el estado y cualquier detalle importante...',
           variant: TextInputVisualVariant.subtle,
+          validator: (_) => descriptionError,
+          autovalidateMode: descriptionError != null ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
           onChanged: onDescriptionChanged,
         ),
         const SizedBox(height: 24),
@@ -160,9 +168,20 @@ class EditDataStep extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
+        if (conditionError != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+            child: Text(
+              conditionError!,
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.destructive,
+              ),
+            ),
+          ),
+        ],
         ...conditions.map(
           (c) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
             child: _ConditionOption(
               condition: c,
               isSelected: condition == c,

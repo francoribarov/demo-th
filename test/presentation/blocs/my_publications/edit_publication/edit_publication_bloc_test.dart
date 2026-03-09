@@ -7,8 +7,7 @@ import 'package:mobile_table_hopping/data/mapper/my_publications/publish_deliver
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart'
-    as publish;
+import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart' as publish;
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
@@ -20,19 +19,15 @@ import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_pub
 import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetPublicationDetailUseCase extends Mock
-    implements GetPublicationDetailUseCase {}
+class MockGetPublicationDetailUseCase extends Mock implements GetPublicationDetailUseCase {}
 
-class MockUpdatePublicationUseCase extends Mock
-    implements UpdatePublicationUseCase {}
+class MockUpdatePublicationUseCase extends Mock implements UpdatePublicationUseCase {}
 
-class MockDeletePublicationUseCase extends Mock
-    implements DeletePublicationUseCase {}
+class MockDeletePublicationUseCase extends Mock implements DeletePublicationUseCase {}
 
 class MockGetGames extends Mock implements GetGamesUseCase {}
 
-class MockGetDeliveryMethods extends Mock
-    implements GetDeliveryMethodsUseCase {}
+class MockGetDeliveryMethods extends Mock implements GetDeliveryMethodsUseCase {}
 
 class MockImagePickerGateway extends Mock implements ImagePickerGateway {}
 
@@ -54,6 +49,22 @@ void main() {
     description: 'desc',
     condition: PublicationCondition.good,
     price: 100,
+    images: [PublicationImage(url: 'https://img.test/1.png', type: 'gallery')],
+    deliveryMethods: [
+      DeliveryMethod(
+        id: 'dm-1',
+        deliveryType: DeliveryType.pickupInPerson,
+      ),
+    ],
+  );
+
+  const tInvalidDomainPublication = PublicationDetail(
+    id: 'p-invalid',
+    gameId: 'g-1',
+    ownerId: 'o-1',
+    description: 'corto',
+    condition: PublicationCondition.good,
+    price: 0,
     images: [PublicationImage(url: 'https://img.test/1.png', type: 'gallery')],
     deliveryMethods: [
       DeliveryMethod(
@@ -118,6 +129,126 @@ void main() {
     getDeliveryMethods: getDeliveryMethods,
     imagePickerGateway: imagePickerGateway,
     uploadImages: uploadImages,
+  );
+
+  blocTest<EditPublicationBloc, EditPublicationState>(
+    'descriptionChanged sets descriptionError when description is too short',
+    build: buildBloc,
+    seed: () => const EditPublicationState(
+      description: 'valid description',
+    ),
+    act: (bloc) => bloc.add(const EditPublicationEvent.descriptionChanged('abc')),
+    expect: () => const [
+      EditPublicationState(
+        description: 'abc',
+        descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+        hasChanges: true,
+      ),
+    ],
+  );
+
+  blocTest<EditPublicationBloc, EditPublicationState>(
+    'priceChanged sets priceError when price is not positive',
+    build: buildBloc,
+    seed: () => const EditPublicationState(price: 100),
+    act: (bloc) => bloc.add(const EditPublicationEvent.priceChanged(0)),
+    expect: () => const [
+      EditPublicationState(
+        priceError: 'El precio debe ser mayor a 0.',
+        hasChanges: true,
+      ),
+    ],
+  );
+
+  blocTest<EditPublicationBloc, EditPublicationState>(
+    'conditionChanged clears conditionError when a condition is selected',
+    build: buildBloc,
+    seed: () => const EditPublicationState(
+      conditionError: 'Debes seleccionar el estado del juego',
+    ),
+    act: (bloc) => bloc.add(
+      const EditPublicationEvent.conditionChanged(PublicationCondition.likeNew),
+    ),
+    expect: () => const [
+      EditPublicationState(
+        condition: PublicationCondition.likeNew,
+        hasChanges: true,
+      ),
+    ],
+  );
+
+  test('canProceed requires valid data on step 0', () {
+    const invalidState = EditPublicationState(
+      description: 'corto',
+      price: 100,
+      descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+      conditionError: 'Debes seleccionar el estado del juego',
+    );
+    const validState = EditPublicationState(
+      description: 'Descripción suficientemente larga.',
+      condition: PublicationCondition.good,
+      price: 100,
+    );
+
+    expect(invalidState.canProceed, isFalse);
+    expect(validState.canProceed, isTrue);
+  });
+
+  test('canProceed requires valid price on step 2 and review', () {
+    const invalidPriceStep = EditPublicationState(
+      currentStep: 2,
+      description: 'Descripción suficientemente larga.',
+      condition: PublicationCondition.good,
+      priceError: 'El precio debe ser mayor a 0.',
+    );
+    const validPriceStep = EditPublicationState(
+      currentStep: 2,
+      description: 'Descripción suficientemente larga.',
+      condition: PublicationCondition.good,
+      price: 150,
+    );
+    const invalidReviewStep = EditPublicationState(
+      currentStep: EditPublicationBloc.maxStep,
+      description: 'Descripción suficientemente larga.',
+      condition: PublicationCondition.good,
+      priceError: 'El precio debe ser mayor a 0.',
+    );
+
+    expect(invalidPriceStep.canProceed, isFalse);
+    expect(validPriceStep.canProceed, isTrue);
+    expect(invalidReviewStep.canProceed, isFalse);
+  });
+
+  blocTest<EditPublicationBloc, EditPublicationState>(
+    'started preloads validation errors from loaded publication values',
+    build: () {
+      when(() => getPublicationDetail('p-invalid')).thenAnswer(
+        (_) async => const Right<DomainException, PublicationDetail>(
+          tInvalidDomainPublication,
+        ),
+      );
+      return buildBloc();
+    },
+    act: (bloc) => bloc.add(
+      const EditPublicationEvent.started(publicationId: 'p-invalid'),
+    ),
+    expect: () => [
+      const EditPublicationState(isLoading: true, publicationId: 'p-invalid'),
+      isA<EditPublicationState>()
+          .having((s) => s.isLoading, 'isLoading', false)
+          .having((s) => s.publicationId, 'publicationId', 'p-invalid')
+          .having(
+            (s) => s.descriptionError,
+            'descriptionError',
+            'La descripción debe ser más detallada (min 10 caracteres).',
+          )
+          .having((s) => s.conditionError, 'conditionError', isNull)
+          .having(
+            (s) => s.priceError,
+            'priceError',
+            'El precio debe ser mayor a 0.',
+          ),
+    ],
   );
 
   blocTest<EditPublicationBloc, EditPublicationState>(

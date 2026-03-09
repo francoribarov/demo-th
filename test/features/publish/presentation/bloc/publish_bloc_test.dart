@@ -73,12 +73,50 @@ void main() {
     });
 
     blocTest<PublishBloc, PublishState>(
-      'updates gameId and isStepValid status',
+      'updates gameId, resets filtered games, and keeps condition state',
       build: () => publishBloc,
-      act: (bloc) =>
-          bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
+      seed: () => const PublishState(
+        allGames: [
+          Game(
+            id: 'g-1',
+            title: 'Catan',
+            description: 'desc',
+            duration: 60,
+            players: '3-4',
+            categories: [GameCategory(id: 1, name: 'Strategy', icon: 's')],
+            images: ['img'],
+          ),
+        ],
+        condition: PublicationCondition.likeNew,
+      ),
+      act: (bloc) => bloc.add(const PublishEvent.gameIdChanged('game-uuid-123')),
       expect: () => [
-        const PublishState(gameId: 'game-uuid-123'),
+        const PublishState(
+          gameId: 'game-uuid-123',
+          allGames: [
+            Game(
+              id: 'g-1',
+              title: 'Catan',
+              description: 'desc',
+              duration: 60,
+              players: '3-4',
+              categories: [GameCategory(id: 1, name: 'Strategy', icon: 's')],
+              images: ['img'],
+            ),
+          ],
+          filteredGames: [
+            Game(
+              id: 'g-1',
+              title: 'Catan',
+              description: 'desc',
+              duration: 60,
+              players: '3-4',
+              categories: [GameCategory(id: 1, name: 'Strategy', icon: 's')],
+              images: ['img'],
+            ),
+          ],
+          condition: PublicationCondition.likeNew,
+        ),
       ],
     );
 

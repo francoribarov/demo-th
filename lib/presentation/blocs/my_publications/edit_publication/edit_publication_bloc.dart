@@ -5,8 +5,7 @@ import 'package:mobile_table_hopping/data/mapper/my_publications/publish_deliver
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart'
-    as publish;
+import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart' as publish;
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
@@ -14,7 +13,9 @@ import 'package:mobile_table_hopping/domain/usecase/my_publications/get_publicat
 import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publication_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/publish/get_delivery_methods_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/upload/upload_images_use_case.dart';
+import 'package:mobile_table_hopping/domain/validators/publication/publication_validator.dart';
 import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
+import 'package:mobile_table_hopping/presentation/validators/publication_validation_error_mapper.dart';
 
 part 'edit_publication_bloc.freezed.dart';
 part 'edit_publication_event.dart';
@@ -22,8 +23,7 @@ part 'edit_publication_state.dart';
 
 @injectable
 /// Bloc that manages the edit publication flow.
-class EditPublicationBloc
-    extends Bloc<EditPublicationEvent, EditPublicationState> {
+class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationState> {
   /// Creates the bloc with required use cases.
   EditPublicationBloc({
     required GetPublicationDetailUseCase getPublicationDetail,
@@ -109,14 +109,11 @@ class EditPublicationBloc
         (value) => value,
       );
       final deliveryMethodsResult = await _getDeliveryMethods();
-      final deliveryMethods = deliveryMethodsResult
-          .fold<List<publish.DeliveryMethod>>(
-            (_) => const [],
-            (value) => value,
-          );
-      final mappedDeliveryMethods = deliveryMethods
-          .map((method) => method.toMyPublicationsModel())
-          .toList();
+      final deliveryMethods = deliveryMethodsResult.fold<List<publish.DeliveryMethod>>(
+        (_) => const [],
+        (value) => value,
+      );
+      final mappedDeliveryMethods = deliveryMethods.map((method) => method.toMyPublicationsModel()).toList();
 
       // Load publication details using Either pattern
       final publicationResult = await _getPublicationDetail(
@@ -147,6 +144,19 @@ class EditPublicationBloc
               deliveryMethods: publication.deliveryMethods,
               allGames: games,
               availableDeliveryMethods: mappedDeliveryMethods,
+              descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
+                PublicationValidator.validateDescription(
+                  publication.description,
+                ),
+              ),
+              conditionError: PublicationValidationErrorMapper.mapConditionError(
+                PublicationValidator.validateCondition(
+                  publication.condition,
+                ),
+              ),
+              priceError: PublicationValidationErrorMapper.mapPriceError(
+                PublicationValidator.validatePricing(publication.price),
+              ),
             ),
           );
         },
@@ -165,21 +175,45 @@ class EditPublicationBloc
     _DescriptionChanged event,
     Emitter<EditPublicationState> emit,
   ) {
-    emit(state.copyWith(description: event.value, hasChanges: true));
+    emit(
+      state.copyWith(
+        description: event.value,
+        descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
+          PublicationValidator.validateDescription(event.value),
+        ),
+        hasChanges: true,
+      ),
+    );
   }
 
   void _onPriceChanged(
     _PriceChanged event,
     Emitter<EditPublicationState> emit,
   ) {
-    emit(state.copyWith(price: event.value, hasChanges: true));
+    emit(
+      state.copyWith(
+        price: event.value,
+        priceError: PublicationValidationErrorMapper.mapPriceError(
+          PublicationValidator.validatePricing(event.value),
+        ),
+        hasChanges: true,
+      ),
+    );
   }
 
   void _onConditionChanged(
     _ConditionChanged event,
     Emitter<EditPublicationState> emit,
   ) {
-    emit(state.copyWith(condition: event.value, hasChanges: true));
+    emit(
+      state.copyWith(
+        condition: event.value,
+        conditionError: PublicationValidationErrorMapper.mapConditionError(
+          PublicationValidator.validateCondition(event.value),
+        ),
+        hasChanges: true,
+      ),
+    );
   }
 
   void _onImagesChanged(
@@ -206,9 +240,7 @@ class EditPublicationBloc
 
     List<DeliveryMethod> updated;
     if (exists) {
-      updated = state.deliveryMethods
-          .where((m) => m.id != event.method.id)
-          .toList();
+      updated = state.deliveryMethods.where((m) => m.id != event.method.id).toList();
     } else {
       updated = [...state.deliveryMethods, event.method];
     }

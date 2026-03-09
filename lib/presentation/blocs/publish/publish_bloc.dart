@@ -6,8 +6,9 @@ import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/publish/create_publication_use_case.dart';
-import 'package:mobile_table_hopping/domain/validators/publish/publication_validator.dart';
+import 'package:mobile_table_hopping/domain/validators/publication/publication_validator.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/validators/publication_validation_error_mapper.dart';
 
 part 'publish_bloc.freezed.dart';
 part 'publish_event.dart';
@@ -150,12 +151,15 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(
       state.copyWith(
         gameId: event.value,
-        condition: null,
+        filteredGames: state.allGames,
+        conditionError: PublicationValidationErrorMapper.mapConditionError(
+          PublicationValidator.validateCondition(state.condition),
+        ),
         isStepValid: _validateStep(
           state.currentStep,
           event.value,
           state.description,
-          null,
+          state.condition,
           state.price,
         ),
       ),
@@ -169,6 +173,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(
       state.copyWith(
         description: event.value,
+        descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
+          PublicationValidator.validateDescription(event.value),
+        ),
         isStepValid: _validateStep(
           state.currentStep,
           state.gameId,
@@ -184,6 +191,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(
       state.copyWith(
         price: event.value,
+        priceError: PublicationValidationErrorMapper.mapPriceError(
+          PublicationValidator.validatePricing(event.value),
+        ),
         isStepValid: _validateStep(
           state.currentStep,
           state.gameId,
@@ -202,6 +212,9 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(
       state.copyWith(
         condition: event.value,
+        conditionError: PublicationValidationErrorMapper.mapConditionError(
+          PublicationValidator.validateCondition(event.value),
+        ),
         isStepValid: _validateStep(
           state.currentStep,
           state.gameId,
@@ -253,17 +266,17 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     switch (step) {
       case 0: // Data step: game and description and condition
         return gameId.isNotEmpty &&
-            PublicationValidator.validateDescription(description).isValid &&
-            condition != null;
+            PublicationValidator.validateDescription(description) == null &&
+            PublicationValidator.validateCondition(condition) == null;
       case 1: // Photos step: no validation required (optional)
         return true;
       case 2: // Price step: price must be valid
-        return PublicationValidator.validatePricing(price).isValid;
+        return PublicationValidator.validatePricing(price) == null;
       case 3: // Review step: ready to submit
         return gameId.isNotEmpty &&
-            PublicationValidator.validateDescription(description).isValid &&
-            PublicationValidator.validatePricing(price).isValid &&
-            condition != null;
+            PublicationValidator.validateDescription(description) == null &&
+            PublicationValidator.validatePricing(price) == null &&
+            PublicationValidator.validateCondition(condition) == null;
       default:
         return false;
     }

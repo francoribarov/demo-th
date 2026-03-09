@@ -68,9 +68,7 @@ class EditPublicationPage extends StatelessWidget {
               icon: Icons.delete_outline,
               iconColor: AppColors.destructive,
               tooltip: 'Eliminar publicación',
-              onPressed: state.isDeleting
-                  ? null
-                  : () => _showDeleteConfirmation(context),
+              onPressed: state.isDeleting ? null : () => _showDeleteConfirmation(context),
             ),
           ],
           currentStep: state.currentStep,
@@ -83,14 +81,14 @@ class EditPublicationPage extends StatelessWidget {
                 condition: state.condition,
                 conditions: PublicationCondition.values,
                 selectedGame: state.selectedGame,
-                onDescriptionChanged: (v) =>
-                    context.read<EditPublicationBloc>().add(
-                      EditPublicationEvent.descriptionChanged(v),
-                    ),
-                onConditionChanged: (v) =>
-                    context.read<EditPublicationBloc>().add(
-                      EditPublicationEvent.conditionChanged(v),
-                    ),
+                onDescriptionChanged: (v) => context.read<EditPublicationBloc>().add(
+                  EditPublicationEvent.descriptionChanged(v),
+                ),
+                onConditionChanged: (v) => context.read<EditPublicationBloc>().add(
+                  EditPublicationEvent.conditionChanged(v),
+                ),
+                descriptionError: state.descriptionError,
+                conditionError: state.conditionError,
               ),
               EditPhotosStep(
                 images: state.images,
@@ -109,10 +107,10 @@ class EditPublicationPage extends StatelessWidget {
                 onPriceChanged: (v) => context.read<EditPublicationBloc>().add(
                   EditPublicationEvent.priceChanged(v),
                 ),
-                onDeliveryMethodsChanged: (v) =>
-                    context.read<EditPublicationBloc>().add(
-                      EditPublicationEvent.deliveryMethodsChanged(v),
-                    ),
+                priceError: state.priceError,
+                onDeliveryMethodsChanged: (v) => context.read<EditPublicationBloc>().add(
+                  EditPublicationEvent.deliveryMethodsChanged(v),
+                ),
               ),
               EditReviewStep(
                 selectedGame: state.selectedGame,
@@ -123,13 +121,8 @@ class EditPublicationPage extends StatelessWidget {
               ),
             ],
           ),
-          inlineErrorMessage:
-              state.errorMessage != null && state.publication != null
-              ? state.errorMessage
-              : null,
-          primaryLabel: state.currentStep == 3
-              ? 'Guardar Cambios'
-              : 'Siguiente',
+          inlineErrorMessage: state.errorMessage != null && state.publication != null ? state.errorMessage : null,
+          primaryLabel: state.currentStep == 3 ? 'Guardar Cambios' : 'Siguiente',
           onPrimaryPressed: (!state.canProceed || state.isSubmitting)
               ? null
               : () {
@@ -180,8 +173,7 @@ class EditPublicationPage extends StatelessWidget {
     final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Eliminar publicación?',
-      message:
-          'Esta acción no se puede deshacer. ¿Estás seguro que quieres eliminar esta publicación?',
+      message: 'Esta acción no se puede deshacer. ¿Estás seguro que quieres eliminar esta publicación?',
       confirmLabel: 'Eliminar',
       cancelLabel: 'Cancelar',
       isDestructive: true,

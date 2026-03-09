@@ -18,6 +18,7 @@ class PriceStep extends StatelessWidget {
     required this.onPriceChanged,
     required this.onToggleDeliveryMethod,
     required this.onAddDeliveryMethod,
+    this.priceError,
     super.key,
   });
 
@@ -42,6 +43,9 @@ class PriceStep extends StatelessWidget {
   /// Callback when a new delivery method is added.
   final void Function(DeliveryMethod) onAddDeliveryMethod;
 
+  /// Validation error for price from bloc.
+  final String? priceError;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -62,6 +66,7 @@ class PriceStep extends StatelessWidget {
           formVersion: formVersion,
           price: price,
           onChanged: onPriceChanged,
+          priceError: priceError,
         ),
 
         const SizedBox(height: AppTheme.spacing3xl),

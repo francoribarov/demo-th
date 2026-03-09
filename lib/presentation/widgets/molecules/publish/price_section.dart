@@ -8,12 +8,14 @@ class PriceSection extends StatelessWidget {
     required this.formVersion,
     required this.price,
     required this.onChanged,
+    this.priceError,
     super.key,
   });
 
   final int formVersion;
   final int price;
   final ValueChanged<int> onChanged;
+  final String? priceError;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,8 @@ class PriceSection extends StatelessWidget {
           initialValue: price > 0 ? price.toString() : '',
           prefixText: r'$ ',
           hintText: '150',
+          validator: (_) => priceError,
+          autovalidateMode: priceError != null ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
           onChangedValue: (value) => onChanged(value ?? 0),
         ),
       ],

@@ -16,6 +16,7 @@ class EditPriceStep extends StatelessWidget {
     required this.availableDeliveryMethods,
     required this.onPriceChanged,
     required this.onDeliveryMethodsChanged,
+    this.priceError,
     super.key,
   });
 
@@ -33,6 +34,9 @@ class EditPriceStep extends StatelessWidget {
 
   /// Callback when delivery methods change.
   final ValueChanged<List<DeliveryMethod>> onDeliveryMethodsChanged;
+
+  /// Validation error for price from bloc.
+  final String? priceError;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +65,8 @@ class EditPriceStep extends StatelessWidget {
           suffixText: 'UYU / día',
           hintText: '0',
           variant: TextInputVisualVariant.subtle,
+          validator: (_) => priceError,
+          autovalidateMode: priceError != null ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
           onChangedValue: (value) => onPriceChanged(value ?? 0),
         ),
 
@@ -125,9 +131,7 @@ class EditPriceStep extends StatelessWidget {
 
   DeliveryMethodDisplayData _toDisplayData(DeliveryMethod method) {
     final subtitle =
-        method.deliveryType == DeliveryType.pickupInPerson &&
-            method.address != null &&
-            method.address!.isNotEmpty
+        method.deliveryType == DeliveryType.pickupInPerson && method.address != null && method.address!.isNotEmpty
         ? '${method.address} ${method.addressNumber ?? ''}'
         : null;
     return DeliveryMethodDisplayData(

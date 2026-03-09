@@ -22,6 +22,9 @@ abstract class EditPublicationState with _$EditPublicationState {
     @Default('') String description,
     PublicationCondition? condition,
     @Default(0) int price,
+    String? descriptionError,
+    String? conditionError,
+    String? priceError,
     @Default([]) List<String> images,
     @Default([]) List<DeliveryMethod> deliveryMethods,
     @Default([]) List<DeliveryMethod> availableDeliveryMethods,
@@ -35,8 +38,8 @@ abstract class EditPublicationState with _$EditPublicationState {
 
   /// Returns whether the current step is valid for proceeding.
   bool get canProceed {
-    final hasValidData = description.isNotEmpty && condition != null;
-    final hasValidPrice = price > 0;
+    final hasValidData = descriptionError == null && conditionError == null;
+    final hasValidPrice = priceError == null;
 
     return switch (currentStep) {
       0 => hasValidData, // Data step

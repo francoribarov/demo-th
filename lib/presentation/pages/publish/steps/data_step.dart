@@ -4,7 +4,6 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
-import 'package:mobile_table_hopping/domain/validators/publish/publication_validator.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/publish/game_selector.dart';
@@ -26,6 +25,8 @@ class DataStep extends StatelessWidget {
     required this.onGameSearchCleared,
     required this.onDescriptionChanged,
     required this.onConditionChanged,
+    this.descriptionError,
+    this.conditionError,
     super.key,
   });
 
@@ -57,6 +58,12 @@ class DataStep extends StatelessWidget {
 
   /// Callback when condition changes.
   final void Function(PublicationCondition) onConditionChanged;
+
+  /// Validation error for description from bloc.
+  final String? descriptionError;
+
+  /// Validation error for condition from bloc.
+  final String? conditionError;
 
   @override
   Widget build(BuildContext context) {
@@ -97,12 +104,7 @@ class DataStep extends StatelessWidget {
           hintText: 'Contanos qué hace especial a este juego...',
           onChanged: onDescriptionChanged,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) {
-            final result = PublicationValidator.validateDescription(
-              value ?? '',
-            );
-            return result.isValid ? null : result.message;
-          },
+          validator: (_) => descriptionError,
         ),
         const SizedBox(height: AppTheme.spacing2xl),
 
@@ -112,12 +114,7 @@ class DataStep extends StatelessWidget {
         FormField<PublicationCondition>(
           initialValue: condition,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) {
-            if (value == null) {
-              return 'Debes seleccionar el estado del juego';
-            }
-            return null;
-          },
+          validator: (_) => conditionError,
           builder: (field) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,13 +129,11 @@ class DataStep extends StatelessWidget {
                       },
                       isSelected: field.value == c,
                       indicatorMode: SelectableInputIndicatorMode.radio,
-                      indicatorPosition:
-                          SelectableInputIndicatorPosition.leading,
+                      indicatorPosition: SelectableInputIndicatorPosition.leading,
                       title: c.label,
                       subtitle: c.description,
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      selectedBackgroundColor: AppColors.gameRust
-                          .withOpacityValue(0.1),
+                      selectedBackgroundColor: AppColors.gameRust.withOpacityValue(0.1),
                       unselectedBorderColor: AppColors.border,
                       selectedTextColor: AppColors.gameRust,
                       unselectedTextColor: AppColors.foreground,
