@@ -245,7 +245,7 @@ class AppRouter {
         builder: (context, state, navigationShell) {
           return AppScaffold(
             navigationShell: navigationShell,
-            onItemTapped: (index) {
+            onItemTapped: (int index) {
               navigationShell.goBranch(index);
             },
           );

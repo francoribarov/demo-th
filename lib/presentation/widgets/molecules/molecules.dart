@@ -17,6 +17,7 @@ export 'common/text_form_input_field.dart';
 export 'common/text_input_field.dart';
 export 'common/time_picker_field.dart';
 export 'my_publications/rental_request_card.dart';
+export 'my_rentals/my_rental_card.dart';
 export 'publication_details/game_recommendation_card.dart';
 export 'publication_details/game_review_card.dart';
 export 'publication_details/publication_detail_row.dart';

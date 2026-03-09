@@ -47,7 +47,7 @@ void main() {
           builder: (context, state, navigationShell) {
             return AppScaffold(
               navigationShell: navigationShell,
-              onItemTapped: (index) {
+              onItemTapped: (int index) {
                 const protectedIndexes = {1, 2, 3};
                 final targets = {
                   0: AppRoutes.home,

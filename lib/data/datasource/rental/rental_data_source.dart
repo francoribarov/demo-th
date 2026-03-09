@@ -1,9 +1,9 @@
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
-import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
 import 'package:mobile_table_hopping/data/dto/rental/confirm_rental_body.dart';
 import 'package:mobile_table_hopping/data/dto/rental/drop_off_body.dart';
+import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
 import 'package:mobile_table_hopping/data/services/rental/rental_service.dart';
 
 /// Remote datasource contract for rental operations.

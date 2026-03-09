@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_rentals/my_rentals_bloc.dart';
-import 'package:mobile_table_hopping/presentation/widgets/my_rentals/my_rental_card.dart';
-import 'package:mobile_table_hopping/presentation/widgets/rental/drop_off_bottom_sheet.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/my_rentals/my_rental_card.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/my_rentals/drop_off_bottom_sheet.dart';
 
 class MyRentalsList extends StatelessWidget {
   const MyRentalsList({

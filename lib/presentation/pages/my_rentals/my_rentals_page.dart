@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_rentals/my_rentals_bloc.dart';
-import 'package:mobile_table_hopping/presentation/pages/my_rentals/widgets/my_rentals_empty_state.dart';
-import 'package:mobile_table_hopping/presentation/pages/my_rentals/widgets/my_rentals_error_state.dart';
-import 'package:mobile_table_hopping/presentation/pages/my_rentals/widgets/my_rentals_list.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/my_rentals/my_rentals_empty_state.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/my_rentals/my_rentals_error_state.dart';
+import 'package:mobile_table_hopping/presentation/widgets/organisms/my_rentals/my_rentals_list.dart';
 
 class MyRentalsPage extends StatelessWidget {
   const MyRentalsPage({super.key});

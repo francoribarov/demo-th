@@ -9,6 +9,7 @@ export 'common/success_state_view.dart';
 export 'common/wizard_scaffold.dart';
 export 'my_publications/edit_success_view.dart';
 export 'my_publications/rental_requests_view.dart';
+export 'my_rentals/drop_off_bottom_sheet.dart';
 export 'publication_details/publication_details_error_view.dart';
 export 'publication_details/publication_details_loading_view.dart';
 export 'publication_details/publication_details_tab_content.dart';

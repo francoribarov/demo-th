@@ -19,39 +19,8 @@ class AppScaffold extends StatelessWidget {
   /// Shell that holds the navigation branches.
   final StatefulNavigationShell navigationShell;
 
-  static const _protectedBranchIndexes = {1, 2, 3};
-
-  String _targetLocationForBranch(int index) {
-    switch (index) {
-      case 0:
-        return AppRoutes.home;
-      case 1:
-        return AppRoutes.myRentals;
-      case 2:
-        return AppRoutes.myPublications;
-      case 3:
-        return AppRoutes.profile;
-      default:
-        return AppRoutes.home;
-    }
-  }
-
-  void _onItemTapped(BuildContext context, int index) {
-    final targetLocation = _targetLocationForBranch(index);
-
-    if (_protectedBranchIndexes.contains(index)) {
-      final authBloc = getIt<AuthBloc>();
-      if (!authBloc.state.isAuthenticated) {
-        context.goToLogin(from: targetLocation);
-        return;
-      }
-    }
-
-    navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
-  }
+  /// Callback when a navigation item is tapped.
+  final void Function(int index) onItemTapped;
 
   @override
   Widget build(BuildContext context) {

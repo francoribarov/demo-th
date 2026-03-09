@@ -35,7 +35,6 @@ abstract class MyRentalModel
       game: RentalRequestGameSummary(
         id: publicationId,
         title: gameTitle,
-        images: const [],
         price: 0,
         ownerId: ownerId,
       ),
