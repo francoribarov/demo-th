@@ -153,7 +153,7 @@ class DataStep extends StatelessWidget {
                                 vertical: AppTheme.spacingMd,
                               ),
                               color: isSelected
-                                  ? const Color(0xFFE5E5E5)
+                                  ? AppColors.isSelected
                                   : Colors.transparent,
                               child: Row(
                                 children: [
@@ -164,13 +164,9 @@ class DataStep extends StatelessWidget {
                                       children: [
                                         Text(
                                           c.label,
-                                          style: AppTypography.bodyLarge
-                                              .copyWith(
-                                                color: AppColors.gameBrown,
-                                                fontWeight: isSelected
-                                                    ? FontWeight.w600
-                                                    : FontWeight.normal,
-                                              ),
+                                          style: isSelected
+                                              ? AppTypography.labelLarge
+                                              : AppTypography.bodyLarge,
                                         ),
                                         const SizedBox(height: 4),
                                         Text(

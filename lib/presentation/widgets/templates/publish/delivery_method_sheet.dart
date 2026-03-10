@@ -40,9 +40,9 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
 
     entry = OverlayEntry(
       builder: (context) => Positioned(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-        left: 16,
-        right: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppTheme.spacing2xl,
+        left: AppTheme.spacingLg,
+        right: AppTheme.spacingLg,
         child: Material(
           color: Colors.transparent,
           child: Container(
@@ -79,9 +79,9 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 24,
+        left: AppTheme.spacingLg,
+        right: AppTheme.spacingLg,
+        top: AppTheme.spacing2xl,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -135,7 +135,7 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
                   }
                   setState(() => _selectedType = type);
                 },
-                margin: const EdgeInsets.only(bottom: 8),
+                margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
                 isSelected: isSelected,
                 indicatorMode: SelectableInputIndicatorMode.check,
                 leading: Text(type.icon, style: const TextStyle(fontSize: 24)),

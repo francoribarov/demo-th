@@ -98,6 +98,8 @@ class AppColors {
   /// Tertiary text — gameBrown at 70% opacity.
   static const Color textTertiary = Color(0xB3805D40);
 
+  static const Color isSelected = Color(0xFFE5E5E5);
+
   /// Muted text — gameBrown at 60% opacity.
   static const Color textMuted = Color(0x99805D40);
 
