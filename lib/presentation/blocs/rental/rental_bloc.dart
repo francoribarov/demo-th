@@ -294,7 +294,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         isDelivery: false,
         deliveryAddress: '',
         deliveryComments: '',
-        paymentMethod: 'mercadopago',
+        paymentMethod: 'cash',
         selectedFoodBundles: const [],
         snackbarMessage: null,
         errorMessage: null,
