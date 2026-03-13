@@ -1,4 +1,3 @@
-// RegExp deprecation is for implementers; normal usage is still valid (dart-lang/sdk#62012).
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/dropdown_form_input_field.dart';
@@ -243,7 +242,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(selected, isNotNull);
-    expect(RegExp(r'^\d{2}:\d{2}$').hasMatch(selected!), isTrue);
+    final parts = selected!.split(':');
+    expect(parts.length, 2);
+    expect(parts[0].length, 2);
+    expect(parts[1].length, 2);
+    expect(int.tryParse(parts[0]), isNotNull);
+    expect(int.tryParse(parts[1]), isNotNull);
   });
 }
 
