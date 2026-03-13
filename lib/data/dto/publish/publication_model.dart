@@ -7,7 +7,9 @@ part 'publication_model.g.dart';
 
 /// Image model used for API serialization.
 @freezed
-sealed class PublicationImageModel with _$PublicationImageModel implements BaseDtoResponse<PublicationImage> {
+sealed class PublicationImageModel
+    with _$PublicationImageModel
+    implements BaseDtoResponse<PublicationImage> {
   /// Creates an image model from API data.
   const factory PublicationImageModel({
     required String url,
@@ -19,24 +21,29 @@ sealed class PublicationImageModel with _$PublicationImageModel implements BaseD
   const PublicationImageModel._();
 
   /// Creates a model from a domain entity.
-  factory PublicationImageModel.fromEntity(PublicationImage entity) => PublicationImageModel(
-    url: entity.url,
-    type: entity.type,
-    width: entity.width,
-    height: entity.height,
-  );
+  factory PublicationImageModel.fromEntity(PublicationImage entity) =>
+      PublicationImageModel(
+        url: entity.url,
+        type: entity.type,
+        width: entity.width,
+        height: entity.height,
+      );
 
   /// Creates a model from JSON.
-  factory PublicationImageModel.fromJson(Map<String, dynamic> json) => _$PublicationImageModelFromJson(json);
+  factory PublicationImageModel.fromJson(Map<String, dynamic> json) =>
+      _$PublicationImageModelFromJson(json);
 
   @override
-  PublicationImage toDomainModel() => PublicationImage(url: url, type: type, width: width, height: height);
+  PublicationImage toDomainModel() =>
+      PublicationImage(url: url, type: type, width: width, height: height);
 }
 
 /// Publication model used for API serialization.
 /// Matches backend response for GET /api/publications/{id}
 @freezed
-sealed class PublicationModel with _$PublicationModel implements BaseDtoResponse<Publication> {
+sealed class PublicationModel
+    with _$PublicationModel
+    implements BaseDtoResponse<Publication> {
   /// Creates a publication model from API data.
   const factory PublicationModel({
     required String id,
@@ -51,7 +58,8 @@ sealed class PublicationModel with _$PublicationModel implements BaseDtoResponse
   const PublicationModel._();
 
   /// Creates a model from JSON.
-  factory PublicationModel.fromJson(Map<String, dynamic> json) => _$PublicationModelFromJson(json);
+  factory PublicationModel.fromJson(Map<String, dynamic> json) =>
+      _$PublicationModelFromJson(json);
 
   @override
   Publication toDomainModel() => Publication(
@@ -61,14 +69,17 @@ sealed class PublicationModel with _$PublicationModel implements BaseDtoResponse
     description: description,
     condition: condition,
     price: price,
-    images: images.map((url) => PublicationImage(url: url, type: 'gallery')).toList(),
+    images: images
+        .map((url) => PublicationImage(url: url, type: 'gallery'))
+        .toList(),
   );
 }
 
 /// Request model used for publication creation.
 /// Matches backend POST /api/publications schema.
 @freezed
-sealed class PublicationCreateRequestModel with _$PublicationCreateRequestModel {
+sealed class PublicationCreateRequestModel
+    with _$PublicationCreateRequestModel {
   /// Creates a publication creation request model.
   const factory PublicationCreateRequestModel({
     /// Owner ID (user creating the publication)
@@ -110,6 +121,8 @@ sealed class PublicationCreateRequestModel with _$PublicationCreateRequestModel 
     price: entity.price,
     condition: entity.condition,
     images: entity.images.map((img) => img.url).toList(),
-    deliveryMethods: entity.deliveryMethods.map((dm) => dm.deliveryType.displayName).toList(),
+    deliveryMethods: entity.deliveryMethods
+        .map((dm) => dm.deliveryType.displayName)
+        .toList(),
   );
 }

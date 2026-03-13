@@ -115,13 +115,16 @@ class AppRoutes {
   static String publicationDetailsPath(String id) => '/publications/$id';
 
   /// Rules location.
-  static String gameRulesPath(String id) => '${publicationDetailsPath(id)}/rules';
+  static String gameRulesPath(String id) =>
+      '${publicationDetailsPath(id)}/rules';
 
   /// Reviews location.
-  static String gameReviewsPath(String id) => '${publicationDetailsPath(id)}/reviews';
+  static String gameReviewsPath(String id) =>
+      '${publicationDetailsPath(id)}/reviews';
 
   /// Owner location.
-  static String gameOwnerPath(String id) => '${publicationDetailsPath(id)}/owner';
+  static String gameOwnerPath(String id) =>
+      '${publicationDetailsPath(id)}/owner';
 
   /// Rental location.
   static String rentalPath(String id) => '${publicationDetailsPath(id)}/rental';
@@ -182,19 +185,27 @@ class AppRouter {
   static final _profileNavigatorKey = GlobalKey<NavigatorState>();
 
   static bool _isProtectedLocation(String location) {
-    if (location == AppRoutes.publish || location == AppRoutes.myPublications || location == AppRoutes.profile) {
+    if (location == AppRoutes.publish ||
+        location == AppRoutes.myPublications ||
+        location == AppRoutes.profile) {
       return true;
     }
 
     final segments = Uri(path: location).pathSegments;
 
-    final isRentalRoute = segments.length == 3 && segments.first == 'publications' && segments.last == 'rental';
+    final isRentalRoute =
+        segments.length == 3 &&
+        segments.first == 'publications' &&
+        segments.last == 'rental';
 
     if (isRentalRoute) {
       return true;
     }
 
-    final isEditRoute = segments.length == 3 && segments.first == 'my-publications' && segments.last == 'edit';
+    final isEditRoute =
+        segments.length == 3 &&
+        segments.first == 'my-publications' &&
+        segments.last == 'edit';
 
     return isEditRoute;
   }
@@ -230,7 +241,8 @@ class AppRouter {
         builder: (context, state, navigationShell) {
           return BlocConsumer<AuthBloc, AuthState>(
             listenWhen: (previous, current) =>
-                current.feedbackNotice != null && previous.feedbackNotice != current.feedbackNotice,
+                current.feedbackNotice != null &&
+                previous.feedbackNotice != current.feedbackNotice,
             listener: (context, authState) {
               final notice = authState.feedbackNotice;
               if (notice == null) return;
@@ -271,10 +283,14 @@ class AppRouter {
                   child: MultiBlocProvider(
                     providers: [
                       BlocProvider<MyPublicationsBloc>(
-                        create: (_) => getIt<MyPublicationsBloc>()..add(const MyPublicationsEvent.started()),
+                        create: (_) =>
+                            getIt<MyPublicationsBloc>()
+                              ..add(const MyPublicationsEvent.started()),
                       ),
                       BlocProvider<RentalRequestsBloc>(
-                        create: (_) => getIt<RentalRequestsBloc>()..add(const RentalRequestsEvent.started()),
+                        create: (_) =>
+                            getIt<RentalRequestsBloc>()
+                              ..add(const RentalRequestsEvent.started()),
                       ),
                     ],
                     child: const MyPublicationsPage(),
@@ -293,7 +309,9 @@ class AppRouter {
                   child: MultiBlocProvider(
                     providers: [
                       BlocProvider<PublishBloc>(
-                        create: (_) => getIt<PublishBloc>()..add(const PublishEvent.started()),
+                        create: (_) =>
+                            getIt<PublishBloc>()
+                              ..add(const PublishEvent.started()),
                       ),
                       BlocProvider<GameSearchCubit>(
                         create: (_) => getIt<GameSearchCubit>(),
@@ -317,7 +335,8 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.profile,
                 name: AppRoutes.profileName,
-                pageBuilder: (context, state) => const NoTransitionPage(child: ProfilePage()),
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: ProfilePage()),
               ),
             ],
           ),
@@ -355,7 +374,9 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return BlocProvider<PublicationDetailsBloc>(
-            create: (_) => getIt<PublicationDetailsBloc>()..add(PublicationDetailsEvent.started(publicationId: id)),
+            create: (_) =>
+                getIt<PublicationDetailsBloc>()
+                  ..add(PublicationDetailsEvent.started(publicationId: id)),
             child: PublicationDetailsPage(publicationId: id),
           );
         },
@@ -367,7 +388,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameRulesBloc>(
-                create: (_) => getIt<GameRulesBloc>()..add(GameRulesEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<GameRulesBloc>()
+                      ..add(GameRulesEvent.started(gameId: id)),
                 child: GameRulesPage(gameId: id),
               );
             },
@@ -379,7 +402,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameReviewsBloc>(
-                create: (_) => getIt<GameReviewsBloc>()..add(GameReviewsEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<GameReviewsBloc>()
+                      ..add(GameReviewsEvent.started(gameId: id)),
                 child: GameReviewsPage(gameId: id),
               );
             },
@@ -391,7 +416,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<UserProfileBloc>(
-                create: (_) => getIt<UserProfileBloc>()..add(UserProfileEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<UserProfileBloc>()
+                      ..add(UserProfileEvent.started(gameId: id)),
                 child: UserProfilePage(gameId: id),
               );
             },
@@ -436,7 +463,9 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return BlocProvider<EditPublicationBloc>(
-            create: (_) => getIt<EditPublicationBloc>()..add(EditPublicationEvent.started(publicationId: id)),
+            create: (_) =>
+                getIt<EditPublicationBloc>()
+                  ..add(EditPublicationEvent.started(publicationId: id)),
             child: EditPublicationPage(publicationId: id),
           );
         },
@@ -509,7 +538,8 @@ extension GoRouterExtension on BuildContext {
   void goHome() => go(AppRoutes.home);
 
   /// Navigate to edit a publication.
-  void goToEditPublication(String id) => push(AppRoutes.editPublicationPath(id));
+  void goToEditPublication(String id) =>
+      push(AppRoutes.editPublicationPath(id));
 
   /// Safe back navigation for deep links (no back stack).
   void popOrGo(String location) {

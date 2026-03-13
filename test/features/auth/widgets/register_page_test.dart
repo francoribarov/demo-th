@@ -14,7 +14,8 @@ import 'package:mocktail/mocktail.dart';
 
 class MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
 
-class MockRegisterCubit extends MockCubit<RegisterState> implements RegisterCubit {}
+class MockRegisterCubit extends MockCubit<RegisterState>
+    implements RegisterCubit {}
 
 void main() {
   late MockAuthBloc authBloc;

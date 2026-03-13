@@ -9,7 +9,8 @@ import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_pub
 import 'package:mobile_table_hopping/presentation/pages/my_publications/edit_publication_page.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockEditPublicationBloc extends MockBloc<EditPublicationEvent, EditPublicationState>
+class MockEditPublicationBloc
+    extends MockBloc<EditPublicationEvent, EditPublicationState>
     implements EditPublicationBloc {}
 
 void main() {
@@ -35,7 +36,8 @@ void main() {
       gameId: 'g-1',
       description: 'corto',
       condition: PublicationCondition.good,
-      descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+      descriptionError:
+          'La descripción debe ser más detallada (min 10 caracteres).',
       priceError: 'El precio debe ser mayor a 0.',
     ),
   );

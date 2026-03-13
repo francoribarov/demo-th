@@ -5,14 +5,16 @@ class PublicationValidationErrorMapper {
   static String? mapDescriptionError(PublicationDescriptionError? error) {
     return switch (error) {
       PublicationDescriptionError.required => 'La descripción es obligatoria.',
-      PublicationDescriptionError.tooShort => 'La descripción debe ser más detallada (min 10 caracteres).',
+      PublicationDescriptionError.tooShort =>
+        'La descripción debe ser más detallada (min 10 caracteres).',
       null => null,
     };
   }
 
   static String? mapConditionError(PublicationConditionError? error) {
     return switch (error) {
-      PublicationConditionError.required => 'Debes seleccionar el estado del juego',
+      PublicationConditionError.required =>
+        'Debes seleccionar el estado del juego',
       null => null,
     };
   }

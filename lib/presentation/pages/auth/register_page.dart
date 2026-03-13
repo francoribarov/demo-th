@@ -73,7 +73,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listenWhen: (previous, current) => previous.status != current.status && current.isAuthenticated,
+      listenWhen: (previous, current) =>
+          previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
         final redirectTo = widget.from;
         if (redirectTo != null &&
@@ -93,11 +94,14 @@ class _RegisterPageState extends State<RegisterPage> {
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final horizontalPadding = constraints.maxWidth >= 640 ? constraints.maxWidth * 0.18 : 24.0;
+              final horizontalPadding = constraints.maxWidth >= 640
+                  ? constraints.maxWidth * 0.18
+                  : 24.0;
 
               return BlocConsumer<RegisterCubit, RegisterState>(
                 listenWhen: (previous, current) =>
-                    current.feedbackNotice != null && previous.feedbackNotice != current.feedbackNotice,
+                    current.feedbackNotice != null &&
+                    previous.feedbackNotice != current.feedbackNotice,
                 listener: (context, state) {
                   final notice = state.feedbackNotice;
                   if (notice == null) return;
@@ -113,7 +117,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
                   return SingleChildScrollView(
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: EdgeInsets.fromLTRB(
                       horizontalPadding,
                       AppTheme.spacingLg,
@@ -134,7 +139,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         const SizedBox(height: AppTheme.spacing2xl),
                         const AuthHeader(
                           title: 'Empecemos',
-                          subtitle: 'Creá tu cuenta para publicar y alquilar juegos.',
+                          subtitle:
+                              'Creá tu cuenta para publicar y alquilar juegos.',
                         ),
                         const SizedBox(height: AppTheme.spacing3xl),
                         Form(
@@ -155,12 +161,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                     AutofillHints.newUsername,
                                   ],
                                   labelText: 'Nombre',
-                                  validator: (value) => AuthValidationErrorMapper.mapUsernameError(
-                                    AuthValidator.validateUsernameRequired(
-                                      value ?? '',
-                                    ),
-                                  ),
-                                  onChanged: (name) => context.read<RegisterCubit>().usernameChanged(name),
+                                  validator: (value) =>
+                                      AuthValidationErrorMapper.mapUsernameError(
+                                        AuthValidator.validateUsernameRequired(
+                                          value ?? '',
+                                        ),
+                                      ),
+                                  onChanged: (name) => context
+                                      .read<RegisterCubit>()
+                                      .usernameChanged(name),
                                   onFieldSubmitted: (_) {
                                     _emailFocusNode.requestFocus();
                                   },
@@ -180,12 +189,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ],
                                   labelText: 'Email',
                                   hintText: 'tu@email.com',
-                                  validator: (value) => AuthValidationErrorMapper.mapEmailError(
-                                    AuthValidator.validateEmail(
-                                      value ?? '',
-                                    ),
-                                  ),
-                                  onChanged: (email) => context.read<RegisterCubit>().emailChanged(email),
+                                  validator: (value) =>
+                                      AuthValidationErrorMapper.mapEmailError(
+                                        AuthValidator.validateEmail(
+                                          value ?? '',
+                                        ),
+                                      ),
+                                  onChanged: (email) => context
+                                      .read<RegisterCubit>()
+                                      .emailChanged(email),
                                   onFieldSubmitted: (_) {
                                     _passwordFocusNode.requestFocus();
                                   },
@@ -209,24 +221,32 @@ class _RegisterPageState extends State<RegisterPage> {
                                     key: const Key(
                                       'registerPasswordVisibilityButton',
                                     ),
-                                    tooltip: _isPasswordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña',
+                                    tooltip: _isPasswordVisible
+                                        ? 'Ocultar contraseña'
+                                        : 'Mostrar contraseña',
                                     onPressed: isSubmitting
                                         ? null
                                         : () {
                                             setState(() {
-                                              _isPasswordVisible = !_isPasswordVisible;
+                                              _isPasswordVisible =
+                                                  !_isPasswordVisible;
                                             });
                                           },
                                     icon: Icon(
-                                      _isPasswordVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                      _isPasswordVisible
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                     ),
                                   ),
-                                  validator: (value) => AuthValidationErrorMapper.mapPasswordError(
-                                    AuthValidator.validatePassword(
-                                      value ?? '',
-                                    ),
-                                  ),
-                                  onChanged: (password) => context.read<RegisterCubit>().passwordChanged(password),
+                                  validator: (value) =>
+                                      AuthValidationErrorMapper.mapPasswordError(
+                                        AuthValidator.validatePassword(
+                                          value ?? '',
+                                        ),
+                                      ),
+                                  onChanged: (password) => context
+                                      .read<RegisterCubit>()
+                                      .passwordChanged(password),
                                   onFieldSubmitted: (_) {
                                     _confirmPasswordFocusNode.requestFocus();
                                   },
@@ -251,12 +271,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                     key: const Key(
                                       'registerConfirmPasswordVisibilityButton',
                                     ),
-                                    tooltip: _isConfirmPasswordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña',
+                                    tooltip: _isConfirmPasswordVisible
+                                        ? 'Ocultar contraseña'
+                                        : 'Mostrar contraseña',
                                     onPressed: isSubmitting
                                         ? null
                                         : () {
                                             setState(() {
-                                              _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                              _isConfirmPasswordVisible =
+                                                  !_isConfirmPasswordVisible;
                                             });
                                           },
                                     icon: Icon(
@@ -265,14 +288,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                           : Icons.visibility_outlined,
                                     ),
                                   ),
-                                  validator: (value) => AuthValidationErrorMapper.mapPasswordConfirmationError(
-                                    AuthValidator.validatePasswordConfirmation(
-                                      password: _passwordController.text,
-                                      confirmation: value ?? '',
-                                    ),
-                                  ),
-                                  onChanged: (confirmPassword) =>
-                                      context.read<RegisterCubit>().passwordConfirmChanged(confirmPassword),
+                                  validator: (value) =>
+                                      AuthValidationErrorMapper.mapPasswordConfirmationError(
+                                        AuthValidator.validatePasswordConfirmation(
+                                          password: _passwordController.text,
+                                          confirmation: value ?? '',
+                                        ),
+                                      ),
+                                  onChanged: (confirmPassword) => context
+                                      .read<RegisterCubit>()
+                                      .passwordConfirmChanged(confirmPassword),
                                   onFieldSubmitted: (_) => _submitRegister(
                                     isSubmitting: isSubmitting,
                                   ),
@@ -295,14 +320,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           key: const Key('registerSubmitButton'),
                           label: 'Crear cuenta',
                           isLoading: isSubmitting,
-                          onPressed: () => _submitRegister(isSubmitting: isSubmitting),
+                          onPressed: () =>
+                              _submitRegister(isSubmitting: isSubmitting),
                         ),
                         const SizedBox(height: AppTheme.spacingLg),
                         AuthSwitchRow(
                           key: const Key('registerGoToLoginButton'),
                           prompt: 'Ya tenés cuenta? ',
                           actionLabel: 'Iniciá sesión',
-                          onAction: isSubmitting ? () {} : () => context.goToLogin(from: widget.from),
+                          onAction: isSubmitting
+                              ? () {}
+                              : () => context.goToLogin(from: widget.from),
                         ),
                       ],
                     ),

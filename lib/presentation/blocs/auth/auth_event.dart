@@ -7,7 +7,8 @@ abstract class AuthEvent with _$AuthEvent {
   const factory AuthEvent.started() = _Started;
 
   /// Signals that a session was obtained (from login or register).
-  const factory AuthEvent.sessionObtained(AuthSession session) = _SessionObtained;
+  const factory AuthEvent.sessionObtained(AuthSession session) =
+      _SessionObtained;
 
   // Session
   /// Requests a logout.

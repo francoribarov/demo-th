@@ -2,7 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
-import 'package:mobile_table_hopping/domain/model/publish/publication.dart' show PublicationCondition;
+import 'package:mobile_table_hopping/domain/model/publish/publication.dart'
+    show PublicationCondition;
 
 part 'publication_listing_model.freezed.dart';
 part 'publication_listing_model.g.dart';
@@ -15,7 +16,8 @@ sealed class AvailabilityRangeModel with _$AvailabilityRangeModel {
     @JsonKey(name: 'end_date') required String to,
   }) = _AvailabilityRangeModel;
 
-  factory AvailabilityRangeModel.fromJson(Map<String, dynamic> json) => _$AvailabilityRangeModelFromJson(json);
+  factory AvailabilityRangeModel.fromJson(Map<String, dynamic> json) =>
+      _$AvailabilityRangeModelFromJson(json);
 
   const AvailabilityRangeModel._();
 
@@ -35,7 +37,8 @@ sealed class PublicationCategoryModel with _$PublicationCategoryModel {
 
   const PublicationCategoryModel._();
 
-  factory PublicationCategoryModel.fromJson(Map<String, dynamic> json) => _$PublicationCategoryModelFromJson(json);
+  factory PublicationCategoryModel.fromJson(Map<String, dynamic> json) =>
+      _$PublicationCategoryModelFromJson(json);
 
   GameCategory toDomainModel() => GameCategory(
     id: id,
@@ -62,7 +65,8 @@ sealed class PublicationGameDataModel with _$PublicationGameDataModel {
 
   const PublicationGameDataModel._();
 
-  factory PublicationGameDataModel.fromJson(Map<String, dynamic> json) => _$PublicationGameDataModelFromJson(json);
+  factory PublicationGameDataModel.fromJson(Map<String, dynamic> json) =>
+      _$PublicationGameDataModelFromJson(json);
 
   PublicationGameData toDomainModel() => PublicationGameData(
     players: players,
@@ -77,7 +81,9 @@ sealed class PublicationGameDataModel with _$PublicationGameDataModel {
 
 /// Publication listing model as returned by GET /api/publications.
 @freezed
-sealed class PublicationListingModel with _$PublicationListingModel implements BaseDtoResponse<PublicationListing> {
+sealed class PublicationListingModel
+    with _$PublicationListingModel
+    implements BaseDtoResponse<PublicationListing> {
   const factory PublicationListingModel({
     required String id,
     @JsonKey(name: 'owner_id') required String ownerId,
@@ -93,13 +99,16 @@ sealed class PublicationListingModel with _$PublicationListingModel implements B
     @Default(0.0) double deposit,
     @Default([]) List<String> images,
     @JsonKey(name: 'is_active') @Default(true) bool isActive,
-    @JsonKey(name: 'booked_ranges') @Default([]) List<AvailabilityRangeModel> bookedRanges,
+    @JsonKey(name: 'booked_ranges')
+    @Default([])
+    List<AvailabilityRangeModel> bookedRanges,
     PublicationGameDataModel? game,
   }) = _PublicationListingModel;
 
   const PublicationListingModel._();
 
-  factory PublicationListingModel.fromJson(Map<String, dynamic> json) => _$PublicationListingModelFromJson(json);
+  factory PublicationListingModel.fromJson(Map<String, dynamic> json) =>
+      _$PublicationListingModelFromJson(json);
 
   @override
   PublicationListing toDomainModel() => PublicationListing(

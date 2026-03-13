@@ -5,7 +5,8 @@ import 'package:mobile_table_hopping/data/mapper/my_publications/publish_deliver
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart' as publish;
+import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart'
+    as publish;
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
@@ -24,7 +25,8 @@ part 'edit_publication_state.dart';
 
 @injectable
 /// Bloc that manages the edit publication flow.
-class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationState> {
+class EditPublicationBloc
+    extends Bloc<EditPublicationEvent, EditPublicationState> {
   /// Creates the bloc with required use cases.
   EditPublicationBloc({
     required GetPublicationDetailUseCase getPublicationDetail,
@@ -110,11 +112,14 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
         (value) => value,
       );
       final deliveryMethodsResult = await _getDeliveryMethods();
-      final deliveryMethods = deliveryMethodsResult.fold<List<publish.DeliveryMethod>>(
-        (_) => const [],
-        (value) => value,
-      );
-      final mappedDeliveryMethods = deliveryMethods.map((method) => method.toMyPublicationsModel()).toList();
+      final deliveryMethods = deliveryMethodsResult
+          .fold<List<publish.DeliveryMethod>>(
+            (_) => const [],
+            (value) => value,
+          );
+      final mappedDeliveryMethods = deliveryMethods
+          .map((method) => method.toMyPublicationsModel())
+          .toList();
 
       // Load publication details using Either pattern
       final publicationResult = await _getPublicationDetail(
@@ -146,16 +151,18 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
                 description: publication.description,
                 condition: publication.condition,
                 price: publication.price,
-                descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
-                  PublicationValidator.validateDescription(
-                    publication.description,
-                  ),
-                ),
-                conditionError: PublicationValidationErrorMapper.mapConditionError(
-                  PublicationValidator.validateCondition(
-                    publication.condition,
-                  ),
-                ),
+                descriptionError:
+                    PublicationValidationErrorMapper.mapDescriptionError(
+                      PublicationValidator.validateDescription(
+                        publication.description,
+                      ),
+                    ),
+                conditionError:
+                    PublicationValidationErrorMapper.mapConditionError(
+                      PublicationValidator.validateCondition(
+                        publication.condition,
+                      ),
+                    ),
                 priceError: PublicationValidationErrorMapper.mapPriceError(
                   PublicationValidator.validatePricing(publication.price),
                 ),
@@ -183,9 +190,10 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
         hasChanges: true,
         form: state.form.copyWith(
           description: event.value,
-          descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
-            PublicationValidator.validateDescription(event.value),
-          ),
+          descriptionError:
+              PublicationValidationErrorMapper.mapDescriptionError(
+                PublicationValidator.validateDescription(event.value),
+              ),
         ),
       ),
     );
@@ -249,7 +257,9 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
 
     List<DeliveryMethod> updated;
     if (exists) {
-      updated = state.deliveryMethods.where((m) => m.id != event.method.id).toList();
+      updated = state.deliveryMethods
+          .where((m) => m.id != event.method.id)
+          .toList();
     } else {
       updated = [...state.deliveryMethods, event.method];
     }

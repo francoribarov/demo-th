@@ -30,7 +30,9 @@ class PriceSection extends StatelessWidget {
           prefixText: r'$ ',
           hintText: '150',
           validator: (_) => priceError,
-          autovalidateMode: priceError != null ? AutovalidateMode.always : AutovalidateMode.onUserInteraction,
+          autovalidateMode: priceError != null
+              ? AutovalidateMode.always
+              : AutovalidateMode.onUserInteraction,
           onChangedValue: (value) => onChanged(value ?? 0),
         ),
       ],

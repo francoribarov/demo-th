@@ -163,9 +163,10 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
       state.copyWith(
         form: state.form.copyWith(
           description: event.value,
-          descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
-            PublicationValidator.validateDescription(event.value),
-          ),
+          descriptionError:
+              PublicationValidationErrorMapper.mapDescriptionError(
+                PublicationValidator.validateDescription(event.value),
+              ),
         ),
         isStepValid: _validateStep(
           state.currentStep,

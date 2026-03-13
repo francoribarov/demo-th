@@ -39,7 +39,8 @@ class RentalConfirmPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (previous, current) =>
-          previous.feedbackNotice != current.feedbackNotice && current.feedbackNotice != null,
+          previous.feedbackNotice != current.feedbackNotice &&
+          current.feedbackNotice != null,
       listener: (context, state) {
         final notice = state.feedbackNotice;
         if (notice == null) return;
@@ -60,7 +61,8 @@ class RentalConfirmPage extends StatelessWidget {
           return Scaffold(
             appBar: PageAppBar(
               title: const Text('Solicitar alquiler'),
-              onLeadingPressed: () => context.popOrGo('/publications/$publicationId'),
+              onLeadingPressed: () =>
+                  context.popOrGo('/publications/$publicationId'),
             ),
             body: Center(
               child: Text(state.errorMessage ?? 'Publicación no encontrada'),
@@ -83,7 +85,8 @@ class RentalConfirmPage extends StatelessWidget {
         return Scaffold(
           appBar: PageAppBar(
             title: const Text('Solicitar alquiler'),
-            onLeadingPressed: () => context.popOrGo('/publications/$publicationId'),
+            onLeadingPressed: () =>
+                context.popOrGo('/publications/$publicationId'),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -105,12 +108,13 @@ class RentalConfirmPage extends StatelessWidget {
                   publication: publication,
                   startDate: state.startDate,
                   endDate: state.endDate,
-                  onRangeChanged: (start, end) => context.read<RentalBloc>().add(
-                    RentalEvent.dateRangeChanged(
-                      startDate: start,
-                      endDate: end,
-                    ),
-                  ),
+                  onRangeChanged: (start, end) =>
+                      context.read<RentalBloc>().add(
+                        RentalEvent.dateRangeChanged(
+                          startDate: start,
+                          endDate: end,
+                        ),
+                      ),
                 ),
 
                 const SizedBox(height: 24),
@@ -125,8 +129,9 @@ class RentalConfirmPage extends StatelessWidget {
                   isDelivery: state.isDelivery,
                   address: state.deliveryAddress,
                   comments: state.deliveryComments,
-                  onDeliveryChanged: ({required bool isDelivery}) =>
-                      context.read<RentalBloc>().add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
+                  onDeliveryChanged: ({required bool isDelivery}) => context
+                      .read<RentalBloc>()
+                      .add(RentalEvent.deliveryChanged(isDelivery: isDelivery)),
                   onAddressChanged: (value) => context.read<RentalBloc>().add(
                     RentalEvent.deliveryAddressChanged(address: value),
                   ),
@@ -226,7 +231,8 @@ class _PublicationSummary extends StatelessWidget {
               width: 80,
               height: 80,
               fit: BoxFit.cover,
-              placeholder: (context, url) => const ColoredBox(color: AppColors.gameCream),
+              placeholder: (context, url) =>
+                  const ColoredBox(color: AppColors.gameCream),
               errorWidget: (context, url, error) => const MediaPlaceholder(
                 icon: Icons.image_not_supported,
                 backgroundColor: AppColors.gameCream,
@@ -451,7 +457,8 @@ class _PriceBreakdown extends StatelessWidget {
       child: Column(
         children: [
           LabelValueRow(
-            label: '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
+            label:
+                '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
             value: CurrencyFormatter.formatUYU(subtotal),
             labelColor: AppColors.textTertiary,
             valueStyle: AppTypography.bodyMedium,

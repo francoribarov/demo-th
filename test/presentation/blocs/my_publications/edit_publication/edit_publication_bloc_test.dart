@@ -7,7 +7,8 @@ import 'package:mobile_table_hopping/data/mapper/my_publications/publish_deliver
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
-import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart' as publish;
+import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart'
+    as publish;
 import 'package:mobile_table_hopping/domain/params/my_publications/update_publication_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/my_publications/delete_publication_use_case.dart';
@@ -20,15 +21,19 @@ import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_pub
 import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetPublicationDetailUseCase extends Mock implements GetPublicationDetailUseCase {}
+class MockGetPublicationDetailUseCase extends Mock
+    implements GetPublicationDetailUseCase {}
 
-class MockUpdatePublicationUseCase extends Mock implements UpdatePublicationUseCase {}
+class MockUpdatePublicationUseCase extends Mock
+    implements UpdatePublicationUseCase {}
 
-class MockDeletePublicationUseCase extends Mock implements DeletePublicationUseCase {}
+class MockDeletePublicationUseCase extends Mock
+    implements DeletePublicationUseCase {}
 
 class MockGetGames extends Mock implements GetGamesUseCase {}
 
-class MockGetDeliveryMethods extends Mock implements GetDeliveryMethodsUseCase {}
+class MockGetDeliveryMethods extends Mock
+    implements GetDeliveryMethodsUseCase {}
 
 class MockImagePickerGateway extends Mock implements ImagePickerGateway {}
 
@@ -138,12 +143,14 @@ void main() {
     seed: () => const EditPublicationState(
       form: PublicationFormState(description: 'valid description'),
     ),
-    act: (bloc) => bloc.add(const EditPublicationEvent.descriptionChanged('abc')),
+    act: (bloc) =>
+        bloc.add(const EditPublicationEvent.descriptionChanged('abc')),
     expect: () => const [
       EditPublicationState(
         form: PublicationFormState(
           description: 'abc',
-          descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+          descriptionError:
+              'La descripción debe ser más detallada (min 10 caracteres).',
         ),
         hasChanges: true,
       ),
@@ -193,7 +200,8 @@ void main() {
       form: PublicationFormState(
         description: 'corto',
         price: 100,
-        descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+        descriptionError:
+            'La descripción debe ser más detallada (min 10 caracteres).',
         conditionError: 'Debes seleccionar el estado del juego',
       ),
     );

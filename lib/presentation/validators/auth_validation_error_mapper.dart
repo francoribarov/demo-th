@@ -16,7 +16,8 @@ class AuthValidationErrorMapper {
   }) {
     return switch (error) {
       AuthPasswordError.required => emptyMessage,
-      AuthPasswordError.tooShort => 'La contraseña debe tener al menos 8 caracteres.',
+      AuthPasswordError.tooShort =>
+        'La contraseña debe tener al menos 8 caracteres.',
       null => null,
     };
   }
@@ -32,7 +33,8 @@ class AuthValidationErrorMapper {
     AuthPasswordConfirmationError? error,
   ) {
     return switch (error) {
-      AuthPasswordConfirmationError.required => 'Repetí tu contraseña para continuar.',
+      AuthPasswordConfirmationError.required =>
+        'Repetí tu contraseña para continuar.',
       AuthPasswordConfirmationError.mismatch => 'Las contraseñas no coinciden.',
       null => null,
     };

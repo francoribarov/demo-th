@@ -324,9 +324,11 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       (error) => emit(
         state.copyWith(
           isSubmitting: false,
-          errorMessage: 'No se pudo enviar la solicitud de alquiler.: ${error.message}',
+          errorMessage:
+              'No se pudo enviar la solicitud de alquiler.: ${error.message}',
           feedbackNotice: FeedbackNotice(
-            message: 'No se pudo enviar la solicitud de alquiler.: ${error.message}',
+            message:
+                'No se pudo enviar la solicitud de alquiler.: ${error.message}',
             severity: FeedbackSeverity.error,
           ),
         ),

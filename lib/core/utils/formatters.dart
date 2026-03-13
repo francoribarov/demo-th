@@ -106,7 +106,9 @@ List<int> _extractIntegers(String s) {
   while (i < s.length) {
     if (s[i].compareTo('0') >= 0 && s[i].compareTo('9') <= 0) {
       var j = i;
-      while (j < s.length && s[j].compareTo('0') >= 0 && s[j].compareTo('9') <= 0) {
+      while (j < s.length &&
+          s[j].compareTo('0') >= 0 &&
+          s[j].compareTo('9') <= 0) {
         j++;
       }
       final n = int.tryParse(s.substring(i, j));

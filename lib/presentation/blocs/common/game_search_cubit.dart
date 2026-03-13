@@ -21,7 +21,9 @@ abstract class GameSearchState with _$GameSearchState {
 /// Cubit for loading and filtering the game catalog.
 class GameSearchCubit extends Cubit<GameSearchState> {
   /// Creates a [GameSearchCubit] with the given use case.
-  GameSearchCubit({required GetGamesUseCase getGames}) : _getGames = getGames, super(const GameSearchState());
+  GameSearchCubit({required GetGamesUseCase getGames})
+    : _getGames = getGames,
+      super(const GameSearchState());
 
   final GetGamesUseCase _getGames;
 
@@ -49,7 +51,9 @@ class GameSearchCubit extends Cubit<GameSearchState> {
     } else {
       emit(
         state.copyWith(
-          filteredGames: state.allGames.where((g) => g.title.toLowerCase().contains(q)).toList(),
+          filteredGames: state.allGames
+              .where((g) => g.title.toLowerCase().contains(q))
+              .toList(),
         ),
       );
     }

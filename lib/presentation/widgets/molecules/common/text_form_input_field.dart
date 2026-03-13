@@ -26,9 +26,13 @@ InputDecoration buildTextInputDecoration({
   bool? isDense,
   EdgeInsetsGeometry? contentPadding,
 }) {
-  final radius = variant == TextInputVisualVariant.surface ? AppTheme.radius2xl : AppTheme.radiusMd;
+  final radius = variant == TextInputVisualVariant.surface
+      ? AppTheme.radius2xl
+      : AppTheme.radiusMd;
 
-  final fillColor = variant == TextInputVisualVariant.surface ? AppColors.card : AppColors.background;
+  final fillColor = variant == TextInputVisualVariant.surface
+      ? AppColors.card
+      : AppColors.background;
 
   final borderColor = variant == TextInputVisualVariant.surface
       ? AppColors.gameBrown.withOpacityValue(0.2)
@@ -50,7 +54,9 @@ InputDecoration buildTextInputDecoration({
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
     isDense: isDense,
-    contentPadding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    contentPadding:
+        contentPadding ??
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     filled: true,
     fillColor: fillColor,
     border: border(borderColor),

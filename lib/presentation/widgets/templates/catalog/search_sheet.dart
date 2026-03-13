@@ -25,13 +25,15 @@ class SearchSheet extends StatefulWidget {
   final String initialQuery;
   final String? initialStartDate;
   final String? initialEndDate;
-  final void Function(String query, String? startDate, String? endDate) onSearch;
+  final void Function(String query, String? startDate, String? endDate)
+  onSearch;
   final VoidCallback onClear;
   final VoidCallback? onSurprise;
 
   static Future<void> show({
     required BuildContext context,
-    required void Function(String query, String? startDate, String? endDate) onSearch,
+    required void Function(String query, String? startDate, String? endDate)
+    onSearch,
     required VoidCallback onClear,
     String initialQuery = '',
     String? initialStartDate,
@@ -182,8 +184,14 @@ class _SearchSheetState extends State<SearchSheet> {
     final cubit = context.read<_SearchSheetCubit>();
     final now = DateTime.now();
     final initialDate = isStart
-        ? (cubit.state.startDate != null ? DateTime.tryParse(cubit.state.startDate!) : now) ?? now
-        : (cubit.state.endDate != null ? DateTime.tryParse(cubit.state.endDate!) : now) ?? now;
+        ? (cubit.state.startDate != null
+                  ? DateTime.tryParse(cubit.state.startDate!)
+                  : now) ??
+              now
+        : (cubit.state.endDate != null
+                  ? DateTime.tryParse(cubit.state.endDate!)
+                  : now) ??
+              now;
 
     final picked = await showDatePicker(
       context: context,
@@ -239,7 +247,8 @@ class _SearchSheetState extends State<SearchSheet> {
                   context.read<_SearchSheetCubit>().queryChanged('');
                   setState(() {});
                 },
-                onChanged: (v) => context.read<_SearchSheetCubit>().queryChanged(v),
+                onChanged: (v) =>
+                    context.read<_SearchSheetCubit>().queryChanged(v),
                 onSubmitted: (_) => _handleSearch(),
               ),
               const SizedBox(height: 16),
@@ -381,7 +390,8 @@ class _SearchSheetState extends State<SearchSheet> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () => context.read<_SearchSheetCubit>().clearDates(),
+                          onPressed: () =>
+                              context.read<_SearchSheetCubit>().clearDates(),
                           child: Text(
                             'Reiniciá las fechas',
                             style: AppTypography.labelSmall.copyWith(

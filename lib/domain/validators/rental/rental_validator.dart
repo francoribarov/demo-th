@@ -5,11 +5,15 @@ class RentalValidator {
   static const int minimumDays = 3;
   static const int maximumDays = 30;
 
-  static const String unavailablePublicationMessage = 'No se pudo cargar la información del juego.';
+  static const String unavailablePublicationMessage =
+      'No se pudo cargar la información del juego.';
   static const String invalidFormatMessage = 'Formato de fecha inválido.';
-  static const String minimumDaysMessage = 'El alquiler mínimo es de 3 días (ej: Lun a Jue).';
-  static const String maximumDaysMessage = 'El alquiler no puede superar los 30 días.';
-  static const String unavailableDatesMessage = 'Las fechas seleccionadas no están disponibles en su totalidad.';
+  static const String minimumDaysMessage =
+      'El alquiler mínimo es de 3 días (ej: Lun a Jue).';
+  static const String maximumDaysMessage =
+      'El alquiler no puede superar los 30 días.';
+  static const String unavailableDatesMessage =
+      'Las fechas seleccionadas no están disponibles en su totalidad.';
 
   /// Returns an error message if invalid, or null when valid.
   static String? validateDates({

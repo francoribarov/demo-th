@@ -26,7 +26,8 @@ abstract class EditPublicationState with _$EditPublicationState {
   const EditPublicationState._();
 
   /// The game associated with this publication.
-  Game? get selectedGame => allGames.where((g) => g.id == form.gameId).firstOrNull;
+  Game? get selectedGame =>
+      allGames.where((g) => g.id == form.gameId).firstOrNull;
 
   /// Returns whether the current step is valid for proceeding.
   bool get canProceed {
@@ -34,7 +35,8 @@ abstract class EditPublicationState with _$EditPublicationState {
       0 => form.hasValidData, // Data step
       1 => true, // Photos step (optional)
       2 => form.hasValidPrice, // Price step
-      EditPublicationBloc.maxStep => form.hasValidData && form.hasValidPrice, // Review
+      EditPublicationBloc.maxStep =>
+        form.hasValidData && form.hasValidPrice, // Review
       _ => false,
     };
   }

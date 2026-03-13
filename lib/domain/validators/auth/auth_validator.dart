@@ -23,7 +23,10 @@ class AuthValidator {
       return AuthEmailError.invalidFormat;
     }
     final domain = normalized.substring(atIndex + 1);
-    if (!domain.contains('.') || domain.startsWith('.') || domain.endsWith('.') || normalized.contains(' ')) {
+    if (!domain.contains('.') ||
+        domain.startsWith('.') ||
+        domain.endsWith('.') ||
+        normalized.contains(' ')) {
       return AuthEmailError.invalidFormat;
     }
     return null;

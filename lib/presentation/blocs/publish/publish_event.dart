@@ -25,11 +25,13 @@ abstract class PublishEvent with _$PublishEvent {
   const factory PublishEvent.gameIdChanged(String value) = _GameIdChanged;
 
   /// Updates the description input.
-  const factory PublishEvent.descriptionChanged(String value) = _DescriptionChanged;
+  const factory PublishEvent.descriptionChanged(String value) =
+      _DescriptionChanged;
 
   /// Updates the price input.
   const factory PublishEvent.priceChanged(int value) = _PriceChanged;
 
   /// Updates the condition input.
-  const factory PublishEvent.conditionChanged(PublicationCondition value) = _ConditionChanged;
+  const factory PublishEvent.conditionChanged(PublicationCondition value) =
+      _ConditionChanged;
 }
