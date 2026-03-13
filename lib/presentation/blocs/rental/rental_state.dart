@@ -17,7 +17,7 @@ abstract class RentalState with _$RentalState {
     @Default(false) bool isDelivery,
     @Default('') String deliveryAddress,
     @Default('') String deliveryComments,
-    @Default('mercadopago') String paymentMethod,
+    @Default('cash') String paymentMethod,
     @Default([]) List<String> selectedFoodBundles,
     @Default(false) bool isSubmitting,
     String? snackbarMessage,
