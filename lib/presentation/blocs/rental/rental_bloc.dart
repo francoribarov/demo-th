@@ -66,9 +66,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         ),
       ),
       (publication) => emit(
-        _updateCalculations(
-          state.copyWith(isLoading: false, publication: publication),
-        ),
+        state.copyWith(isLoading: false, publication: publication),
       ),
     );
   }
@@ -127,18 +125,16 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     }
 
     emit(
-      _updateCalculations(
-        state.copyWith(
-          startDate: newStart,
-          endDate: errorMessage == null ? newEnd : null,
-          errorMessage: null,
-          feedbackNotice: errorMessage != null
-              ? FeedbackNotice(
-                  message: errorMessage,
-                  severity: FeedbackSeverity.warning,
-                )
-              : feedbackNotice,
-        ),
+      state.copyWith(
+        startDate: newStart,
+        endDate: errorMessage == null ? newEnd : null,
+        errorMessage: null,
+        feedbackNotice: errorMessage != null
+            ? FeedbackNotice(
+                message: errorMessage,
+                severity: FeedbackSeverity.warning,
+              )
+            : feedbackNotice,
       ),
     );
   }
@@ -153,17 +149,15 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     );
 
     emit(
-      _updateCalculations(
-        state.copyWith(
-          endDate: errorMessage == null ? newEnd : null,
-          errorMessage: null,
-          feedbackNotice: errorMessage == null
-              ? null
-              : FeedbackNotice(
-                  message: errorMessage,
-                  severity: FeedbackSeverity.warning,
-                ),
-        ),
+      state.copyWith(
+        endDate: errorMessage == null ? newEnd : null,
+        errorMessage: null,
+        feedbackNotice: errorMessage == null
+            ? null
+            : FeedbackNotice(
+                message: errorMessage,
+                severity: FeedbackSeverity.warning,
+              ),
       ),
     );
   }
@@ -191,29 +185,25 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     );
 
     emit(
-      _updateCalculations(
-        state.copyWith(
-          startDate: errorMessage == null ? startStr : null,
-          endDate: errorMessage == null ? endStr : null,
-          errorMessage: null,
-          feedbackNotice: errorMessage == null
-              ? null
-              : FeedbackNotice(
-                  message: errorMessage,
-                  severity: FeedbackSeverity.warning,
-                ),
-        ),
+      state.copyWith(
+        startDate: errorMessage == null ? startStr : null,
+        endDate: errorMessage == null ? endStr : null,
+        errorMessage: null,
+        feedbackNotice: errorMessage == null
+            ? null
+            : FeedbackNotice(
+                message: errorMessage,
+                severity: FeedbackSeverity.warning,
+              ),
       ),
     );
   }
 
   void _onDeliveryChanged(_DeliveryChanged event, Emitter<RentalState> emit) {
     emit(
-      _updateCalculations(
-        state.copyWith(
-          isDelivery: event.isDelivery,
-          errorMessage: null,
-        ),
+      state.copyWith(
+        isDelivery: event.isDelivery,
+        errorMessage: null,
       ),
     );
   }
@@ -246,11 +236,9 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     Emitter<RentalState> emit,
   ) {
     emit(
-      _updateCalculations(
-        state.copyWith(
-          selectedFoodBundles: event.foodBundles,
-          errorMessage: null,
-        ),
+      state.copyWith(
+        selectedFoodBundles: event.foodBundles,
+        errorMessage: null,
       ),
     );
   }
@@ -366,25 +354,6 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         feedbackNotice: null,
         errorMessage: null,
       ),
-    );
-  }
-
-  RentalState _updateCalculations(RentalState state) {
-    final totals = RentalPricingCalculator.calculate(
-      pricePerDay: state.publication?.price ?? 0,
-      startDate: state.startDate,
-      endDate: state.endDate,
-      isDelivery: state.isDelivery,
-      foodBundlesCount: state.selectedFoodBundles.length,
-    );
-
-    return state.copyWith(
-      rentalDays: totals.rentalDays,
-      subtotal: totals.subtotal,
-      serviceFee: totals.serviceFee,
-      deliveryFee: totals.deliveryFee,
-      foodTotal: totals.foodTotal,
-      total: totals.total,
     );
   }
 }

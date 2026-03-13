@@ -14,6 +14,7 @@ import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publi
 import 'package:mobile_table_hopping/domain/usecase/publish/get_delivery_methods_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/upload/upload_images_use_case.dart';
 import 'package:mobile_table_hopping/domain/validators/publication/publication_validator.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/publication_form_state.dart';
 import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 import 'package:mobile_table_hopping/presentation/validators/publication_validation_error_mapper.dart';
 
@@ -136,26 +137,28 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
             state.copyWith(
               isLoading: false,
               publication: publication,
-              gameId: publication.gameId,
-              description: publication.description,
-              condition: publication.condition,
-              price: publication.price,
               images: publication.images.map((i) => i.url).toList(),
               deliveryMethods: publication.deliveryMethods,
               allGames: games,
               availableDeliveryMethods: mappedDeliveryMethods,
-              descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
-                PublicationValidator.validateDescription(
-                  publication.description,
+              form: PublicationFormState(
+                gameId: publication.gameId,
+                description: publication.description,
+                condition: publication.condition,
+                price: publication.price,
+                descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
+                  PublicationValidator.validateDescription(
+                    publication.description,
+                  ),
                 ),
-              ),
-              conditionError: PublicationValidationErrorMapper.mapConditionError(
-                PublicationValidator.validateCondition(
-                  publication.condition,
+                conditionError: PublicationValidationErrorMapper.mapConditionError(
+                  PublicationValidator.validateCondition(
+                    publication.condition,
+                  ),
                 ),
-              ),
-              priceError: PublicationValidationErrorMapper.mapPriceError(
-                PublicationValidator.validatePricing(publication.price),
+                priceError: PublicationValidationErrorMapper.mapPriceError(
+                  PublicationValidator.validatePricing(publication.price),
+                ),
               ),
             ),
           );
@@ -177,11 +180,13 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
   ) {
     emit(
       state.copyWith(
-        description: event.value,
-        descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
-          PublicationValidator.validateDescription(event.value),
-        ),
         hasChanges: true,
+        form: state.form.copyWith(
+          description: event.value,
+          descriptionError: PublicationValidationErrorMapper.mapDescriptionError(
+            PublicationValidator.validateDescription(event.value),
+          ),
+        ),
       ),
     );
   }
@@ -192,11 +197,13 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
   ) {
     emit(
       state.copyWith(
-        price: event.value,
-        priceError: PublicationValidationErrorMapper.mapPriceError(
-          PublicationValidator.validatePricing(event.value),
-        ),
         hasChanges: true,
+        form: state.form.copyWith(
+          price: event.value,
+          priceError: PublicationValidationErrorMapper.mapPriceError(
+            PublicationValidator.validatePricing(event.value),
+          ),
+        ),
       ),
     );
   }
@@ -207,11 +214,13 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
   ) {
     emit(
       state.copyWith(
-        condition: event.value,
-        conditionError: PublicationValidationErrorMapper.mapConditionError(
-          PublicationValidator.validateCondition(event.value),
-        ),
         hasChanges: true,
+        form: state.form.copyWith(
+          condition: event.value,
+          conditionError: PublicationValidationErrorMapper.mapConditionError(
+            PublicationValidator.validateCondition(event.value),
+          ),
+        ),
       ),
     );
   }
@@ -275,9 +284,9 @@ class EditPublicationBloc extends Bloc<EditPublicationEvent, EditPublicationStat
 
     final params = UpdatePublicationParams(
       id: state.publicationId!,
-      description: state.description,
-      condition: state.condition,
-      price: state.price,
+      description: state.form.description,
+      condition: state.form.condition,
+      price: state.form.price,
       images: state.images,
       deliveryMethodIds: state.deliveryMethods.map((m) => m.id ?? '').toList(),
     );

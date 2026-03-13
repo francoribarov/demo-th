@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/core/validators/optional_date_range_validator.dart';
+import 'package:mobile_table_hopping/domain/validators/optional_date_range_validator.dart';
 
 void main() {
   group('OptionalDateRangeValidator', () {

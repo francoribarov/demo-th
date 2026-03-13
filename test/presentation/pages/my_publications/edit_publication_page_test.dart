@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_detail.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/publication_form_state.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/my_publications/edit_publication_page.dart';
 import 'package:mocktail/mocktail.dart';
@@ -30,11 +31,13 @@ void main() {
   const invalidLoadedState = EditPublicationState(
     publicationId: 'p-1',
     publication: publication,
-    gameId: 'g-1',
-    description: 'corto',
-    condition: PublicationCondition.good,
-    descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
-    priceError: 'El precio debe ser mayor a 0.',
+    form: PublicationFormState(
+      gameId: 'g-1',
+      description: 'corto',
+      condition: PublicationCondition.good,
+      descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+      priceError: 'El precio debe ser mayor a 0.',
+    ),
   );
 
   setUpAll(() {

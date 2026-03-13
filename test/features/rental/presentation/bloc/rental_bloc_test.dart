@@ -233,12 +233,12 @@ void main() {
       skip: 1, // Skip start date change
       expect: () => [
         isA<RentalState>()
-            .having((s) => s.rentalDays, 'rentalDays', 3)
-            .having((s) => s.subtotal, 'subtotal', 300.0) // 100 * 3
-            .having((s) => s.serviceFee, 'serviceFee', 30) // 300 * 0.1
-            .having((s) => s.foodTotal, 'foodTotal', 0)
-            .having((s) => s.deliveryFee, 'deliveryFee', 0)
-            .having((s) => s.total, 'total', 330.0), // 300 + 30
+            .having((s) => s.pricing.rentalDays, 'rentalDays', 3)
+            .having((s) => s.pricing.subtotal, 'subtotal', 300.0) // 100 * 3
+            .having((s) => s.pricing.serviceFee, 'serviceFee', 30) // 300 * 0.1
+            .having((s) => s.pricing.foodTotal, 'foodTotal', 0)
+            .having((s) => s.pricing.deliveryFee, 'deliveryFee', 0)
+            .having((s) => s.pricing.total, 'total', 330.0), // 300 + 30
       ],
     );
 
@@ -249,17 +249,13 @@ void main() {
         publication: tPublication,
         startDate: '2026-06-01',
         endDate: '2026-06-03',
-        rentalDays: 3,
-        subtotal: 300,
-        serviceFee: 30,
-        total: 330,
       ),
       act: (bloc) => bloc.add(const RentalEvent.deliveryChanged(isDelivery: true)),
       expect: () => [
         isA<RentalState>()
             .having((s) => s.isDelivery, 'isDelivery', true)
-            .having((s) => s.deliveryFee, 'deliveryFee', 150)
-            .having((s) => s.total, 'total', 480.0), // 330 + 150
+            .having((s) => s.pricing.deliveryFee, 'deliveryFee', 150)
+            .having((s) => s.pricing.total, 'total', 480.0), // 330 + 150
       ],
     );
 
@@ -270,10 +266,6 @@ void main() {
         publication: tPublication,
         startDate: '2026-06-01',
         endDate: '2026-06-03',
-        rentalDays: 3,
-        subtotal: 300,
-        serviceFee: 30,
-        total: 330,
       ),
       act: (bloc) => bloc.add(
         const RentalEvent.foodBundlesChanged(foodBundles: ['classic', 'sweet']),
@@ -281,8 +273,8 @@ void main() {
       expect: () => [
         isA<RentalState>()
             .having((s) => s.selectedFoodBundles.length, 'bundles count', 2)
-            .having((s) => s.foodTotal, 'foodTotal', 500) // 2 * 250
-            .having((s) => s.total, 'total', 830.0), // 330 + 500
+            .having((s) => s.pricing.foodTotal, 'foodTotal', 500) // 2 * 250
+            .having((s) => s.pricing.total, 'total', 830.0), // 330 + 500
       ],
     );
   });

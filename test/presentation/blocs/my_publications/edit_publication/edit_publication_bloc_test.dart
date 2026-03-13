@@ -15,6 +15,7 @@ import 'package:mobile_table_hopping/domain/usecase/my_publications/get_publicat
 import 'package:mobile_table_hopping/domain/usecase/my_publications/update_publication_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/publish/get_delivery_methods_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/upload/upload_images_use_case.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/publication_form_state.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/presentation/gateway/image_picker_gateway.dart';
 import 'package:mocktail/mocktail.dart';
@@ -135,13 +136,15 @@ void main() {
     'descriptionChanged sets descriptionError when description is too short',
     build: buildBloc,
     seed: () => const EditPublicationState(
-      description: 'valid description',
+      form: PublicationFormState(description: 'valid description'),
     ),
     act: (bloc) => bloc.add(const EditPublicationEvent.descriptionChanged('abc')),
     expect: () => const [
       EditPublicationState(
-        description: 'abc',
-        descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+        form: PublicationFormState(
+          description: 'abc',
+          descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+        ),
         hasChanges: true,
       ),
     ],
@@ -150,11 +153,15 @@ void main() {
   blocTest<EditPublicationBloc, EditPublicationState>(
     'priceChanged sets priceError when price is not positive',
     build: buildBloc,
-    seed: () => const EditPublicationState(price: 100),
+    seed: () => const EditPublicationState(
+      form: PublicationFormState(price: 100),
+    ),
     act: (bloc) => bloc.add(const EditPublicationEvent.priceChanged(0)),
     expect: () => const [
       EditPublicationState(
-        priceError: 'El precio debe ser mayor a 0.',
+        form: PublicationFormState(
+          priceError: 'El precio debe ser mayor a 0.',
+        ),
         hasChanges: true,
       ),
     ],
@@ -164,14 +171,18 @@ void main() {
     'conditionChanged clears conditionError when a condition is selected',
     build: buildBloc,
     seed: () => const EditPublicationState(
-      conditionError: 'Debes seleccionar el estado del juego',
+      form: PublicationFormState(
+        conditionError: 'Debes seleccionar el estado del juego',
+      ),
     ),
     act: (bloc) => bloc.add(
       const EditPublicationEvent.conditionChanged(PublicationCondition.likeNew),
     ),
     expect: () => const [
       EditPublicationState(
-        condition: PublicationCondition.likeNew,
+        form: PublicationFormState(
+          condition: PublicationCondition.likeNew,
+        ),
         hasChanges: true,
       ),
     ],
@@ -179,15 +190,19 @@ void main() {
 
   test('canProceed requires valid data on step 0', () {
     const invalidState = EditPublicationState(
-      description: 'corto',
-      price: 100,
-      descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
-      conditionError: 'Debes seleccionar el estado del juego',
+      form: PublicationFormState(
+        description: 'corto',
+        price: 100,
+        descriptionError: 'La descripción debe ser más detallada (min 10 caracteres).',
+        conditionError: 'Debes seleccionar el estado del juego',
+      ),
     );
     const validState = EditPublicationState(
-      description: 'Descripción suficientemente larga.',
-      condition: PublicationCondition.good,
-      price: 100,
+      form: PublicationFormState(
+        description: 'Descripción suficientemente larga.',
+        condition: PublicationCondition.good,
+        price: 100,
+      ),
     );
 
     expect(invalidState.canProceed, isFalse);
@@ -197,21 +212,27 @@ void main() {
   test('canProceed requires valid price on step 2 and review', () {
     const invalidPriceStep = EditPublicationState(
       currentStep: 2,
-      description: 'Descripción suficientemente larga.',
-      condition: PublicationCondition.good,
-      priceError: 'El precio debe ser mayor a 0.',
+      form: PublicationFormState(
+        description: 'Descripción suficientemente larga.',
+        condition: PublicationCondition.good,
+        priceError: 'El precio debe ser mayor a 0.',
+      ),
     );
     const validPriceStep = EditPublicationState(
       currentStep: 2,
-      description: 'Descripción suficientemente larga.',
-      condition: PublicationCondition.good,
-      price: 150,
+      form: PublicationFormState(
+        description: 'Descripción suficientemente larga.',
+        condition: PublicationCondition.good,
+        price: 150,
+      ),
     );
     const invalidReviewStep = EditPublicationState(
       currentStep: EditPublicationBloc.maxStep,
-      description: 'Descripción suficientemente larga.',
-      condition: PublicationCondition.good,
-      priceError: 'El precio debe ser mayor a 0.',
+      form: PublicationFormState(
+        description: 'Descripción suficientemente larga.',
+        condition: PublicationCondition.good,
+        priceError: 'El precio debe ser mayor a 0.',
+      ),
     );
 
     expect(invalidPriceStep.canProceed, isFalse);
@@ -238,13 +259,13 @@ void main() {
           .having((s) => s.isLoading, 'isLoading', false)
           .having((s) => s.publicationId, 'publicationId', 'p-invalid')
           .having(
-            (s) => s.descriptionError,
+            (s) => s.form.descriptionError,
             'descriptionError',
             'La descripción debe ser más detallada (min 10 caracteres).',
           )
-          .having((s) => s.conditionError, 'conditionError', isNull)
+          .having((s) => s.form.conditionError, 'conditionError', isNull)
           .having(
-            (s) => s.priceError,
+            (s) => s.form.priceError,
             'priceError',
             'El precio debe ser mayor a 0.',
           ),
@@ -281,9 +302,11 @@ void main() {
     },
     seed: () => const EditPublicationState(
       publicationId: 'p-1',
-      description: 'new desc',
-      condition: PublicationCondition.good,
-      price: 200,
+      form: PublicationFormState(
+        description: 'new desc',
+        condition: PublicationCondition.good,
+        price: 200,
+      ),
       images: ['https://img.test/new.png'],
       deliveryMethods: [
         DeliveryMethod(
@@ -297,9 +320,11 @@ void main() {
     expect: () => const [
       EditPublicationState(
         publicationId: 'p-1',
-        description: 'new desc',
-        condition: PublicationCondition.good,
-        price: 200,
+        form: PublicationFormState(
+          description: 'new desc',
+          condition: PublicationCondition.good,
+          price: 200,
+        ),
         images: ['https://img.test/new.png'],
         deliveryMethods: [
           DeliveryMethod(
@@ -312,9 +337,11 @@ void main() {
       ),
       EditPublicationState(
         publicationId: 'p-1',
-        description: 'new desc',
-        condition: PublicationCondition.good,
-        price: 200,
+        form: PublicationFormState(
+          description: 'new desc',
+          condition: PublicationCondition.good,
+          price: 200,
+        ),
         images: ['https://img.test/new.png'],
         deliveryMethods: [
           DeliveryMethod(

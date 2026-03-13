@@ -4,13 +4,16 @@ import 'package:go_router/go_router.dart';
 
 import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
+import 'package:mobile_table_hopping/domain/validators/auth/auth_validator.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
-import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/login/login_cubit.dart';
+import 'package:mobile_table_hopping/presentation/validators/auth_validation_error_mapper.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Login screen for email/password authentication.
 class LoginPage extends StatefulWidget {
@@ -32,15 +35,11 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordFocusNode = FocusNode();
 
   bool _isPasswordVisible = false;
-  bool _didClearErrors = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_didClearErrors) {
-      _didClearErrors = true;
-      context.read<AuthBloc>().add(const AuthEvent.clearErrors());
-    }
+  void initState() {
+    super.initState();
+    context.read<AuthBloc>().add(const AuthEvent.clearErrors());
   }
 
   @override
@@ -52,12 +51,12 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _submitLogin({required bool isSubmitting}) {
+  Future<void> _submitLogin({required bool isSubmitting}) async {
     if (isSubmitting) return;
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
     FocusScope.of(context).unfocus();
-    context.read<AuthBloc>().add(const AuthEvent.loginSubmitted());
+    await context.read<LoginCubit>().submit();
   }
 
   @override
@@ -86,10 +85,21 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context, constraints) {
               final horizontalPadding = constraints.maxWidth >= 640 ? constraints.maxWidth * 0.18 : 24.0;
 
-              return BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  final isSubmitting = state.isSubmittingLogin;
-                  final errorMessage = state.loginErrorMessage ?? state.errorMessage;
+              return BlocConsumer<LoginCubit, LoginState>(
+                listenWhen: (previous, current) =>
+                    current.feedbackNotice != null && previous.feedbackNotice != current.feedbackNotice,
+                listener: (context, state) {
+                  final notice = state.feedbackNotice;
+                  if (notice == null) return;
+                  FeedbackMessenger.showError(
+                    context,
+                    message: notice.message,
+                  );
+                  context.read<LoginCubit>().clearNotice();
+                },
+                builder: (context, loginState) {
+                  final isSubmitting = loginState.isSubmitting;
+                  final errorMessage = loginState.errorMessage;
                   final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
                   return SingleChildScrollView(
@@ -137,10 +147,12 @@ class _LoginPageState extends State<LoginPage> {
                                   autocorrect: false,
                                   labelText: 'Email',
                                   hintText: 'tu@email.com',
-                                  validator: (value) => validateEmail(value ?? ''),
-                                  onChanged: (email) => context.read<AuthBloc>().add(
-                                    AuthEvent.loginEmailChanged(email),
+                                  validator: (value) => AuthValidationErrorMapper.mapEmailError(
+                                    AuthValidator.validateEmail(
+                                      value ?? '',
+                                    ),
                                   ),
+                                  onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
                                   onFieldSubmitted: (_) {
                                     _passwordFocusNode.requestFocus();
                                   },
@@ -153,7 +165,9 @@ class _LoginPageState extends State<LoginPage> {
                                   enabled: !isSubmitting,
                                   obscureText: !_isPasswordVisible,
                                   textInputAction: TextInputAction.done,
-                                  autofillHints: const [AutofillHints.password],
+                                  autofillHints: const [
+                                    AutofillHints.password,
+                                  ],
                                   autocorrect: false,
                                   enableSuggestions: false,
                                   labelText: 'Contraseña',
@@ -174,12 +188,12 @@ class _LoginPageState extends State<LoginPage> {
                                       _isPasswordVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                                     ),
                                   ),
-                                  validator: (value) => validatePasswordMin8(value ?? ''),
-                                  onChanged: (password) => context.read<AuthBloc>().add(
-                                    AuthEvent.loginPasswordChanged(
-                                      password,
+                                  validator: (value) => AuthValidationErrorMapper.mapPasswordError(
+                                    AuthValidator.validatePassword(
+                                      value ?? '',
                                     ),
                                   ),
+                                  onChanged: (password) => context.read<LoginCubit>().passwordChanged(password),
                                   onFieldSubmitted: (_) => _submitLogin(isSubmitting: isSubmitting),
                                 ),
                               ],

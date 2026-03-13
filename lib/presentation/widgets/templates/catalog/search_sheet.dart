@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/core/validators/optional_date_range_validator.dart';
+import 'package:mobile_table_hopping/domain/validators/optional_date_range_validator.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/date_picker_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/search_input_field.dart';

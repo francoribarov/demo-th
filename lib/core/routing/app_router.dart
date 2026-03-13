@@ -7,7 +7,10 @@ import 'package:mobile_table_hopping/core/widgets/templates/app_scaffold.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/login/login_cubit.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/register/register_cubit.dart';
 import 'package:mobile_table_hopping/presentation/blocs/catalog/catalog_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/game_search_cubit.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/my_publications_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
@@ -30,6 +33,7 @@ import 'package:mobile_table_hopping/presentation/pages/publication_details/publ
 import 'package:mobile_table_hopping/presentation/pages/publish/publish_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Route paths for type-safe navigation.
 class AppRoutes {
@@ -111,16 +115,13 @@ class AppRoutes {
   static String publicationDetailsPath(String id) => '/publications/$id';
 
   /// Rules location.
-  static String gameRulesPath(String id) =>
-      '${publicationDetailsPath(id)}/rules';
+  static String gameRulesPath(String id) => '${publicationDetailsPath(id)}/rules';
 
   /// Reviews location.
-  static String gameReviewsPath(String id) =>
-      '${publicationDetailsPath(id)}/reviews';
+  static String gameReviewsPath(String id) => '${publicationDetailsPath(id)}/reviews';
 
   /// Owner location.
-  static String gameOwnerPath(String id) =>
-      '${publicationDetailsPath(id)}/owner';
+  static String gameOwnerPath(String id) => '${publicationDetailsPath(id)}/owner';
 
   /// Rental location.
   static String rentalPath(String id) => '${publicationDetailsPath(id)}/rental';
@@ -181,27 +182,19 @@ class AppRouter {
   static final _profileNavigatorKey = GlobalKey<NavigatorState>();
 
   static bool _isProtectedLocation(String location) {
-    if (location == AppRoutes.publish ||
-        location == AppRoutes.myPublications ||
-        location == AppRoutes.profile) {
+    if (location == AppRoutes.publish || location == AppRoutes.myPublications || location == AppRoutes.profile) {
       return true;
     }
 
     final segments = Uri(path: location).pathSegments;
 
-    final isRentalRoute =
-        segments.length == 3 &&
-        segments.first == 'publications' &&
-        segments.last == 'rental';
+    final isRentalRoute = segments.length == 3 && segments.first == 'publications' && segments.last == 'rental';
 
     if (isRentalRoute) {
       return true;
     }
 
-    final isEditRoute =
-        segments.length == 3 &&
-        segments.first == 'my-publications' &&
-        segments.last == 'edit';
+    final isEditRoute = segments.length == 3 && segments.first == 'my-publications' && segments.last == 'edit';
 
     return isEditRoute;
   }
@@ -235,11 +228,21 @@ class AppRouter {
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return AppScaffold(
-            navigationShell: navigationShell,
-            onItemTapped: (index) {
-              navigationShell.goBranch(index);
+          return BlocConsumer<AuthBloc, AuthState>(
+            listenWhen: (previous, current) =>
+                current.feedbackNotice != null && previous.feedbackNotice != current.feedbackNotice,
+            listener: (context, authState) {
+              final notice = authState.feedbackNotice;
+              if (notice == null) return;
+              FeedbackMessenger.showError(context, message: notice.message);
+              context.read<AuthBloc>().add(const AuthEvent.clearErrors());
             },
+            builder: (context, _) => AppScaffold(
+              navigationShell: navigationShell,
+              onItemTapped: (index) {
+                navigationShell.goBranch(index);
+              },
+            ),
           );
         },
         branches: [
@@ -268,14 +271,10 @@ class AppRouter {
                   child: MultiBlocProvider(
                     providers: [
                       BlocProvider<MyPublicationsBloc>(
-                        create: (_) =>
-                            getIt<MyPublicationsBloc>()
-                              ..add(const MyPublicationsEvent.started()),
+                        create: (_) => getIt<MyPublicationsBloc>()..add(const MyPublicationsEvent.started()),
                       ),
                       BlocProvider<RentalRequestsBloc>(
-                        create: (_) =>
-                            getIt<RentalRequestsBloc>()
-                              ..add(const RentalRequestsEvent.started()),
+                        create: (_) => getIt<RentalRequestsBloc>()..add(const RentalRequestsEvent.started()),
                       ),
                     ],
                     child: const MyPublicationsPage(),
@@ -294,9 +293,10 @@ class AppRouter {
                   child: MultiBlocProvider(
                     providers: [
                       BlocProvider<PublishBloc>(
-                        create: (_) =>
-                            getIt<PublishBloc>()
-                              ..add(const PublishEvent.started()),
+                        create: (_) => getIt<PublishBloc>()..add(const PublishEvent.started()),
+                      ),
+                      BlocProvider<GameSearchCubit>(
+                        create: (_) => getIt<GameSearchCubit>(),
                       ),
                       BlocProvider<DeliveryMethodBloc>(
                         create: (_) => getIt<DeliveryMethodBloc>(),
@@ -317,8 +317,7 @@ class AppRouter {
               GoRoute(
                 path: AppRoutes.profile,
                 name: AppRoutes.profileName,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: ProfilePage()),
+                pageBuilder: (context, state) => const NoTransitionPage(child: ProfilePage()),
               ),
             ],
           ),
@@ -330,7 +329,10 @@ class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final from = state.uri.queryParameters['from'];
-          return LoginPage(from: from);
+          return BlocProvider<LoginCubit>(
+            create: (_) => getIt<LoginCubit>(),
+            child: LoginPage(from: from),
+          );
         },
       ),
       GoRoute(
@@ -339,7 +341,10 @@ class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final from = state.uri.queryParameters['from'];
-          return RegisterPage(from: from);
+          return BlocProvider<RegisterCubit>(
+            create: (_) => getIt<RegisterCubit>(),
+            child: RegisterPage(from: from),
+          );
         },
       ),
       // Routes outside of shell (no bottom nav)
@@ -350,9 +355,7 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return BlocProvider<PublicationDetailsBloc>(
-            create: (_) =>
-                getIt<PublicationDetailsBloc>()
-                  ..add(PublicationDetailsEvent.started(publicationId: id)),
+            create: (_) => getIt<PublicationDetailsBloc>()..add(PublicationDetailsEvent.started(publicationId: id)),
             child: PublicationDetailsPage(publicationId: id),
           );
         },
@@ -364,9 +367,7 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameRulesBloc>(
-                create: (_) =>
-                    getIt<GameRulesBloc>()
-                      ..add(GameRulesEvent.started(gameId: id)),
+                create: (_) => getIt<GameRulesBloc>()..add(GameRulesEvent.started(gameId: id)),
                 child: GameRulesPage(gameId: id),
               );
             },
@@ -378,9 +379,7 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameReviewsBloc>(
-                create: (_) =>
-                    getIt<GameReviewsBloc>()
-                      ..add(GameReviewsEvent.started(gameId: id)),
+                create: (_) => getIt<GameReviewsBloc>()..add(GameReviewsEvent.started(gameId: id)),
                 child: GameReviewsPage(gameId: id),
               );
             },
@@ -392,9 +391,7 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<UserProfileBloc>(
-                create: (_) =>
-                    getIt<UserProfileBloc>()
-                      ..add(UserProfileEvent.started(gameId: id)),
+                create: (_) => getIt<UserProfileBloc>()..add(UserProfileEvent.started(gameId: id)),
                 child: UserProfilePage(gameId: id),
               );
             },
@@ -439,9 +436,7 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return BlocProvider<EditPublicationBloc>(
-            create: (_) =>
-                getIt<EditPublicationBloc>()
-                  ..add(EditPublicationEvent.started(publicationId: id)),
+            create: (_) => getIt<EditPublicationBloc>()..add(EditPublicationEvent.started(publicationId: id)),
             child: EditPublicationPage(publicationId: id),
           );
         },
@@ -514,8 +509,7 @@ extension GoRouterExtension on BuildContext {
   void goHome() => go(AppRoutes.home);
 
   /// Navigate to edit a publication.
-  void goToEditPublication(String id) =>
-      push(AppRoutes.editPublicationPath(id));
+  void goToEditPublication(String id) => push(AppRoutes.editPublicationPath(id));
 
   /// Safe back navigation for deep links (no back stack).
   void popOrGo(String location) {

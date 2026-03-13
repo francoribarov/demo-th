@@ -77,8 +77,8 @@ class EditPublicationPage extends StatelessWidget {
             index: state.currentStep,
             children: [
               EditDataStep(
-                description: state.description,
-                condition: state.condition,
+                description: state.form.description,
+                condition: state.form.condition,
                 conditions: PublicationCondition.values,
                 selectedGame: state.selectedGame,
                 onDescriptionChanged: (v) => context.read<EditPublicationBloc>().add(
@@ -87,8 +87,8 @@ class EditPublicationPage extends StatelessWidget {
                 onConditionChanged: (v) => context.read<EditPublicationBloc>().add(
                   EditPublicationEvent.conditionChanged(v),
                 ),
-                descriptionError: state.descriptionError,
-                conditionError: state.conditionError,
+                descriptionError: state.form.descriptionError,
+                conditionError: state.form.conditionError,
               ),
               EditPhotosStep(
                 images: state.images,
@@ -101,22 +101,22 @@ class EditPublicationPage extends StatelessWidget {
                 ),
               ),
               EditPriceStep(
-                price: state.price,
+                price: state.form.price,
                 deliveryMethods: state.deliveryMethods,
                 availableDeliveryMethods: state.availableDeliveryMethods,
                 onPriceChanged: (v) => context.read<EditPublicationBloc>().add(
                   EditPublicationEvent.priceChanged(v),
                 ),
-                priceError: state.priceError,
+                priceError: state.form.priceError,
                 onDeliveryMethodsChanged: (v) => context.read<EditPublicationBloc>().add(
                   EditPublicationEvent.deliveryMethodsChanged(v),
                 ),
               ),
               EditReviewStep(
                 selectedGame: state.selectedGame,
-                description: state.description,
-                price: state.price,
-                condition: state.condition,
+                description: state.form.description,
+                price: state.form.price,
+                condition: state.form.condition,
                 images: state.images,
               ),
             ],

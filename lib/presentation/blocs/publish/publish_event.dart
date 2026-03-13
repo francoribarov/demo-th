@@ -25,19 +25,11 @@ abstract class PublishEvent with _$PublishEvent {
   const factory PublishEvent.gameIdChanged(String value) = _GameIdChanged;
 
   /// Updates the description input.
-  const factory PublishEvent.descriptionChanged(String value) =
-      _DescriptionChanged;
+  const factory PublishEvent.descriptionChanged(String value) = _DescriptionChanged;
 
   /// Updates the price input.
   const factory PublishEvent.priceChanged(int value) = _PriceChanged;
 
   /// Updates the condition input.
-  const factory PublishEvent.conditionChanged(PublicationCondition value) =
-      _ConditionChanged;
-
-  /// Loads the list of available games.
-  const factory PublishEvent.loadGames() = _LoadGames;
-
-  /// Filters the list of games by query.
-  const factory PublishEvent.searchGames(String query) = _SearchGames;
+  const factory PublishEvent.conditionChanged(PublicationCondition value) = _ConditionChanged;
 }
