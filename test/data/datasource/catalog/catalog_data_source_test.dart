@@ -28,7 +28,7 @@ void main() {
     'owner_id': 'owner-1',
     'game_id': 'game-1',
     'title': 'Catan',
-    'condition': 'new',
+    'condition': 'like_new',
     'price': 1000.0,
     'created_at': '2026-01-01T00:00:00.000Z',
     'deposit': 200.0,
@@ -48,7 +48,7 @@ void main() {
   const publicationListItemJson = {
     'id': 'pub-2',
     'description': 'Great game',
-    'condition': 'new',
+    'condition': 'like_new',
     'price': 1200,
     'images': [
       {'url': 'img-1', 'type': 'gallery'},

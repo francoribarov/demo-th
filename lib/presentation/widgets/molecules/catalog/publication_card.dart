@@ -136,10 +136,14 @@ class PublicationCard extends StatelessWidget {
                         color: AppColors.gameBrown,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        publication.game.players,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                      Flexible(
+                        child: Text(
+                          publication.game.players,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -150,10 +154,14 @@ class PublicationCard extends StatelessWidget {
                         color: AppColors.gameBrown,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        '${publication.game.duration} min',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                      Flexible(
+                        child: Text(
+                          '${publication.game.duration} min',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -165,10 +173,15 @@ class PublicationCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        CurrencyFormatter.formatUYU(publication.price),
-                        style: AppTypography.price,
+                      Flexible(
+                        child: Text(
+                          CurrencyFormatter.formatUYU(publication.price),
+                          style: AppTypography.price,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Text(
                         '/día',
                         style: AppTypography.bodySmall.copyWith(
@@ -250,11 +263,15 @@ class PublicationCardHorizontal extends StatelessWidget {
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.textTertiary,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       CurrencyFormatter.formatUYU(publication.price),
                       style: AppTypography.price.copyWith(fontSize: 14),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

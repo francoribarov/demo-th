@@ -73,7 +73,11 @@ class _PublishGamePageState extends State<PublishGamePage> {
                         gameId: publishState.gameId,
                         description: publishState.description,
                         condition: publishState.condition,
-                        conditions: PublicationCondition.values,
+                        conditions: const [
+                          PublicationCondition.likeNew,
+                          PublicationCondition.good,
+                          PublicationCondition.fair,
+                        ],
                         allGames: publishState.allGames,
                         filteredGames: publishState.filteredGames,
                         isLoadingGames: publishState.isLoadingGames,

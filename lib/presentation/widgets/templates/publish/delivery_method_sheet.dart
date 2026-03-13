@@ -4,10 +4,8 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/numeric_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/time_picker_field.dart';
 
 class DeliveryMethodSheet extends StatefulWidget {
   const DeliveryMethodSheet({required this.onAdd, super.key});
@@ -20,12 +18,9 @@ class DeliveryMethodSheet extends StatefulWidget {
 
 class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
   DeliveryType _selectedType = DeliveryType.pickupInPerson;
-  int _price = 0;
-  String? _initPickupTime;
-  String? _finishPickupTime;
 
   final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _addressNameController = TextEditingController();
+  final TextEditingController _aliasController = TextEditingController();
   final TextEditingController _addressNumberController =
       TextEditingController();
   final TextEditingController _notesController = TextEditingController();
@@ -33,10 +28,50 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
   @override
   void dispose() {
     _addressController.dispose();
-    _addressNameController.dispose();
+    _aliasController.dispose();
     _addressNumberController.dispose();
     _notesController.dispose();
     super.dispose();
+  }
+
+  void _showToast(BuildContext context, String message) {
+    final overlay = Overlay.of(context);
+    late OverlayEntry entry;
+
+    entry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppTheme.spacing2xl,
+        left: AppTheme.spacingLg,
+        right: AppTheme.spacingLg,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.spacingLg,
+              vertical: AppTheme.spacingMd,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.gameBrown,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              boxShadow: AppTheme.shadowSm,
+            ),
+            child: Text(
+              message,
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.background,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(entry);
+    Future.delayed(const Duration(seconds: 3), () {
+      if (entry.mounted) {
+        entry.remove();
+      }
+    });
   }
 
   @override
@@ -44,24 +79,63 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16,
-        right: 16,
-        top: 24,
+        left: AppTheme.spacingLg,
+        right: AppTheme.spacingLg,
+        top: AppTheme.spacing2xl,
       ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Agregar método de entrega', style: AppTypography.titleLarge),
-            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Agregar método de entrega',
+                    style: AppTypography.titleLarge.copyWith(
+                      color: AppColors.gameBrown,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () =>
+                      Navigator.of(context, rootNavigator: true).pop(),
+                  icon: const Icon(Icons.close, color: AppColors.gameBrown),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  style: IconButton.styleFrom(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingMd),
+            Text(
+              'La dirección únicamente se compartirá con el alquilador o delivery para retirar y entregar el juego',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textTertiary,
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacing2xl),
             Text('Tipo de entrega', style: AppTypography.titleSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingMd),
             ...DeliveryType.values.map((type) {
               final isSelected = _selectedType == type;
               return SelectableInputCard(
-                onTap: () => setState(() => _selectedType = type),
-                margin: const EdgeInsets.only(bottom: 8),
+                onTap: () {
+                  if (type == DeliveryType.delivery) {
+                    _showToast(
+                      context,
+                      'Próximamente: Aún no se puede implementar este tipo de entrega.',
+                    );
+                    return;
+                  }
+                  setState(() => _selectedType = type);
+                },
+                margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
                 isSelected: isSelected,
                 indicatorMode: SelectableInputIndicatorMode.check,
                 leading: Text(type.icon, style: const TextStyle(fontSize: 24)),
@@ -71,75 +145,27 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
                 unselectedTextColor: AppColors.gameBrown,
               );
             }),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.spacingLg),
             Text('Dirección', style: AppTypography.titleSmall),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingMd),
             TextFormInputField(
               controller: _addressController,
-              labelText: 'Calle y esquina',
-              hintText: 'Ej: Av. 18 de Julio y Ejido',
+              hintText: 'Calle principal',
             ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormInputField(
-                    controller: _addressNumberController,
-                    labelText: 'Número / Apto',
-                    hintText: '1234 Apto 101',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextFormInputField(
-                    controller: _addressNameController,
-                    labelText: 'Nombre lugar',
-                    hintText: 'Ej: Casa, Oficina',
-                  ),
-                ),
-              ],
+            const SizedBox(height: AppTheme.spacingMd),
+            TextFormInputField(
+              controller: _addressNumberController,
+              hintText: 'Número de puerta',
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingMd),
             TextFormInputField(
               controller: _notesController,
-              labelText: 'Indicaciones adicionales (opcional)',
-              hintText: 'Tocar timbre, dejar en recepción...',
-              maxLines: 2,
+              hintText: 'Indicaciones adicionales (opcional)',
             ),
-            const SizedBox(height: 24),
-            Text(
-              'Costo de entrega (opcional)',
-              style: AppTypography.titleSmall,
-            ),
-            const SizedBox(height: 12),
-            NumericInputField(
-              initialValue: '',
-              prefixText: r'$ ',
-              hintText: '0 (gratis)',
-              onChangedValue: (value) => _price = value ?? 0,
-            ),
-            const SizedBox(height: 24),
-            Text('Horario de retiro/entrega', style: AppTypography.titleSmall),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TimePickerField(
-                    label: 'Desde',
-                    value: _initPickupTime,
-                    onChanged: (time) => setState(() => _initPickupTime = time),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TimePickerField(
-                    label: 'Hasta',
-                    value: _finishPickupTime,
-                    onChanged: (time) =>
-                        setState(() => _finishPickupTime = time),
-                  ),
-                ),
-              ],
+            const SizedBox(height: AppTheme.spacingMd),
+            TextFormInputField(
+              controller: _aliasController,
+              hintText: 'Alias',
             ),
             const SizedBox(height: AppTheme.spacing2xl),
             SizedBox(
@@ -150,16 +176,13 @@ class _DeliveryMethodSheetState extends State<DeliveryMethodSheet> {
                   widget.onAdd(
                     DeliveryMethod(
                       deliveryType: _selectedType,
-                      price: _price,
                       address: _addressController.text,
-                      addressName: _addressNameController.text,
+                      addressName: _aliasController.text,
                       addressNumber: _addressNumberController.text,
                       additionalNotes: _notesController.text,
-                      initPickupTime: _initPickupTime,
-                      finishPickupTime: _finishPickupTime,
                     ),
                   );
-                  Navigator.of(context).pop();
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
             ),

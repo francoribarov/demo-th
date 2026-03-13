@@ -47,7 +47,7 @@ void main() {
     ownerId: 'owner1',
     gameId: 'g1',
     title: 'Test Publication',
-    condition: PublicationCondition.newCondition,
+    condition: PublicationCondition.likeNew,
     price: 100,
     images: ['image.jpg'],
     createdAt: DateTime(2023),

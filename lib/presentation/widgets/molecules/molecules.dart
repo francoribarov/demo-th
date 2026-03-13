@@ -16,6 +16,7 @@ export 'common/sliver_page_app_bar.dart';
 export 'common/text_form_input_field.dart';
 export 'common/text_input_field.dart';
 export 'common/time_picker_field.dart';
+export 'common/wizard_navigation_bar.dart';
 export 'my_publications/rental_request_card.dart';
 export 'publication_details/game_recommendation_card.dart';
 export 'publication_details/game_review_card.dart';
