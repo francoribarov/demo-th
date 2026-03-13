@@ -3,7 +3,7 @@ pre-push:
     azure-gate:
       run: |
         set -euo pipefail
-        make format
+        make format-check
         make analyze
         make test
 
@@ -43,7 +43,7 @@ pre-commit:
           fi
         done
         if [ -n "$FILES" ]; then
-          $DART format --line-length=120 $FILES
+          $DART format --line-length=80 $FILES
         fi
       stage_fixed: true
 
