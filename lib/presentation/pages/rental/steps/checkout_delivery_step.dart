@@ -139,6 +139,7 @@ class CheckoutDeliveryStep
                                 .location_on_outlined,
                           ),
                         ),
+                        maxLength: 200,
                         onChanged: (value) =>
                             context
                                 .read<
@@ -175,6 +176,7 @@ class CheckoutDeliveryStep
                                 .comment_outlined,
                           ),
                         ),
+                        maxLength: 300,
                         onChanged: (value) =>
                             context
                                 .read<

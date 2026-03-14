@@ -96,13 +96,19 @@ class CheckoutOrderSummary extends StatelessWidget {
       mainAxisAlignment:
           MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style:
-              AppTypography.bodySmall.copyWith(
-            color: AppColors.gameBrown
-                .withOpacityValue(0.6),
+        Flexible(
+          child: Text(
+            label,
+            style:
+                AppTypography.bodySmall.copyWith(
+              color: AppColors.gameBrown
+                  .withOpacityValue(0.6),
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
+        ),
+        const SizedBox(
+          width: AppTheme.spacingMd,
         ),
         Text(
           value,

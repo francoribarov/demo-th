@@ -13,10 +13,28 @@ class CheckoutProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final progress =
+        (currentStep + 1) / totalSteps;
+    final reduceMotion = MediaQuery.of(context)
+        .disableAnimations;
+
+    if (reduceMotion) {
+      return LinearProgressIndicator(
+        value: progress,
+        minHeight: 3,
+        backgroundColor: AppColors.gameBrown
+            .withOpacityValue(0.1),
+        valueColor:
+            const AlwaysStoppedAnimation(
+          AppColors.gameRust,
+        ),
+      );
+    }
+
     return TweenAnimationBuilder<double>(
       tween: Tween(
         begin: 0,
-        end: (currentStep + 1) / totalSteps,
+        end: progress,
       ),
       duration:
           const Duration(milliseconds: 300),

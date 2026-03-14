@@ -180,6 +180,8 @@ class CheckoutReviewStep
                 color: AppColors.gameBrown
                     .withOpacityValue(0.6),
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
           if (state.isDelivery &&
@@ -196,6 +198,8 @@ class CheckoutReviewStep
                     .withOpacityValue(0.5),
                 fontStyle: FontStyle.italic,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ],

@@ -33,6 +33,7 @@ class _RentalConfirmPageState
     extends State<RentalConfirmPage> {
   final _pageController = PageController();
   int _currentStep = 0;
+  bool _isAnimating = false;
 
   static const _totalSteps = 4;
   static const _stepLabels = [
@@ -83,12 +84,18 @@ class _RentalConfirmPageState
   }
 
   void _animateToStep(int step) {
-    _pageController.animateToPage(
+    if (_isAnimating) return;
+    _isAnimating = true;
+    _pageController
+        .animateToPage(
       step,
       duration:
           const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-    );
+    )
+        .whenComplete(() {
+      if (mounted) _isAnimating = false;
+    });
     setState(() => _currentStep = step);
   }
 
@@ -100,6 +107,7 @@ class _RentalConfirmPageState
   }
 
   void _tryNext(RentalState state) {
+    if (_isAnimating) return;
     if (!_isStepValid(_currentStep, state)) {
       _showValidationError(
         _currentStep,
@@ -200,19 +208,24 @@ class _RentalConfirmPageState
           );
         }
 
-        // If state changed and the user is
-        // now past the max reachable step
-        // (e.g. cleared dates while on step 2),
-        // snap them back.
         final max = _maxReachableStep(state);
-        if (_currentStep > max) {
+        if (_currentStep > max && !_isAnimating) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) {
-            _animateToStep(max);
+            if (mounted && _currentStep > max) {
+              _animateToStep(max);
+            }
           });
         }
 
-        return Scaffold(
+        return PopScope(
+          canPop: _currentStep == 0,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && _currentStep > 0) {
+              _back();
+            }
+          },
+          child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(
@@ -288,6 +301,7 @@ class _RentalConfirmPageState
               ),
             ],
           ),
+        ),
         );
       },
     );

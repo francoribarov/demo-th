@@ -68,6 +68,8 @@ class CheckoutBottomBar extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           if (_isLastStep &&
