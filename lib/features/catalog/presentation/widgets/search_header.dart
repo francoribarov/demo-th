@@ -8,7 +8,6 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/core/widgets/app_date_picker.dart';
 
 /// Search header widget matching the Vite.js Layout search pill
 class SearchHeader extends StatelessWidget {
@@ -348,42 +347,32 @@ class _SearchSheetState extends State<SearchSheet> {
 
   Future<void> _selectDate({required bool isStart}) async {
     final cubit = context.read<_SearchSheetCubit>();
-    final today = AppDatePicker.today();
-    final lastDate = AppDatePicker.defaultLastDate(from: today);
-    final selectedStart = DateFormatter.parseIso(cubit.state.startDate);
-    final selectedEnd = DateFormatter.parseIso(cubit.state.endDate);
-
-    final firstDate = isStart
-        ? today
-        : (selectedStart != null
-            ? DateTime(
-                selectedStart.year,
-                selectedStart.month,
-                selectedStart.day,
-              ).add(const Duration(days: 1))
-            : today);
-    if (!isStart && firstDate.isAfter(lastDate)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Elegí una fecha de inicio anterior para continuar.'),
-          backgroundColor: AppColors.gameRust,
-        ),
-      );
-      return;
-    }
-
+    final now = DateTime.now();
     final initialDate = isStart
-        ? selectedStart ?? today
-        : selectedEnd ??
-            (selectedStart != null
-                ? selectedStart.add(const Duration(days: 1))
-                : today);
+        ? (cubit.state.startDate != null
+                ? DateTime.tryParse(cubit.state.startDate!)
+                : now) ??
+            now
+        : (cubit.state.endDate != null
+                ? DateTime.tryParse(cubit.state.endDate!)
+                : now) ??
+            now;
 
-    final picked = await AppDatePicker.pickDate(
+    final picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.gameRust,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
@@ -742,12 +731,6 @@ class _DateInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final parsed = DateFormatter.parseIso(value);
-    final hasValue = value != null && value!.isNotEmpty;
-    final displayValue = parsed != null
-        ? DateFormatter.formatShortDate(parsed)
-        : (value ?? 'Seleccionar');
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -768,9 +751,9 @@ class _DateInput extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    displayValue,
+                    value ?? 'Seleccionar',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: hasValue
+                      color: value != null
                           ? AppColors.gameBrown
                           : AppColors.gameBrown.withOpacityValue(0.5),
                     ),
