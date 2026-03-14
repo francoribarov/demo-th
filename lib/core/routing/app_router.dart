@@ -80,16 +80,24 @@ class AppRouter {
     GoRouterRefreshStream(getIt<AuthBloc>().stream),
     getIt<TokenStorage>(),
   ]);
-  static final RegExp _rentalRoutePattern =
-      RegExp(r'^/publications/[^/]+/rental$');
-  static final RegExp _editPublicationRoutePattern =
-      RegExp(r'^/my-publications/[^/]+/edit$');
 
-  static bool _isProtectedLocation(String location) {
-    return location == AppRoutes.publish ||
-        location == AppRoutes.myPublications ||
-        _rentalRoutePattern.hasMatch(location) ||
-        _editPublicationRoutePattern.hasMatch(location);
+  static bool _isProtectedLocation({
+    required String location,
+    required String? routeTemplate,
+  }) {
+    const protectedRoutes = {
+      AppRoutes.publish,
+      AppRoutes.myPublications,
+      AppRoutes.rental,
+      AppRoutes.editPublication,
+    };
+
+    if (routeTemplate != null && protectedRoutes.contains(routeTemplate)) {
+      return true;
+    }
+
+    // Fallback for direct static paths if fullPath is null.
+    return location == AppRoutes.publish || location == AppRoutes.myPublications;
   }
 
   static bool _isAuthLocation(String location) {
@@ -115,7 +123,10 @@ class AppRouter {
     refreshListenable: _routerRefreshListenable,
     redirect: (context, state) {
       final location = state.uri.path;
-      final isProtected = _isProtectedLocation(location);
+      final isProtected = _isProtectedLocation(
+        location: location,
+        routeTemplate: state.fullPath,
+      );
       final isAuthLocation = _isAuthLocation(location);
       final requestedLocation = state.uri.toString();
 
