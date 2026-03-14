@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/widgets/app_buttons.dart';
 
 class CheckoutBottomBar extends StatelessWidget {
   const CheckoutBottomBar({
@@ -24,22 +26,26 @@ class CheckoutBottomBar extends StatelessWidget {
   final VoidCallback onSubmit;
   final String? errorMessage;
 
-  bool get _isLastStep => currentStep == totalSteps - 1;
+  bool get _isLastStep =>
+      currentStep == totalSteps - 1;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 12,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
+        left: AppTheme.spacingLg,
+        right: AppTheme.spacingLg,
+        top: AppTheme.spacingMd,
+        bottom:
+            MediaQuery.of(context).padding.bottom +
+                AppTheme.spacingMd,
       ),
       decoration: BoxDecoration(
         color: AppColors.card,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacityValue(0.06),
+            color: AppColors.foreground
+                .withOpacityValue(0.06),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -50,7 +56,9 @@ class CheckoutBottomBar extends StatelessWidget {
         children: [
           if (errorMessage != null) ...[
             Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(
+                bottom: AppTheme.spacingSm,
+              ),
               child: Text(
                 errorMessage!,
                 style: AppTypography.bodySmall.copyWith(
@@ -65,35 +73,30 @@ class CheckoutBottomBar extends StatelessWidget {
             children: [
               if (currentStep > 0)
                 Expanded(
-                  child: OutlinedButton(
+                  child: AppSecondaryButton(
                     onPressed: onBack,
                     child: const Text('Atrás'),
                   ),
                 ),
-              if (currentStep > 0) const SizedBox(width: 12),
+              if (currentStep > 0)
+                const SizedBox(
+                  width: AppTheme.spacingMd,
+                ),
               Expanded(
                 flex: currentStep > 0 ? 2 : 1,
-                child: ElevatedButton(
-                  onPressed: (canAdvance && !isSubmitting)
-                      ? (_isLastStep ? onSubmit : onNext)
+                child: AppPrimaryButton(
+                  onPressed: canAdvance
+                      ? (_isLastStep
+                          ? onSubmit
+                          : onNext)
                       : null,
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 52),
-                    disabledBackgroundColor:
-                        AppColors.gameBrown.withOpacityValue(0.12),
-                    disabledForegroundColor:
-                        AppColors.gameBrown.withOpacityValue(0.35),
+                  isLoading: isSubmitting,
+                  expand: true,
+                  child: Text(
+                    _isLastStep
+                        ? 'Enviar solicitud'
+                        : 'Continuar',
                   ),
-                  child: isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Text(_isLastStep ? 'Enviar solicitud' : 'Continuar'),
                 ),
               ),
             ],

@@ -22,57 +22,90 @@ class DateSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final start = DateFormatter.parseIso(startDate);
+    final start =
+        DateFormatter.parseIso(startDate);
     final end = DateFormatter.parseIso(endDate);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(
+        AppTheme.spacingLg,
+      ),
       decoration: BoxDecoration(
-        color: AppColors.gameCream.withOpacityValue(0.5),
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppColors.gameRust.withOpacityValue(0.2)),
+        color: AppColors.gameCream
+            .withOpacityValue(0.5),
+        borderRadius: BorderRadius.circular(
+          AppTheme.radiusLg,
+        ),
+        border: Border.all(
+          color: AppColors.gameRust
+              .withOpacityValue(0.2),
+        ),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              const Icon(Icons.date_range, color: AppColors.gameRust, size: 20),
-              const SizedBox(width: 10),
+              const Icon(
+                Icons.date_range,
+                color: AppColors.gameRust,
+                size: 20,
+              ),
+              const SizedBox(
+                width: AppTheme.spacingSm,
+              ),
               Text(
                 '$rentalDays días',
                 style: AppTypography.titleMedium
-                    .copyWith(color: AppColors.gameRust),
+                    .copyWith(
+                  color: AppColors.gameRust,
+                ),
               ),
             ],
           ),
           if (start != null && end != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(
+              height: AppTheme.spacingSm,
+            ),
             Row(
               children: [
-                const SizedBox(width: 30),
+                const SizedBox(
+                  width: AppTheme.spacing3xl,
+                ),
                 Expanded(
                   child: Text(
-                    '${DateFormatter.formatFullDate(start)} → ${DateFormatter.formatFullDate(end)}',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.gameBrown.withOpacityValue(0.7),
+                    '${DateFormatter.formatFullDate(start)}'
+                    ' → '
+                    '${DateFormatter.formatFullDate(end)}',
+                    style: AppTypography.bodySmall
+                        .copyWith(
+                      color: AppColors.gameBrown
+                          .withOpacityValue(0.7),
                     ),
                   ),
                 ),
               ],
             ),
           ],
-          const Divider(height: 24),
+          const Divider(
+            height: AppTheme.spacing2xl,
+          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $rentalDays días',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.gameBrown.withOpacityValue(0.7),
+                '${CurrencyFormatter.formatUYU(pricePerDay)}'
+                '/día × $rentalDays días',
+                style: AppTypography.bodyMedium
+                    .copyWith(
+                  color: AppColors.gameBrown
+                      .withOpacityValue(0.7),
                 ),
               ),
               Text(
-                CurrencyFormatter.formatUYU(subtotal),
+                CurrencyFormatter.formatUYU(
+                  subtotal,
+                ),
                 style: AppTypography.titleSmall,
               ),
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 
 class CheckoutStepIndicator extends StatelessWidget {
@@ -21,22 +22,29 @@ class CheckoutStepIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingLg,
+        vertical: AppTheme.spacingMd,
+      ),
       decoration: BoxDecoration(
         color: AppColors.card,
         border: Border(
           bottom: BorderSide(
-            color: AppColors.gameBrown.withOpacityValue(0.1),
+            color: AppColors.gameBrown
+                .withOpacityValue(0.1),
           ),
         ),
       ),
       child: Row(
-        children: List.generate(totalSteps * 2 - 1, (index) {
-          if (index.isOdd) {
-            return _buildConnector(index ~/ 2);
-          }
-          return _buildStepDot(index ~/ 2);
-        }),
+        children: List.generate(
+          totalSteps * 2 - 1,
+          (index) {
+            if (index.isOdd) {
+              return _buildConnector(index ~/ 2);
+            }
+            return _buildStepDot(index ~/ 2);
+          },
+        ),
       ),
     );
   }
@@ -46,10 +54,13 @@ class CheckoutStepIndicator extends StatelessWidget {
     return Expanded(
       child: Container(
         height: 2,
-        margin: const EdgeInsets.symmetric(horizontal: 4),
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppTheme.spacingXs,
+        ),
         color: isCompleted
             ? AppColors.gameRust
-            : AppColors.gameBrown.withOpacityValue(0.15),
+            : AppColors.gameBrown
+                .withOpacityValue(0.15),
       ),
     );
   }
@@ -63,43 +74,58 @@ class CheckoutStepIndicator extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
+            duration:
+                const Duration(milliseconds: 250),
             width: 36,
             height: 36,
             decoration: BoxDecoration(
               color: isCompleted
                   ? AppColors.gameRust
                   : isActive
-                      ? AppColors.gameRust.withOpacityValue(0.12)
-                      : AppColors.gameBrown.withOpacityValue(0.06),
+                      ? AppColors.gameRust
+                          .withOpacityValue(0.12)
+                      : AppColors.gameBrown
+                          .withOpacityValue(0.06),
               shape: BoxShape.circle,
               border: Border.all(
                 color: isActive || isCompleted
                     ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.15),
+                    : AppColors.gameBrown
+                        .withOpacityValue(0.15),
                 width: isActive ? 2 : 1,
               ),
             ),
             child: Center(
               child: isCompleted
-                  ? const Icon(Icons.check, size: 18, color: Colors.white)
+                  ? const Icon(
+                      Icons.check,
+                      size: 18,
+                      color:
+                          AppColors.primaryForeground,
+                    )
                   : Icon(
                       icons[step],
                       size: 16,
                       color: isActive
                           ? AppColors.gameRust
-                          : AppColors.gameBrown.withOpacityValue(0.4),
+                          : AppColors.gameBrown
+                              .withOpacityValue(0.4),
                     ),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(
+            height: AppTheme.spacingXs,
+          ),
           Text(
             labels[step],
             style: AppTypography.labelSmall.copyWith(
               color: isActive || isCompleted
                   ? AppColors.gameRust
-                  : AppColors.gameBrown.withOpacityValue(0.4),
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  : AppColors.gameBrown
+                      .withOpacityValue(0.4),
+              fontWeight: isActive
+                  ? FontWeight.w700
+                  : FontWeight.w500,
               fontSize: 10,
             ),
           ),

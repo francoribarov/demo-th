@@ -7,36 +7,55 @@ import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 class PublicationSummaryCard extends StatelessWidget {
-  const PublicationSummaryCard({required this.publication, super.key});
+  const PublicationSummaryCard({
+    required this.publication,
+    super.key,
+  });
+
   final PublicationListing publication;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(
+        AppTheme.spacingLg,
+      ),
       decoration: BoxDecoration(
-        color: AppColors.gameCream.withOpacityValue(0.5),
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        color: AppColors.gameCream
+            .withOpacityValue(0.5),
+        borderRadius: BorderRadius.circular(
+          AppTheme.radiusLg,
+        ),
       ),
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            borderRadius: BorderRadius.circular(
+              AppTheme.radiusMd,
+            ),
             child: CachedNetworkImage(
               imageUrl: publication.heroImage,
               width: 64,
               height: 64,
               fit: BoxFit.cover,
               placeholder: (context, url) =>
-                  const ColoredBox(color: AppColors.gameCream),
-              errorWidget: (context, url, error) =>
-                  const Icon(Icons.image_not_supported),
+                  const ColoredBox(
+                color: AppColors.gameCream,
+              ),
+              errorWidget:
+                  (context, url, error) =>
+                      const Icon(
+                Icons.image_not_supported,
+              ),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(
+            width: AppTheme.spacingMd,
+          ),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
@@ -44,18 +63,28 @@ class PublicationSummaryCard extends StatelessWidget {
                   style: AppTypography.titleSmall,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(
+                  height: AppTheme.spacingXs,
+                ),
                 Text(
                   publication.categoryName,
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.6),
+                  style: AppTypography.bodySmall
+                      .copyWith(
+                    color: AppColors.gameBrown
+                        .withOpacityValue(0.6),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(
+                  height: AppTheme.spacingXs,
+                ),
                 Text(
-                  '${CurrencyFormatter.formatUYU(publication.price)}/día',
-                  style: AppTypography.titleSmall.copyWith(
+                  CurrencyFormatter
+                      .formatPricePerDay(
+                    publication.price,
+                  ),
+                  style: AppTypography.titleSmall
+                      .copyWith(
                     color: AppColors.gameRust,
                   ),
                 ),
