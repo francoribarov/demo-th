@@ -33,7 +33,7 @@ class MyRentalsList extends StatelessWidget {
               final success = await showDropOffBottomSheet(context, rental.id);
               if (context.mounted && success != null && success) {
                 context.read<MyRentalsBloc>().add(
-                  const MyRentalsEvent.refresh(),
+                  MyRentalsEvent.dropOffSuccess(rental.id),
                 );
               }
             },

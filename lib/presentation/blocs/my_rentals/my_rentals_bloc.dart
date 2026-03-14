@@ -13,7 +13,7 @@ class MyRentalsBloc extends Bloc<MyRentalsEvent, MyRentalsState> {
   MyRentalsBloc(this._getMyRentals) : super(const _Initial()) {
     on<_Started>(_onStarted);
     on<_Refresh>(_onRefresh);
-    on<_DropOffRequested>(_onDropOffRequested);
+    on<_DropOffSuccess>(_onDropOffSuccess);
     on<_MessageDismissed>(_onMessageDismissed);
   }
 
@@ -43,8 +43,8 @@ class MyRentalsBloc extends Bloc<MyRentalsEvent, MyRentalsState> {
     );
   }
 
-  void _onDropOffRequested(
-    _DropOffRequested event,
+  void _onDropOffSuccess(
+    _DropOffSuccess event,
     Emitter<MyRentalsState> emit,
   ) {
     if (state is! _Success) return;

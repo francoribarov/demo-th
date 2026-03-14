@@ -56,9 +56,16 @@ abstract class MyRentalModel
     switch (status.toUpperCase()) {
       case 'PENDING':
         return RentalRequestStatus.pending;
-      case 'ACTIVE':
       case 'ACCEPTED':
         return RentalRequestStatus.accepted;
+      case 'ACTIVE':
+        return RentalRequestStatus.active;
+      case 'RETURNED':
+        return RentalRequestStatus.returned;
+      case 'FINISHED':
+        return RentalRequestStatus.finished;
+      case 'CANCELLED':
+        return RentalRequestStatus.cancelled;
       case 'REJECTED':
         return RentalRequestStatus.rejected;
       default:
