@@ -2,8 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
+import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
+import 'package:mobile_table_hopping/domain/validators/date_range_validator.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
 
@@ -116,9 +118,12 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     if (newEnd == null && state.publication != null) {
       final startDate = DateTime.tryParse(newStart);
       if (startDate != null) {
-        final minEndDate = startDate.add(const Duration(days: 2));
+        final minEndDate = startDate.add(
+          const Duration(days: DateRangeValidator.minRentalDays - 1),
+        );
+        final minEndIso = DateFormatter.toIsoString(minEndDate);
         if (!state.publication!
-            .isAvailableFor(newStart, minEndDate.toIso8601String())) {
+            .isAvailableFor(newStart, minEndIso)) {
           return emit(
             state.copyWith(
               startDate: null,
@@ -359,22 +364,12 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       return null;
     }
 
-    final start = DateTime.tryParse(startDate);
-    final end = DateTime.tryParse(endDate);
-
-    if (start == null || end == null) {
-      return 'Formato de fecha inválido.';
-    }
-
-    // Check minimum duration (3 days)
-    final durationInDays = end.difference(start).inDays + 1;
-    if (durationInDays < 3) {
-      return AppStrings.rentalMinDays;
-    }
-
-    // Check maximum duration (30 days)
-    if (durationInDays > 30) {
-      return AppStrings.rentalMaxDays;
+    final validation = DateRangeValidator.validateIsoRange(
+      startDate: startDate,
+      endDate: endDate,
+    );
+    if (!validation.isValid) {
+      return validation.message;
     }
 
     // Check availability
