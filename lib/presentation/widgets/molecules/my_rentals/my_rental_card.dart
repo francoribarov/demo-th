@@ -24,7 +24,6 @@ class MyRentalCard extends StatelessWidget {
         '${dateFormat.format(rental.startDate)} - ${dateFormat.format(rental.endDate)}';
     final duration = rental.endDate.difference(rental.startDate).inDays;
 
-    // We can only drop off if the rental is accepted (which means it's active)
     final canDropOff =
         showDropOffButton && rental.status == RentalRequestStatus.active;
 

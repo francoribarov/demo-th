@@ -8,8 +8,8 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/drop_off_bloc/drop_off_bloc.dart';
 
-Future<void> showDropOffBottomSheet(BuildContext context, String rentalId) {
-  return showModalBottomSheet<void>(
+Future<bool?> showDropOffBottomSheet(BuildContext context, String rentalId) {
+  return showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
     backgroundColor: AppColors.background,
