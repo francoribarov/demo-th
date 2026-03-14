@@ -3,8 +3,8 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/validators/date_range_validator.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// A unified date range selector widget for game availability.
 /// Used in both Game Details and Rental Confirmation flows.

@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/food_bundle_selector.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/price_breakdown_card.dart';

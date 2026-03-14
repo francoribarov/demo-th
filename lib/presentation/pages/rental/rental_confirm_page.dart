@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/widgets/app_alert_dialog.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/steps/checkout_date_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/steps/checkout_delivery_step.dart';
@@ -160,28 +161,43 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
     }
   }
 
+  void _showFeedbackNotice(BuildContext context, FeedbackNotice notice) {
+    final backgroundColor = switch (notice.severity) {
+      FeedbackSeverity.success => AppColors.success,
+      FeedbackSeverity.error => AppColors.destructive,
+      FeedbackSeverity.warning => AppColors.gameRust,
+      FeedbackSeverity.info => AppColors.gameBrown,
+    };
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(notice.message),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (prev, curr) =>
-          (prev.snackbarMessage != curr.snackbarMessage &&
-              curr.snackbarMessage != null) ||
+          (prev.feedbackNotice != curr.feedbackNotice &&
+              curr.feedbackNotice != null) ||
           (prev.isSubmitting &&
               !curr.isSubmitting &&
               curr.errorMessage != null),
       listener: (context, state) {
+        final notice = state.feedbackNotice;
+        if (notice != null) {
+          _showFeedbackNotice(context, notice);
+          context.read<RentalBloc>().add(
+            const RentalEvent.messageShown(),
+          );
+        }
+
         if (state.errorMessage != null && !state.isSubmitting) {
           _showSubmitErrorDialog(context);
-          return;
         }
-        final message = state.snackbarMessage;
-        if (message == null) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-        context.read<RentalBloc>().add(
-          const RentalEvent.messageShown(),
-        );
       },
       builder: (context, state) {
         if (state.isLoading) {

@@ -4,29 +4,29 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/go_router_refresh_stream.dart';
-import 'package:mobile_table_hopping/core/widgets/app_scaffold.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/pages/login_page.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/pages/register_page.dart';
-import 'package:mobile_table_hopping/features/catalog/presentation/pages/home_page.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/my_publications_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/pages/edit_publication_page.dart';
-import 'package:mobile_table_hopping/features/my_publications/presentation/pages/my_publications_page.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_reviews_bloc.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/game_rules_bloc.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/bloc/publication_details_bloc.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_reviews_page.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/pages/game_rules_page.dart';
-import 'package:mobile_table_hopping/features/publication_details/presentation/pages/publication_details_page.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/delivery_method_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/image_upload_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/bloc/publish_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/presentation/pages/publish_game_page.dart';
+import 'package:mobile_table_hopping/core/widgets/templates/app_scaffold.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_reviews_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_rules_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publication_details/publication_details_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publish/delivery_method_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publish/image_upload_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/publish/publish_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
+import 'package:mobile_table_hopping/presentation/pages/auth/login_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/auth/register_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/catalog/home_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/my_publications/edit_publication_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/my_publications/my_publications_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/publication_details/game_reviews_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/publication_details/game_rules_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/publication_details/publication_details_page.dart';
+import 'package:mobile_table_hopping/presentation/pages/publish/publish_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 
 /// Route paths for type-safe navigation.
@@ -55,10 +55,10 @@ class AppRoutes {
   static const String publicationDetails = '/publications/:id';
 
   /// Game rules route template.
-  static const String gameRules = '/games/:id/rules';
+  static const String gameRules = '/publications/:id/rules';
 
   /// Game reviews route template.
-  static const String gameReviews = '/games/:id/reviews';
+  static const String gameReviews = '/publications/:id/reviews';
 
   /// Game owner route template.
   static const String gameOwner = '/publications/:id/owner';
@@ -68,6 +68,41 @@ class AppRoutes {
 
   /// Edit publication route template.
   static const String editPublication = '/my-publications/:id/edit';
+
+  /// Builds the publication details path for [id].
+  static String publicationDetailsPath(String id) =>
+      '/publications/${Uri.encodeComponent(id)}';
+
+  /// Builds the publication rules path for [id].
+  static String gameRulesPath(String id) =>
+      '${publicationDetailsPath(id)}/rules';
+
+  /// Builds the publication reviews path for [id].
+  static String gameReviewsPath(String id) =>
+      '${publicationDetailsPath(id)}/reviews';
+
+  /// Builds the publication owner path for [id].
+  static String gameOwnerPath(String id) =>
+      '${publicationDetailsPath(id)}/owner';
+
+  /// Builds the publication rental path for [id].
+  static String rentalPath(String id) => '${publicationDetailsPath(id)}/rental';
+
+  /// Builds the edit publication path for [id].
+  static String editPublicationPath(String id) =>
+      '/my-publications/${Uri.encodeComponent(id)}/edit';
+
+  /// Builds the login path preserving an optional redirect.
+  static String loginPath({String? from}) {
+    if (from == null || from.trim().isEmpty) return login;
+    return '$login?from=${Uri.encodeComponent(from)}';
+  }
+
+  /// Builds the register path preserving an optional redirect.
+  static String registerPath({String? from}) {
+    if (from == null || from.trim().isEmpty) return register;
+    return '$register?from=${Uri.encodeComponent(from)}';
+  }
 }
 
 /// App router configuration using go_router.
@@ -75,7 +110,6 @@ class AppRouter {
   AppRouter._();
 
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
-  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
   static final Listenable _routerRefreshListenable = Listenable.merge([
     GoRouterRefreshStream(getIt<AuthBloc>().stream),
     getIt<TokenStorage>(),
@@ -113,7 +147,7 @@ class AppRouter {
   }
 
   static String _loginLocationWithFrom(String from) {
-    return '${AppRoutes.login}?from=${Uri.encodeComponent(from)}';
+    return AppRoutes.loginPath(from: from);
   }
 
   /// Application router instance.
@@ -162,88 +196,110 @@ class AppRouter {
     },
     routes: [
       // Shell route for bottom navigation
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) => AppScaffold(child: child),
-        routes: [
-          GoRoute(
-            path: AppRoutes.home,
-            name: 'home',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: HomePage()),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => AppScaffold(
+          navigationShell: navigationShell,
+          onItemTapped: (index) => navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
           ),
-          GoRoute(
-            path: AppRoutes.publish,
-            name: 'publish',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<PublishBloc>(
-                    create: (_) =>
-                        getIt<PublishBloc>()..add(const PublishEvent.started()),
-                  ),
-                  BlocProvider<DeliveryMethodBloc>(
-                    create: (_) => getIt<DeliveryMethodBloc>(),
-                  ),
-                  BlocProvider<ImageUploadBloc>(
-                    create: (_) => getIt<ImageUploadBloc>(),
-                  ),
-                ],
-                child: const PublishGamePage(),
+        ),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                name: 'home',
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: HomePage()),
               ),
-            ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.myPublications,
-            name: 'my-publications',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<MyPublicationsBloc>(
-                    create: (_) =>
-                        getIt<MyPublicationsBloc>()
-                          ..add(const MyPublicationsEvent.started()),
-                  ),
-                  BlocProvider<RentalRequestsBloc>(
-                    create: (_) =>
-                        getIt<RentalRequestsBloc>()
-                          ..add(const RentalRequestsEvent.started()),
-                  ),
-                ],
-                child: const MyPublicationsPage(),
-              ),
-            ),
-          ),
-          GoRoute(
-            path: AppRoutes.profile,
-            name: 'profile',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: Scaffold(
-                appBar: AppBar(title: const Text('Mi Perfil')),
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Configuración de tu perfil.'),
-                      const SizedBox(height: 32),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          getIt<AuthBloc>().add(
-                            const AuthEvent.logoutRequested(),
-                          );
-                        },
-                        icon: const Icon(Icons.logout),
-                        label: const Text('Cerrar Sesión'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                        ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.myPublications,
+                name: 'my-publications',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider<MyPublicationsBloc>(
+                        create: (_) =>
+                            getIt<MyPublicationsBloc>()
+                              ..add(const MyPublicationsEvent.started()),
+                      ),
+                      BlocProvider<RentalRequestsBloc>(
+                        create: (_) =>
+                            getIt<RentalRequestsBloc>()
+                              ..add(const RentalRequestsEvent.started()),
                       ),
                     ],
+                    child: const MyPublicationsPage(),
                   ),
                 ),
               ),
-            ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.publish,
+                name: 'publish',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider<PublishBloc>(
+                        create: (_) =>
+                            getIt<PublishBloc>()
+                              ..add(const PublishEvent.started()),
+                      ),
+                      BlocProvider<DeliveryMethodBloc>(
+                        create: (_) => getIt<DeliveryMethodBloc>(),
+                      ),
+                      BlocProvider<ImageUploadBloc>(
+                        create: (_) => getIt<ImageUploadBloc>(),
+                      ),
+                    ],
+                    child: const PublishGamePage(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.profile,
+                name: 'profile',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  child: Scaffold(
+                    appBar: AppBar(title: const Text('Mi Perfil')),
+                    body: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Configuración de tu perfil.'),
+                          const SizedBox(height: 32),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              getIt<AuthBloc>().add(
+                                const AuthEvent.logoutRequested(),
+                              );
+                            },
+                            icon: const Icon(Icons.logout),
+                            label: const Text('Cerrar Sesión'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -396,16 +452,16 @@ class AppRouter {
 /// Extension methods for easier navigation.
 extension GoRouterExtension on BuildContext {
   /// Navigate to publication details for [id].
-  void goToPublication(String id) => push('/publications/$id');
+  void goToPublication(String id) => push(AppRoutes.publicationDetailsPath(id));
 
   /// Navigate to game rules for [id].
-  void goToGameRules(String id) => push('/publications/$id/rules');
+  void goToGameRules(String id) => push(AppRoutes.gameRulesPath(id));
 
   /// Navigate to game reviews for [id].
-  void goToGameReviews(String id) => push('/publications/$id/reviews');
+  void goToGameReviews(String id) => push(AppRoutes.gameReviewsPath(id));
 
   /// Navigate to game owner for [id].
-  void goToGameOwner(String id) => push('/publications/$id/owner');
+  void goToGameOwner(String id) => push(AppRoutes.gameOwnerPath(id));
 
   /// Navigate to rental confirmation for [id] with optional dates.
   void goToRental(
@@ -415,7 +471,7 @@ extension GoRouterExtension on BuildContext {
     String? ownerId,
     double? deposit,
   }) => push(
-    '/publications/$id/rental',
+    AppRoutes.rentalPath(id),
     extra: {
       'startDate': startDate,
       'endDate': endDate,
@@ -425,18 +481,10 @@ extension GoRouterExtension on BuildContext {
   );
 
   /// Navigate to login with an optional [from] redirect.
-  void goToLogin({String? from}) => go(
-    from != null
-        ? '${AppRoutes.login}?from=${Uri.encodeComponent(from)}'
-        : AppRoutes.login,
-  );
+  void goToLogin({String? from}) => go(AppRoutes.loginPath(from: from));
 
   /// Navigate to registration with an optional [from] redirect.
-  void goToRegister({String? from}) => go(
-    from != null
-        ? '${AppRoutes.register}?from=${Uri.encodeComponent(from)}'
-        : AppRoutes.register,
-  );
+  void goToRegister({String? from}) => go(AppRoutes.registerPath(from: from));
 
   /// Navigate to the publish flow.
   void goToPublish() => go(AppRoutes.publish);
@@ -445,7 +493,8 @@ extension GoRouterExtension on BuildContext {
   void goHome() => go(AppRoutes.home);
 
   /// Navigate to edit a publication.
-  void goToEditPublication(String id) => push('/my-publications/$id/edit');
+  void goToEditPublication(String id) =>
+      push(AppRoutes.editPublicationPath(id));
 
   /// Safe back navigation for deep links (no back stack).
   void popOrGo(String location) {

@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/l10n/app_strings.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_publication_by_id_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
 import 'package:mobile_table_hopping/domain/validators/date_range_validator.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 
 part 'rental_bloc.freezed.dart';
 part 'rental_event.dart';
@@ -18,9 +18,9 @@ part 'rental_state.dart';
 class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
   RentalBloc({
-    required GetPublications getPublications,
+    required GetPublicationByIdUseCase getPublicationById,
     required ConfirmRentalUseCase confirmRentalUseCase,
-  }) : _getPublications = getPublications,
+  }) : _getPublicationById = getPublicationById,
        _confirmRentalUseCase = confirmRentalUseCase,
        super(const RentalState()) {
     on<_Started>(_onStarted);
@@ -36,8 +36,25 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     on<_MessageShown>(_onMessageShown);
     on<_PublishAnother>(_onPublishAnother);
   }
-  final GetPublications _getPublications;
+  final GetPublicationByIdUseCase _getPublicationById;
   final ConfirmRentalUseCase _confirmRentalUseCase;
+
+  static const _loadingGameErrorPrefix = 'No se pudo cargar el juego';
+  static const _chooseLaterEndMessage =
+      'Elegí una fecha de fin posterior al inicio.';
+  static const _minimumRentalDaysMessage =
+      'El alquiler mínimo es de 3 días (ej: Lun a Jue).';
+  static const _maximumRentalDaysMessage =
+      'El alquiler no puede superar los 30 días.';
+  static const _minAvailabilityMessage =
+      'El juego debe estar disponible por al menos 3 días.';
+  static const _identifyOwnerErrorMessage =
+      'No se pudo identificar al propietario.';
+  static const _selectDatesMessage = 'Seleccioná las fechas del alquiler.';
+  static const _submitRentalErrorMessage =
+      'No se pudo enviar la solicitud de alquiler.';
+  static const _unavailableRangeMessage =
+      'Las fechas seleccionadas no están disponibles en su totalidad.';
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
     final startDate = (event.startDate?.isNotEmpty ?? false)
@@ -58,26 +75,29 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final id = event.publicationId;
 
     try {
-      final publication = await _getPublications.getById(id);
-      if (publication == null) {
-        emit(
+      final result = await _getPublicationById(id);
+      result.fold(
+        (error) => emit(
           state.copyWith(
             isLoading: false,
-            errorMessage: AppStrings.errorGameNotFound,
+            errorMessage: error.message,
           ),
-        );
-        return;
-      }
-      emit(
-        _updateCalculations(
-          state.copyWith(isLoading: false, publication: publication),
+        ),
+        (publication) => emit(
+          _updateCalculations(
+            state.copyWith(
+              isLoading: false,
+              publication: publication,
+              errorMessage: null,
+            ),
+          ),
         ),
       );
     } on Exception catch (e) {
       emit(
         state.copyWith(
           isLoading: false,
-          errorMessage: '${AppStrings.errorLoadingGame}: $e',
+          errorMessage: '$_loadingGameErrorPrefix: $e',
         ),
       );
     }
@@ -95,12 +115,12 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final start = DateTime.tryParse(newStart);
     final end = DateTime.tryParse(newEnd ?? '');
 
-    String? snackbar;
+    FeedbackNotice? feedbackNotice;
 
     // If start date is moved past end date, clear end date
     if (start != null && end != null && !end.isAfter(start)) {
       newEnd = null;
-      snackbar = AppStrings.rentalChooseLaterEnd;
+      feedbackNotice = _warningNotice(_chooseLaterEndMessage);
     }
 
     final errorMessage = _validateDates(
@@ -122,7 +142,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
             state.copyWith(
               startDate: null,
               endDate: null,
-              snackbarMessage: AppStrings.rentalMinAvailability,
+              feedbackNotice: _warningNotice(_minAvailabilityMessage),
             ),
           );
         }
@@ -134,7 +154,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         state.copyWith(
           startDate: newStart,
           endDate: errorMessage == null ? newEnd : null,
-          snackbarMessage: snackbar ?? errorMessage,
+          feedbackNotice: feedbackNotice ?? _warningNotice(errorMessage),
         ),
       ),
     );
@@ -153,7 +173,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       _updateCalculations(
         state.copyWith(
           endDate: errorMessage == null ? newEnd : null,
-          snackbarMessage: errorMessage,
+          feedbackNotice: _warningNotice(errorMessage),
         ),
       ),
     );
@@ -168,7 +188,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         state.copyWith(
           startDate: null,
           endDate: null,
-          snackbarMessage: null,
+          feedbackNotice: null,
         ),
       );
       return;
@@ -185,7 +205,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         state.copyWith(
           startDate: errorMessage == null ? startStr : null,
           endDate: errorMessage == null ? endStr : null,
-          snackbarMessage: errorMessage,
+          feedbackNotice: _warningNotice(errorMessage),
         ),
       ),
     );
@@ -241,20 +261,26 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     final ownerId = publication.ownerId;
     if (ownerId.isEmpty) {
       emit(
-        state.copyWith(snackbarMessage: AppStrings.rentalIdentifyOwnerError),
+        state.copyWith(
+          feedbackNotice: _errorNotice(_identifyOwnerErrorMessage),
+        ),
       );
       return;
     }
 
     if (start == null || end == null) {
-      emit(state.copyWith(snackbarMessage: AppStrings.rentalSelectDates));
+      emit(
+        state.copyWith(
+          feedbackNotice: _warningNotice(_selectDatesMessage),
+        ),
+      );
       return;
     }
 
     final isValid = _validateDates(publication, start, end);
 
     if (isValid != null) {
-      emit(state.copyWith(snackbarMessage: isValid));
+      emit(state.copyWith(feedbackNotice: _warningNotice(isValid)));
       return;
     }
 
@@ -280,6 +306,9 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       (error) => emit(
         state.copyWith(
           isSubmitting: false,
+          feedbackNotice: _errorNotice(
+            '$_submitRentalErrorMessage: ${error.message}',
+          ),
           errorMessage: error.message,
         ),
       ),
@@ -289,7 +318,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   }
 
   void _onMessageShown(_MessageShown event, Emitter<RentalState> emit) {
-    emit(state.copyWith(snackbarMessage: null));
+    emit(state.copyWith(feedbackNotice: null));
   }
 
   void _onPublishAnother(_PublishAnother event, Emitter<RentalState> emit) {
@@ -303,7 +332,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
         deliveryComments: '',
         paymentMethod: 'cash',
         selectedFoodBundles: const [],
-        snackbarMessage: null,
+        feedbackNotice: null,
         errorMessage: null,
       ),
     );
@@ -363,14 +392,37 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       endDate: endDate,
     );
     if (!validation.isValid) {
+      if (validation.message ==
+          'El alquiler mínimo es de ${DateRangeValidator.minRentalDays} días.') {
+        return _minimumRentalDaysMessage;
+      }
+      if (validation.message ==
+          'El alquiler máximo es de ${DateRangeValidator.maxRentalDays} días.') {
+        return _maximumRentalDaysMessage;
+      }
       return validation.message;
     }
 
     // Check availability
     if (!publication.isAvailableFor(startDate, endDate)) {
-      return AppStrings.rentalUnavailableRange;
+      return _unavailableRangeMessage;
     }
 
     return null;
+  }
+
+  FeedbackNotice? _warningNotice(String? message) {
+    if (message == null || message.isEmpty) return null;
+    return FeedbackNotice(
+      message: message,
+      severity: FeedbackSeverity.warning,
+    );
+  }
+
+  FeedbackNotice _errorNotice(String message) {
+    return FeedbackNotice(
+      message: message,
+      severity: FeedbackSeverity.error,
+    );
   }
 }
