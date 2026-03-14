@@ -6,5 +6,7 @@ class MyRentalsEvent with _$MyRentalsEvent {
   const factory MyRentalsEvent.refresh() = _Refresh;
   const factory MyRentalsEvent.dropOffSuccess(String rentalId) =
       _DropOffSuccess;
+  const factory MyRentalsEvent.dropOffFailure(String errorMessage) =
+      _DropOffFailure;
   const factory MyRentalsEvent.messageDismissed() = _MessageDismissed;
 }

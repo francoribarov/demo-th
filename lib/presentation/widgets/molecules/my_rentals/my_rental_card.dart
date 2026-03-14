@@ -26,7 +26,7 @@ class MyRentalCard extends StatelessWidget {
 
     // We can only drop off if the rental is accepted (which means it's active)
     final canDropOff =
-        showDropOffButton && rental.status == RentalRequestStatus.accepted;
+        showDropOffButton && rental.status == RentalRequestStatus.active;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -147,45 +147,6 @@ class MyRentalCard extends StatelessWidget {
                 ),
               ),
             ],
-            if (showOwnerActionButtons &&
-                rental.status == RentalRequestStatus.returned) ...[
-              const SizedBox(height: 16),
-              const Divider(height: 1),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: onReportOwner,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.error,
-                        foregroundColor: AppColors.primaryForeground,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        minimumSize: const Size.fromHeight(48),
-                      ),
-                      child: const Text('Reportar'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: onConfirmOwner,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.primaryForeground,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        minimumSize: const Size.fromHeight(48),
-                      ),
-                      child: const Text('Confirmar'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
           ],
         ),
       ),
@@ -216,6 +177,9 @@ class _StatusBadge extends StatelessWidget {
       case RentalRequestStatus.active:
         color = Colors.blue;
         label = 'Activo';
+      case RentalRequestStatus.returned:
+        color = Colors.orange;
+        label = 'Devuelto';
       case RentalRequestStatus.finished:
         color = Colors.grey;
         label = 'Completado';

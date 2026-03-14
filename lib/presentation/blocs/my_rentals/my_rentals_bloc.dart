@@ -14,6 +14,7 @@ class MyRentalsBloc extends Bloc<MyRentalsEvent, MyRentalsState> {
     on<_Started>(_onStarted);
     on<_Refresh>(_onRefresh);
     on<_DropOffSuccess>(_onDropOffSuccess);
+    on<_DropOffFailure>(_onDropOffFailure);
     on<_MessageDismissed>(_onMessageDismissed);
   }
 
@@ -61,6 +62,20 @@ class MyRentalsBloc extends Bloc<MyRentalsEvent, MyRentalsState> {
       currentState.copyWith(
         rentals: updatedRentals,
         feedbackMessage: 'Juego devuelto con éxito.',
+      ),
+    );
+  }
+
+  void _onDropOffFailure(
+    _DropOffFailure event,
+    Emitter<MyRentalsState> emit,
+  ) {
+    if (state is! _Success) return;
+    final currentState = state as _Success;
+
+    emit(
+      currentState.copyWith(
+        feedbackMessage: event.errorMessage,
       ),
     );
   }

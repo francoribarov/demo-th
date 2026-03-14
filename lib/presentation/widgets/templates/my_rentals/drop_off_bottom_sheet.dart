@@ -8,8 +8,8 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/drop_off_bloc/drop_off_bloc.dart';
 
-Future<bool?> showDropOffBottomSheet(BuildContext context, String rentalId) {
-  return showModalBottomSheet<bool>(
+Future<void> showDropOffBottomSheet(BuildContext context, String rentalId) {
+  return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: AppColors.background,
@@ -33,13 +33,7 @@ class _DropOffContent extends StatelessWidget {
     return BlocListener<DropOffBloc, DropOffState>(
       listener: (context, state) {
         if (state.isSuccess) {
-          context.pop(true); // Close sheet and return success
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Juego devuelto con éxito.'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          context.pop(); // Close sheet
         } else if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
