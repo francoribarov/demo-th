@@ -3,6 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/core/widgets/app_date_picker.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// A unified date range selector widget for game availability.
@@ -30,8 +31,7 @@ class AvailabilityDateSelector extends StatelessWidget {
   final void Function(String? start, String? end) onRangeChanged;
 
   Future<void> _showRangePicker(BuildContext context) async {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final today = AppDatePicker.today();
     final booked = _normalizedBookedDates();
 
     final initialStart = DateTime.tryParse(startDate ?? '');
@@ -44,14 +44,13 @@ class AvailabilityDateSelector extends StatelessWidget {
 
     // Allow booking up to a year in advance
     final firstDate = today;
-    final lastDate = today.add(const Duration(days: 365));
+    final lastDate = AppDatePicker.defaultLastDate(from: today);
 
-    final picked = await showDateRangePicker(
+    final picked = await AppDatePicker.pickDateRange(
       context: context,
       initialDateRange: initialRange,
       firstDate: firstDate,
       lastDate: lastDate,
-      locale: const Locale('es', 'UY'),
       helpText: 'Seleccioná el rango (mínimo 3 días)',
       selectableDayPredicate: (day, start, end) {
         if (day.isBefore(today)) return false;
