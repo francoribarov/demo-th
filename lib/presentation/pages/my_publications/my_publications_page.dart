@@ -5,6 +5,8 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/my_publications_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/owner_rentals/owner_rentals_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/owner_rentals/owner_rentals_event.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/owner_rentals/owner_rentals_state.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/badged_tab_label.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/common/tabbed_page_app_bar.dart';
@@ -12,7 +14,6 @@ import 'package:mobile_table_hopping/presentation/widgets/organisms/my_publicati
 import 'package:mobile_table_hopping/presentation/widgets/organisms/my_publications/my_publications_error_view.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/my_publications/my_publications_grid.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/my_publications/my_publications_loading_view.dart';
-import 'package:mobile_table_hopping/presentation/widgets/organisms/my_publications/owner_rentals_error_view.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/my_publications/owner_rentals_list.dart';
 import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 import 'package:mobile_table_hopping/presentation/widgets/templates/my_publications/rental_requests_view.dart';
@@ -25,19 +26,34 @@ class MyPublicationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      initialIndex: 1,
+      initialIndex: 1, // Set 'Alquileres' as initial tab
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: const TabbedPageAppBar(
-          title: Text('Mis Publicaciones'),
+        appBar: TabbedPageAppBar(
+          title: const Text('Mis Publicaciones'),
           tabs: [
-            // Solicitudes tab — shows badge with pending count
             BlocBuilder<RentalRequestsBloc, RentalRequestsState>(
               builder: (context, state) {
-                final count =
-                    state.mapOrNull(success: (s) => s.requests.length) ?? 0;
+                final count = state.mapOrNull(success: (s) => s.requests.length) ?? 0;
                 return Tab(
-                  child: BadgedTabLabel(label: 'Solicitudes', count: count),
+                  child: count > 0
+                      ? FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('Solicitudes'),
+                              const SizedBox(width: 4),
+                              Badge(
+                                label: Text(count.toString()),
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                              ),
+                            ],
+                          ),
+                        )
+                      : const Text('Solicitudes'),
                 );
               },
             ),
@@ -48,6 +64,7 @@ class MyPublicationsPage extends StatelessWidget {
         body: const TabBarView(
           children: [
             _RentalRequestsTab(),
+            _OwnerRentalsTab(),
             _PublicationsTab(),
           ],
         ),
@@ -109,46 +126,12 @@ class _PublicationsTab extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Owner rentals tab
-// ---------------------------------------------------------------------------
-
 class _OwnerRentalsTab extends StatelessWidget {
   const _OwnerRentalsTab();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OwnerRentalsBloc, OwnerRentalsState>(
-      listenWhen: (prev, curr) =>
-          (curr.successMessage != null && prev.successMessage == null) ||
-          (curr.errorMessage != null &&
-              prev.errorMessage == null &&
-              !curr.isLoading),
-      listener: (context, state) {
-        final messenger = ScaffoldMessenger.of(context);
-        if (state.successMessage != null) {
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(state.successMessage!),
-              backgroundColor: AppColors.statusAccepted,
-            ),
-          );
-          context.read<OwnerRentalsBloc>().add(
-            const OwnerRentalsEvent.messageDismissed(),
-          );
-        }
-        if (state.errorMessage != null && !state.isLoading) {
-          messenger.showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: AppColors.statusRejected,
-            ),
-          );
-          context.read<OwnerRentalsBloc>().add(
-            const OwnerRentalsEvent.messageDismissed(),
-          );
-        }
-      },
+    return BlocBuilder<OwnerRentalsBloc, OwnerRentalsState>(
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(
@@ -156,43 +139,40 @@ class _OwnerRentalsTab extends StatelessWidget {
           );
         }
 
-        final isEmpty =
-            state.activeRentals.isEmpty &&
-            state.upcomingRentals.isEmpty &&
-            state.returnedRentals.isEmpty;
-
-        if (state.errorMessage != null && isEmpty) {
-          return OwnerRentalsErrorView(
-            message: state.errorMessage!,
-            onRetry: () => context.read<OwnerRentalsBloc>().add(
-              const OwnerRentalsEvent.refresh(),
+        if (state.errorMessage != null && state.activeRentals.isEmpty && state.upcomingRentals.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: AppColors.gameRust,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  state.errorMessage!,
+                  style: const TextStyle(color: AppColors.gameBrown),
+                ),
+                TextButton(
+                  onPressed: () => context.read<OwnerRentalsBloc>().add(
+                    const OwnerRentalsEvent.refresh(),
+                  ),
+                  child: const Text('Reintentar'),
+                ),
+              ],
             ),
           );
         }
 
         return OwnerRentalsList(
-          returnedRentals: state.returnedRentals,
           activeRentals: state.activeRentals,
           upcomingRentals: state.upcomingRentals,
-          dropOffTickets: state.dropOffTickets,
-          onConfirmReturn: (rentalId) => context.read<OwnerRentalsBloc>().add(
-            OwnerRentalsEvent.confirmReturn(rentalId),
-          ),
-          onReportReturn: (_) => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Todavía no se implementó.'),
-              backgroundColor: AppColors.statusPending,
-            ),
-          ),
         );
       },
     );
   }
 }
-
-// ---------------------------------------------------------------------------
-// Rental requests tab
-// ---------------------------------------------------------------------------
 
 class _RentalRequestsTab extends StatelessWidget {
   const _RentalRequestsTab();

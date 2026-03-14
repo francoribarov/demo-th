@@ -7,6 +7,7 @@ import 'package:mobile_table_hopping/data/services/my_publications/publication_d
 import 'package:mobile_table_hopping/data/services/my_publications/rental_requests_service.dart';
 import 'package:mobile_table_hopping/data/services/publish/publish_service.dart';
 import 'package:mobile_table_hopping/data/services/rental/rental_service.dart';
+import 'package:mobile_table_hopping/data/services/user/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Injectable module for registering external dependencies.
@@ -49,4 +50,8 @@ abstract class RegisterModule {
   @lazySingleton
   PublishService publishService(DioClient dioClient) =>
       PublishService(dioClient.dio);
+
+  /// Provides the Retrofit user service.
+  @lazySingleton
+  UserService userService(DioClient dioClient) => UserService(dioClient.dio);
 }

@@ -11,6 +11,7 @@ abstract class PublicationDetailsState with _$PublicationDetailsState {
     @Default([]) List<PublicationListing> recommendations,
     @Default(false) bool isWishlisted,
     String? errorMessage,
+    String? ownerDisplayName,
 
     // Availability check form
     @Default('') String checkStartDate,

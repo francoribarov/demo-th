@@ -10,18 +10,12 @@ class MyRentalCard extends StatelessWidget {
     required this.rental,
     this.onDropOff,
     this.showDropOffButton = true,
-    this.showOwnerActionButtons = false,
-    this.onConfirmOwner,
-    this.onReportOwner,
     super.key,
   });
 
   final RentalRequest rental;
   final VoidCallback? onDropOff;
   final bool showDropOffButton;
-  final bool showOwnerActionButtons;
-  final VoidCallback? onConfirmOwner;
-  final VoidCallback? onReportOwner;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +25,8 @@ class MyRentalCard extends StatelessWidget {
     final duration = rental.endDate.difference(rental.startDate).inDays;
 
     // We can only drop off if the rental is accepted (which means it's active)
-    final canDropOff = rental.status == RentalRequestStatus.accepted;
+    final canDropOff =
+        showDropOffButton && rental.status == RentalRequestStatus.accepted;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -213,22 +208,19 @@ class _StatusBadge extends StatelessWidget {
         color = AppColors.statusPending;
         label = 'Pendiente';
       case RentalRequestStatus.accepted:
-        color = AppColors.statusAccepted;
+        color = Colors.green;
         label = 'Aceptado';
       case RentalRequestStatus.rejected:
-        color = AppColors.statusRejected;
+        color = Colors.red;
         label = 'Rechazado';
       case RentalRequestStatus.active:
-        color = AppColors.statusActive;
+        color = Colors.blue;
         label = 'Activo';
-      case RentalRequestStatus.returned:
-        color = AppColors.statusReturned;
-        label = 'Devuelto';
       case RentalRequestStatus.finished:
-        color = AppColors.statusFinished;
+        color = Colors.grey;
         label = 'Completado';
       case RentalRequestStatus.cancelled:
-        color = AppColors.statusRejected;
+        color = Colors.red;
         label = 'Cancelado';
     }
 

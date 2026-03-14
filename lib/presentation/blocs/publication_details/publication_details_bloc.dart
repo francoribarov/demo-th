@@ -6,6 +6,7 @@ import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.da
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_game_by_id_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publication_by_id_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_recommended_publications_use_case.dart';
+import 'package:mobile_table_hopping/domain/usecase/user/get_user_by_id_use_case.dart';
 
 part 'publication_details_bloc.freezed.dart';
 part 'publication_details_event.dart';
@@ -20,9 +21,11 @@ class PublicationDetailsBloc
     required GetPublicationByIdUseCase getPublicationById,
     required GetGameByIdUseCase getGameById,
     required GetRecommendedPublicationsUseCase getRecommendedPublications,
+    required GetUserByIdUseCase getUserById,
   }) : _getPublicationById = getPublicationById,
        _getGameById = getGameById,
        _getRecommendedPublications = getRecommendedPublications,
+       _getUserById = getUserById,
        super(const PublicationDetailsState()) {
     on<_Started>(_onStarted);
     on<_ToggleWishlist>(_onToggleWishlist);
@@ -35,6 +38,7 @@ class PublicationDetailsBloc
   final GetPublicationByIdUseCase _getPublicationById;
   final GetGameByIdUseCase _getGameById;
   final GetRecommendedPublicationsUseCase _getRecommendedPublications;
+  final GetUserByIdUseCase _getUserById;
 
   Future<void> _onStarted(
     _Started event,
@@ -65,12 +69,19 @@ class PublicationDetailsBloc
           (v) => v,
         );
 
+        final userResult = await _getUserById(publication.ownerId);
+        final ownerName = userResult.fold(
+          (_) => null,
+          (user) => user.username,
+        );
+
         emit(
           state.copyWith(
             isLoading: false,
             publication: publication,
             gameDetail: game,
             recommendations: recommendations,
+            ownerDisplayName: ownerName ?? 'Propietario',
           ),
         );
       },

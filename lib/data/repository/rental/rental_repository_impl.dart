@@ -41,9 +41,19 @@ class RentalRepositoryImpl extends BaseRepository implements RentalRepository {
   }
 
   @override
-  Future<Either<DomainException, List<RentalRequest>>> getMyRentals() {
+  Future<Either<DomainException, List<RentalRequest>>> getMyRentals({
+    String? role,
+    String? status,
+    String? sortBy,
+    String? sortOrder,
+  }) {
     return executeDataSourceList<MyRentalModel, RentalRequest>(
-      function: _dataSource.getMyRentals,
+      function: () => _dataSource.getMyRentals(
+        role: role,
+        status: status,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+      ),
     );
   }
 

@@ -12,8 +12,13 @@ abstract class RentalRemoteDataSource {
   /// Creates a new rental request on the server.
   Future<ApiResult<void>> createRental(ConfirmRentalBody body);
 
-  /// Retrieves all rentals for the current user.
-  Future<ApiResult<List<MyRentalModel>>> getMyRentals();
+  /// Retrieves rentals matching the specified filters.
+  Future<ApiResult<List<MyRentalModel>>> getMyRentals({
+    String? role,
+    String? status,
+    String? sortBy,
+    String? sortOrder,
+  });
 
   /// Initiates the drop-off process by uploading a proof image.
   Future<ApiResult<void>> dropOffRental(String rentalId, DropOffBody body);
@@ -47,9 +52,14 @@ class RentalRemoteDataSourceImpl extends BaseDataSource
   }
 
   @override
-  Future<ApiResult<List<MyRentalModel>>> getMyRentals() {
+  Future<ApiResult<List<MyRentalModel>>> getMyRentals({
+    String? role,
+    String? status,
+    String? sortBy,
+    String? sortOrder,
+  }) {
     return getStateOf<List<MyRentalModel>>(
-      request: () => _service.getMyRentals('renter'),
+      request: () => _service.getMyRentals(role, status, sortBy, sortOrder),
     );
   }
 

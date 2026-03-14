@@ -37,9 +37,9 @@ class TabbedPageAppBar extends StatelessWidget implements PreferredSizeWidget {
         preferredSize: const Size.fromHeight(64),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
-            AppTheme.spacingLg,
+            AppTheme.spacingSm,
             0,
-            AppTheme.spacingLg,
+            AppTheme.spacingSm,
             AppTheme.spacingMd,
           ),
           child: Container(
@@ -48,6 +48,7 @@ class TabbedPageAppBar extends StatelessWidget implements PreferredSizeWidget {
               borderRadius: BorderRadius.circular(AppTheme.radiusXl),
             ),
             child: TabBar(
+              labelPadding: EdgeInsets.zero,
               tabs: tabs,
               indicator: BoxDecoration(
                 color: AppColors.gameRust,

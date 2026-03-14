@@ -14,6 +14,7 @@ abstract class UserModel with _$UserModel implements BaseDtoResponse<User> {
   /// Creates a [UserModel] instance from backend fields.
   const factory UserModel({
     required String id,
+    @Default('') String email,
     required String username,
     @Default('') String email,
     String? imageUrl,

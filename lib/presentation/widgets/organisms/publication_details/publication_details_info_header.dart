@@ -150,12 +150,6 @@ class PublicationDetailsInfoHeader extends StatelessWidget {
                             ownerDisplayName,
                             style: AppTypography.titleSmall,
                           ),
-                          Text(
-                            publication.ownerId,
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.textTertiary,
-                            ),
-                          ),
                         ],
                       ),
                     ),

@@ -33,8 +33,13 @@ abstract class RentalRepository {
     ConfirmRentalParams params,
   );
 
-  /// Retrieves all rentals for the current user.
-  Future<Either<DomainException, List<RentalRequest>>> getMyRentals();
+  /// Retrieves rentals matching the specified filters.
+  Future<Either<DomainException, List<RentalRequest>>> getMyRentals({
+    String? role,
+    String? status,
+    String? sortBy,
+    String? sortOrder,
+  });
 
   /// Initiates the drop-off process by uploading a proof image.
   Future<Either<DomainException, void>> dropOffRental(

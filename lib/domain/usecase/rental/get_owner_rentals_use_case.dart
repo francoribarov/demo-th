@@ -10,13 +10,7 @@ class GetOwnerRentalsUseCase {
 
   final RentalRepository _repository;
 
-  Future<
-    Either<
-      DomainException,
-      Tuple3<List<RentalRequest>, List<RentalRequest>, List<RentalRequest>>
-    >
-  >
-  call() async {
+  Future<Either<DomainException, Tuple2<List<RentalRequest>, List<RentalRequest>>>> call() async {
     final activeRentals = await _repository.getMyRentals(
       role: 'owner',
       status: 'Active',
@@ -29,22 +23,11 @@ class GetOwnerRentalsUseCase {
       sortBy: 'start_date',
       sortOrder: 'asc',
     );
-    final returnedRentals = await _repository.getMyRentals(
-      role: 'owner',
-      status: 'Returned',
-      sortBy: 'start_date',
-      sortOrder: 'asc',
-    );
-
     return activeRentals.fold(
       Left.new,
       (activeList) => acceptedRentals.fold(
         Left.new,
-        (acceptedList) => returnedRentals.fold(
-          Left.new,
-          (returnedList) =>
-              Right(Tuple3(returnedList, activeList, acceptedList)),
-        ),
+        (acceptedList) => Right(Tuple2(activeList, acceptedList)),
       ),
     );
   }
