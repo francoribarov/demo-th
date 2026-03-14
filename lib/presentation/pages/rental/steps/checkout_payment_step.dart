@@ -45,19 +45,6 @@ class CheckoutPaymentStep extends StatelessWidget {
                           .headlineMedium,
                     ),
                     const SizedBox(
-                      height: AppTheme.spacingXs,
-                    ),
-                    Text(
-                      'Seleccioná tu método de '
-                      'pago preferido.',
-                      style: AppTypography
-                          .bodyMedium
-                          .copyWith(
-                        color: AppColors.gameBrown
-                            .withOpacityValue(0.6),
-                      ),
-                    ),
-                    const SizedBox(
                       height: AppTheme.spacing2xl,
                     ),
                     PaymentMethodCard(

@@ -47,19 +47,6 @@ class CheckoutDeliveryStep
                           .headlineMedium,
                     ),
                     const SizedBox(
-                      height: AppTheme.spacingXs,
-                    ),
-                    Text(
-                      'Elegí cómo preferís '
-                      'recibir tu alquiler.',
-                      style: AppTypography
-                          .bodyMedium
-                          .copyWith(
-                        color: AppColors.gameBrown
-                            .withOpacityValue(0.6),
-                      ),
-                    ),
-                    const SizedBox(
                       height: AppTheme.spacing2xl,
                     ),
                     Row(
