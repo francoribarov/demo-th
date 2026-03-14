@@ -25,15 +25,26 @@ class RentalConfirmPage extends StatefulWidget {
   final String? endDate;
 
   @override
-  State<RentalConfirmPage> createState() => _RentalConfirmPageState();
+  State<RentalConfirmPage> createState() =>
+      _RentalConfirmPageState();
 }
 
-class _RentalConfirmPageState extends State<RentalConfirmPage> {
+class _RentalConfirmPageState
+    extends State<RentalConfirmPage> {
   final _pageController = PageController();
   int _currentStep = 0;
 
+  // Tracks the furthest step the user has
+  // legitimately reached via validation.
+  int _highestUnlockedStep = 0;
+
   static const _totalSteps = 4;
-  static const _stepLabels = ['Fechas', 'Pago', 'Entrega', 'Resumen'];
+  static const _stepLabels = [
+    'Fechas',
+    'Pago',
+    'Entrega',
+    'Resumen',
+  ];
   static const _stepIcons = [
     Icons.calendar_today,
     Icons.payments,
@@ -49,25 +60,50 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
 
   void _goToStep(int step) {
     if (step < 0 || step >= _totalSteps) return;
+    if (step > _highestUnlockedStep) return;
     _pageController.animateToPage(
       step,
-      duration: const Duration(milliseconds: 300),
+      duration:
+          const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
     setState(() => _currentStep = step);
   }
 
-  void _next() => _goToStep(_currentStep + 1);
+  void _tryNext(RentalState state) {
+    if (!_isStepValid(_currentStep, state)) {
+      _showValidationError(
+        _currentStep,
+        state,
+      );
+      return;
+    }
+    final next = _currentStep + 1;
+    if (next > _highestUnlockedStep) {
+      setState(
+        () => _highestUnlockedStep = next,
+      );
+    }
+    _goToStep(next);
+  }
+
   void _back() => _goToStep(_currentStep - 1);
 
-  bool _canAdvanceFromStep(int step, RentalState state) {
+  bool _isStepValid(
+    int step,
+    RentalState state,
+  ) {
     switch (step) {
       case 0:
-        return state.startDate != null && state.endDate != null;
+        return state.startDate != null &&
+            state.endDate != null;
       case 1:
         return state.paymentMethod.isNotEmpty;
       case 2:
-        if (state.isDelivery && state.deliveryAddress.trim().isEmpty) {
+        if (state.isDelivery &&
+            state.deliveryAddress
+                .trim()
+                .isEmpty) {
           return false;
         }
         return true;
@@ -76,24 +112,58 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
     }
   }
 
+  void _showValidationError(
+    int step,
+    RentalState state,
+  ) {
+    String? msg;
+    switch (step) {
+      case 0:
+        if (state.startDate == null ||
+            state.endDate == null) {
+          msg = 'Seleccioná las fechas de '
+              'inicio y fin del alquiler.';
+        }
+      case 2:
+        if (state.isDelivery &&
+            state.deliveryAddress
+                .trim()
+                .isEmpty) {
+          msg = 'Ingresá una dirección '
+              'de entrega.';
+        }
+    }
+    if (msg != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (prev, curr) =>
-          prev.snackbarMessage != curr.snackbarMessage &&
+          prev.snackbarMessage !=
+              curr.snackbarMessage &&
           curr.snackbarMessage != null,
       listener: (context, state) {
         final message = state.snackbarMessage;
         if (message == null) return;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(message)));
-        context.read<RentalBloc>().add(const RentalEvent.messageShown());
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+        context.read<RentalBloc>().add(
+              const RentalEvent.messageShown(),
+            );
       },
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(color: AppColors.gameRust),
+              child: CircularProgressIndicator(
+                color: AppColors.gameRust,
+              ),
             ),
           );
         }
@@ -103,13 +173,21 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
           return Scaffold(
             appBar: AppBar(
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(
+                  Icons.arrow_back,
+                ),
                 onPressed: () =>
-                    context.popOrGo('/publications/${widget.publicationId}'),
+                    context.popOrGo(
+                  '/publications/'
+                  '${widget.publicationId}',
+                ),
               ),
             ),
             body: Center(
-              child: Text(state.errorMessage ?? 'Publicación no encontrada'),
+              child: Text(
+                state.errorMessage ??
+                    'Publicación no encontrada',
+              ),
             ),
           );
         }
@@ -124,16 +202,23 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(
+                Icons.arrow_back,
+              ),
               onPressed: () {
                 if (_currentStep > 0) {
                   _back();
                 } else {
-                  context.popOrGo('/publications/${widget.publicationId}');
+                  context.popOrGo(
+                    '/publications/'
+                    '${widget.publicationId}',
+                  );
                 }
               },
             ),
-            title: Text(_stepLabels[_currentStep]),
+            title: Text(
+              _stepLabels[_currentStep],
+            ),
           ),
           body: Column(
             children: [
@@ -142,22 +227,28 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
                 totalSteps: _totalSteps,
                 labels: _stepLabels,
                 icons: _stepIcons,
-                onStepTapped: (step) {
-                  if (step < _currentStep) _goToStep(step);
-                },
+                onStepTapped: _goToStep,
               ),
               Expanded(
                 child: PageView(
                   controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (i) => setState(() => _currentStep = i),
+                  physics:
+                      const NeverScrollableScrollPhysics(),
+                  onPageChanged: (i) =>
+                      setState(
+                    () => _currentStep = i,
+                  ),
                   children: [
                     CheckoutDateStep(
                       publication: publication,
                       state: state,
                     ),
-                    CheckoutPaymentStep(state: state),
-                    CheckoutDeliveryStep(state: state),
+                    CheckoutPaymentStep(
+                      state: state,
+                    ),
+                    CheckoutDeliveryStep(
+                      state: state,
+                    ),
                     CheckoutReviewStep(
                       publication: publication,
                       state: state,
@@ -169,14 +260,21 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
               CheckoutBottomBar(
                 currentStep: _currentStep,
                 totalSteps: _totalSteps,
-                canAdvance: _canAdvanceFromStep(_currentStep, state),
+                canAdvance: _isStepValid(
+                  _currentStep,
+                  state,
+                ),
                 isSubmitting: state.isSubmitting,
-                onNext: _next,
+                onNext: () => _tryNext(state),
                 onBack: _back,
                 onSubmit: () => context
                     .read<RentalBloc>()
-                    .add(const RentalEvent.submitted()),
+                    .add(
+                      const RentalEvent
+                          .submitted(),
+                    ),
                 errorMessage: state.errorMessage,
+                totalPrice: state.total,
               ),
             ],
           ),

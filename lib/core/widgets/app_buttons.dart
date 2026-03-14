@@ -17,21 +17,33 @@ class AppPrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final disabled =
+        isLoading || onPressed == null;
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
-      style: expand
-          ? ElevatedButton.styleFrom(
-              minimumSize:
-                  const Size(double.infinity, 52),
-            )
-          : null,
+      style: ElevatedButton.styleFrom(
+        minimumSize: expand
+            ? const Size(double.infinity, 52)
+            : null,
+        disabledBackgroundColor: AppColors
+            .gameBrown
+            .withOpacityValue(0.12),
+        disabledForegroundColor: AppColors
+            .gameBrown
+            .withOpacityValue(0.35),
+      ).copyWith(
+        elevation: WidgetStateProperty.all(
+          disabled ? 0 : null,
+        ),
+      ),
       child: isLoading
           ? const SizedBox(
               width: 18,
               height: 18,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: AppColors.primaryForeground,
+                color:
+                    AppColors.primaryForeground,
               ),
             )
           : child,
@@ -39,7 +51,8 @@ class AppPrimaryButton extends StatelessWidget {
   }
 }
 
-class AppSecondaryButton extends StatelessWidget {
+class AppSecondaryButton
+    extends StatelessWidget {
   const AppSecondaryButton({
     required this.onPressed,
     required this.child,

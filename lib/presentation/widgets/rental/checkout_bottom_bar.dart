@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/core/widgets/app_buttons.dart';
 
 class CheckoutBottomBar extends StatelessWidget {
@@ -14,6 +15,7 @@ class CheckoutBottomBar extends StatelessWidget {
     required this.onBack,
     required this.onSubmit,
     this.errorMessage,
+    this.totalPrice,
     super.key,
   });
 
@@ -25,6 +27,7 @@ class CheckoutBottomBar extends StatelessWidget {
   final VoidCallback onBack;
   final VoidCallback onSubmit;
   final String? errorMessage;
+  final num? totalPrice;
 
   bool get _isLastStep =>
       currentStep == totalSteps - 1;
@@ -54,18 +57,47 @@ class CheckoutBottomBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (errorMessage != null) ...[
+          if (errorMessage != null)
             Padding(
               padding: const EdgeInsets.only(
                 bottom: AppTheme.spacingSm,
               ),
               child: Text(
                 errorMessage!,
-                style: AppTypography.bodySmall.copyWith(
+                style: AppTypography.bodySmall
+                    .copyWith(
                   color: AppColors.destructive,
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
+              ),
+            ),
+          if (_isLastStep &&
+              totalPrice != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: AppTheme.spacingMd,
+              ),
+              child: Row(
+                mainAxisAlignment:
+                    MainAxisAlignment
+                        .spaceBetween,
+                children: [
+                  Text(
+                    'Total',
+                    style:
+                        AppTypography.titleMedium,
+                  ),
+                  Text(
+                    CurrencyFormatter.formatUYU(
+                      totalPrice!,
+                    ),
+                    style: AppTypography.price
+                        .copyWith(
+                      color: AppColors.gameRust,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

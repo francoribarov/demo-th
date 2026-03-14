@@ -57,21 +57,9 @@ class CheckoutReviewStep
           const SizedBox(
             height: AppTheme.spacingXl,
           ),
-          PublicationSummaryCard(
-            publication: publication,
-          ),
-          const SizedBox(
-            height: AppTheme.spacingLg,
-          ),
-          _buildDatesSection(start, end),
-          _buildPaymentSection(),
-          _buildDeliverySection(),
-          if (state
-              .selectedFoodBundles.isNotEmpty)
-            _buildSnacksSection(),
-          const SizedBox(
-            height: AppTheme.spacingLg,
-          ),
+
+          // Price breakdown first so it's
+          // visible without scrolling
           PriceBreakdownCard(
             subtotal: state.subtotal,
             days: state.rentalDays,
@@ -81,6 +69,24 @@ class CheckoutReviewStep
             foodTotal: state.foodTotal,
             total: state.total,
           ),
+          const SizedBox(
+            height: AppTheme.spacingXl,
+          ),
+
+          PublicationSummaryCard(
+            publication: publication,
+          ),
+          const SizedBox(
+            height: AppTheme.spacingLg,
+          ),
+
+          _buildDatesSection(start, end),
+          _buildPaymentSection(),
+          _buildDeliverySection(),
+          if (state
+              .selectedFoodBundles.isNotEmpty)
+            _buildSnacksSection(),
+
           const SizedBox(
             height: AppTheme.spacing4xl,
           ),
@@ -211,7 +217,8 @@ class CheckoutReviewStep
                   bottom: AppTheme.spacingXs,
                 ),
                 child: Text(
-                  FoodBundleSelector.labelForId(b),
+                  FoodBundleSelector
+                      .labelForId(b),
                   style: AppTypography.bodySmall,
                 ),
               ),
