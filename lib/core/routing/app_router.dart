@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/di/injection.dart';
 import 'package:mobile_table_hopping/core/routing/go_router_refresh_stream.dart';
 import 'package:mobile_table_hopping/core/widgets/app_scaffold.dart';
@@ -75,31 +76,82 @@ class AppRouter {
 
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
   static final _shellNavigatorKey = GlobalKey<NavigatorState>();
+  static final Listenable _routerRefreshListenable = Listenable.merge([
+    GoRouterRefreshStream(getIt<AuthBloc>().stream),
+    getIt<TokenStorage>(),
+  ]);
+
+  static bool _isProtectedLocation({
+    required String location,
+    required String? routeTemplate,
+  }) {
+    const protectedRoutes = {
+      AppRoutes.publish,
+      AppRoutes.myPublications,
+      AppRoutes.rental,
+      AppRoutes.editPublication,
+    };
+
+    if (routeTemplate != null && protectedRoutes.contains(routeTemplate)) {
+      return true;
+    }
+
+    // Fallback for direct static paths if fullPath is null.
+    return location == AppRoutes.publish || location == AppRoutes.myPublications;
+  }
+
+  static bool _isAuthLocation(String location) {
+    return location == AppRoutes.login || location == AppRoutes.register;
+  }
+
+  static bool _isSafeRedirectLocation(String? location) {
+    if (location == null || location.trim().isEmpty) return false;
+    return location.startsWith('/') &&
+        !location.startsWith(AppRoutes.login) &&
+        !location.startsWith(AppRoutes.register);
+  }
+
+  static String _loginLocationWithFrom(String from) {
+    return '${AppRoutes.login}?from=${Uri.encodeComponent(from)}';
+  }
 
   /// Application router instance.
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.home,
     debugLogDiagnostics: true,
-    refreshListenable: GoRouterRefreshStream(getIt<AuthBloc>().stream),
+    refreshListenable: _routerRefreshListenable,
     redirect: (context, state) {
       final location = state.uri.path;
-
-      final isProtected = location == AppRoutes.publish ||
-          location == AppRoutes.myPublications ||
-          RegExp(r'^/publications/[^/]+/rental$').hasMatch(location) ||
-          RegExp(r'^/my-publications/[^/]+/edit$').hasMatch(location);
+      final isProtected = _isProtectedLocation(
+        location: location,
+        routeTemplate: state.fullPath,
+      );
+      final isAuthLocation = _isAuthLocation(location);
+      final requestedLocation = state.uri.toString();
 
       final authBloc = getIt<AuthBloc>();
       final authState = authBloc.state;
+      final tokenStorage = getIt<TokenStorage>();
+      final hasTokens = tokenStorage.getAccessToken() != null &&
+          tokenStorage.getRefreshToken() != null;
 
       if (authState.status == AuthStatus.unknown ||
           authState.isCheckingStatus) {
         return null;
       }
-      final isAuthed = authState.status == AuthStatus.authenticated;
+
+      final isAuthed = authState.status == AuthStatus.authenticated && hasTokens;
 
       if (!isAuthed && isProtected) {
+        return _loginLocationWithFrom(requestedLocation);
+      }
+
+      if (isAuthed && isAuthLocation) {
+        final from = state.uri.queryParameters['from'];
+        if (_isSafeRedirectLocation(from)) {
+          return from;
+        }
         return AppRoutes.home;
       }
 
