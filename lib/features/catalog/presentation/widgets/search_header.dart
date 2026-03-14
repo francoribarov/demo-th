@@ -289,8 +289,8 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
 
     if (hasStart && hasEnd) {
       final validation = DateRangeValidator.validateIsoRange(
-        startDate: start!,
-        endDate: end!,
+        startDate: start,
+        endDate: end,
       );
       if (!validation.isValid) {
         emit(
@@ -369,7 +369,7 @@ class _SearchSheetState extends State<SearchSheet> {
       helpText: 'Seleccioná el rango (mínimo 3 días)',
     );
 
-    if (picked != null) {
+    if (picked != null && mounted) {
       final startStr = DateFormatter.toIsoString(picked.start);
       final endStr = DateFormatter.toIsoString(picked.end);
       final validation = DateRangeValidator.validateIsoRange(
