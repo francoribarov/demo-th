@@ -128,6 +128,28 @@ class _RentalConfirmPageState
     }
   }
 
+  void _showSubmitErrorDialog(
+    BuildContext context,
+    String message,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'No pudimos enviar tu solicitud',
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () =>
+                Navigator.of(ctx).pop(),
+            child: const Text('Entendido'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showValidationError(
     int step,
     RentalState state,
@@ -157,10 +179,21 @@ class _RentalConfirmPageState
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (prev, curr) =>
-          prev.snackbarMessage !=
-              curr.snackbarMessage &&
-          curr.snackbarMessage != null,
+          (prev.snackbarMessage !=
+                  curr.snackbarMessage &&
+              curr.snackbarMessage != null) ||
+          (prev.isSubmitting &&
+              !curr.isSubmitting &&
+              curr.errorMessage != null),
       listener: (context, state) {
+        if (state.errorMessage != null &&
+            !state.isSubmitting) {
+          _showSubmitErrorDialog(
+            context,
+            state.errorMessage!,
+          );
+          return;
+        }
         final message = state.snackbarMessage;
         if (message == null) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -300,7 +333,6 @@ class _RentalConfirmPageState
                       const RentalEvent
                           .submitted(),
                     ),
-                errorMessage: state.errorMessage,
                 totalPrice: state.total,
               ),
             ],
