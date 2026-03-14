@@ -8,7 +8,6 @@ import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart'
 import 'package:mobile_table_hopping/presentation/widgets/rental/availability_date_selector.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/date_summary_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/food_bundle_selector.dart';
-import 'package:mobile_table_hopping/presentation/widgets/rental/publication_summary_card.dart';
 
 class CheckoutDateStep extends StatelessWidget {
   const CheckoutDateStep({
@@ -30,12 +29,6 @@ class CheckoutDateStep extends StatelessWidget {
         crossAxisAlignment:
             CrossAxisAlignment.start,
         children: [
-          PublicationSummaryCard(
-            publication: publication,
-          ),
-          const SizedBox(
-            height: AppTheme.spacing2xl,
-          ),
           Text(
             '¿Cuándo querés alquilar?',
             style: AppTypography.headlineMedium,
@@ -84,8 +77,11 @@ class CheckoutDateStep extends StatelessWidget {
             height: AppTheme.spacing2xl,
           ),
           Text(
-            'AGREGÁ SNACKS (OPCIONAL)',
-            style: AppTypography.sectionHeader,
+            'Agregá snacks (opcional)',
+            style: AppTypography.titleSmall.copyWith(
+              color: AppColors.gameBrown
+                  .withOpacityValue(0.6),
+            ),
           ),
           const SizedBox(
             height: AppTheme.spacingMd,

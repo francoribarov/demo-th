@@ -46,8 +46,8 @@ class CheckoutReviewStep
             height: AppTheme.spacingXs,
           ),
           Text(
-            'Revisá que todo esté correcto '
-            'antes de enviar.',
+            '¡Ya casi está! Revisá que '
+            'todo esté correcto.',
             style:
                 AppTypography.bodyMedium.copyWith(
               color: AppColors.gameBrown
@@ -119,7 +119,8 @@ class CheckoutReviewStep
               height: AppTheme.spacingXs,
             ),
             Text(
-              '${state.rentalDays} días',
+              '${state.rentalDays} '
+              '${state.rentalDays == 1 ? 'día' : 'días'}',
               style:
                   AppTypography.bodySmall.copyWith(
                 color: AppColors.gameBrown

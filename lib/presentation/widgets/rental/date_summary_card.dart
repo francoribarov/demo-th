@@ -54,7 +54,8 @@ class DateSummaryCard extends StatelessWidget {
                 width: AppTheme.spacingSm,
               ),
               Text(
-                '$rentalDays días',
+                '$rentalDays '
+                '${rentalDays == 1 ? 'día' : 'días'}',
                 style: AppTypography.titleMedium
                     .copyWith(
                   color: AppColors.gameRust,
@@ -95,7 +96,8 @@ class DateSummaryCard extends StatelessWidget {
             children: [
               Text(
                 '${CurrencyFormatter.formatUYU(pricePerDay)}'
-                '/día × $rentalDays días',
+                '/día × $rentalDays '
+                '${rentalDays == 1 ? 'día' : 'días'}',
                 style: AppTypography.bodyMedium
                     .copyWith(
                   color: AppColors.gameBrown
