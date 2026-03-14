@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Service for storing and retrieving authentication tokens.
-class TokenStorage {
+class TokenStorage extends ChangeNotifier {
   /// Creates a token storage backed by shared preferences.
   TokenStorage(this._prefs);
 
@@ -13,19 +14,22 @@ class TokenStorage {
   /// Save access token
   Future<void> saveAccessToken(String token) async {
     await _prefs.setString(_accessTokenKey, token);
+    notifyListeners();
   }
 
   /// Save refresh token
   Future<void> saveRefreshToken(String token) async {
     await _prefs.setString(_refreshTokenKey, token);
+    notifyListeners();
   }
 
   /// Save both tokens
   Future<void> saveTokens(String accessToken, String refreshToken) async {
     await Future.wait([
-      saveAccessToken(accessToken),
-      saveRefreshToken(refreshToken),
+      _prefs.setString(_accessTokenKey, accessToken),
+      _prefs.setString(_refreshTokenKey, refreshToken),
     ]);
+    notifyListeners();
   }
 
   /// Get access token
@@ -49,5 +53,6 @@ class TokenStorage {
       _prefs.remove(_accessTokenKey),
       _prefs.remove(_refreshTokenKey),
     ]);
+    notifyListeners();
   }
 }

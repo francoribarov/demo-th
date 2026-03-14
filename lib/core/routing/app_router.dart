@@ -76,6 +76,10 @@ class AppRouter {
 
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
   static final _shellNavigatorKey = GlobalKey<NavigatorState>();
+  static final Listenable _routerRefreshListenable = Listenable.merge([
+    GoRouterRefreshStream(getIt<AuthBloc>().stream),
+    getIt<TokenStorage>(),
+  ]);
   static final RegExp _rentalRoutePattern =
       RegExp(r'^/publications/[^/]+/rental$');
   static final RegExp _editPublicationRoutePattern =
@@ -108,7 +112,7 @@ class AppRouter {
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.home,
     debugLogDiagnostics: true,
-    refreshListenable: GoRouterRefreshStream(getIt<AuthBloc>().stream),
+    refreshListenable: _routerRefreshListenable,
     redirect: (context, state) {
       final location = state.uri.path;
       final isProtected = _isProtectedLocation(location);
@@ -124,10 +128,6 @@ class AppRouter {
       if (authState.status == AuthStatus.unknown ||
           authState.isCheckingStatus) {
         return null;
-      }
-
-      if (authState.status == AuthStatus.authenticated && !hasTokens) {
-        authBloc.add(const AuthEvent.started());
       }
 
       final isAuthed = authState.status == AuthStatus.authenticated && hasTokens;
