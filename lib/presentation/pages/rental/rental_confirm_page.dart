@@ -55,8 +55,12 @@ class _RentalConfirmPageState
   ) {
     switch (step) {
       case 0:
-        return state.startDate != null &&
-            state.endDate != null;
+        final start = state.startDate;
+        final end = state.endDate;
+        return start != null &&
+            start.isNotEmpty &&
+            end != null &&
+            end.isNotEmpty;
       case 1:
         return state.paymentMethod.isNotEmpty;
       case 2:

@@ -39,12 +39,20 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   final ConfirmRentalUseCase _confirmRentalUseCase;
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
+    final startDate =
+        (event.startDate?.isNotEmpty ?? false)
+            ? event.startDate
+            : null;
+    final endDate =
+        (event.endDate?.isNotEmpty ?? false)
+            ? event.endDate
+            : null;
     emit(
       state.copyWith(
         isLoading: true,
         errorMessage: null,
-        startDate: event.startDate,
-        endDate: event.endDate,
+        startDate: startDate,
+        endDate: endDate,
         ownerId: event.ownerId,
         deposit: event.deposit,
       ),
