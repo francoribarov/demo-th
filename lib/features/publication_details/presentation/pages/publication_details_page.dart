@@ -126,8 +126,14 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
 
               context.goToRental(
                 widget.publicationId,
-                startDate: state.checkStartDate,
-                endDate: state.checkEndDate,
+                startDate:
+                    state.checkStartDate.isEmpty
+                        ? null
+                        : state.checkStartDate,
+                endDate:
+                    state.checkEndDate.isEmpty
+                        ? null
+                        : state.checkEndDate,
                 ownerId: publication.ownerId,
                 deposit: publication.deposit,
               );

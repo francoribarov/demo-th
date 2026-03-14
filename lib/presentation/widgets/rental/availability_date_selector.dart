@@ -172,36 +172,68 @@ class _DateButton extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onClear;
 
+  String? get _formattedDate {
+    if (value == null || value!.isEmpty) {
+      return null;
+    }
+    final parsed = DateFormatter.parseIso(value);
+    if (parsed == null) return value;
+    return DateFormatter.formatShortDate(parsed);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final display = _formattedDate;
+    final hasValue = display != null;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.card,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.2)),
+          color: hasValue
+              ? AppColors.gameCream
+                  .withOpacityValue(0.5)
+              : AppColors.card,
+          borderRadius: BorderRadius.circular(
+            AppTheme.radiusLg,
+          ),
+          border: Border.all(
+            color: hasValue
+                ? AppColors.gameRust
+                    .withOpacityValue(0.3)
+                : AppColors.gameBrown
+                    .withOpacityValue(0.2),
+          ),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment:
+                  MainAxisAlignment
+                      .spaceBetween,
               children: [
                 Text(
                   label,
-                  style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.6),
+                  style: AppTypography.labelSmall
+                      .copyWith(
+                    color: hasValue
+                        ? AppColors.gameRust
+                        : AppColors.gameBrown
+                            .withOpacityValue(
+                            0.6,
+                          ),
                   ),
                 ),
-                if (value != null)
+                if (hasValue)
                   GestureDetector(
                     onTap: onClear,
                     child: Icon(
                       Icons.close,
                       size: 16,
-                      color: AppColors.gameBrown.withOpacityValue(0.4),
+                      color: AppColors.gameBrown
+                          .withOpacityValue(0.4),
                     ),
                   ),
               ],
@@ -211,15 +243,26 @@ class _DateButton extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    value ?? 'Seleccionar',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: value != null
+                    display ?? 'Seleccionar',
+                    style: AppTypography
+                        .bodyMedium
+                        .copyWith(
+                      color: hasValue
                           ? AppColors.gameBrown
-                          : AppColors.gameBrown.withOpacityValue(0.5),
+                          : AppColors.gameBrown
+                              .withOpacityValue(
+                              0.5,
+                            ),
                     ),
                   ),
                 ),
-                const Icon(Icons.calendar_today, size: 16),
+                Icon(
+                  Icons.calendar_today,
+                  size: 16,
+                  color: hasValue
+                      ? AppColors.gameRust
+                      : null,
+                ),
               ],
             ),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/widgets/app_alert_dialog.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/widgets/rental_request_card.dart';
 
@@ -95,24 +96,11 @@ class RentalRequestsView extends StatelessWidget {
     String requestId,
     String username,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('¿Aceptar solicitud?'),
-        content: Text(
-          '¿Confirmas que quieres aceptar la solicitud de $username?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Aceptar'),
-          ),
-        ],
-      ),
+    final confirmed = await AppAlertDialog.showConfirm(
+      context,
+      title: '¿Aceptar solicitud?',
+      content: '¿Confirmas que quieres aceptar la solicitud de $username?',
+      confirmText: 'Aceptar',
     );
     if ((confirmed ?? false) && context.mounted) {
       context.read<RentalRequestsBloc>().add(
@@ -126,27 +114,13 @@ class RentalRequestsView extends StatelessWidget {
     String requestId,
     String username,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('¿Rechazar solicitud?'),
-        content: Text(
+    final confirmed = await AppAlertDialog.showConfirm(
+      context,
+      title: '¿Rechazar solicitud?',
+      content:
           '¿Confirmas que quieres rechazar la solicitud de $username?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.destructive,
-            ),
-            child: const Text('Rechazar'),
-          ),
-        ],
-      ),
+      confirmText: 'Rechazar',
+      isDestructive: true,
     );
     if ((confirmed ?? false) && context.mounted) {
       context.read<RentalRequestsBloc>().add(

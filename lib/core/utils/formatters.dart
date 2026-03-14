@@ -40,6 +40,11 @@ class DateFormatter {
     }
   }
 
+  /// Formats a date for compact display (e.g., "14 mar").
+  static String formatShortDate(DateTime date) {
+    return _shortDateFormat.format(date);
+  }
+
   /// Formats a date for display (e.g., "lunes 4 de noviembre").
   static String formatFullDate(DateTime date) {
     return _fullDateFormat.format(date).toLowerCase();

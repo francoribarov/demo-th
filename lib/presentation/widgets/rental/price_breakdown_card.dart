@@ -45,7 +45,8 @@ class PriceBreakdownCard extends StatelessWidget {
           _PriceRow(
             label:
                 '${CurrencyFormatter.formatUYU(pricePerDay)}'
-                '/día × $days días',
+                '/día × $days '
+                '${days == 1 ? 'día' : 'días'}',
             value: subtotal,
           ),
           const SizedBox(

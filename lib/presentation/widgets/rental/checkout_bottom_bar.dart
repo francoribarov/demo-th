@@ -13,7 +13,6 @@ class CheckoutBottomBar extends StatelessWidget {
     required this.isSubmitting,
     required this.onNext,
     required this.onSubmit,
-    this.errorMessage,
     this.totalPrice,
     super.key,
   });
@@ -24,7 +23,6 @@ class CheckoutBottomBar extends StatelessWidget {
   final bool isSubmitting;
   final VoidCallback onNext;
   final VoidCallback onSubmit;
-  final String? errorMessage;
   final num? totalPrice;
 
   bool get _isLastStep =>
@@ -55,21 +53,6 @@ class CheckoutBottomBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (errorMessage != null)
-            Padding(
-              padding: const EdgeInsets.only(
-                bottom: AppTheme.spacingSm,
-              ),
-              child: Text(
-                errorMessage!,
-                style: AppTypography.bodySmall
-                    .copyWith(
-                  color: AppColors.destructive,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
           if (_isLastStep &&
               totalPrice != null) ...[
             Padding(

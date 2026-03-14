@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/widgets/app_alert_dialog.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/bloc/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_data_step.dart';
 import 'package:mobile_table_hopping/features/my_publications/presentation/pages/steps/edit_photos_step.dart';
@@ -172,63 +173,32 @@ class EditPublicationPage extends StatelessWidget {
     EditPublicationState state,
   ) async {
     if (state.hasChanges) {
-      await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('¿Descartar cambios?'),
-          content: const Text(
+      final discard = await AppAlertDialog.showConfirm(
+        context,
+        title: '¿Descartar cambios?',
+        confirmText: 'Descartar',
+        content:
             'Tienes cambios sin guardar. ¿Estás seguro que quieres salir?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-                context.pop();
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.destructive,
-              ),
-              child: const Text('Descartar'),
-            ),
-          ],
-        ),
+        isDestructive: true,
       );
+      if (context.mounted && (discard ?? false)) context.pop();
     } else {
       context.pop();
     }
   }
 
   Future<void> _showDeleteConfirmation(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('¿Eliminar publicación?'),
-        content: const Text(
-          'Esta acción no se puede deshacer. ¿Estás seguro que quieres eliminar esta publicación?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-              context
-                  .read<EditPublicationBloc>()
-                  .add(const EditPublicationEvent.delete());
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.destructive,
-            ),
-            child: const Text('Eliminar'),
-          ),
-        ],
-      ),
+    await AppAlertDialog.showConfirm(
+      context,
+      title: '¿Eliminar publicación?',
+      content:
+          'Esta acción no se puede deshacer. ¿Estás seguro que quieres '
+          'eliminar esta publicación?',
+      confirmText: 'Eliminar',
+      isDestructive: true,
+      onConfirm: () => context
+          .read<EditPublicationBloc>()
+          .add(const EditPublicationEvent.delete()),
     );
   }
 }

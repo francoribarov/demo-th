@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/routing/app_router.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/widgets/app_alert_dialog.dart';
 import 'package:mobile_table_hopping/presentation/blocs/rental/rental_bloc.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/steps/checkout_date_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/steps/checkout_delivery_step.dart';
@@ -25,14 +28,13 @@ class RentalConfirmPage extends StatefulWidget {
   final String? endDate;
 
   @override
-  State<RentalConfirmPage> createState() =>
-      _RentalConfirmPageState();
+  State<RentalConfirmPage> createState() => _RentalConfirmPageState();
 }
 
-class _RentalConfirmPageState
-    extends State<RentalConfirmPage> {
+class _RentalConfirmPageState extends State<RentalConfirmPage> {
   final _pageController = PageController();
   int _currentStep = 0;
+  bool _isAnimating = false;
 
   static const _totalSteps = 4;
   static const _stepLabels = [
@@ -54,15 +56,16 @@ class _RentalConfirmPageState
   ) {
     switch (step) {
       case 0:
-        return state.startDate != null &&
-            state.endDate != null;
+        final start = state.startDate;
+        final end = state.endDate;
+        return start != null &&
+            start.isNotEmpty &&
+            end != null &&
+            end.isNotEmpty;
       case 1:
         return state.paymentMethod.isNotEmpty;
       case 2:
-        if (state.isDelivery &&
-            state.deliveryAddress
-                .trim()
-                .isEmpty) {
+        if (state.isDelivery && state.deliveryAddress.trim().isEmpty) {
           return false;
         }
         return true;
@@ -83,11 +86,18 @@ class _RentalConfirmPageState
   }
 
   void _animateToStep(int step) {
-    _pageController.animateToPage(
-      step,
-      duration:
-          const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+    if (_isAnimating) return;
+    _isAnimating = true;
+    unawaited(
+      _pageController
+          .animateToPage(
+        step,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      )
+          .whenComplete(() {
+        if (mounted) _isAnimating = false;
+      }),
     );
     setState(() => _currentStep = step);
   }
@@ -100,6 +110,7 @@ class _RentalConfirmPageState
   }
 
   void _tryNext(RentalState state) {
+    if (_isAnimating) return;
     if (!_isStepValid(_currentStep, state)) {
       _showValidationError(
         _currentStep,
@@ -116,6 +127,15 @@ class _RentalConfirmPageState
     }
   }
 
+  void _showSubmitErrorDialog(BuildContext context) {
+    unawaited(
+      AppAlertDialog.showAlert(
+        context,
+        title: 'No pudimos enviar tu solicitud',
+      ),
+    );
+  }
+
   void _showValidationError(
     int step,
     RentalState state,
@@ -126,10 +146,7 @@ class _RentalConfirmPageState
         msg = 'Seleccioná las fechas de '
             'inicio y fin del alquiler.';
       case 2:
-        if (state.isDelivery &&
-            state.deliveryAddress
-                .trim()
-                .isEmpty) {
+        if (state.isDelivery && state.deliveryAddress.trim().isEmpty) {
           msg = 'Ingresá una dirección '
               'de entrega.';
         }
@@ -145,10 +162,16 @@ class _RentalConfirmPageState
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (prev, curr) =>
-          prev.snackbarMessage !=
-              curr.snackbarMessage &&
-          curr.snackbarMessage != null,
+          (prev.snackbarMessage != curr.snackbarMessage &&
+              curr.snackbarMessage != null) ||
+          (prev.isSubmitting &&
+              !curr.isSubmitting &&
+              curr.errorMessage != null),
       listener: (context, state) {
+        if (state.errorMessage != null && !state.isSubmitting) {
+          _showSubmitErrorDialog(context);
+          return;
+        }
         final message = state.snackbarMessage;
         if (message == null) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -177,8 +200,7 @@ class _RentalConfirmPageState
                 icon: const Icon(
                   Icons.arrow_back,
                 ),
-                onPressed: () =>
-                    context.popOrGo(
+                onPressed: () => context.popOrGo(
                   '/publications/'
                   '${widget.publicationId}',
                 ),
@@ -186,8 +208,7 @@ class _RentalConfirmPageState
             ),
             body: Center(
               child: Text(
-                state.errorMessage ??
-                    'Publicación no encontrada',
+                state.errorMessage ?? 'Publicación no encontrada',
               ),
             ),
           );
@@ -200,93 +221,91 @@ class _RentalConfirmPageState
           );
         }
 
-        // If state changed and the user is
-        // now past the max reachable step
-        // (e.g. cleared dates while on step 2),
-        // snap them back.
         final max = _maxReachableStep(state);
-        if (_currentStep > max) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) {
-            _animateToStep(max);
+        if (_currentStep > max && !_isAnimating) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && _currentStep > max) {
+              _animateToStep(max);
+            }
           });
         }
 
-        return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
+        return PopScope(
+          canPop: _currentStep == 0,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && _currentStep > 0) {
+              _back();
+            }
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                ),
+                onPressed: () {
+                  if (_currentStep > 0) {
+                    _back();
+                  } else {
+                    context.popOrGo(
+                      '/publications/'
+                      '${widget.publicationId}',
+                    );
+                  }
+                },
               ),
-              onPressed: () {
-                if (_currentStep > 0) {
-                  _back();
-                } else {
-                  context.popOrGo(
-                    '/publications/'
-                    '${widget.publicationId}',
-                  );
-                }
-              },
-            ),
-            title: Text(
-              _stepLabels[_currentStep],
-            ),
-          ),
-          body: Column(
-            children: [
-              CheckoutProgressBar(
-                currentStep: _currentStep,
-                totalSteps: _totalSteps,
+              title: Text(
+                _stepLabels[_currentStep],
               ),
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  physics:
-                      const NeverScrollableScrollPhysics(),
-                  onPageChanged: (i) =>
-                      setState(
-                    () => _currentStep = i,
+            ),
+            body: Column(
+              children: [
+                CheckoutProgressBar(
+                  currentStep: _currentStep,
+                  totalSteps: _totalSteps,
+                ),
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    onPageChanged: (i) => setState(
+                      () => _currentStep = i,
+                    ),
+                    children: [
+                      CheckoutDateStep(
+                        publication: publication,
+                        state: state,
+                      ),
+                      CheckoutPaymentStep(
+                        state: state,
+                      ),
+                      CheckoutDeliveryStep(
+                        state: state,
+                      ),
+                      CheckoutReviewStep(
+                        publication: publication,
+                        state: state,
+                        onEditStep: (step) => _goToStep(step, state),
+                      ),
+                    ],
                   ),
-                  children: [
-                    CheckoutDateStep(
-                      publication: publication,
-                      state: state,
-                    ),
-                    CheckoutPaymentStep(
-                      state: state,
-                    ),
-                    CheckoutDeliveryStep(
-                      state: state,
-                    ),
-                    CheckoutReviewStep(
-                      publication: publication,
-                      state: state,
-                      onEditStep: (step) =>
-                          _goToStep(step, state),
-                    ),
-                  ],
                 ),
-              ),
-              CheckoutBottomBar(
-                currentStep: _currentStep,
-                totalSteps: _totalSteps,
-                canAdvance: _isStepValid(
-                  _currentStep,
-                  state,
+                CheckoutBottomBar(
+                  currentStep: _currentStep,
+                  totalSteps: _totalSteps,
+                  canAdvance: _isStepValid(
+                    _currentStep,
+                    state,
+                  ),
+                  isSubmitting: state.isSubmitting,
+                  onNext: () => _tryNext(state),
+                  onSubmit: () => context.read<RentalBloc>().add(
+                        const RentalEvent.submitted(),
+                      ),
+                  totalPrice: state.total,
                 ),
-                isSubmitting: state.isSubmitting,
-                onNext: () => _tryNext(state),
-                onSubmit: () => context
-                    .read<RentalBloc>()
-                    .add(
-                      const RentalEvent
-                          .submitted(),
-                    ),
-                errorMessage: state.errorMessage,
-                totalPrice: state.total,
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

@@ -35,7 +35,7 @@ class RentalSuccessView extends StatelessWidget {
                       .withOpacityValue(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.check_circle,
                   size: 64,
                   color: AppColors.success,
@@ -53,9 +53,8 @@ class RentalSuccessView extends StatelessWidget {
                 height: AppTheme.spacingLg,
               ),
               Text(
-                'Tu solicitud de alquiler de '
-                '${publication.title} fue enviada. '
-                'El propietario deberá aceptarla.',
+                'Tu pedido de ${publication.title} '
+                'fue enviado al propietario.',
                 style:
                     AppTypography.bodyLarge.copyWith(
                   color: AppColors.gameBrown
@@ -67,8 +66,7 @@ class RentalSuccessView extends StatelessWidget {
                 height: AppTheme.spacingSm,
               ),
               Text(
-                'Te notificaremos cuando el '
-                'propietario acepte tu solicitud.',
+                'Te avisamos apenas lo confirme.',
                 style: AppTypography.bodyMedium
                     .copyWith(
                   color: AppColors.gameBrown
