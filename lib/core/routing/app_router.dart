@@ -10,6 +10,7 @@ import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/catalog/catalog_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/my_publications_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/my_publications/owner_rentals/owner_rentals_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_reviews_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publication_details/game_rules_bloc.dart';

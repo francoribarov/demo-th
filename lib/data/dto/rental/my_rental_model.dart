@@ -20,6 +20,7 @@ abstract class MyRentalModel
     required String status,
     required String gameTitle,
     required String renterName,
+    @JsonKey(name: 'dropOffTicketId') String? dropOffTicketId,
     @JsonKey(name: 'finalPrice') double? finalPrice,
   }) = _MyRentalModel;
 
@@ -46,6 +47,7 @@ abstract class MyRentalModel
       startDate: DateTime.parse(startDate),
       endDate: DateTime.parse(endDate),
       totalPrice: finalPrice ?? 0.0,
+      dropOffTicketId: dropOffTicketId,
       status: _parseStatus(status),
     );
   }

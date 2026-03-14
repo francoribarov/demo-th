@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/data/datasource/rental/rental_data_source.dart';
 import 'package:mobile_table_hopping/data/dto/rental/drop_off_body.dart';
 import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
+import 'package:mobile_table_hopping/data/dto/rental/rental_drop_off_response.dart';
 import 'package:mobile_table_hopping/data/mapper/rental/rental_to_data_model.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
@@ -58,6 +59,32 @@ class RentalRepositoryImpl extends BaseRepository implements RentalRepository {
           dropOffDate: DateTime.now().toIso8601String().split('T').first,
           images: [imagePath],
         ),
+      ),
+    );
+  }
+
+  @override
+  Future<Either<DomainException, RentalDropOffResponse>> getDropOffTicket(
+    String rentalId,
+  ) {
+    return executeDataSource<RentalDropOffResponse, RentalDropOffResponse>(
+      function: () => _dataSource.getDropOffTicket(rentalId),
+    );
+  }
+
+  @override
+  Future<Either<DomainException, void>> dropOffResponse(
+    String rentalId,
+    String status,
+    String ticketId, {
+    String? rejectionReason,
+  }) {
+    return executeVoidDataSource(
+      function: () => _dataSource.dropOffResponse(
+        rentalId,
+        status,
+        ticketId,
+        rejectionReason: rejectionReason,
       ),
     );
   }

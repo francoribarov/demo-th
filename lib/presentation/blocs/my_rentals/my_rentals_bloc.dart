@@ -47,9 +47,22 @@ class MyRentalsBloc extends Bloc<MyRentalsEvent, MyRentalsState> {
     _DropOffRequested event,
     Emitter<MyRentalsState> emit,
   ) {
-    // This could just track the processing state while the drop-off flows happens
-    // Currently, drop-off is handled by its own BLoC, so we might just use this
-    // to refresh the list after a successful drop-off.
+    if (state is! _Success) return;
+    final currentState = state as _Success;
+
+    final updatedRentals = currentState.rentals.map((rental) {
+      if (rental.id == event.rentalId) {
+        return rental.copyWith(status: RentalRequestStatus.returned);
+      }
+      return rental;
+    }).toList();
+
+    emit(
+      currentState.copyWith(
+        rentals: updatedRentals,
+        feedbackMessage: 'Juego devuelto con éxito.',
+      ),
+    );
   }
 
   void _onMessageDismissed(

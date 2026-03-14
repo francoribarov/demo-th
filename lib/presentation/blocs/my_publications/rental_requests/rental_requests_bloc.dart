@@ -75,12 +75,9 @@ class RentalRequestsBloc
       },
       // Success case
       (_) {
-        final updatedRequests = currentState.requests.map((r) {
-          if (r.id == event.requestId) {
-            return r.copyWith(status: RentalRequestStatus.accepted);
-          }
-          return r;
-        }).toList();
+        final updatedRequests = currentState.requests
+            .where((r) => r.id != event.requestId)
+            .toList();
         emit(
           RentalRequestsState.success(
             updatedRequests,
@@ -120,12 +117,9 @@ class RentalRequestsBloc
       },
       // Success case
       (_) {
-        final updatedRequests = currentState.requests.map((r) {
-          if (r.id == event.requestId) {
-            return r.copyWith(status: RentalRequestStatus.rejected);
-          }
-          return r;
-        }).toList();
+        final updatedRequests = currentState.requests
+            .where((r) => r.id != event.requestId)
+            .toList();
         emit(
           RentalRequestsState.success(
             updatedRequests,

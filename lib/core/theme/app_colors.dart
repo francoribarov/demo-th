@@ -91,6 +91,25 @@ class AppColors {
   /// Border token for highlighted chips.
   static const Color goldBorder = Color(0xFFF3D58A);
 
+  // Rental status semantic colors
+  /// Pending status color (amber/orange).
+  static const Color statusPending = Color(0xFFF59E0B);
+
+  /// Accepted status color (green).
+  static const Color statusAccepted = Color(0xFF22C55E);
+
+  /// Active status color (blue).
+  static const Color statusActive = Color(0xFF3B82F6);
+
+  /// Returned status color (navy).
+  static const Color statusReturned = gameNavy;
+
+  /// Finished status color (muted).
+  static const Color statusFinished = mutedForeground;
+
+  /// Rejected / cancelled status color (destructive red).
+  static const Color statusRejected = destructive;
+
   // Semantic text colors (gameBrown at fixed opacities)
   /// Secondary text — gameBrown at 80% opacity.
   static const Color textSecondary = Color(0xCC805D40);

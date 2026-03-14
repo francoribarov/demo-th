@@ -3,7 +3,15 @@ import 'package:mobile_table_hopping/domain/model/my_publications/rental_request
 
 part 'rental_request.freezed.dart';
 
-enum RentalRequestStatus { pending, accepted, rejected }
+enum RentalRequestStatus {
+  pending,
+  accepted,
+  active,
+  returned,
+  finished,
+  cancelled,
+  rejected,
+}
 
 @freezed
 abstract class RentalRequest with _$RentalRequest {
@@ -15,5 +23,6 @@ abstract class RentalRequest with _$RentalRequest {
     required DateTime endDate,
     required double totalPrice,
     required RentalRequestStatus status,
+    String? dropOffTicketId,
   }) = _RentalRequest;
 }

@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
+import 'package:mobile_table_hopping/data/dto/rental/rental_drop_off_response.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
 
@@ -40,4 +41,17 @@ abstract class RentalRepository {
     String rentalId,
     String imagePath,
   );
+
+  /// Retrieves the drop-off ticket for a given rental.
+  Future<Either<DomainException, RentalDropOffResponse>> getDropOffTicket(
+    String rentalId,
+  );
+
+  /// Responds to a drop-off request (owner).
+  Future<Either<DomainException, void>> dropOffResponse(
+    String rentalId,
+    String status,
+    String ticketId, {
+    String? rejectionReason,
+  });
 }

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/data/dto/rental/my_rental_model.dart';
+import 'package:mobile_table_hopping/data/dto/rental/rental_drop_off_response.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'rental_service.g.dart';
@@ -29,6 +30,23 @@ abstract class RentalService {
   /// POST /api/rentals/{id}/drop-off
   @POST('/api/rentals/{id}/drop-off')
   Future<void> dropOffRental(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
+  /// Retrieves the drop-off ticket for a rental.
+  ///
+  /// GET /api/rentals/{id}/drop-off
+  @GET('/api/rentals/{id}/drop-off')
+  Future<RentalDropOffResponse> getDropOffTicket(
+    @Path('id') String id,
+  );
+
+  /// Responds to a drop-off request (owner).
+  ///
+  /// POST /api/rentals/{id}/drop-off-response
+  @POST('/api/rentals/{id}/drop-off-response')
+  Future<void> dropOffResponse(
     @Path('id') String id,
     @Body() Map<String, dynamic> body,
   );

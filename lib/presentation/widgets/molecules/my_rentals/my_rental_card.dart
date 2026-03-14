@@ -8,12 +8,20 @@ import 'package:mobile_table_hopping/domain/model/my_publications/rental_request
 class MyRentalCard extends StatelessWidget {
   const MyRentalCard({
     required this.rental,
-    required this.onDropOff,
+    this.onDropOff,
+    this.showDropOffButton = true,
+    this.showOwnerActionButtons = false,
+    this.onConfirmOwner,
+    this.onReportOwner,
     super.key,
   });
 
   final RentalRequest rental;
-  final VoidCallback onDropOff;
+  final VoidCallback? onDropOff;
+  final bool showDropOffButton;
+  final bool showOwnerActionButtons;
+  final VoidCallback? onConfirmOwner;
+  final VoidCallback? onReportOwner;
 
   @override
   Widget build(BuildContext context) {
@@ -136,12 +144,51 @@ class MyRentalCard extends StatelessWidget {
                   label: const Text('Devolver juego'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.gameRust,
-                    foregroundColor: Colors.white,
+                    foregroundColor: AppColors.primaryForeground,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
                 ),
+              ),
+            ],
+            if (showOwnerActionButtons &&
+                rental.status == RentalRequestStatus.returned) ...[
+              const SizedBox(height: 16),
+              const Divider(height: 1),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onReportOwner,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.error,
+                        foregroundColor: AppColors.primaryForeground,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                      child: const Text('Reportar'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onConfirmOwner,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.primaryForeground,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                      child: const Text('Confirmar'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ],
@@ -163,14 +210,26 @@ class _StatusBadge extends StatelessWidget {
 
     switch (status) {
       case RentalRequestStatus.pending:
-        color = Colors.orange;
+        color = AppColors.statusPending;
         label = 'Pendiente';
       case RentalRequestStatus.accepted:
-        color = Colors.green;
-        label = 'Activo';
+        color = AppColors.statusAccepted;
+        label = 'Aceptado';
       case RentalRequestStatus.rejected:
-        color = Colors.red;
-        label = 'Devuelto / Rechazado';
+        color = AppColors.statusRejected;
+        label = 'Rechazado';
+      case RentalRequestStatus.active:
+        color = AppColors.statusActive;
+        label = 'Activo';
+      case RentalRequestStatus.returned:
+        color = AppColors.statusReturned;
+        label = 'Devuelto';
+      case RentalRequestStatus.finished:
+        color = AppColors.statusFinished;
+        label = 'Completado';
+      case RentalRequestStatus.cancelled:
+        color = AppColors.statusRejected;
+        label = 'Cancelado';
     }
 
     return Container(
