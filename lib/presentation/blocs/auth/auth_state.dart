@@ -21,6 +21,7 @@ abstract class AuthState with _$AuthState {
     AuthSession? session,
     @Default(false) bool isCheckingStatus,
     String? errorMessage,
+    FeedbackNotice? sessionNotice,
 
     // Login
     @Default('') String loginEmail,

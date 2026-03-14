@@ -1,4 +1,15 @@
+import 'dart:developer' as dev;
+
 import 'package:intl/intl.dart';
+
+/// Parses all integers from [s] (shared by [DurationParser] and [PlayersParser]).
+List<int> _parseInts(String s) {
+  return RegExp(r'\d+')
+      .allMatches(s)
+      .map((m) => int.tryParse(m.group(0) ?? ''))
+      .whereType<int>()
+      .toList();
+}
 
 /// Currency and number formatting utilities.
 class CurrencyFormatter {
@@ -34,8 +45,14 @@ class DateFormatter {
     try {
       final fromDate = DateTime.parse(from);
       final toDate = DateTime.parse(to);
-      return '${_shortDateFormat.format(fromDate)} al ${_shortDateFormat.format(toDate)}';
-    } on Exception catch (_) {
+      return '${_shortDateFormat.format(fromDate)} al '
+          '${_shortDateFormat.format(toDate)}';
+    } on Exception catch (e, st) {
+      dev.log(
+        'DateFormatter.formatRange: invalid input "$from" – "$to"',
+        error: e,
+        stackTrace: st,
+      );
       return '$from - $to';
     }
   }
@@ -55,7 +72,12 @@ class DateFormatter {
     if (dateStr == null || dateStr.isEmpty) return null;
     try {
       return DateTime.parse(dateStr);
-    } on Exception catch (_) {
+    } on Exception catch (e, st) {
+      dev.log(
+        'DateFormatter.parseIso: invalid input "$dateStr"',
+        error: e,
+        stackTrace: st,
+      );
       return null;
     }
   }
@@ -65,17 +87,24 @@ class DateFormatter {
 class TextNormalizer {
   TextNormalizer._();
 
+  static final RegExp _aAccents = RegExp('[áàâäãāăąå]');
+  static final RegExp _eAccents = RegExp('[éèêëēėę]');
+  static final RegExp _iAccents = RegExp('[íìîïīį]');
+  static final RegExp _oAccents = RegExp('[óòôöõōőø]');
+  static final RegExp _uAccents = RegExp('[úùûüūů]');
+  static const String _nAccent = 'ñ';
+
   /// Normalizes text for search comparison.
   /// Removes accents and converts to lowercase.
   static String normalize(String value) {
     return value
         .toLowerCase()
-        .replaceAll(RegExp('[áàâä]'), 'a')
-        .replaceAll(RegExp('[éèêë]'), 'e')
-        .replaceAll(RegExp('[íìîï]'), 'i')
-        .replaceAll(RegExp('[óòôö]'), 'o')
-        .replaceAll(RegExp('[úùûü]'), 'u')
-        .replaceAll(RegExp('[ñ]'), 'n');
+        .replaceAll(_aAccents, 'a')
+        .replaceAll(_eAccents, 'e')
+        .replaceAll(_iAccents, 'i')
+        .replaceAll(_oAccents, 'o')
+        .replaceAll(_uAccents, 'u')
+        .replaceAll(_nAccent, 'n');
   }
 }
 
@@ -85,15 +114,9 @@ class DurationParser {
 
   /// Parses duration string (e.g., "60-90 min") to average minutes.
   static int? parseMinutes(String duration) {
-    final matches = RegExp(r'\d+').allMatches(duration);
-    final numbers = matches
-        .map((m) => int.tryParse(m.group(0) ?? ''))
-        .whereType<int>()
-        .toList();
-
+    final numbers = _parseInts(duration);
     if (numbers.isEmpty) return null;
     if (numbers.length == 1) return numbers.first;
-
     // Return average for ranges
     return (numbers.reduce((a, b) => a + b) / numbers.length).round();
   }
@@ -105,12 +128,7 @@ class PlayersParser {
 
   /// Parses players string (e.g., "2-4 jugadores") to min/max range.
   static ({int? min, int? max}) parseRange(String players) {
-    final matches = RegExp(r'\d+').allMatches(players);
-    final numbers = matches
-        .map((m) => int.tryParse(m.group(0) ?? ''))
-        .whereType<int>()
-        .toList();
-
+    final numbers = _parseInts(players);
     if (numbers.isEmpty) return (min: null, max: null);
     if (numbers.length == 1) return (min: numbers.first, max: numbers.first);
 

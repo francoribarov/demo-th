@@ -11,6 +11,7 @@ import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_he
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Login screen for email/password authentication.
 class LoginPage extends StatefulWidget {
@@ -33,6 +34,23 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isPasswordVisible = false;
   bool _didClearErrors = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // The sessionExpired event may be emitted before this page mounts
+    // (during the router redirect), so the BlocConsumer won't catch it.
+    // Check for a pending notice on the first frame when ScaffoldMessenger
+    // is available.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final notice = context.read<AuthBloc>().state.sessionNotice;
+      if (notice != null) {
+        FeedbackMessenger.showWarning(context, message: notice.message);
+        context.read<AuthBloc>().add(const AuthEvent.clearSessionNotice());
+      }
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -68,10 +86,20 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listenWhen: (previous, current) =>
-          previous.status != current.status && current.isAuthenticated,
+          (previous.status != current.status && current.isAuthenticated) ||
+          (previous.sessionNotice != current.sessionNotice &&
+              current.sessionNotice != null),
       listener: (context, state) {
+        if (state.sessionNotice != null) {
+          FeedbackMessenger.showWarning(
+            context,
+            message: state.sessionNotice!.message,
+          );
+          context.read<AuthBloc>().add(const AuthEvent.clearSessionNotice());
+          return;
+        }
         final redirectTo = widget.from;
         if (redirectTo != null &&
             redirectTo.trim().isNotEmpty &&
@@ -82,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           context.goHome();
         }
       },
-      child: Scaffold(
+      builder: (context, _) => Scaffold(
         appBar: PageAppBar(
           title: const Text('Iniciar sesión'),
           leadingType: PageAppBarLeadingType.close,

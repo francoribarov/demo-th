@@ -55,4 +55,10 @@ abstract class AuthEvent with _$AuthEvent {
 
   /// Clears any surfaced error messages.
   const factory AuthEvent.clearErrors() = _ClearErrors;
+
+  /// Signals the session was invalidated externally (token expiry).
+  const factory AuthEvent.sessionExpired() = _SessionExpired;
+
+  /// Clears the session-expired notice after it has been shown.
+  const factory AuthEvent.clearSessionNotice() = _ClearSessionNotice;
 }
