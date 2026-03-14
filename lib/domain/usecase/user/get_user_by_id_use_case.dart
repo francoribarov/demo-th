@@ -17,7 +17,7 @@ class GetUserByIdUseCase {
       return Right(user);
     } on DomainException catch (e) {
       return Left(e);
-    } catch (e) {
+    } on Exception catch (e) {
       return Left(DomainException(message: e.toString()));
     }
   }

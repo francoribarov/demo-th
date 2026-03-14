@@ -86,7 +86,8 @@ class _PublicationDetailsPageState extends State<PublicationDetailsPage>
                       PublicationDetailsInfoHeader(
                         publication: publication,
                         gameDetail: gameDetail,
-                        ownerDisplayName: state.ownerDisplayName ?? 'Propietario',
+                        ownerDisplayName:
+                            state.ownerDisplayName ?? 'Propietario',
                         tabController: _tabController,
                         onOwnerTap: () => context.goToGameOwner(publication.id),
                       ),

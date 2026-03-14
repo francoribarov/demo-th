@@ -31,7 +31,7 @@ class MyRentalsList extends StatelessWidget {
             rental: rental,
             onDropOff: () async {
               final success = await showDropOffBottomSheet(context, rental.id);
-              if (context.mounted && success == true) {
+              if (context.mounted && success != null && success) {
                 context.read<MyRentalsBloc>().add(
                   MyRentalsEvent.dropOffSuccess(rental.id),
                 );

@@ -10,12 +10,18 @@ class MyRentalCard extends StatelessWidget {
     required this.rental,
     this.onDropOff,
     this.showDropOffButton = true,
+    this.showOwnerActionButtons = false,
+    this.onConfirmOwner,
+    this.onReportOwner,
     super.key,
   });
 
   final RentalRequest rental;
   final VoidCallback? onDropOff;
   final bool showDropOffButton;
+  final bool showOwnerActionButtons;
+  final VoidCallback? onConfirmOwner;
+  final VoidCallback? onReportOwner;
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +152,45 @@ class MyRentalCard extends StatelessWidget {
                 ),
               ),
             ],
+            if (showOwnerActionButtons &&
+                rental.status == RentalRequestStatus.returned) ...[
+              const SizedBox(height: 16),
+              const Divider(height: 1),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onReportOwner,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.error,
+                        foregroundColor: AppColors.primaryForeground,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                      child: const Text('Reportar'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: onConfirmOwner,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.primaryForeground,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                      child: const Text('Confirmar'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -168,22 +213,22 @@ class _StatusBadge extends StatelessWidget {
         color = AppColors.statusPending;
         label = 'Pendiente';
       case RentalRequestStatus.accepted:
-        color = Colors.green;
+        color = AppColors.statusAccepted;
         label = 'Aceptado';
       case RentalRequestStatus.rejected:
-        color = Colors.red;
+        color = AppColors.statusRejected;
         label = 'Rechazado';
       case RentalRequestStatus.active:
-        color = Colors.blue;
+        color = AppColors.statusActive;
         label = 'Activo';
       case RentalRequestStatus.returned:
-        color = Colors.orange;
+        color = AppColors.statusReturned;
         label = 'Devuelto';
       case RentalRequestStatus.finished:
-        color = Colors.grey;
+        color = AppColors.statusFinished;
         label = 'Completado';
       case RentalRequestStatus.cancelled:
-        color = Colors.red;
+        color = AppColors.statusRejected;
         label = 'Cancelado';
     }
 

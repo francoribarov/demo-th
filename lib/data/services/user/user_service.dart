@@ -7,6 +7,7 @@ part 'user_service.g.dart';
 
 /// Retrofit service for user-related API endpoints.
 @RestApi()
+// ignore: one_member_abstracts
 abstract class UserService {
   /// Creates a [UserService] instance with the provided Dio client.
   @factoryMethod

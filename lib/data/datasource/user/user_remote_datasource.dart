@@ -6,6 +6,7 @@ import 'package:mobile_table_hopping/data/dto/auth/user_model.dart';
 import 'package:mobile_table_hopping/data/services/user/user_service.dart';
 
 /// Remote datasource contract for user operations.
+// ignore: one_member_abstracts
 abstract class UserRemoteDatasource {
   /// Fetches a user by ID.
   Future<ApiResult<UserModel>> getUserById(String id);

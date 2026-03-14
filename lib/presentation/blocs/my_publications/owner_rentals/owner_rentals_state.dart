@@ -1,14 +1,15 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
-
-part 'owner_rentals_state.freezed.dart';
+part of 'owner_rentals_bloc.dart';
 
 @freezed
 abstract class OwnerRentalsState with _$OwnerRentalsState {
   const factory OwnerRentalsState({
+    @Default([]) List<RentalRequest> returnedRentals,
     @Default([]) List<RentalRequest> activeRentals,
     @Default([]) List<RentalRequest> upcomingRentals,
+    @Default({}) Map<String, RentalDropOffResponse> dropOffTickets,
     @Default(false) bool isLoading,
+    @Default(false) bool isConfirming,
     String? errorMessage,
+    String? successMessage,
   }) = _OwnerRentalsState;
 }
