@@ -281,7 +281,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       (error) => emit(
         state.copyWith(
           isSubmitting: false,
-          errorMessage: '${AppStrings.rentalConfirmError}: ${error.message}',
+          errorMessage: error.message,
         ),
       ),
       // Right: success case

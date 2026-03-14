@@ -159,10 +159,7 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.gameRust,
-          textStyle: AppTypography.labelLarge.copyWith(
-            decoration: TextDecoration.underline,
-            decorationStyle: TextDecorationStyle.dotted,
-          ),
+          textStyle: AppTypography.labelLarge,
         ),
       ),
 

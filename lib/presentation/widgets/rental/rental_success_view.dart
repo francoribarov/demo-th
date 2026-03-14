@@ -35,7 +35,7 @@ class RentalSuccessView extends StatelessWidget {
                       .withOpacityValue(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.check_circle,
                   size: 64,
                   color: AppColors.success,
