@@ -12,7 +12,6 @@ class CheckoutBottomBar extends StatelessWidget {
     required this.canAdvance,
     required this.isSubmitting,
     required this.onNext,
-    required this.onBack,
     required this.onSubmit,
     this.errorMessage,
     this.totalPrice,
@@ -24,7 +23,6 @@ class CheckoutBottomBar extends StatelessWidget {
   final bool canAdvance;
   final bool isSubmitting;
   final VoidCallback onNext;
-  final VoidCallback onBack;
   final VoidCallback onSubmit;
   final String? errorMessage;
   final num? totalPrice;
@@ -101,37 +99,19 @@ class CheckoutBottomBar extends StatelessWidget {
               ),
             ),
           ],
-          Row(
-            children: [
-              if (currentStep > 0)
-                Expanded(
-                  child: AppSecondaryButton(
-                    onPressed: onBack,
-                    child: const Text('Atrás'),
-                  ),
-                ),
-              if (currentStep > 0)
-                const SizedBox(
-                  width: AppTheme.spacingMd,
-                ),
-              Expanded(
-                flex: currentStep > 0 ? 2 : 1,
-                child: AppPrimaryButton(
-                  onPressed: canAdvance
-                      ? (_isLastStep
-                          ? onSubmit
-                          : onNext)
-                      : null,
-                  isLoading: isSubmitting,
-                  expand: true,
-                  child: Text(
-                    _isLastStep
-                        ? 'Enviar solicitud'
-                        : 'Continuar',
-                  ),
-                ),
-              ),
-            ],
+          AppPrimaryButton(
+            onPressed: canAdvance
+                ? (_isLastStep
+                    ? onSubmit
+                    : onNext)
+                : null,
+            isLoading: isSubmitting,
+            expand: true,
+            child: Text(
+              _isLastStep
+                  ? 'Enviar solicitud'
+                  : 'Continuar',
+            ),
           ),
         ],
       ),
