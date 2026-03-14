@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/core/widgets/app_date_picker.dart';
+import 'package:mobile_table_hopping/domain/validators/date_range_validator.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 /// A unified date range selector widget for game availability.
@@ -31,7 +31,7 @@ class AvailabilityDateSelector extends StatelessWidget {
   final void Function(String? start, String? end) onRangeChanged;
 
   Future<void> _showRangePicker(BuildContext context) async {
-    final today = AppDatePicker.today();
+    final today = DateRangeValidator.today();
     final booked = _normalizedBookedDates();
 
     final initialStart = DateTime.tryParse(startDate ?? '');
@@ -44,13 +44,16 @@ class AvailabilityDateSelector extends StatelessWidget {
 
     // Allow booking up to a year in advance
     final firstDate = today;
-    final lastDate = AppDatePicker.defaultLastDate(from: today);
+    final lastDate = today.add(
+      const Duration(days: DateRangeValidator.bookingWindowDays),
+    );
 
-    final picked = await AppDatePicker.pickDateRange(
+    final picked = await showDateRangePicker(
       context: context,
       initialDateRange: initialRange,
       firstDate: firstDate,
       lastDate: lastDate,
+      locale: const Locale('es', 'UY'),
       helpText: 'Seleccioná el rango (mínimo 3 días)',
       selectableDayPredicate: (day, start, end) {
         if (day.isBefore(today)) return false;
@@ -65,12 +68,15 @@ class AvailabilityDateSelector extends StatelessWidget {
       final startStr = DateFormatter.toIsoString(picked.start);
       final endStr = DateFormatter.toIsoString(picked.end);
 
-      final duration = picked.end.difference(picked.start).inDays + 1;
-      if (duration < 3) {
+      final validation = DateRangeValidator.validateIsoRange(
+        startDate: startStr,
+        endDate: endStr,
+      );
+      if (!validation.isValid) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('El alquiler mínimo es de 3 días.'),
+            SnackBar(
+              content: Text(validation.message ?? 'Rango de fechas inválido.'),
               backgroundColor: AppColors.gameRust,
             ),
           );

@@ -8,7 +8,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
-import 'package:mobile_table_hopping/core/widgets/app_date_picker.dart';
+import 'package:mobile_table_hopping/domain/validators/date_range_validator.dart';
 
 /// Search header widget matching the Vite.js Layout search pill
 class SearchHeader extends StatelessWidget {
@@ -261,11 +261,11 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
     emit(state.copyWith(startDate: null, endDate: null, dateError: null));
   }
 
-  void setDate({required bool isStart, required String value}) {
+  void setDateRange({required String startDate, required String endDate}) {
     emit(
       state.copyWith(
-        startDate: isStart ? value : state.startDate,
-        endDate: isStart ? state.endDate : value,
+        startDate: startDate,
+        endDate: endDate,
         dateError: null,
       ),
     );
@@ -288,15 +288,14 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
     }
 
     if (hasStart && hasEnd) {
-      final parsedStart = DateTime.tryParse(start);
-      final parsedEnd = DateTime.tryParse(end);
-      if (parsedStart != null &&
-          parsedEnd != null &&
-          !parsedEnd.isAfter(parsedStart)) {
+      final validation = DateRangeValidator.validateIsoRange(
+        startDate: start,
+        endDate: end,
+      );
+      if (!validation.isValid) {
         emit(
           state.copyWith(
-            dateError:
-                'La fecha de fin tiene que ser posterior a la de inicio.',
+            dateError: validation.message,
           ),
         );
         return false;
@@ -346,50 +345,66 @@ class _SearchSheetState extends State<SearchSheet> {
     Navigator.pop(context);
   }
 
-  Future<void> _selectDate({required bool isStart}) async {
+  Future<void> _selectDateRange() async {
     final cubit = context.read<_SearchSheetCubit>();
-    final today = AppDatePicker.today();
-    final lastDate = AppDatePicker.defaultLastDate(from: today);
-    final selectedStart = DateFormatter.parseIso(cubit.state.startDate);
-    final selectedEnd = DateFormatter.parseIso(cubit.state.endDate);
-
-    final firstDate = isStart
-        ? today
-        : (selectedStart != null
-            ? DateTime(
-                selectedStart.year,
-                selectedStart.month,
-                selectedStart.day,
-              ).add(const Duration(days: 1))
-            : today);
-    if (!isStart && firstDate.isAfter(lastDate)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Elegí una fecha de inicio anterior para continuar.'),
-          backgroundColor: AppColors.gameRust,
-        ),
-      );
-      return;
-    }
-
-    final initialDate = isStart
-        ? selectedStart ?? today
-        : selectedEnd ??
-            (selectedStart != null
-                ? selectedStart.add(const Duration(days: 1))
-                : today);
-
-    final picked = await AppDatePicker.pickDate(
-      context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
+    final today = DateRangeValidator.today();
+    final lastDate = today.add(
+      const Duration(days: DateRangeValidator.bookingWindowDays),
+    );
+    final initialStart = DateFormatter.parseIso(cubit.state.startDate ?? '');
+    final initialEnd = DateFormatter.parseIso(cubit.state.endDate ?? '');
+    final initialRange = _buildInitialRange(
+      initialStart: initialStart,
+      initialEnd: initialEnd,
+      firstDate: today,
       lastDate: lastDate,
     );
 
-    if (picked != null) {
-      final dateStr = DateFormatter.toIsoString(picked);
-      cubit.setDate(isStart: isStart, value: dateStr);
+    final picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: initialRange,
+      firstDate: today,
+      lastDate: lastDate,
+      locale: const Locale('es', 'UY'),
+      helpText: 'Seleccioná el rango (mínimo 3 días)',
+    );
+
+    if (picked != null && mounted) {
+      final startStr = DateFormatter.toIsoString(picked.start);
+      final endStr = DateFormatter.toIsoString(picked.end);
+      final validation = DateRangeValidator.validateIsoRange(
+        startDate: startStr,
+        endDate: endStr,
+      );
+      if (!validation.isValid) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(validation.message ?? 'Rango de fechas inválido.'),
+            backgroundColor: AppColors.gameRust,
+          ),
+        );
+        return;
+      }
+      cubit.setDateRange(startDate: startStr, endDate: endStr);
     }
+  }
+
+  DateTimeRange? _buildInitialRange({
+    required DateTime? initialStart,
+    required DateTime? initialEnd,
+    required DateTime firstDate,
+    required DateTime lastDate,
+  }) {
+    if (initialStart == null || initialEnd == null) {
+      return null;
+    }
+    if (initialEnd.isBefore(initialStart)) {
+      return null;
+    }
+    if (initialStart.isBefore(firstDate) || initialEnd.isAfter(lastDate)) {
+      return null;
+    }
+    return DateTimeRange(start: initialStart, end: initialEnd);
   }
 
   @override
@@ -578,7 +593,7 @@ class _SearchSheetState extends State<SearchSheet> {
                                   child: _DateInput(
                                     label: 'Fecha de inicio',
                                     value: formState.startDate,
-                                    onTap: () => _selectDate(isStart: true),
+                                    onTap: _selectDateRange,
                                   ),
                                 ),
                                 const SizedBox(width: 16),
@@ -586,7 +601,7 @@ class _SearchSheetState extends State<SearchSheet> {
                                   child: _DateInput(
                                     label: 'Fecha de fin',
                                     value: formState.endDate,
-                                    onTap: () => _selectDate(isStart: false),
+                                    onTap: _selectDateRange,
                                   ),
                                 ),
                               ],
