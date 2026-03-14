@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
-import 'package:mobile_table_hopping/data/dto/rental/confirm_rental_body.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'rental_service.g.dart';
@@ -30,7 +28,7 @@ part 'rental_service.g.dart';
 abstract class RentalService {
   /// Creates a [RentalService] instance with the provided Dio client.
   ///
-  /// The base URL is automatically set from [ApiConstants.baseUrl].
+  /// The base URL is automatically set by DioClient.
   @factoryMethod
   factory RentalService(Dio dio) = _RentalService;
 
@@ -44,6 +42,6 @@ abstract class RentalService {
   /// Returns a Future that completes when the rental is created.
   ///
   /// Throws [DioException] on network or server errors.
-  @POST(ApiConstants.rentals)
-  Future<void> createRental(@Body() ConfirmRentalBody body);
+  @POST('/api/rentals')
+  Future<void> createRental(@Body() Map<String, dynamic> body);
 }

@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
 import 'package:mobile_table_hopping/data/dto/rental/confirm_rental_body.dart';
 import 'package:mobile_table_hopping/data/services/rental/rental_service.dart';
 
@@ -17,15 +17,15 @@ abstract class RentalRemoteDataSource {
   /// - [body]: The rental confirmation request data
   ///
   /// Returns:
-  /// - [DataState.success] if the rental was created successfully
-  /// - [DataState.failed] with error details if the operation failed
-  Future<DataState<void>> createRental(ConfirmRentalBody body);
+  /// - [ApiResult.success] if the rental was created successfully
+  /// - [ApiResult.failure] with error details if the operation failed
+  Future<ApiResult<void>> createRental(ConfirmRentalBody body);
 }
 
 /// Implementation of [RentalRemoteDataSource] using Retrofit service.
 ///
 /// This class extends [BaseDataSource] to leverage the standard
-/// error handling and [DataState] wrapping pattern.
+/// error handling and [ApiResult] wrapping pattern.
 ///
 /// Example:
 /// ```dart
@@ -44,9 +44,9 @@ class RentalRemoteDataSourceImpl extends BaseDataSource
   final RentalService _service;
 
   @override
-  Future<DataState<void>> createRental(ConfirmRentalBody body) {
+  Future<ApiResult<void>> createRental(ConfirmRentalBody body) {
     return getStateOf<void>(
-      request: () => _service.createRental(body),
+      request: () => _service.createRental(body.toJson()),
     );
   }
 }

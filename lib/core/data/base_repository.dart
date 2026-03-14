@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:mobile_table_hopping/core/errors/data/data_exception_mapper.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/core/network/base_dto_response.dart';
-import 'package:mobile_table_hopping/core/resources/data_state.dart';
+import 'package:mobile_table_hopping/core/resources/api_result.dart';
 
 /// Base repository class providing common utilities for repository implementations.
 ///
@@ -33,24 +34,21 @@ abstract class BaseRepository {
   /// 1. Calls the provided datasource function
   /// 2. Receives the DTO response
   /// 3. Automatically calls `toDomainModel()` on the DTO
-  /// 4. Returns the domain model
+  /// 4. Returns [Right] with the domain model or [Left] with a domain error
   ///
   /// Type parameters:
   /// - [Dto]: The DTO type that implements [BaseDtoResponse<T>]
   /// - [T]: The domain model type
   ///
-  /// Throws any exceptions from the datasource or mapping process.
-  Future<T> executeDataSource<Dto extends BaseDtoResponse<T>, T>({
-    required Future<Dto> Function() function,
+  Future<Either<DomainException, T>>
+  executeDataSource<Dto extends BaseDtoResponse<T>, T>({
+    required Future<ApiResult<Dto>> Function() function,
   }) async {
-    try {
-      final dto = await function();
-      return dto.toDomainModel();
-    } catch (e) {
-      // Re-throw to let repository handle errors according to its needs
-      // (e.g., convert to domain exceptions, log, etc.)
-      rethrow;
-    }
+    final state = await function();
+    return state.when(
+      success: (dto) => Right(dto.toDomainModel()),
+      failure: (error) => Left(error.toDomainException()),
+    );
   }
 
   /// Executes a datasource function for list responses and maps each item.
@@ -61,23 +59,62 @@ abstract class BaseRepository {
   /// Type parameters:
   /// - [Dto]: The DTO type that implements [BaseDtoResponse<T>]
   /// - [T]: The domain model type
-  Future<List<T>> executeDataSourceList<Dto extends BaseDtoResponse<T>, T>({
-    required Future<List<Dto>> Function() function,
+  Future<Either<DomainException, List<T>>>
+  executeDataSourceList<Dto extends BaseDtoResponse<T>, T>({
+    required Future<ApiResult<List<Dto>>> Function() function,
   }) async {
-    try {
-      final dtos = await function();
-      return dtos.map((dto) => dto.toDomainModel()).toList();
-    } catch (e) {
-      rethrow;
-    }
+    final state = await function();
+    return state.when(
+      success: (dtos) => Right(dtos.map((dto) => dto.toDomainModel()).toList()),
+      failure: (error) => Left(error.toDomainException()),
+    );
   }
 
-  /// Converts a [DataState] to an [Either] for use in domain layer.
+  /// Executes a datasource list function and maps each DTO with a custom mapper.
+  Future<Either<DomainException, List<T>>> executeDataSourceListMapped<Dto, T>({
+    required Future<ApiResult<List<Dto>>> Function() function,
+    required T Function(Dto dto) mapper,
+  }) async {
+    final state = await function();
+    return state.when(
+      success: (dtos) => Right(dtos.map(mapper).toList()),
+      failure: (error) => Left(error.toDomainException()),
+    );
+  }
+
+  /// Executes a void datasource function and converts result to [Either].
+  Future<Either<DomainException, void>> executeVoidDataSource({
+    required Future<ApiResult<void>> Function() function,
+  }) async {
+    final state = await function();
+    return state.when(
+      success: (_) => const Right(null),
+      failure: (error) => Left(error.toDomainException()),
+    );
+  }
+
+  /// Unwraps an [ApiResult], returning data or throwing a [DomainException].
   ///
-  /// This helper method bridges the data layer ([DataState]) with the domain
+  /// Prefer `executeDataSource*` helpers for standard repository methods that
+  /// already return `Either<DomainException, T>`.
+  ///
+  /// This helper is intended for flows that keep imperative control at the
+  /// repository level (for example, auth/session persistence sequences) where
+  /// early throw semantics are simpler to compose.
+  Future<T> unwrapOrThrow<T>(Future<ApiResult<T>> Function() function) async {
+    final state = await function();
+    return state.when(
+      success: (data) => data,
+      failure: (error) => throw error.toDomainException(),
+    );
+  }
+
+  /// Converts an [ApiResult] to an [Either] for use in domain layer.
+  ///
+  /// This helper method bridges the data layer ([ApiResult]) with the domain
   /// layer ([Either]). It converts:
-  /// - [DataSuccess] → [Right] with the data
-  /// - [DataFailed] → [Left] with the domain exception
+  /// - [Success] → [Right] with the data
+  /// - [Failure] → [Left] with the domain exception
   ///
   /// Example:
   /// ```dart
@@ -87,10 +124,10 @@ abstract class BaseRepository {
   ///   return toEither(result);
   /// }
   /// ```
-  Either<DomainException, T> toEither<T>(DataState<T> state) {
+  Either<DomainException, T> toEither<T>(ApiResult<T> state) {
     return state.when(
       success: Right.new,
-      failed: (error) => Left(error.toDomainException()),
+      failure: (error) => Left(error.toDomainException()),
     );
   }
 }

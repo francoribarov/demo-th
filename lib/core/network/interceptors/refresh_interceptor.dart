@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
-import 'package:mobile_table_hopping/core/network/api_constants.dart';
 
 /// Interceptor that handles token refreshing on 401 errors.
 class RefreshInterceptor extends Interceptor {
@@ -77,7 +76,7 @@ class RefreshInterceptor extends Interceptor {
       }
 
       final response = await _refreshDio.post<Map<String, dynamic>>(
-        ApiConstants.refreshToken,
+        '/api/auth/refresh',
         data: {'refresh_token': refreshToken},
       );
 

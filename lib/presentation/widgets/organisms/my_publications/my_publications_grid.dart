@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
+import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/catalog/publication_card.dart';
+
+class MyPublicationsGrid extends StatelessWidget {
+  const MyPublicationsGrid({
+    required this.publications,
+    required this.onEditPublication,
+    super.key,
+  });
+
+  final List<PublicationListing> publications;
+  final void Function(String publicationId) onEditPublication;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        // Header with count
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppTheme.spacingLg,
+              AppTheme.spacingLg,
+              AppTheme.spacingLg,
+              AppTheme.spacingSm,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.spacingMd,
+                    vertical: AppTheme.spacingXs + 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.gameRust.withOpacityValue(0.1),
+                    borderRadius: BorderRadius.circular(AppTheme.radius2xl),
+                  ),
+                  child: Text(
+                    '${publications.length} publicacion${publications.length == 1 ? '' : 'es'}',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: AppColors.gameRust,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Publications grid
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(
+            AppTheme.spacingLg,
+            AppTheme.spacingSm,
+            AppTheme.spacingLg,
+            AppTheme.spacingScrollBottom,
+          ),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final publication = publications[index];
+                final card = PublicationCard(
+                  publication: publication,
+                  onTap: () => onEditPublication(publication.id),
+                );
+
+                if (index == publications.length - 1) {
+                  return card;
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
+                  child: card,
+                );
+              },
+              childCount: publications.length,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

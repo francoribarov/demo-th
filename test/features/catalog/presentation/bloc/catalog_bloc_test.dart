@@ -1,52 +1,53 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/game.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_games.dart';
-import 'package:mobile_table_hopping/features/catalog/domain/usecases/get_publications.dart';
-
-import 'package:mobile_table_hopping/features/catalog/presentation/bloc/catalog_bloc.dart';
-import 'package:mobile_table_hopping/features/publish/domain/entities/publication.dart';
+import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
+import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/filter_publications_use_case.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_categories_use_case.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_filter_shortcuts_use_case.dart';
+import 'package:mobile_table_hopping/domain/usecase/catalog/get_publications_use_case.dart';
+import 'package:mobile_table_hopping/presentation/blocs/catalog/catalog_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetGames extends Mock implements GetGames {}
+class MockGetCategories extends Mock implements GetCategoriesUseCase {}
 
-class MockGetPublications extends Mock implements GetPublications {}
+class MockGetFilterShortcuts extends Mock
+    implements GetFilterShortcutsUseCase {}
+
+class MockGetPublications extends Mock implements GetPublicationsUseCase {}
+
+class MockFilterPublications extends Mock
+    implements FilterPublicationsUseCase {}
 
 void main() {
-  late MockGetGames mockGetGames;
+  late MockGetCategories mockGetCategories;
+  late MockGetFilterShortcuts mockGetFilterShortcuts;
   late MockGetPublications mockGetPublications;
+  late MockFilterPublications mockFilterPublications;
   late CatalogBloc catalogBloc;
 
   setUp(() {
-    mockGetGames = MockGetGames();
+    mockGetCategories = MockGetCategories();
+    mockGetFilterShortcuts = MockGetFilterShortcuts();
     mockGetPublications = MockGetPublications();
+    mockFilterPublications = MockFilterPublications();
     catalogBloc = CatalogBloc(
-      getGames: mockGetGames,
       getPublications: mockGetPublications,
+      getCategories: mockGetCategories,
+      getFilterShortcuts: mockGetFilterShortcuts,
+      filterPublications: mockFilterPublications,
     );
   });
-
-  const tGame = Game(
-    id: '1',
-    title: 'Test Game',
-    categories: [GameCategory(id: 1, name: 'Strategy', icon: 'img')],
-    images: ['image1.jpg'],
-    rating: 4.5,
-    reviewsCount: 10,
-    description: 'Description',
-    duration: 60,
-    players: '2-4',
-    difficulty: 'Medium',
-    rules: GameRules(videoUrl: '', ruleCompleteUrl: '', summaryRules: ''),
-  );
 
   final tPublication = PublicationListing(
     id: '1',
     ownerId: 'owner1',
     gameId: 'g1',
     title: 'Test Publication',
-    condition: PublicationCondition.newCondition,
+    condition: PublicationCondition.likeNew,
     price: 100,
     images: ['image.jpg'],
     createdAt: DateTime(2023),
@@ -63,27 +64,28 @@ void main() {
     });
 
     blocTest<CatalogBloc, CatalogState>(
-      'emits [isLoading: true, allGames: [tGame], allPublications: [tPublication]] when LoadGames is added',
+      'emits loading and then catalog data when LoadGames is added',
       build: () {
-        when(() => mockGetGames()).thenAnswer((_) async => [tGame]);
-        when(() => mockGetPublications())
-            .thenAnswer((_) async => [tPublication]);
-
-        // removed getAvailableToday call
-        when(() => mockGetGames.getCategories()).thenAnswer((_) async => []);
-        when(
-          () => mockGetGames.getFilterShortcuts(),
-        ).thenAnswer((_) async => []);
+        when(() => mockGetPublications()).thenAnswer(
+          (_) async => Right<DomainException, List<PublicationListing>>([
+            tPublication,
+          ]),
+        );
+        when(() => mockGetCategories()).thenAnswer(
+          (_) async => const Right<DomainException, List<GameCategory>>([]),
+        );
+        when(() => mockGetFilterShortcuts()).thenAnswer(
+          (_) async => const Right<DomainException, List<FilterShortcut>>([]),
+        );
         return catalogBloc;
       },
       act: (bloc) => bloc.add(const CatalogEvent.loadGames()),
       expect: () => [
         const CatalogState(isLoading: true),
         CatalogState(
-          // allGames: [tGame], // If logic doesn't set it, remove it. But let's assume valid state param for now.
           allPublications: [tPublication],
           filteredPublications: [tPublication],
-          availableTodayPublications: [tPublication], // Placeholder
+          availableTodayPublications: [tPublication],
         ),
       ],
     );

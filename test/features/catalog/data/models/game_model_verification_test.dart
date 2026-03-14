@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/catalog/data/models/game_model.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 
 void main() {
   group('GameModel Deserialization', () {
-    test('should correctly deserialize game with image objects and reviews',
-        () {
-      // JSON snippet updated to match current backend response structure
-      const jsonString = '''
+    test(
+      'should correctly deserialize game with image objects and reviews',
+      () {
+        // JSON snippet updated to match current backend response structure
+        const jsonString = '''
       {
         "id": "1",
         "title": "Catan",
@@ -46,27 +47,28 @@ void main() {
       }
       ''';
 
-      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-      final gameModel = GameModel.fromJson(jsonMap);
+        final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+        final gameModel = GameModel.fromJson(jsonMap);
 
-      expect(gameModel.id, '1');
-      expect(gameModel.title, 'Catan');
-      expect(gameModel.images, isA<List<GameImageModel>>());
-      expect(gameModel.images.length, 1);
-      expect(gameModel.images.first.url, 'https://example.com/image1.jpg');
+        expect(gameModel.id, '1');
+        expect(gameModel.title, 'Catan');
+        expect(gameModel.images, isA<List<GameImageModel>>());
+        expect(gameModel.images.length, 1);
+        expect(gameModel.images.first.url, 'https://example.com/image1.jpg');
 
-      expect(gameModel.reviews, isA<List<GameReviewModel>>());
-      expect(gameModel.reviews.length, 1);
-      expect(gameModel.reviews.first.comment, 'Great game!');
+        expect(gameModel.reviews, isA<List<GameReviewModel>>());
+        expect(gameModel.reviews.length, 1);
+        expect(gameModel.reviews.first.comment, 'Great game!');
 
-      // Verify conversion to entity
-      final entity = gameModel.toDomainModel();
-      expect(entity.images, isA<List<String>>());
-      expect(entity.images.length, 1);
-      expect(entity.images.first, 'https://example.com/image1.jpg');
-      expect(entity.reviewsCount, 1);
-      expect(entity.reviews.first.comment, 'Great game!');
-    });
+        // Verify conversion to entity
+        final entity = gameModel.toDomainModel();
+        expect(entity.images, isA<List<String>>());
+        expect(entity.images.length, 1);
+        expect(entity.images.first, 'https://example.com/image1.jpg');
+        expect(entity.reviewsCount, 1);
+        expect(entity.reviews.first.comment, 'Great game!');
+      },
+    );
 
     test(
       'should correctly deserialize game with null rules providing defaults',

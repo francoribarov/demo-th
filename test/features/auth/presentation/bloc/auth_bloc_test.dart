@@ -1,14 +1,14 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_session.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/auth_tokens.dart';
-import 'package:mobile_table_hopping/features/auth/domain/entities/user.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/get_auth_status.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/login.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/logout.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/refresh_token.dart';
-import 'package:mobile_table_hopping/features/auth/domain/usecases/register.dart';
-import 'package:mobile_table_hopping/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
+import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
+import 'package:mobile_table_hopping/domain/model/auth/user.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/login.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/logout.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/refresh_token.dart';
+import 'package:mobile_table_hopping/domain/usecase/auth/register.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetAuthStatus extends Mock implements GetAuthStatus {}
@@ -47,12 +47,12 @@ void main() {
   });
 
   AuthBloc buildBloc() => AuthBloc(
-        getAuthStatus: getAuthStatus,
-        login: login,
-        register: register,
-        logout: logout,
-        refreshToken: refreshToken,
-      );
+    getAuthStatus: getAuthStatus,
+    login: login,
+    register: register,
+    logout: logout,
+    refreshToken: refreshToken,
+  );
 
   blocTest<AuthBloc, AuthState>(
     'emits authenticated state on login success',
@@ -124,6 +124,31 @@ void main() {
   );
 
   blocTest<AuthBloc, AuthState>(
+    'emits validation error on invalid login email without calling login',
+    build: buildBloc,
+    act: (bloc) => bloc
+      ..add(const AuthEvent.loginEmailChanged('correo-invalido'))
+      ..add(const AuthEvent.loginPasswordChanged('password123'))
+      ..add(const AuthEvent.loginSubmitted()),
+    skip: 4,
+    expect: () => [
+      isA<AuthState>().having(
+        (state) => state.loginErrorMessage,
+        'loginErrorMessage',
+        'Ingresá un email válido.',
+      ),
+    ],
+    verify: (_) {
+      verifyNever(
+        () => login(
+          email: 'correo-invalido',
+          password: 'password123',
+        ),
+      );
+    },
+  );
+
+  blocTest<AuthBloc, AuthState>(
     'emits authenticated state on register success',
     build: () {
       when(
@@ -160,6 +185,83 @@ void main() {
           .having((state) => state.session, 'session', session)
           .having((state) => state.registerPassword, 'registerPassword', ''),
     ],
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'registers with null location when location input is blank',
+    build: () {
+      when(
+        () => register(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+          username: any(named: 'username'),
+          location: any(named: 'location'),
+        ),
+      ).thenAnswer((_) async => session);
+      return buildBloc();
+    },
+    act: (bloc) => bloc
+      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
+      ..add(const AuthEvent.registerPasswordChanged('password123'))
+      ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
+      ..add(const AuthEvent.registerUsernameChanged('User One'))
+      ..add(const AuthEvent.registerLocationChanged('   '))
+      ..add(const AuthEvent.registerSubmitted()),
+    skip: 7,
+    expect: () => [
+      isA<AuthState>().having(
+        (state) => state.isSubmittingRegister,
+        'isSubmittingRegister',
+        true,
+      ),
+      isA<AuthState>()
+          .having(
+            (state) => state.isSubmittingRegister,
+            'isSubmittingRegister',
+            false,
+          )
+          .having((state) => state.status, 'status', AuthStatus.authenticated)
+          .having((state) => state.session, 'session', session),
+    ],
+    verify: (_) {
+      final capturedLocation = verify(
+        () => register(
+          email: 'user@example.com',
+          password: 'password123',
+          username: 'User One',
+          location: captureAny(named: 'location'),
+        ),
+      ).captured.single;
+      expect(capturedLocation, isNull);
+    },
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'emits validation error when register passwords do not match',
+    build: buildBloc,
+    act: (bloc) => bloc
+      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
+      ..add(const AuthEvent.registerPasswordChanged('password123'))
+      ..add(const AuthEvent.registerPasswordConfirmChanged('different123'))
+      ..add(const AuthEvent.registerUsernameChanged('User One'))
+      ..add(const AuthEvent.registerSubmitted()),
+    skip: 6,
+    expect: () => [
+      isA<AuthState>().having(
+        (state) => state.registerErrorMessage,
+        'registerErrorMessage',
+        'Las contraseñas no coinciden.',
+      ),
+    ],
+    verify: (_) {
+      verifyNever(
+        () => register(
+          email: 'user@example.com',
+          password: 'password123',
+          username: 'User One',
+        ),
+      );
+    },
   );
 
   blocTest<AuthBloc, AuthState>(
