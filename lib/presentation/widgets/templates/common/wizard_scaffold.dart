@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/wizard_navigation_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/publish/step_indicator.dart';
 
 /// Shared scaffold used by multi-step wizard pages.
@@ -51,11 +51,6 @@ class WizardScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasSecondary =
-        secondaryLabel != null &&
-        secondaryLabel!.isNotEmpty &&
-        onSecondaryPressed != null;
-
     return Scaffold(
       appBar: PageAppBar(
         title: Text(title),
@@ -80,47 +75,17 @@ class WizardScaffold extends StatelessWidget {
                 horizontal: AppTheme.spacingLg,
               ),
             ),
-          Container(
-            padding: const EdgeInsets.all(AppTheme.spacingLg),
-            decoration: BoxDecoration(
-              color: AppColors.card,
-              border: Border(
-                top: BorderSide(
-                  color: AppColors.gameBrown.withOpacityValue(0.1),
-                ),
-              ),
-            ),
-            child: extendBottomSafeArea
-                ? SafeArea(top: false, child: _buildFooterRow(hasSecondary))
-                : _buildFooterRow(hasSecondary),
+          WizardNavigationBar(
+            primaryLabel: primaryLabel,
+            onPrimaryPressed: onPrimaryPressed,
+            secondaryLabel: secondaryLabel,
+            onSecondaryPressed: onSecondaryPressed,
+            isSubmitting: isSubmitting,
+            submittingChild: submittingChild,
+            extendBottomSafeArea: extendBottomSafeArea,
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildFooterRow(bool hasSecondary) {
-    return Row(
-      children: [
-        if (hasSecondary)
-          Expanded(
-            child: AppSecondaryButton(
-              label: secondaryLabel!,
-              onPressed: onSecondaryPressed,
-              isLoading: isSubmitting,
-            ),
-          ),
-        if (hasSecondary) const SizedBox(width: AppTheme.spacingLg),
-        Expanded(
-          flex: hasSecondary ? 2 : 1,
-          child: AppPrimaryButton(
-            label: primaryLabel,
-            onPressed: onPrimaryPressed,
-            isLoading: isSubmitting,
-            loadingChild: submittingChild,
-          ),
-        ),
-      ],
     );
   }
 }

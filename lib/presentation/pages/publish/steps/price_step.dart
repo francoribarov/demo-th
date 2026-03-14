@@ -88,6 +88,7 @@ class PriceStep extends StatelessWidget {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       builder: (_) => DeliveryMethodSheet(
         onAdd: onAddDeliveryMethod,
       ),

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
-import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/steps/data_step.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/dropdown_form_input_field.dart';
-import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
 void main() {
@@ -46,16 +44,18 @@ void main() {
     expect(descriptionField.maxLength, 500);
   });
 
-  testWidgets('renders condition options as selectable cards', (tester) async {
+  testWidgets('displays condition options inline and tap selects', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildSubject());
 
-    expect(
-      find.byType(SelectableInputCard),
-      findsNWidgets(PublicationCondition.values.length),
-    );
-    expect(
-      find.byType(DropdownFormInputField<PublicationCondition>),
-      findsNothing,
-    );
+    expect(find.text('Estado del juego'), findsOneWidget);
+    for (final condition in PublicationCondition.values) {
+      expect(find.text(condition.label), findsOneWidget);
+      expect(find.text(condition.description), findsOneWidget);
+    }
+
+    await tester.tap(find.text(PublicationCondition.likeNew.label));
+    await tester.pumpAndSettle();
   });
 }

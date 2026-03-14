@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/blocs/common/game_search_cubit.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publish/delivery_method_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publish/image_upload_bloc.dart';

@@ -7,11 +7,11 @@ part 'publication_primitives.freezed.dart';
 @JsonEnum(fieldRename: FieldRename.snake)
 enum PublicationCondition {
   @JsonValue('like_new')
-  likeNew('Como nuevo', 'Excelente estado, sin marcas'),
+  likeNew('Como nuevo', 'Excelente estado'),
   @JsonValue('good')
-  good('Buen estado', 'Uso normal, todo completo'),
+  good('Buen estado', 'Uso normal'),
   @JsonValue('fair')
-  fair('Aceptable', 'Desgaste visible pero funcional');
+  fair('Aceptable', 'Desgaste visible');
 
   const PublicationCondition(this.label, this.description);
 

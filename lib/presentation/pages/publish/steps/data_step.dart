@@ -3,7 +3,7 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
-import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/publish/game_selector.dart';

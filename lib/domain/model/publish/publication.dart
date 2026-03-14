@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart'
-    show PublicationCondition, PublicationImage;
+    hide DeliveryMethod;
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
 
 export 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart'
