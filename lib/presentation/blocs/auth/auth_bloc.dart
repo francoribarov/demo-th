@@ -13,6 +13,7 @@ import 'package:mobile_table_hopping/domain/usecase/auth/logout.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/refresh_token.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/register.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
@@ -52,6 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_RefreshRequested>(_onRefreshRequested);
     on<_ClearErrors>(_onClearErrors);
     on<_SessionExpired>(_onSessionExpired);
+    on<_ClearSessionNotice>(_onClearSessionNotice);
 
     _sessionExpiredSubscription = sessionExpiredNotifier.stream.listen(
       (_) => add(const AuthEvent.sessionExpired()),
@@ -387,8 +389,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _onSessionExpired(_SessionExpired event, Emitter<AuthState> emit) {
-    if (state.status == AuthStatus.unauthenticated) return;
-    emit(state.copyWith(status: AuthStatus.unauthenticated, session: null));
+    if (!state.isAuthenticated || state.sessionNotice != null) return;
+    emit(
+      state.copyWith(
+        status: AuthStatus.unauthenticated,
+        session: null,
+        sessionNotice: const FeedbackNotice(
+          message: 'Tu sesión expiró. Iniciá sesión nuevamente.',
+          severity: FeedbackSeverity.warning,
+        ),
+      ),
+    );
+  }
+
+  void _onClearSessionNotice(
+    _ClearSessionNotice event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(sessionNotice: null));
   }
 
   @override

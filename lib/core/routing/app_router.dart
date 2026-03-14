@@ -253,7 +253,9 @@ class AppRouter {
                 name: AppRoutes.homeName,
                 pageBuilder: (context, state) => NoTransitionPage(
                   child: BlocProvider<CatalogBloc>(
-                    create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
+                    create: (_) =>
+                        getIt<CatalogBloc>()
+                          ..add(const CatalogEvent.loadGames()),
                     child: const HomePage(),
                   ),
                 ),
