@@ -14,16 +14,15 @@ part 'rental_event.dart';
 part 'rental_state.dart';
 
 @injectable
-
 /// Bloc coordinating rental confirmation state and side effects.
 class RentalBloc extends Bloc<RentalEvent, RentalState> {
   /// Creates a rental bloc with required dependencies.
   RentalBloc({
     required GetPublications getPublications,
     required ConfirmRentalUseCase confirmRentalUseCase,
-  })  : _getPublications = getPublications,
-        _confirmRentalUseCase = confirmRentalUseCase,
-        super(const RentalState()) {
+  }) : _getPublications = getPublications,
+       _confirmRentalUseCase = confirmRentalUseCase,
+       super(const RentalState()) {
     on<_Started>(_onStarted);
     on<_StartDateChanged>(_onStartDateChanged);
     on<_EndDateChanged>(_onEndDateChanged);
@@ -41,14 +40,10 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   final ConfirmRentalUseCase _confirmRentalUseCase;
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
-    final startDate =
-        (event.startDate?.isNotEmpty ?? false)
-            ? event.startDate
-            : null;
-    final endDate =
-        (event.endDate?.isNotEmpty ?? false)
-            ? event.endDate
-            : null;
+    final startDate = (event.startDate?.isNotEmpty ?? false)
+        ? event.startDate
+        : null;
+    final endDate = (event.endDate?.isNotEmpty ?? false) ? event.endDate : null;
     emit(
       state.copyWith(
         isLoading: true,
@@ -122,8 +117,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
           const Duration(days: DateRangeValidator.minRentalDays - 1),
         );
         final minEndIso = DateFormatter.toIsoString(minEndDate);
-        if (!state.publication!
-            .isAvailableFor(newStart, minEndIso)) {
+        if (!state.publication!.isAvailableFor(newStart, minEndIso)) {
           return emit(
             state.copyWith(
               startDate: null,

@@ -48,8 +48,8 @@ class EditPublicationPage extends StatelessWidget {
           return _ErrorView(
             message: state.errorMessage!,
             onRetry: () => context.read<EditPublicationBloc>().add(
-                  EditPublicationEvent.started(publicationId: publicationId),
-                ),
+              EditPublicationEvent.started(publicationId: publicationId),
+            ),
           );
         }
 
@@ -99,23 +99,22 @@ class EditPublicationPage extends StatelessWidget {
                         selectedGame: state.selectedGame,
                         onDescriptionChanged: (v) =>
                             context.read<EditPublicationBloc>().add(
-                                  EditPublicationEvent.descriptionChanged(v),
-                                ),
+                              EditPublicationEvent.descriptionChanged(v),
+                            ),
                         onConditionChanged: (v) =>
                             context.read<EditPublicationBloc>().add(
-                                  EditPublicationEvent.conditionChanged(v),
-                                ),
+                              EditPublicationEvent.conditionChanged(v),
+                            ),
                       ),
                       EditPhotosStep(
                         images: state.images,
                         isUploading: state.isUploadingImage,
                         onImagesChanged: (v) =>
                             context.read<EditPublicationBloc>().add(
-                                  EditPublicationEvent.imagesChanged(v),
-                                ),
-                        onAddImage: () => context
-                            .read<EditPublicationBloc>()
-                            .add(
+                              EditPublicationEvent.imagesChanged(v),
+                            ),
+                        onAddImage: () =>
+                            context.read<EditPublicationBloc>().add(
                               const EditPublicationEvent.pickMultipleImages(),
                             ),
                       ),
@@ -126,11 +125,10 @@ class EditPublicationPage extends StatelessWidget {
                             state.availableDeliveryMethods,
                         onPriceChanged: (v) =>
                             context.read<EditPublicationBloc>().add(
-                                  EditPublicationEvent.priceChanged(v),
-                                ),
-                        onDeliveryMethodsChanged: (v) => context
-                            .read<EditPublicationBloc>()
-                            .add(
+                              EditPublicationEvent.priceChanged(v),
+                            ),
+                        onDeliveryMethodsChanged: (v) =>
+                            context.read<EditPublicationBloc>().add(
                               EditPublicationEvent.deliveryMethodsChanged(v),
                             ),
                       ),
@@ -177,8 +175,7 @@ class EditPublicationPage extends StatelessWidget {
         context,
         title: '¿Descartar cambios?',
         confirmText: 'Descartar',
-        content:
-            'Tienes cambios sin guardar. ¿Estás seguro que quieres salir?',
+        content: 'Tienes cambios sin guardar. ¿Estás seguro que quieres salir?',
         isDestructive: true,
       );
       if (context.mounted && (discard ?? false)) context.pop();
@@ -196,9 +193,9 @@ class EditPublicationPage extends StatelessWidget {
           'eliminar esta publicación?',
       confirmText: 'Eliminar',
       isDestructive: true,
-      onConfirm: () => context
-          .read<EditPublicationBloc>()
-          .add(const EditPublicationEvent.delete()),
+      onConfirm: () => context.read<EditPublicationBloc>().add(
+        const EditPublicationEvent.delete(),
+      ),
     );
   }
 }
@@ -228,9 +225,9 @@ class _NavigationButtons extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: state.isSubmitting
                       ? null
-                      : () => context
-                          .read<EditPublicationBloc>()
-                          .add(const EditPublicationEvent.previousStep()),
+                      : () => context.read<EditPublicationBloc>().add(
+                          const EditPublicationEvent.previousStep(),
+                        ),
                   child: const Text('Anterior'),
                 ),
               ),
@@ -242,13 +239,13 @@ class _NavigationButtons extends StatelessWidget {
                     ? null
                     : () {
                         if (state.currentStep == 3) {
-                          context
-                              .read<EditPublicationBloc>()
-                              .add(const EditPublicationEvent.submit());
+                          context.read<EditPublicationBloc>().add(
+                            const EditPublicationEvent.submit(),
+                          );
                         } else {
-                          context
-                              .read<EditPublicationBloc>()
-                              .add(const EditPublicationEvent.nextStep());
+                          context.read<EditPublicationBloc>().add(
+                            const EditPublicationEvent.nextStep(),
+                          );
                         }
                       },
                 child: state.isSubmitting

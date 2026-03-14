@@ -23,13 +23,14 @@ class RentalRequestsView extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
-            backgroundColor:
-                isError ? AppColors.destructive : AppColors.success,
+            backgroundColor: isError
+                ? AppColors.destructive
+                : AppColors.success,
           ),
         );
-        context
-            .read<RentalRequestsBloc>()
-            .add(const RentalRequestsEvent.messageDismissed());
+        context.read<RentalRequestsBloc>().add(
+          const RentalRequestsEvent.messageDismissed(),
+        );
       },
       builder: (context, state) {
         return state.when(
@@ -104,8 +105,8 @@ class RentalRequestsView extends StatelessWidget {
     );
     if ((confirmed ?? false) && context.mounted) {
       context.read<RentalRequestsBloc>().add(
-            RentalRequestsEvent.accepted(requestId),
-          );
+        RentalRequestsEvent.accepted(requestId),
+      );
     }
   }
 
@@ -117,15 +118,14 @@ class RentalRequestsView extends StatelessWidget {
     final confirmed = await AppAlertDialog.showConfirm(
       context,
       title: '¿Rechazar solicitud?',
-      content:
-          '¿Confirmas que quieres rechazar la solicitud de $username?',
+      content: '¿Confirmas que quieres rechazar la solicitud de $username?',
       confirmText: 'Rechazar',
       isDestructive: true,
     );
     if ((confirmed ?? false) && context.mounted) {
       context.read<RentalRequestsBloc>().add(
-            RentalRequestsEvent.rejected(requestId),
-          );
+        RentalRequestsEvent.rejected(requestId),
+      );
     }
   }
 }

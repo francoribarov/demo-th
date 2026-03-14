@@ -24,23 +24,19 @@ class DeliveryOptionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration:
-            const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(
           AppTheme.spacingXl,
         ),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.gameCream
-              : AppColors.card,
+          color: isSelected ? AppColors.gameCream : AppColors.card,
           borderRadius: BorderRadius.circular(
             AppTheme.radiusLg,
           ),
           border: Border.all(
             color: isSelected
                 ? AppColors.gameRust
-                : AppColors.gameBrown
-                    .withOpacityValue(0.15),
+                : AppColors.gameBrown.withOpacityValue(0.15),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -51,17 +47,13 @@ class DeliveryOptionCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.gameRust
-                        .withOpacityValue(0.1)
-                    : AppColors.gameBrown
-                        .withOpacityValue(0.06),
+                    ? AppColors.gameRust.withOpacityValue(0.1)
+                    : AppColors.gameBrown.withOpacityValue(0.06),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: isSelected
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown,
+                color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
               ),
             ),
             const SizedBox(
@@ -69,11 +61,8 @@ class DeliveryOptionCard extends StatelessWidget {
             ),
             Text(
               title,
-              style:
-                  AppTypography.titleSmall.copyWith(
-                color: isSelected
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown,
+              style: AppTypography.titleSmall.copyWith(
+                color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
               ),
               textAlign: TextAlign.center,
             ),
@@ -82,10 +71,8 @@ class DeliveryOptionCard extends StatelessWidget {
             ),
             Text(
               subtitle,
-              style:
-                  AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown
-                    .withOpacityValue(0.5),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.gameBrown.withOpacityValue(0.5),
                 fontSize: 11,
               ),
               textAlign: TextAlign.center,

@@ -25,23 +25,18 @@ class CheckoutPaymentStep extends StatelessWidget {
           ),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: constraints.maxHeight -
-                  AppTheme.spacingLg * 2,
+              minHeight: constraints.maxHeight - AppTheme.spacingLg * 2,
             ),
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '¿Cómo querés pagar?',
-                      style: AppTypography
-                          .headlineMedium,
+                      style: AppTypography.headlineMedium,
                     ),
                     const SizedBox(
                       height: AppTheme.spacing2xl,
@@ -52,23 +47,19 @@ class CheckoutPaymentStep extends StatelessWidget {
                           'Pagá en efectivo al '
                           'momento de la entrega',
                       icon: Icons.payments,
-                      isSelected:
-                          state.paymentMethod ==
-                              'cash',
-                      onTap: () => context
-                          .read<RentalBloc>()
-                          .add(
-                            const RentalEvent
-                                .paymentMethodChanged(
-                              paymentMethod: 'cash',
-                            ),
-                          ),
+                      isSelected: state.paymentMethod == 'cash',
+                      onTap: () => context.read<RentalBloc>().add(
+                        const RentalEvent.paymentMethodChanged(
+                          paymentMethod: 'cash',
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: AppTheme.spacing2xl,
                     ),
                     const InfoBanner(
-                      text: 'Próximamente más '
+                      text:
+                          'Próximamente más '
                           'métodos de pago.',
                     ),
                   ],

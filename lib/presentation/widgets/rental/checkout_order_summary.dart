@@ -23,16 +23,14 @@ class CheckoutOrderSummary extends StatelessWidget {
         AppTheme.spacingLg,
       ),
       decoration: BoxDecoration(
-        color: AppColors.gameCream
-            .withOpacityValue(0.35),
+        color: AppColors.gameCream.withOpacityValue(0.35),
         borderRadius: BorderRadius.circular(
           AppTheme.radiusLg,
         ),
       ),
       child: Column(
         children: [
-          if (state.startDate != null &&
-              state.endDate != null)
+          if (state.startDate != null && state.endDate != null)
             _row(
               '${CurrencyFormatter.formatUYU(
                 state.publication?.price ?? 0,
@@ -68,8 +66,7 @@ class CheckoutOrderSummary extends StatelessWidget {
             height: AppTheme.spacingXl,
           ),
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Subtotal',
@@ -79,8 +76,7 @@ class CheckoutOrderSummary extends StatelessWidget {
                 CurrencyFormatter.formatUYU(
                   state.total,
                 ),
-                style:
-                    AppTypography.titleSmall.copyWith(
+                style: AppTypography.titleSmall.copyWith(
                   color: AppColors.gameRust,
                 ),
               ),
@@ -93,16 +89,13 @@ class CheckoutOrderSummary extends StatelessWidget {
 
   Widget _row(String label, String value) {
     return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
           child: Text(
             label,
-            style:
-                AppTypography.bodySmall.copyWith(
-              color: AppColors.gameBrown
-                  .withOpacityValue(0.6),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.gameBrown.withOpacityValue(0.6),
             ),
             overflow: TextOverflow.ellipsis,
           ),

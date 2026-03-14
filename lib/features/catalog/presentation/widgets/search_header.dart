@@ -165,14 +165,14 @@ class SearchSheet extends StatefulWidget {
   final String? initialStartDate;
   final String? initialEndDate;
   final void Function(String query, String? startDate, String? endDate)
-      onSearch;
+  onSearch;
   final VoidCallback onClear;
   final VoidCallback? onSurprise;
 
   static Future<void> show({
     required BuildContext context,
     required void Function(String query, String? startDate, String? endDate)
-        onSearch,
+    onSearch,
     required VoidCallback onClear,
     String initialQuery = '',
     String? initialStartDate,
@@ -242,12 +242,12 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
     String? initialStartDate,
     String? initialEndDate,
   }) : super(
-          _SearchSheetFormState(
-            query: initialQuery,
-            startDate: initialStartDate,
-            endDate: initialEndDate,
-          ),
-        );
+         _SearchSheetFormState(
+           query: initialQuery,
+           startDate: initialStartDate,
+           endDate: initialEndDate,
+         ),
+       );
 
   void queryChanged(String value) {
     emit(state.copyWith(query: value, dateError: null));
@@ -482,8 +482,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Cooperativo';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                    'Cooperativo',
-                                  );
+                                'Cooperativo',
+                              );
                               _handleSearch();
                             },
                           ),
@@ -492,8 +492,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Familiar';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                    'Familiar',
-                                  );
+                                'Familiar',
+                              );
                               _handleSearch();
                             },
                           ),
@@ -502,8 +502,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Fiesta';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                    'Fiesta',
-                                  );
+                                'Fiesta',
+                              );
                               _handleSearch();
                             },
                           ),
@@ -512,8 +512,8 @@ class _SearchSheetState extends State<SearchSheet> {
                             onTap: () {
                               _queryController.text = 'Experto';
                               context.read<_SearchSheetCubit>().queryChanged(
-                                    'Experto',
-                                  );
+                                'Experto',
+                              );
                               _handleSearch();
                             },
                           ),

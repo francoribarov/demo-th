@@ -88,8 +88,9 @@ class AvailabilityDateSelector extends StatelessWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content:
-                  Text('El rango seleccionado contiene días no disponibles.'),
+              content: Text(
+                'El rango seleccionado contiene días no disponibles.',
+              ),
               backgroundColor: AppColors.gameRust,
             ),
           );
@@ -196,37 +197,29 @@ class _DateButton extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: hasValue
-              ? AppColors.gameCream
-                  .withOpacityValue(0.5)
+              ? AppColors.gameCream.withOpacityValue(0.5)
               : AppColors.card,
           borderRadius: BorderRadius.circular(
             AppTheme.radiusLg,
           ),
           border: Border.all(
             color: hasValue
-                ? AppColors.gameRust
-                    .withOpacityValue(0.3)
-                : AppColors.gameBrown
-                    .withOpacityValue(0.2),
+                ? AppColors.gameRust.withOpacityValue(0.3)
+                : AppColors.gameBrown.withOpacityValue(0.2),
           ),
         ),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment
-                      .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   label,
-                  style: AppTypography.labelSmall
-                      .copyWith(
+                  style: AppTypography.labelSmall.copyWith(
                     color: hasValue
                         ? AppColors.gameRust
-                        : AppColors.gameBrown
-                            .withOpacityValue(
+                        : AppColors.gameBrown.withOpacityValue(
                             0.6,
                           ),
                   ),
@@ -237,8 +230,7 @@ class _DateButton extends StatelessWidget {
                     child: Icon(
                       Icons.close,
                       size: 16,
-                      color: AppColors.gameBrown
-                          .withOpacityValue(0.4),
+                      color: AppColors.gameBrown.withOpacityValue(0.4),
                     ),
                   ),
               ],
@@ -249,13 +241,10 @@ class _DateButton extends StatelessWidget {
                 Expanded(
                   child: Text(
                     display ?? 'Seleccionar',
-                    style: AppTypography
-                        .bodyMedium
-                        .copyWith(
+                    style: AppTypography.bodyMedium.copyWith(
                       color: hasValue
                           ? AppColors.gameBrown
-                          : AppColors.gameBrown
-                              .withOpacityValue(
+                          : AppColors.gameBrown.withOpacityValue(
                               0.5,
                             ),
                     ),
@@ -264,9 +253,7 @@ class _DateButton extends StatelessWidget {
                 Icon(
                   Icons.calendar_today,
                   size: 16,
-                  color: hasValue
-                      ? AppColors.gameRust
-                      : null,
+                  color: hasValue ? AppColors.gameRust : null,
                 ),
               ],
             ),

@@ -97,7 +97,8 @@ class AppRouter {
     }
 
     // Fallback for direct static paths if fullPath is null.
-    return location == AppRoutes.publish || location == AppRoutes.myPublications;
+    return location == AppRoutes.publish ||
+        location == AppRoutes.myPublications;
   }
 
   static bool _isAuthLocation(String location) {
@@ -133,7 +134,8 @@ class AppRouter {
       final authBloc = getIt<AuthBloc>();
       final authState = authBloc.state;
       final tokenStorage = getIt<TokenStorage>();
-      final hasTokens = tokenStorage.getAccessToken() != null &&
+      final hasTokens =
+          tokenStorage.getAccessToken() != null &&
           tokenStorage.getRefreshToken() != null;
 
       if (authState.status == AuthStatus.unknown ||
@@ -141,7 +143,8 @@ class AppRouter {
         return null;
       }
 
-      final isAuthed = authState.status == AuthStatus.authenticated && hasTokens;
+      final isAuthed =
+          authState.status == AuthStatus.authenticated && hasTokens;
 
       if (!isAuthed && isProtected) {
         return _loginLocationWithFrom(requestedLocation);
@@ -197,12 +200,14 @@ class AppRouter {
               child: MultiBlocProvider(
                 providers: [
                   BlocProvider<MyPublicationsBloc>(
-                    create: (_) => getIt<MyPublicationsBloc>()
-                      ..add(const MyPublicationsEvent.started()),
+                    create: (_) =>
+                        getIt<MyPublicationsBloc>()
+                          ..add(const MyPublicationsEvent.started()),
                   ),
                   BlocProvider<RentalRequestsBloc>(
-                    create: (_) => getIt<RentalRequestsBloc>()
-                      ..add(const RentalRequestsEvent.started()),
+                    create: (_) =>
+                        getIt<RentalRequestsBloc>()
+                          ..add(const RentalRequestsEvent.started()),
                   ),
                 ],
                 child: const MyPublicationsPage(),
@@ -223,8 +228,9 @@ class AppRouter {
                       const SizedBox(height: 32),
                       ElevatedButton.icon(
                         onPressed: () {
-                          getIt<AuthBloc>()
-                              .add(const AuthEvent.logoutRequested());
+                          getIt<AuthBloc>().add(
+                            const AuthEvent.logoutRequested(),
+                          );
                         },
                         icon: const Icon(Icons.logout),
                         label: const Text('Cerrar Sesión'),
@@ -267,8 +273,9 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return BlocProvider<PublicationDetailsBloc>(
-            create: (_) => getIt<PublicationDetailsBloc>()
-              ..add(PublicationDetailsEvent.started(publicationId: id)),
+            create: (_) =>
+                getIt<PublicationDetailsBloc>()
+                  ..add(PublicationDetailsEvent.started(publicationId: id)),
             child: PublicationDetailsPage(publicationId: id),
           );
         },
@@ -280,8 +287,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameRulesBloc>(
-                create: (_) => getIt<GameRulesBloc>()
-                  ..add(GameRulesEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<GameRulesBloc>()
+                      ..add(GameRulesEvent.started(gameId: id)),
                 child: GameRulesPage(gameId: id),
               );
             },
@@ -293,8 +301,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<GameReviewsBloc>(
-                create: (_) => getIt<GameReviewsBloc>()
-                  ..add(GameReviewsEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<GameReviewsBloc>()
+                      ..add(GameReviewsEvent.started(gameId: id)),
                 child: GameReviewsPage(gameId: id),
               );
             },
@@ -306,8 +315,9 @@ class AppRouter {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return BlocProvider<UserProfileBloc>(
-                create: (_) => getIt<UserProfileBloc>()
-                  ..add(UserProfileEvent.started(gameId: id)),
+                create: (_) =>
+                    getIt<UserProfileBloc>()
+                      ..add(UserProfileEvent.started(gameId: id)),
                 child: UserProfilePage(gameId: id),
               );
             },
@@ -352,8 +362,9 @@ class AppRouter {
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return BlocProvider<EditPublicationBloc>(
-            create: (_) => getIt<EditPublicationBloc>()
-              ..add(EditPublicationEvent.started(publicationId: id)),
+            create: (_) =>
+                getIt<EditPublicationBloc>()
+                  ..add(EditPublicationEvent.started(publicationId: id)),
             child: EditPublicationPage(publicationId: id),
           );
         },
@@ -403,30 +414,29 @@ extension GoRouterExtension on BuildContext {
     String? endDate,
     String? ownerId,
     double? deposit,
-  }) =>
-      push(
-        '/publications/$id/rental',
-        extra: {
-          'startDate': startDate,
-          'endDate': endDate,
-          'ownerId': ownerId,
-          'deposit': deposit,
-        },
-      );
+  }) => push(
+    '/publications/$id/rental',
+    extra: {
+      'startDate': startDate,
+      'endDate': endDate,
+      'ownerId': ownerId,
+      'deposit': deposit,
+    },
+  );
 
   /// Navigate to login with an optional [from] redirect.
   void goToLogin({String? from}) => go(
-        from != null
-            ? '${AppRoutes.login}?from=${Uri.encodeComponent(from)}'
-            : AppRoutes.login,
-      );
+    from != null
+        ? '${AppRoutes.login}?from=${Uri.encodeComponent(from)}'
+        : AppRoutes.login,
+  );
 
   /// Navigate to registration with an optional [from] redirect.
   void goToRegister({String? from}) => go(
-        from != null
-            ? '${AppRoutes.register}?from=${Uri.encodeComponent(from)}'
-            : AppRoutes.register,
-      );
+    from != null
+        ? '${AppRoutes.register}?from=${Uri.encodeComponent(from)}'
+        : AppRoutes.register,
+  );
 
   /// Navigate to the publish flow.
   void goToPublish() => go(AppRoutes.publish);

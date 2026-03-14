@@ -91,13 +91,13 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
     unawaited(
       _pageController
           .animateToPage(
-        step,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      )
+            step,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          )
           .whenComplete(() {
-        if (mounted) _isAnimating = false;
-      }),
+            if (mounted) _isAnimating = false;
+          }),
     );
     setState(() => _currentStep = step);
   }
@@ -143,11 +143,13 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
     String? msg;
     switch (step) {
       case 0:
-        msg = 'Seleccioná las fechas de '
+        msg =
+            'Seleccioná las fechas de '
             'inicio y fin del alquiler.';
       case 2:
         if (state.isDelivery && state.deliveryAddress.trim().isEmpty) {
-          msg = 'Ingresá una dirección '
+          msg =
+              'Ingresá una dirección '
               'de entrega.';
         }
     }
@@ -178,8 +180,8 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
           SnackBar(content: Text(message)),
         );
         context.read<RentalBloc>().add(
-              const RentalEvent.messageShown(),
-            );
+          const RentalEvent.messageShown(),
+        );
       },
       builder: (context, state) {
         if (state.isLoading) {
@@ -300,8 +302,8 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
                   isSubmitting: state.isSubmitting,
                   onNext: () => _tryNext(state),
                   onSubmit: () => context.read<RentalBloc>().add(
-                        const RentalEvent.submitted(),
-                      ),
+                    const RentalEvent.submitted(),
+                  ),
                   totalPrice: state.total,
                 ),
               ],

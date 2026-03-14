@@ -24,15 +24,13 @@ class RentalSuccessView extends StatelessWidget {
             AppTheme.spacing3xl,
           ),
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: AppColors.success
-                      .withOpacityValue(0.1),
+                  color: AppColors.success.withOpacityValue(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -55,10 +53,8 @@ class RentalSuccessView extends StatelessWidget {
               Text(
                 'Tu pedido de ${publication.title} '
                 'fue enviado al propietario.',
-                style:
-                    AppTypography.bodyLarge.copyWith(
-                  color: AppColors.gameBrown
-                      .withOpacityValue(0.7),
+                style: AppTypography.bodyLarge.copyWith(
+                  color: AppColors.gameBrown.withOpacityValue(0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -67,10 +63,8 @@ class RentalSuccessView extends StatelessWidget {
               ),
               Text(
                 'Te avisamos apenas lo confirme.',
-                style: AppTypography.bodyMedium
-                    .copyWith(
-                  color: AppColors.gameBrown
-                      .withOpacityValue(0.6),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.gameBrown.withOpacityValue(0.6),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -80,8 +74,7 @@ class RentalSuccessView extends StatelessWidget {
               AppPrimaryButton(
                 onPressed: onBackHome,
                 expand: true,
-                child:
-                    const Text('Volver al inicio'),
+                child: const Text('Volver al inicio'),
               ),
             ],
           ),

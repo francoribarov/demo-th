@@ -36,8 +36,7 @@ class PriceBreakdownCard extends StatelessWidget {
           AppTheme.radiusLg,
         ),
         border: Border.all(
-          color: AppColors.gameBrown
-              .withOpacityValue(0.1),
+          color: AppColors.gameBrown.withOpacityValue(0.1),
         ),
       ),
       child: Column(
@@ -78,8 +77,7 @@ class PriceBreakdownCard extends StatelessWidget {
             height: AppTheme.spacing2xl,
           ),
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Total',
@@ -109,15 +107,12 @@ class _PriceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style:
-              AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown
-                .withOpacityValue(0.7),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.gameBrown.withOpacityValue(0.7),
           ),
         ),
         Text(

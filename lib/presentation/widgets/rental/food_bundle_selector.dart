@@ -51,12 +51,10 @@ class FoodBundleSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: _bundles.map((bundle) {
-        final isSelected =
-            selectedBundles.contains(bundle.$1);
+        final isSelected = selectedBundles.contains(bundle.$1);
         return GestureDetector(
           onTap: () {
-            final newBundles =
-                List<String>.from(selectedBundles);
+            final newBundles = List<String>.from(selectedBundles);
             if (isSelected) {
               newBundles.remove(bundle.$1);
             } else {
@@ -65,8 +63,7 @@ class FoodBundleSelector extends StatelessWidget {
             onBundlesChanged(newBundles);
           },
           child: AnimatedContainer(
-            duration:
-                const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.only(
               bottom: AppTheme.spacingSm,
             ),
@@ -74,17 +71,14 @@ class FoodBundleSelector extends StatelessWidget {
               AppTheme.spacingMd,
             ),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.gameCream
-                  : AppColors.card,
+              color: isSelected ? AppColors.gameCream : AppColors.card,
               borderRadius: BorderRadius.circular(
                 AppTheme.radiusLg,
               ),
               border: Border.all(
                 color: isSelected
                     ? AppColors.gameRust
-                    : AppColors.gameBrown
-                        .withOpacityValue(0.15),
+                    : AppColors.gameBrown.withOpacityValue(0.15),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -95,8 +89,7 @@ class FoodBundleSelector extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     color: AppColors.card,
-                    borderRadius:
-                        BorderRadius.circular(
+                    borderRadius: BorderRadius.circular(
                       AppTheme.radiusMd,
                     ),
                   ),
@@ -114,21 +107,16 @@ class FoodBundleSelector extends StatelessWidget {
                 ),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         bundle.$2,
-                        style:
-                            AppTypography.titleSmall,
+                        style: AppTypography.titleSmall,
                       ),
                       Text(
                         bundle.$3,
-                        style: AppTypography
-                            .bodySmall
-                            .copyWith(
-                          color: AppColors.gameBrown
-                              .withOpacityValue(
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.gameBrown.withOpacityValue(
                             0.6,
                           ),
                         ),
@@ -144,12 +132,8 @@ class FoodBundleSelector extends StatelessWidget {
                   width: AppTheme.spacingSm,
                 ),
                 Icon(
-                  isSelected
-                      ? Icons.check_circle
-                      : Icons.add_circle_outline,
-                  color: isSelected
-                      ? AppColors.gameRust
-                      : AppColors.gameBrown,
+                  isSelected ? Icons.check_circle : Icons.add_circle_outline,
+                  color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
                 ),
               ],
             ),

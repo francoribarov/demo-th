@@ -8,8 +8,7 @@ import 'package:mobile_table_hopping/presentation/widgets/rental/checkout_order_
 import 'package:mobile_table_hopping/presentation/widgets/rental/delivery_option_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/info_banner.dart';
 
-class CheckoutDeliveryStep
-    extends StatelessWidget {
+class CheckoutDeliveryStep extends StatelessWidget {
   const CheckoutDeliveryStep({
     required this.state,
     super.key,
@@ -27,23 +26,18 @@ class CheckoutDeliveryStep
           ),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: constraints.maxHeight -
-                  AppTheme.spacingLg * 2,
+              minHeight: constraints.maxHeight - AppTheme.spacingLg * 2,
             ),
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '¿Cómo recibís el juego?',
-                      style: AppTypography
-                          .headlineMedium,
+                      style: AppTypography.headlineMedium,
                     ),
                     const SizedBox(
                       height: AppTheme.spacing2xl,
@@ -51,137 +45,100 @@ class CheckoutDeliveryStep
                     Row(
                       children: [
                         Expanded(
-                          child:
-                              DeliveryOptionCard(
+                          child: DeliveryOptionCard(
                             icon: Icons.store,
-                            title:
-                                'Retiro en punto',
+                            title: 'Retiro en punto',
                             subtitle:
                                 'Retiralo en '
                                 'persona',
-                            isSelected:
-                                !state.isDelivery,
-                            onTap: () => context
-                                .read<RentalBloc>()
-                                .add(
-                                  const RentalEvent
-                                      .deliveryChanged(
-                                    isDelivery:
-                                        false,
-                                  ),
-                                ),
+                            isSelected: !state.isDelivery,
+                            onTap: () => context.read<RentalBloc>().add(
+                              const RentalEvent.deliveryChanged(
+                                isDelivery: false,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(
-                          width:
-                              AppTheme.spacingMd,
+                          width: AppTheme.spacingMd,
                         ),
                         Expanded(
-                          child:
-                              DeliveryOptionCard(
-                            icon: Icons
-                                .delivery_dining,
+                          child: DeliveryOptionCard(
+                            icon: Icons.delivery_dining,
                             title: 'Envío',
-                            subtitle:
-                                'A tu domicilio',
-                            isSelected:
-                                state.isDelivery,
-                            onTap: () => context
-                                .read<RentalBloc>()
-                                .add(
-                                  const RentalEvent
-                                      .deliveryChanged(
-                                    isDelivery:
-                                        true,
-                                  ),
-                                ),
+                            subtitle: 'A tu domicilio',
+                            isSelected: state.isDelivery,
+                            onTap: () => context.read<RentalBloc>().add(
+                              const RentalEvent.deliveryChanged(
+                                isDelivery: true,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                     if (state.isDelivery) ...[
                       const SizedBox(
-                        height:
-                            AppTheme.spacing2xl,
+                        height: AppTheme.spacing2xl,
                       ),
                       Text(
                         'Dirección de entrega',
-                        style: AppTypography
-                            .titleSmall,
+                        style: AppTypography.titleSmall,
                       ),
                       const SizedBox(
-                        height:
-                            AppTheme.spacingSm,
+                        height: AppTheme.spacingSm,
                       ),
                       TextField(
-                        decoration:
-                            const InputDecoration(
+                        decoration: const InputDecoration(
                           hintText:
                               'Ej: Av. 18 de '
                               'Julio 1234, '
                               'Montevideo',
                           prefixIcon: Icon(
-                            Icons
-                                .location_on_outlined,
+                            Icons.location_on_outlined,
                           ),
                         ),
                         maxLength: 200,
-                        onChanged: (value) =>
-                            context
-                                .read<
-                                    RentalBloc>()
-                                .add(
-                                  RentalEvent
-                                      .deliveryAddressChanged(
-                                    address: value,
-                                  ),
-                                ),
+                        onChanged: (value) => context.read<RentalBloc>().add(
+                          RentalEvent.deliveryAddressChanged(
+                            address: value,
+                          ),
+                        ),
                       ),
                       const SizedBox(
-                        height:
-                            AppTheme.spacingLg,
+                        height: AppTheme.spacingLg,
                       ),
                       Text(
                         'Comentarios (opcional)',
-                        style: AppTypography
-                            .titleSmall,
+                        style: AppTypography.titleSmall,
                       ),
                       const SizedBox(
-                        height:
-                            AppTheme.spacingSm,
+                        height: AppTheme.spacingSm,
                       ),
                       TextField(
-                        decoration:
-                            const InputDecoration(
+                        decoration: const InputDecoration(
                           hintText:
                               'Ej: Timbre 2B, '
                               'casa con reja '
                               'verde',
                           prefixIcon: Icon(
-                            Icons
-                                .comment_outlined,
+                            Icons.comment_outlined,
                           ),
                         ),
                         maxLength: 300,
-                        onChanged: (value) =>
-                            context
-                                .read<
-                                    RentalBloc>()
-                                .add(
-                                  RentalEvent
-                                      .deliveryCommentsChanged(
-                                    comments:
-                                        value,
-                                  ),
-                                ),
+                        onChanged: (value) => context.read<RentalBloc>().add(
+                          RentalEvent.deliveryCommentsChanged(
+                            comments: value,
+                          ),
+                        ),
                         maxLines: 2,
                       ),
                       const SizedBox(
-                        height:
-                            AppTheme.spacingLg,
+                        height: AppTheme.spacingLg,
                       ),
                       InfoBanner(
-                        text: 'Costo de envío: '
+                        text:
+                            'Costo de envío: '
                             '${CurrencyFormatter.formatUYU(150)}',
                       ),
                     ],

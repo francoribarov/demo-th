@@ -22,8 +22,7 @@ class DateSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final start =
-        DateFormatter.parseIso(startDate);
+    final start = DateFormatter.parseIso(startDate);
     final end = DateFormatter.parseIso(endDate);
 
     return Container(
@@ -31,14 +30,12 @@ class DateSummaryCard extends StatelessWidget {
         AppTheme.spacingLg,
       ),
       decoration: BoxDecoration(
-        color: AppColors.gameCream
-            .withOpacityValue(0.5),
+        color: AppColors.gameCream.withOpacityValue(0.5),
         borderRadius: BorderRadius.circular(
           AppTheme.radiusLg,
         ),
         border: Border.all(
-          color: AppColors.gameRust
-              .withOpacityValue(0.2),
+          color: AppColors.gameRust.withOpacityValue(0.2),
         ),
       ),
       child: Column(
@@ -56,8 +53,7 @@ class DateSummaryCard extends StatelessWidget {
               Text(
                 '$rentalDays '
                 '${rentalDays == 1 ? 'día' : 'días'}',
-                style: AppTypography.titleMedium
-                    .copyWith(
+                style: AppTypography.titleMedium.copyWith(
                   color: AppColors.gameRust,
                 ),
               ),
@@ -77,10 +73,8 @@ class DateSummaryCard extends StatelessWidget {
                     '${DateFormatter.formatFullDate(start)}'
                     ' → '
                     '${DateFormatter.formatFullDate(end)}',
-                    style: AppTypography.bodySmall
-                        .copyWith(
-                      color: AppColors.gameBrown
-                          .withOpacityValue(0.7),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.gameBrown.withOpacityValue(0.7),
                     ),
                   ),
                 ),
@@ -91,17 +85,14 @@ class DateSummaryCard extends StatelessWidget {
             height: AppTheme.spacing2xl,
           ),
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 '${CurrencyFormatter.formatUYU(pricePerDay)}'
                 '/día × $rentalDays '
                 '${rentalDays == 1 ? 'día' : 'días'}',
-                style: AppTypography.bodyMedium
-                    .copyWith(
-                  color: AppColors.gameBrown
-                      .withOpacityValue(0.7),
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.gameBrown.withOpacityValue(0.7),
                 ),
               ),
               Text(

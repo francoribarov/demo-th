@@ -32,20 +32,17 @@ class ReviewSectionCard extends StatelessWidget {
           AppTheme.radiusLg,
         ),
         border: Border.all(
-          color: AppColors.gameBrown
-              .withOpacityValue(0.1),
+          color: AppColors.gameBrown.withOpacityValue(0.1),
         ),
       ),
       child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.gameRust
-                  .withOpacityValue(0.08),
+              color: AppColors.gameRust.withOpacityValue(0.08),
               borderRadius: BorderRadius.circular(
                 AppTheme.radiusMd,
               ),
@@ -61,15 +58,12 @@ class ReviewSectionCard extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: AppTypography.labelSmall
-                      .copyWith(
-                    color: AppColors.gameBrown
-                        .withOpacityValue(0.5),
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.gameBrown.withOpacityValue(0.5),
                   ),
                 ),
                 const SizedBox(
@@ -86,10 +80,8 @@ class ReviewSectionCard extends StatelessWidget {
                 AppTheme.spacingSm,
               ),
               decoration: BoxDecoration(
-                color: AppColors.gameRust
-                    .withOpacityValue(0.08),
-                borderRadius:
-                    BorderRadius.circular(
+                color: AppColors.gameRust.withOpacityValue(0.08),
+                borderRadius: BorderRadius.circular(
                   AppTheme.radiusSm,
                 ),
               ),

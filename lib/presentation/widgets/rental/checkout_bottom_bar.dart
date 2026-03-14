@@ -25,8 +25,7 @@ class CheckoutBottomBar extends StatelessWidget {
   final VoidCallback onSubmit;
   final num? totalPrice;
 
-  bool get _isLastStep =>
-      currentStep == totalSteps - 1;
+  bool get _isLastStep => currentStep == totalSteps - 1;
 
   @override
   Widget build(BuildContext context) {
@@ -35,16 +34,13 @@ class CheckoutBottomBar extends StatelessWidget {
         left: AppTheme.spacingLg,
         right: AppTheme.spacingLg,
         top: AppTheme.spacingMd,
-        bottom:
-            MediaQuery.of(context).padding.bottom +
-                AppTheme.spacingMd,
+        bottom: MediaQuery.of(context).padding.bottom + AppTheme.spacingMd,
       ),
       decoration: BoxDecoration(
         color: AppColors.card,
         boxShadow: [
           BoxShadow(
-            color: AppColors.foreground
-                .withOpacityValue(0.06),
+            color: AppColors.foreground.withOpacityValue(0.06),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -53,28 +49,23 @@ class CheckoutBottomBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (_isLastStep &&
-              totalPrice != null) ...[
+          if (_isLastStep && totalPrice != null) ...[
             Padding(
               padding: const EdgeInsets.only(
                 bottom: AppTheme.spacingMd,
               ),
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment
-                        .spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Total',
-                    style:
-                        AppTypography.titleMedium,
+                    style: AppTypography.titleMedium,
                   ),
                   Text(
                     CurrencyFormatter.formatUYU(
                       totalPrice!,
                     ),
-                    style: AppTypography.price
-                        .copyWith(
+                    style: AppTypography.price.copyWith(
                       color: AppColors.gameRust,
                     ),
                   ),
@@ -83,17 +74,11 @@ class CheckoutBottomBar extends StatelessWidget {
             ),
           ],
           AppPrimaryButton(
-            onPressed: canAdvance
-                ? (_isLastStep
-                    ? onSubmit
-                    : onNext)
-                : null,
+            onPressed: canAdvance ? (_isLastStep ? onSubmit : onNext) : null,
             isLoading: isSubmitting,
             expand: true,
             child: Text(
-              _isLastStep
-                  ? 'Enviar solicitud'
-                  : 'Continuar',
+              _isLastStep ? 'Enviar solicitud' : 'Continuar',
             ),
           ),
         ],

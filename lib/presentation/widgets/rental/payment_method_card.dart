@@ -24,23 +24,19 @@ class PaymentMethodCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration:
-            const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(
           AppTheme.spacingXl,
         ),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.gameCream
-              : AppColors.card,
+          color: isSelected ? AppColors.gameCream : AppColors.card,
           borderRadius: BorderRadius.circular(
             AppTheme.radiusLg,
           ),
           border: Border.all(
             color: isSelected
                 ? AppColors.gameRust
-                : AppColors.gameBrown
-                    .withOpacityValue(0.15),
+                : AppColors.gameBrown.withOpacityValue(0.15),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -51,20 +47,15 @@ class PaymentMethodCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.gameRust
-                        .withOpacityValue(0.1)
-                    : AppColors.gameBrown
-                        .withOpacityValue(0.06),
-                borderRadius:
-                    BorderRadius.circular(
+                    ? AppColors.gameRust.withOpacityValue(0.1)
+                    : AppColors.gameBrown.withOpacityValue(0.06),
+                borderRadius: BorderRadius.circular(
                   AppTheme.radiusMd,
                 ),
               ),
               child: Icon(
                 icon,
-                color: isSelected
-                    ? AppColors.gameRust
-                    : AppColors.gameBrown,
+                color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
               ),
             ),
             const SizedBox(
@@ -72,23 +63,19 @@ class PaymentMethodCard extends StatelessWidget {
             ),
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style:
-                        AppTypography.titleSmall,
+                    style: AppTypography.titleSmall,
                   ),
                   const SizedBox(
                     height: AppTheme.spacingXs,
                   ),
                   Text(
                     subtitle,
-                    style: AppTypography.bodySmall
-                        .copyWith(
-                      color: AppColors.gameBrown
-                          .withOpacityValue(0.6),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.gameBrown.withOpacityValue(0.6),
                     ),
                   ),
                 ],
@@ -104,10 +91,8 @@ class PaymentMethodCard extends StatelessWidget {
                       color: AppColors.gameRust,
                     )
                   : Icon(
-                      Icons
-                          .radio_button_unchecked,
-                      color: AppColors.gameBrown
-                          .withOpacityValue(0.25),
+                      Icons.radio_button_unchecked,
+                      color: AppColors.gameBrown.withOpacityValue(0.25),
                     ),
             ),
           ],

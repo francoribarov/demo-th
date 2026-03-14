@@ -14,8 +14,7 @@ class InfoBanner extends StatelessWidget {
         AppTheme.spacingMd,
       ),
       decoration: BoxDecoration(
-        color: AppColors.gameCream
-            .withOpacityValue(0.4),
+        color: AppColors.gameCream.withOpacityValue(0.4),
         borderRadius: BorderRadius.circular(
           AppTheme.radiusMd,
         ),
@@ -25,8 +24,7 @@ class InfoBanner extends StatelessWidget {
           Icon(
             Icons.info_outline,
             size: 18,
-            color: AppColors.gameBrown
-                .withOpacityValue(0.5),
+            color: AppColors.gameBrown.withOpacityValue(0.5),
           ),
           const SizedBox(
             width: AppTheme.spacingSm,
@@ -34,10 +32,8 @@ class InfoBanner extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style:
-                  AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown
-                    .withOpacityValue(0.6),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.gameBrown.withOpacityValue(0.6),
               ),
             ),
           ),

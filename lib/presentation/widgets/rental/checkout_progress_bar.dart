@@ -13,19 +13,15 @@ class CheckoutProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progress =
-        (currentStep + 1) / totalSteps;
-    final reduceMotion = MediaQuery.of(context)
-        .disableAnimations;
+    final progress = (currentStep + 1) / totalSteps;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
 
     if (reduceMotion) {
       return LinearProgressIndicator(
         value: progress,
         minHeight: 3,
-        backgroundColor: AppColors.gameBrown
-            .withOpacityValue(0.1),
-        valueColor:
-            const AlwaysStoppedAnimation(
+        backgroundColor: AppColors.gameBrown.withOpacityValue(0.1),
+        valueColor: const AlwaysStoppedAnimation(
           AppColors.gameRust,
         ),
       );
@@ -36,17 +32,14 @@ class CheckoutProgressBar extends StatelessWidget {
         begin: 0,
         end: progress,
       ),
-      duration:
-          const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       builder: (context, value, _) {
         return LinearProgressIndicator(
           value: value,
           minHeight: 3,
-          backgroundColor: AppColors.gameBrown
-              .withOpacityValue(0.1),
-          valueColor:
-              const AlwaysStoppedAnimation(
+          backgroundColor: AppColors.gameBrown.withOpacityValue(0.1),
+          valueColor: const AlwaysStoppedAnimation(
             AppColors.gameRust,
           ),
         );

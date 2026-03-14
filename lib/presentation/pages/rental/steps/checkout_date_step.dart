@@ -26,8 +26,7 @@ class CheckoutDateStep extends StatelessWidget {
         AppTheme.spacingLg,
       ),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '¿Cuándo querés alquilar?',
@@ -39,10 +38,8 @@ class CheckoutDateStep extends StatelessWidget {
           Text(
             'Seleccioná las fechas de inicio '
             'y fin del alquiler.',
-            style:
-                AppTypography.bodyMedium.copyWith(
-              color: AppColors.gameBrown
-                  .withOpacityValue(0.6),
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppColors.gameBrown.withOpacityValue(0.6),
             ),
           ),
           const SizedBox(
@@ -52,16 +49,14 @@ class CheckoutDateStep extends StatelessWidget {
             publication: publication,
             startDate: state.startDate,
             endDate: state.endDate,
-            onRangeChanged: (start, end) =>
-                context.read<RentalBloc>().add(
-                      RentalEvent.dateRangeChanged(
-                        startDate: start,
-                        endDate: end,
-                      ),
-                    ),
+            onRangeChanged: (start, end) => context.read<RentalBloc>().add(
+              RentalEvent.dateRangeChanged(
+                startDate: start,
+                endDate: end,
+              ),
+            ),
           ),
-          if (state.startDate != null &&
-              state.endDate != null) ...[
+          if (state.startDate != null && state.endDate != null) ...[
             const SizedBox(
               height: AppTheme.spacingXl,
             ),
@@ -79,23 +74,19 @@ class CheckoutDateStep extends StatelessWidget {
           Text(
             'Agregá snacks (opcional)',
             style: AppTypography.titleSmall.copyWith(
-              color: AppColors.gameBrown
-                  .withOpacityValue(0.6),
+              color: AppColors.gameBrown.withOpacityValue(0.6),
             ),
           ),
           const SizedBox(
             height: AppTheme.spacingMd,
           ),
           FoodBundleSelector(
-            selectedBundles:
-                state.selectedFoodBundles,
-            onBundlesChanged: (bundles) => context
-                .read<RentalBloc>()
-                .add(
-                  RentalEvent.foodBundlesChanged(
-                    foodBundles: bundles,
-                  ),
-                ),
+            selectedBundles: state.selectedFoodBundles,
+            onBundlesChanged: (bundles) => context.read<RentalBloc>().add(
+              RentalEvent.foodBundlesChanged(
+                foodBundles: bundles,
+              ),
+            ),
           ),
         ],
       ),

@@ -21,8 +21,7 @@ class PublicationSummaryCard extends StatelessWidget {
         AppTheme.spacingLg,
       ),
       decoration: BoxDecoration(
-        color: AppColors.gameCream
-            .withOpacityValue(0.5),
+        color: AppColors.gameCream.withOpacityValue(0.5),
         borderRadius: BorderRadius.circular(
           AppTheme.radiusLg,
         ),
@@ -38,13 +37,10 @@ class PublicationSummaryCard extends StatelessWidget {
               width: 64,
               height: 64,
               fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  const ColoredBox(
+              placeholder: (context, url) => const ColoredBox(
                 color: AppColors.gameCream,
               ),
-              errorWidget:
-                  (context, url, error) =>
-                      const Icon(
+              errorWidget: (context, url, error) => const Icon(
                 Icons.image_not_supported,
               ),
             ),
@@ -54,8 +50,7 @@ class PublicationSummaryCard extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
@@ -68,10 +63,8 @@ class PublicationSummaryCard extends StatelessWidget {
                 ),
                 Text(
                   publication.categoryName,
-                  style: AppTypography.bodySmall
-                      .copyWith(
-                    color: AppColors.gameBrown
-                        .withOpacityValue(0.6),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.gameBrown.withOpacityValue(0.6),
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -79,12 +72,10 @@ class PublicationSummaryCard extends StatelessWidget {
                   height: AppTheme.spacingXs,
                 ),
                 Text(
-                  CurrencyFormatter
-                      .formatPricePerDay(
+                  CurrencyFormatter.formatPricePerDay(
                     publication.price,
                   ),
-                  style: AppTypography.titleSmall
-                      .copyWith(
+                  style: AppTypography.titleSmall.copyWith(
                     color: AppColors.gameRust,
                   ),
                 ),

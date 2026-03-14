@@ -10,8 +10,7 @@ import 'package:mobile_table_hopping/presentation/widgets/rental/price_breakdown
 import 'package:mobile_table_hopping/presentation/widgets/rental/publication_summary_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/review_section_card.dart';
 
-class CheckoutReviewStep
-    extends StatelessWidget {
+class CheckoutReviewStep extends StatelessWidget {
   const CheckoutReviewStep({
     required this.publication,
     required this.state,
@@ -25,18 +24,15 @@ class CheckoutReviewStep
 
   @override
   Widget build(BuildContext context) {
-    final start =
-        DateFormatter.parseIso(state.startDate);
-    final end =
-        DateFormatter.parseIso(state.endDate);
+    final start = DateFormatter.parseIso(state.startDate);
+    final end = DateFormatter.parseIso(state.endDate);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(
         AppTheme.spacingLg,
       ),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Resumen del pedido',
@@ -48,10 +44,8 @@ class CheckoutReviewStep
           Text(
             '¡Ya casi está! Revisá que '
             'todo esté correcto.',
-            style:
-                AppTypography.bodyMedium.copyWith(
-              color: AppColors.gameBrown
-                  .withOpacityValue(0.6),
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppColors.gameBrown.withOpacityValue(0.6),
             ),
           ),
           const SizedBox(
@@ -83,9 +77,7 @@ class CheckoutReviewStep
           _buildDatesSection(start, end),
           _buildPaymentSection(),
           _buildDeliverySection(),
-          if (state
-              .selectedFoodBundles.isNotEmpty)
-            _buildSnacksSection(),
+          if (state.selectedFoodBundles.isNotEmpty) _buildSnacksSection(),
 
           const SizedBox(
             height: AppTheme.spacing4xl,
@@ -104,8 +96,7 @@ class CheckoutReviewStep
       title: 'Fechas de alquiler',
       onEdit: () => onEditStep(0),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (start != null && end != null) ...[
             Text(
@@ -121,17 +112,14 @@ class CheckoutReviewStep
             Text(
               '${state.rentalDays} '
               '${state.rentalDays == 1 ? 'día' : 'días'}',
-              style:
-                  AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown
-                    .withOpacityValue(0.6),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.gameBrown.withOpacityValue(0.6),
               ),
             ),
           ] else
             Text(
               'No seleccionadas',
-              style: AppTypography.bodyMedium
-                  .copyWith(
+              style: AppTypography.bodyMedium.copyWith(
                 color: AppColors.destructive,
               ),
             ),
@@ -158,44 +146,33 @@ class CheckoutReviewStep
       title: 'Entrega',
       onEdit: () => onEditStep(2),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            state.isDelivery
-                ? 'Envío a domicilio'
-                : 'Retiro en punto',
+            state.isDelivery ? 'Envío a domicilio' : 'Retiro en punto',
             style: AppTypography.titleSmall,
           ),
-          if (state.isDelivery &&
-              state.deliveryAddress
-                  .isNotEmpty) ...[
+          if (state.isDelivery && state.deliveryAddress.isNotEmpty) ...[
             const SizedBox(
               height: AppTheme.spacingXs,
             ),
             Text(
               state.deliveryAddress,
-              style: AppTypography.bodySmall
-                  .copyWith(
-                color: AppColors.gameBrown
-                    .withOpacityValue(0.6),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.gameBrown.withOpacityValue(0.6),
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ],
-          if (state.isDelivery &&
-              state.deliveryComments
-                  .isNotEmpty) ...[
+          if (state.isDelivery && state.deliveryComments.isNotEmpty) ...[
             const SizedBox(
               height: AppTheme.spacingXs,
             ),
             Text(
               state.deliveryComments,
-              style: AppTypography.bodySmall
-                  .copyWith(
-                color: AppColors.gameBrown
-                    .withOpacityValue(0.5),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.gameBrown.withOpacityValue(0.5),
                 fontStyle: FontStyle.italic,
               ),
               maxLines: 2,
@@ -213,8 +190,7 @@ class CheckoutReviewStep
       title: 'Snacks',
       onEdit: () => onEditStep(0),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: state.selectedFoodBundles
             .map(
               (b) => Padding(
@@ -222,8 +198,7 @@ class CheckoutReviewStep
                   bottom: AppTheme.spacingXs,
                 ),
                 child: Text(
-                  FoodBundleSelector
-                      .labelForId(b),
+                  FoodBundleSelector.labelForId(b),
                   style: AppTypography.bodySmall,
                 ),
               ),

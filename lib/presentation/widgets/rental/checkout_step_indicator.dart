@@ -30,8 +30,7 @@ class CheckoutStepIndicator extends StatelessWidget {
         color: AppColors.card,
         border: Border(
           bottom: BorderSide(
-            color: AppColors.gameBrown
-                .withOpacityValue(0.1),
+            color: AppColors.gameBrown.withOpacityValue(0.1),
           ),
         ),
       ),
@@ -59,8 +58,7 @@ class CheckoutStepIndicator extends StatelessWidget {
         ),
         color: isCompleted
             ? AppColors.gameRust
-            : AppColors.gameBrown
-                .withOpacityValue(0.15),
+            : AppColors.gameBrown.withOpacityValue(0.15),
       ),
     );
   }
@@ -74,24 +72,20 @@ class CheckoutStepIndicator extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           AnimatedContainer(
-            duration:
-                const Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 250),
             width: 36,
             height: 36,
             decoration: BoxDecoration(
               color: isCompleted
                   ? AppColors.gameRust
                   : isActive
-                      ? AppColors.gameRust
-                          .withOpacityValue(0.12)
-                      : AppColors.gameBrown
-                          .withOpacityValue(0.06),
+                  ? AppColors.gameRust.withOpacityValue(0.12)
+                  : AppColors.gameBrown.withOpacityValue(0.06),
               shape: BoxShape.circle,
               border: Border.all(
                 color: isActive || isCompleted
                     ? AppColors.gameRust
-                    : AppColors.gameBrown
-                        .withOpacityValue(0.15),
+                    : AppColors.gameBrown.withOpacityValue(0.15),
                 width: isActive ? 2 : 1,
               ),
             ),
@@ -100,16 +94,14 @@ class CheckoutStepIndicator extends StatelessWidget {
                   ? const Icon(
                       Icons.check,
                       size: 18,
-                      color:
-                          AppColors.primaryForeground,
+                      color: AppColors.primaryForeground,
                     )
                   : Icon(
                       icons[step],
                       size: 16,
                       color: isActive
                           ? AppColors.gameRust
-                          : AppColors.gameBrown
-                              .withOpacityValue(0.4),
+                          : AppColors.gameBrown.withOpacityValue(0.4),
                     ),
             ),
           ),
@@ -121,11 +113,8 @@ class CheckoutStepIndicator extends StatelessWidget {
             style: AppTypography.labelSmall.copyWith(
               color: isActive || isCompleted
                   ? AppColors.gameRust
-                  : AppColors.gameBrown
-                      .withOpacityValue(0.4),
-              fontWeight: isActive
-                  ? FontWeight.w700
-                  : FontWeight.w500,
+                  : AppColors.gameBrown.withOpacityValue(0.4),
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
               fontSize: 10,
             ),
           ),
