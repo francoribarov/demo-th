@@ -5,8 +5,10 @@ import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.da
 import 'package:mobile_table_hopping/domain/params/rental/confirm_rental_params.dart';
 import 'package:mobile_table_hopping/domain/usecase/catalog/get_publication_by_id_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/rental/confirm_rental_use_case.dart';
+import 'package:mobile_table_hopping/domain/validators/rental/rental_pricing_calculator.dart';
 import 'package:mobile_table_hopping/domain/validators/rental/rental_validator.dart';
 import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
+import 'package:mobile_table_hopping/presentation/validators/rental_validation_error_mapper.dart';
 
 part 'rental_bloc.freezed.dart';
 part 'rental_event.dart';
@@ -37,6 +39,27 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   }
   final GetPublicationByIdUseCase _getPublicationById;
   final ConfirmRentalUseCase _confirmRentalUseCase;
+
+  /// Emits [newState] with errorMessage cleared — used by input handlers
+  /// so each doesn't need to repeat `errorMessage: null`.
+  void _emitInput(Emitter<RentalState> emit, RentalState newState) {
+    emit(newState.copyWith(errorMessage: null));
+  }
+
+  /// Validates dates and returns the mapped error message, or null.
+  String? _validateDatesMessage({
+    required PublicationListing? publication,
+    required String? startDate,
+    required String? endDate,
+  }) {
+    return RentalValidationErrorMapper.mapDateError(
+      RentalValidator.validateDates(
+        publication: publication,
+        startDate: startDate,
+        endDate: endDate,
+      ),
+    );
+  }
 
   Future<void> _onStarted(_Started event, Emitter<RentalState> emit) async {
     emit(
@@ -71,12 +94,15 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     );
   }
 
-  void _onStartDateChanged(_StartDateChanged event, Emitter<RentalState> emit) {
+  void _onStartDateChanged(
+    _StartDateChanged event,
+    Emitter<RentalState> emit,
+  ) {
     final newStart = event.startDate;
     var newEnd = state.endDate;
 
     if (newStart == null) {
-      emit(state.copyWith(startDate: null, endDate: null, errorMessage: null));
+      _emitInput(emit, state.copyWith(startDate: null, endDate: null));
       return;
     }
 
@@ -85,7 +111,6 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
 
     FeedbackNotice? feedbackNotice;
 
-    // If start date is moved past end date, clear end date
     if (start != null && end != null && !end.isAfter(start)) {
       newEnd = null;
       feedbackNotice = const FeedbackNotice(
@@ -94,13 +119,12 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       );
     }
 
-    final errorMessage = RentalValidator.validateDates(
+    final errorMessage = _validateDatesMessage(
       publication: state.publication,
       startDate: newStart,
       endDate: newEnd,
     );
 
-    // If we newly set a start date but it makes the 3-day window unavailable
     if (newEnd == null && state.publication != null) {
       final startDate = DateTime.tryParse(newStart);
       if (startDate != null) {
@@ -109,13 +133,14 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
           newStart,
           minEndDate.toIso8601String(),
         )) {
-          return emit(
+          return _emitInput(
+            emit,
             state.copyWith(
               startDate: null,
               endDate: null,
-              errorMessage: null,
               feedbackNotice: const FeedbackNotice(
-                message: 'El juego debe estar disponible por al menos 3 días.',
+                message:
+                    'El juego debe estar disponible por al menos 3 días.',
                 severity: FeedbackSeverity.warning,
               ),
             ),
@@ -124,11 +149,11 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       }
     }
 
-    emit(
+    _emitInput(
+      emit,
       state.copyWith(
         startDate: newStart,
         endDate: errorMessage == null ? newEnd : null,
-        errorMessage: null,
         feedbackNotice: errorMessage != null
             ? FeedbackNotice(
                 message: errorMessage,
@@ -142,16 +167,16 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   void _onEndDateChanged(_EndDateChanged event, Emitter<RentalState> emit) {
     final newEnd = event.endDate;
 
-    final errorMessage = RentalValidator.validateDates(
+    final errorMessage = _validateDatesMessage(
       publication: state.publication,
       startDate: state.startDate,
       endDate: newEnd,
     );
 
-    emit(
+    _emitInput(
+      emit,
       state.copyWith(
         endDate: errorMessage == null ? newEnd : null,
-        errorMessage: null,
         feedbackNotice: errorMessage == null
             ? null
             : FeedbackNotice(
@@ -162,33 +187,36 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     );
   }
 
-  void _onDateRangeChanged(_DateRangeChanged event, Emitter<RentalState> emit) {
+  void _onDateRangeChanged(
+    _DateRangeChanged event,
+    Emitter<RentalState> emit,
+  ) {
     final startStr = event.startDate;
     final endStr = event.endDate;
 
     if (startStr == null || endStr == null) {
-      emit(
+      _emitInput(
+        emit,
         state.copyWith(
           startDate: null,
           endDate: null,
-          errorMessage: null,
           feedbackNotice: null,
         ),
       );
       return;
     }
 
-    final errorMessage = RentalValidator.validateDates(
+    final errorMessage = _validateDatesMessage(
       publication: state.publication,
       startDate: startStr,
       endDate: endStr,
     );
 
-    emit(
+    _emitInput(
+      emit,
       state.copyWith(
         startDate: errorMessage == null ? startStr : null,
         endDate: errorMessage == null ? endStr : null,
-        errorMessage: null,
         feedbackNotice: errorMessage == null
             ? null
             : FeedbackNotice(
@@ -200,46 +228,37 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
   }
 
   void _onDeliveryChanged(_DeliveryChanged event, Emitter<RentalState> emit) {
-    emit(
-      state.copyWith(
-        isDelivery: event.isDelivery,
-        errorMessage: null,
-      ),
-    );
+    _emitInput(emit, state.copyWith(isDelivery: event.isDelivery));
   }
 
   void _onDeliveryAddressChanged(
     _DeliveryAddressChanged event,
     Emitter<RentalState> emit,
   ) {
-    emit(state.copyWith(deliveryAddress: event.address, errorMessage: null));
+    _emitInput(emit, state.copyWith(deliveryAddress: event.address));
   }
 
   void _onDeliveryCommentsChanged(
     _DeliveryCommentsChanged event,
     Emitter<RentalState> emit,
   ) {
-    emit(state.copyWith(deliveryComments: event.comments, errorMessage: null));
+    _emitInput(emit, state.copyWith(deliveryComments: event.comments));
   }
 
   void _onPaymentMethodChanged(
     _PaymentMethodChanged event,
     Emitter<RentalState> emit,
   ) {
-    emit(
-      state.copyWith(paymentMethod: event.paymentMethod, errorMessage: null),
-    );
+    _emitInput(emit, state.copyWith(paymentMethod: event.paymentMethod));
   }
 
   void _onFoodBundlesChanged(
     _FoodBundlesChanged event,
     Emitter<RentalState> emit,
   ) {
-    emit(
-      state.copyWith(
-        selectedFoodBundles: event.foodBundles,
-        errorMessage: null,
-      ),
+    _emitInput(
+      emit,
+      state.copyWith(selectedFoodBundles: event.foodBundles),
     );
   }
 
@@ -252,9 +271,9 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
 
     final ownerId = publication.ownerId;
     if (ownerId.isEmpty) {
-      emit(
+      _emitInput(
+        emit,
         state.copyWith(
-          errorMessage: null,
           feedbackNotice: const FeedbackNotice(
             message: 'No pudimos identificar al dueño del juego.',
             severity: FeedbackSeverity.warning,
@@ -265,9 +284,9 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
     }
 
     if (start == null || end == null) {
-      emit(
+      _emitInput(
+        emit,
         state.copyWith(
-          errorMessage: null,
           feedbackNotice: const FeedbackNotice(
             message: 'Seleccioná las fechas del alquiler.',
             severity: FeedbackSeverity.warning,
@@ -277,18 +296,18 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       return;
     }
 
-    final isValid = RentalValidator.validateDates(
+    final validationMessage = _validateDatesMessage(
       publication: publication,
       startDate: start,
       endDate: end,
     );
 
-    if (isValid != null) {
-      emit(
+    if (validationMessage != null) {
+      _emitInput(
+        emit,
         state.copyWith(
-          errorMessage: null,
           feedbackNotice: FeedbackNotice(
-            message: isValid,
+            message: validationMessage,
             severity: FeedbackSeverity.warning,
           ),
         ),
@@ -304,7 +323,6 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       ),
     );
 
-    // Build params for the use case
     final params = ConfirmRentalParams(
       publicationId: publication.id,
       startDate: start,
@@ -316,11 +334,9 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
       foodBundleIds: state.selectedFoodBundles,
     );
 
-    // Call use case and handle Either result
     final result = await _confirmRentalUseCase(params);
 
     result.fold(
-      // Left: error case
       (error) => emit(
         state.copyWith(
           isSubmitting: false,
@@ -333,7 +349,6 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
           ),
         ),
       ),
-      // Right: success case
       (_) => emit(state.copyWith(isSubmitting: false, success: true)),
     );
   }

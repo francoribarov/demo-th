@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
+import 'package:mobile_table_hopping/domain/validators/publication/publication_validator.dart';
 
 part 'publication_form_state.freezed.dart';
 
@@ -20,8 +21,11 @@ abstract class PublicationFormState with _$PublicationFormState {
   const PublicationFormState._();
 
   /// True when description and condition are valid.
-  bool get hasValidData => descriptionError == null && conditionError == null;
+  bool get hasValidData =>
+      PublicationValidator.validateDescription(description) == null &&
+      PublicationValidator.validateCondition(condition) == null;
 
   /// True when price is valid.
-  bool get hasValidPrice => priceError == null;
+  bool get hasValidPrice =>
+      PublicationValidator.validatePricing(price) == null;
 }

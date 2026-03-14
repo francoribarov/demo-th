@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/validators/rental/rental_pricing_calculator.dart';
 import 'package:mobile_table_hopping/domain/validators/rental/rental_validator.dart';
 
 void main() {
@@ -32,14 +33,54 @@ void main() {
       expect(error, isNull);
     });
 
-    test('returns minimum duration error', () {
+    test('returns belowMinimumDays for short range', () {
       final error = RentalValidator.validateDates(
         publication: publication,
         startDate: '2026-06-01',
         endDate: '2026-06-01',
       );
 
-      expect(error, RentalValidator.minimumDaysMessage);
+      expect(error, RentalDateError.belowMinimumDays);
+    });
+
+    test('returns aboveMaximumDays for long range', () {
+      final error = RentalValidator.validateDates(
+        publication: publication,
+        startDate: '2026-06-01',
+        endDate: '2026-07-15',
+      );
+
+      expect(error, RentalDateError.aboveMaximumDays);
+    });
+
+    test('returns unavailablePublication when null', () {
+      final error = RentalValidator.validateDates(
+        publication: null,
+        startDate: '2026-06-01',
+        endDate: '2026-06-03',
+      );
+
+      expect(error, RentalDateError.unavailablePublication);
+    });
+
+    test('returns invalidFormat for bad dates', () {
+      final error = RentalValidator.validateDates(
+        publication: publication,
+        startDate: 'not-a-date',
+        endDate: '2026-06-03',
+      );
+
+      expect(error, RentalDateError.invalidFormat);
+    });
+
+    test('returns null when dates are null (not yet selected)', () {
+      final error = RentalValidator.validateDates(
+        publication: publication,
+        startDate: null,
+        endDate: null,
+      );
+
+      expect(error, isNull);
     });
   });
 

@@ -22,11 +22,13 @@ class AuthValidator {
     if (atIndex <= 0 || atIndex >= normalized.length - 1) {
       return AuthEmailError.invalidFormat;
     }
+    if (normalized.contains(RegExp(r'\s'))) {
+      return AuthEmailError.invalidFormat;
+    }
     final domain = normalized.substring(atIndex + 1);
     if (!domain.contains('.') ||
         domain.startsWith('.') ||
-        domain.endsWith('.') ||
-        normalized.contains(' ')) {
+        domain.endsWith('.')) {
       return AuthEmailError.invalidFormat;
     }
     return null;

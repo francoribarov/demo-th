@@ -20,6 +20,21 @@ void main() {
         );
       });
 
+      test('returns invalidFormat when contains whitespace', () {
+        expect(
+          AuthValidator.validateEmail('user @example.com'),
+          AuthEmailError.invalidFormat,
+        );
+        expect(
+          AuthValidator.validateEmail('user\t@example.com'),
+          AuthEmailError.invalidFormat,
+        );
+        expect(
+          AuthValidator.validateEmail('user\n@example.com'),
+          AuthEmailError.invalidFormat,
+        );
+      });
+
       test('returns null when valid', () {
         expect(AuthValidator.validateEmail('user@example.com'), isNull);
         expect(AuthValidator.validateEmail('  user@example.com  '), isNull);
