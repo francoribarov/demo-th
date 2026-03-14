@@ -27,34 +27,63 @@ class PriceBreakdownCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(
+        AppTheme.spacingLg,
+      ),
       decoration: BoxDecoration(
         color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+        borderRadius: BorderRadius.circular(
+          AppTheme.radiusLg,
+        ),
+        border: Border.all(
+          color: AppColors.gameBrown
+              .withOpacityValue(0.1),
+        ),
       ),
       child: Column(
         children: [
           _PriceRow(
             label:
-                '${CurrencyFormatter.formatUYU(pricePerDay)}/día × $days días',
+                '${CurrencyFormatter.formatUYU(pricePerDay)}'
+                '/día × $days días',
             value: subtotal,
           ),
-          const SizedBox(height: 8),
-          _PriceRow(label: 'Tarifa de servicio', value: serviceFee),
+          const SizedBox(
+            height: AppTheme.spacingSm,
+          ),
+          _PriceRow(
+            label: 'Tarifa de servicio',
+            value: serviceFee,
+          ),
           if (deliveryFee > 0) ...[
-            const SizedBox(height: 8),
-            _PriceRow(label: 'Envío a domicilio', value: deliveryFee),
+            const SizedBox(
+              height: AppTheme.spacingSm,
+            ),
+            _PriceRow(
+              label: 'Envío a domicilio',
+              value: deliveryFee,
+            ),
           ],
           if (foodTotal > 0) ...[
-            const SizedBox(height: 8),
-            _PriceRow(label: 'Snacks', value: foodTotal),
+            const SizedBox(
+              height: AppTheme.spacingSm,
+            ),
+            _PriceRow(
+              label: 'Snacks',
+              value: foodTotal,
+            ),
           ],
-          const Divider(height: 24),
+          const Divider(
+            height: AppTheme.spacing2xl,
+          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total', style: AppTypography.titleMedium),
+              Text(
+                'Total',
+                style: AppTypography.titleMedium,
+              ),
               Text(
                 CurrencyFormatter.formatUYU(total),
                 style: AppTypography.price,
@@ -68,19 +97,26 @@ class PriceBreakdownCard extends StatelessWidget {
 }
 
 class _PriceRow extends StatelessWidget {
-  const _PriceRow({required this.label, required this.value});
+  const _PriceRow({
+    required this.label,
+    required this.value,
+  });
+
   final String label;
   final num value;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.gameBrown.withOpacityValue(0.7),
+          style:
+              AppTypography.bodyMedium.copyWith(
+            color: AppColors.gameBrown
+                .withOpacityValue(0.7),
           ),
         ),
         Text(

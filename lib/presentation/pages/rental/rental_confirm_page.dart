@@ -25,15 +25,22 @@ class RentalConfirmPage extends StatefulWidget {
   final String? endDate;
 
   @override
-  State<RentalConfirmPage> createState() => _RentalConfirmPageState();
+  State<RentalConfirmPage> createState() =>
+      _RentalConfirmPageState();
 }
 
-class _RentalConfirmPageState extends State<RentalConfirmPage> {
+class _RentalConfirmPageState
+    extends State<RentalConfirmPage> {
   final _pageController = PageController();
   int _currentStep = 0;
 
   static const _totalSteps = 4;
-  static const _stepLabels = ['Fechas', 'Pago', 'Entrega', 'Resumen'];
+  static const _stepLabels = [
+    'Fechas',
+    'Pago',
+    'Entrega',
+    'Resumen',
+  ];
   static const _stepIcons = [
     Icons.calendar_today,
     Icons.payments,
@@ -47,27 +54,21 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
     super.dispose();
   }
 
-  void _goToStep(int step) {
-    if (step < 0 || step >= _totalSteps) return;
-    _pageController.animateToPage(
-      step,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-    setState(() => _currentStep = step);
-  }
-
-  void _next() => _goToStep(_currentStep + 1);
-  void _back() => _goToStep(_currentStep - 1);
-
-  bool _canAdvanceFromStep(int step, RentalState state) {
+  bool _isStepValid(
+    int step,
+    RentalState state,
+  ) {
     switch (step) {
       case 0:
-        return state.startDate != null && state.endDate != null;
+        return state.startDate != null &&
+            state.endDate != null;
       case 1:
         return state.paymentMethod.isNotEmpty;
       case 2:
-        if (state.isDelivery && state.deliveryAddress.trim().isEmpty) {
+        if (state.isDelivery &&
+            state.deliveryAddress
+                .trim()
+                .isEmpty) {
           return false;
         }
         return true;
@@ -76,24 +77,100 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
     }
   }
 
+  /// The furthest step reachable given the
+  /// current state. Re-evaluated on every
+  /// build so clearing data on a previous step
+  /// immediately locks later ones.
+  int _maxReachableStep(RentalState state) {
+    for (var i = 0; i < _totalSteps - 1; i++) {
+      if (!_isStepValid(i, state)) return i;
+    }
+    return _totalSteps - 1;
+  }
+
+  void _animateToStep(int step) {
+    _pageController.animateToPage(
+      step,
+      duration:
+          const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    setState(() => _currentStep = step);
+  }
+
+  void _goToStep(int step, RentalState state) {
+    if (step < 0 || step >= _totalSteps) return;
+    final max = _maxReachableStep(state);
+    if (step > max) return;
+    _animateToStep(step);
+  }
+
+  void _tryNext(RentalState state) {
+    if (!_isStepValid(_currentStep, state)) {
+      _showValidationError(
+        _currentStep,
+        state,
+      );
+      return;
+    }
+    _animateToStep(_currentStep + 1);
+  }
+
+  void _back() {
+    if (_currentStep > 0) {
+      _animateToStep(_currentStep - 1);
+    }
+  }
+
+  void _showValidationError(
+    int step,
+    RentalState state,
+  ) {
+    String? msg;
+    switch (step) {
+      case 0:
+        msg = 'Seleccioná las fechas de '
+            'inicio y fin del alquiler.';
+      case 2:
+        if (state.isDelivery &&
+            state.deliveryAddress
+                .trim()
+                .isEmpty) {
+          msg = 'Ingresá una dirección '
+              'de entrega.';
+        }
+    }
+    if (msg != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RentalBloc, RentalState>(
       listenWhen: (prev, curr) =>
-          prev.snackbarMessage != curr.snackbarMessage &&
+          prev.snackbarMessage !=
+              curr.snackbarMessage &&
           curr.snackbarMessage != null,
       listener: (context, state) {
         final message = state.snackbarMessage;
         if (message == null) return;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(message)));
-        context.read<RentalBloc>().add(const RentalEvent.messageShown());
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+        context.read<RentalBloc>().add(
+              const RentalEvent.messageShown(),
+            );
       },
       builder: (context, state) {
         if (state.isLoading) {
           return const Scaffold(
             body: Center(
-              child: CircularProgressIndicator(color: AppColors.gameRust),
+              child: CircularProgressIndicator(
+                color: AppColors.gameRust,
+              ),
             ),
           );
         }
@@ -103,13 +180,21 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
           return Scaffold(
             appBar: AppBar(
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(
+                  Icons.arrow_back,
+                ),
                 onPressed: () =>
-                    context.popOrGo('/publications/${widget.publicationId}'),
+                    context.popOrGo(
+                  '/publications/'
+                  '${widget.publicationId}',
+                ),
               ),
             ),
             body: Center(
-              child: Text(state.errorMessage ?? 'Publicación no encontrada'),
+              child: Text(
+                state.errorMessage ??
+                    'Publicación no encontrada',
+              ),
             ),
           );
         }
@@ -121,19 +206,38 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
           );
         }
 
+        // If state changed and the user is
+        // now past the max reachable step
+        // (e.g. cleared dates while on step 2),
+        // snap them back.
+        final max = _maxReachableStep(state);
+        if (_currentStep > max) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) {
+            _animateToStep(max);
+          });
+        }
+
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(
+                Icons.arrow_back,
+              ),
               onPressed: () {
                 if (_currentStep > 0) {
                   _back();
                 } else {
-                  context.popOrGo('/publications/${widget.publicationId}');
+                  context.popOrGo(
+                    '/publications/'
+                    '${widget.publicationId}',
+                  );
                 }
               },
             ),
-            title: Text(_stepLabels[_currentStep]),
+            title: Text(
+              _stepLabels[_currentStep],
+            ),
           ),
           body: Column(
             children: [
@@ -142,26 +246,34 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
                 totalSteps: _totalSteps,
                 labels: _stepLabels,
                 icons: _stepIcons,
-                onStepTapped: (step) {
-                  if (step < _currentStep) _goToStep(step);
-                },
+                onStepTapped: (step) =>
+                    _goToStep(step, state),
               ),
               Expanded(
                 child: PageView(
                   controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (i) => setState(() => _currentStep = i),
+                  physics:
+                      const NeverScrollableScrollPhysics(),
+                  onPageChanged: (i) =>
+                      setState(
+                    () => _currentStep = i,
+                  ),
                   children: [
                     CheckoutDateStep(
                       publication: publication,
                       state: state,
                     ),
-                    CheckoutPaymentStep(state: state),
-                    CheckoutDeliveryStep(state: state),
+                    CheckoutPaymentStep(
+                      state: state,
+                    ),
+                    CheckoutDeliveryStep(
+                      state: state,
+                    ),
                     CheckoutReviewStep(
                       publication: publication,
                       state: state,
-                      onEditStep: _goToStep,
+                      onEditStep: (step) =>
+                          _goToStep(step, state),
                     ),
                   ],
                 ),
@@ -169,14 +281,21 @@ class _RentalConfirmPageState extends State<RentalConfirmPage> {
               CheckoutBottomBar(
                 currentStep: _currentStep,
                 totalSteps: _totalSteps,
-                canAdvance: _canAdvanceFromStep(_currentStep, state),
+                canAdvance: _isStepValid(
+                  _currentStep,
+                  state,
+                ),
                 isSubmitting: state.isSubmitting,
-                onNext: _next,
+                onNext: () => _tryNext(state),
                 onBack: _back,
                 onSubmit: () => context
                     .read<RentalBloc>()
-                    .add(const RentalEvent.submitted()),
+                    .add(
+                      const RentalEvent
+                          .submitted(),
+                    ),
                 errorMessage: state.errorMessage,
+                totalPrice: state.total,
               ),
             ],
           ),

@@ -10,24 +10,34 @@ class InfoBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(
+        AppTheme.spacingMd,
+      ),
       decoration: BoxDecoration(
-        color: AppColors.gameCream.withOpacityValue(0.4),
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        color: AppColors.gameCream
+            .withOpacityValue(0.4),
+        borderRadius: BorderRadius.circular(
+          AppTheme.radiusMd,
+        ),
       ),
       child: Row(
         children: [
           Icon(
             Icons.info_outline,
             size: 18,
-            color: AppColors.gameBrown.withOpacityValue(0.5),
+            color: AppColors.gameBrown
+                .withOpacityValue(0.5),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(
+            width: AppTheme.spacingSm,
+          ),
           Expanded(
             child: Text(
               text,
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.gameBrown.withOpacityValue(0.6),
+              style:
+                  AppTypography.bodySmall.copyWith(
+                color: AppColors.gameBrown
+                    .withOpacityValue(0.6),
               ),
             ),
           ),

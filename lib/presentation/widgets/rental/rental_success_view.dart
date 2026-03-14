@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
+import 'package:mobile_table_hopping/core/widgets/app_buttons.dart';
 import 'package:mobile_table_hopping/features/catalog/domain/entities/publication_listing.dart';
 
 class RentalSuccessView extends StatelessWidget {
@@ -18,53 +20,70 @@ class RentalSuccessView extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.all(
+            AppTheme.spacing3xl,
+          ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment:
+                MainAxisAlignment.center,
             children: [
               Container(
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.green[50],
+                  color: AppColors.success
+                      .withOpacityValue(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.check_circle,
                   size: 64,
-                  color: Colors.green[600],
+                  color: AppColors.success,
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(
+                height: AppTheme.spacing3xl,
+              ),
               Text(
                 '¡Solicitud enviada!',
                 style: AppTypography.displaySmall,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(
+                height: AppTheme.spacingLg,
+              ),
               Text(
-                'Tu solicitud de alquiler de ${publication.title} fue enviada. '
+                'Tu solicitud de alquiler de '
+                '${publication.title} fue enviada. '
                 'El propietario deberá aceptarla.',
-                style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.gameBrown.withOpacityValue(0.7),
+                style:
+                    AppTypography.bodyLarge.copyWith(
+                  color: AppColors.gameBrown
+                      .withOpacityValue(0.7),
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(
+                height: AppTheme.spacingSm,
+              ),
               Text(
-                'Te notificaremos cuando el propietario acepte tu solicitud.',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.gameBrown.withOpacityValue(0.6),
+                'Te notificaremos cuando el '
+                'propietario acepte tu solicitud.',
+                style: AppTypography.bodyMedium
+                    .copyWith(
+                  color: AppColors.gameBrown
+                      .withOpacityValue(0.6),
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 48),
-              ElevatedButton(
+              const SizedBox(
+                height: AppTheme.spacing4xl,
+              ),
+              AppPrimaryButton(
                 onPressed: onBackHome,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 56),
-                ),
-                child: const Text('Volver al inicio'),
+                expand: true,
+                child:
+                    const Text('Volver al inicio'),
               ),
             ],
           ),

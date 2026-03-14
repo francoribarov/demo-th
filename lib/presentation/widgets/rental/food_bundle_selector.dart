@@ -14,9 +14,24 @@ class FoodBundleSelector extends StatelessWidget {
   final void Function(List<String>) onBundlesChanged;
 
   static const _bundles = [
-    ('classic', 'Pack Clásico', 'Pop, papas y bebidas', '🍿'),
-    ('sweet', 'Pack Dulce', 'Chocolates, galletas y jugos', '🍫'),
-    ('premium', 'Pack Premium', 'Quesos, fiambres y vino', '🧀'),
+    (
+      'classic',
+      'Pack Clásico',
+      'Pop, papas y bebidas',
+      '🍿',
+    ),
+    (
+      'sweet',
+      'Pack Dulce',
+      'Chocolates, galletas y jugos',
+      '🍫',
+    ),
+    (
+      'premium',
+      'Pack Premium',
+      'Quesos, fiambres y vino',
+      '🧀',
+    ),
   ];
 
   static String labelForId(String id) {
@@ -36,10 +51,12 @@ class FoodBundleSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: _bundles.map((bundle) {
-        final isSelected = selectedBundles.contains(bundle.$1);
+        final isSelected =
+            selectedBundles.contains(bundle.$1);
         return GestureDetector(
           onTap: () {
-            final newBundles = List<String>.from(selectedBundles);
+            final newBundles =
+                List<String>.from(selectedBundles);
             if (isSelected) {
               newBundles.remove(bundle.$1);
             } else {
@@ -48,16 +65,26 @@ class FoodBundleSelector extends StatelessWidget {
             onBundlesChanged(newBundles);
           },
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(14),
+            duration:
+                const Duration(milliseconds: 200),
+            margin: const EdgeInsets.only(
+              bottom: AppTheme.spacingSm,
+            ),
+            padding: const EdgeInsets.all(
+              AppTheme.spacingMd,
+            ),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.gameCream : AppColors.card,
-              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+              color: isSelected
+                  ? AppColors.gameCream
+                  : AppColors.card,
+              borderRadius: BorderRadius.circular(
+                AppTheme.radiusLg,
+              ),
               border: Border.all(
                 color: isSelected
                     ? AppColors.gameRust
-                    : AppColors.gameBrown.withOpacityValue(0.15),
+                    : AppColors.gameBrown
+                        .withOpacityValue(0.15),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -67,34 +94,62 @@ class FoodBundleSelector extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    color: AppColors.card,
+                    borderRadius:
+                        BorderRadius.circular(
+                      AppTheme.radiusMd,
+                    ),
                   ),
                   child: Center(
-                    child:
-                        Text(bundle.$4, style: const TextStyle(fontSize: 20)),
+                    child: Text(
+                      bundle.$4,
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(
+                  width: AppTheme.spacingMd,
+                ),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
                     children: [
-                      Text(bundle.$2, style: AppTypography.titleSmall),
+                      Text(
+                        bundle.$2,
+                        style:
+                            AppTypography.titleSmall,
+                      ),
                       Text(
                         bundle.$3,
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.gameBrown.withOpacityValue(0.6),
+                        style: AppTypography
+                            .bodySmall
+                            .copyWith(
+                          color: AppColors.gameBrown
+                              .withOpacityValue(
+                            0.6,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Text(r'$250', style: AppTypography.titleSmall),
-                const SizedBox(width: 8),
+                Text(
+                  r'$250',
+                  style: AppTypography.titleSmall,
+                ),
+                const SizedBox(
+                  width: AppTheme.spacingSm,
+                ),
                 Icon(
-                  isSelected ? Icons.check_circle : Icons.add_circle_outline,
-                  color: isSelected ? AppColors.gameRust : AppColors.gameBrown,
+                  isSelected
+                      ? Icons.check_circle
+                      : Icons.add_circle_outline,
+                  color: isSelected
+                      ? AppColors.gameRust
+                      : AppColors.gameBrown,
                 ),
               ],
             ),

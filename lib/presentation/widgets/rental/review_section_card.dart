@@ -20,37 +20,61 @@ class ReviewSectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(
+        bottom: AppTheme.spacingMd,
+      ),
+      padding: const EdgeInsets.all(
+        AppTheme.spacingLg,
+      ),
       decoration: BoxDecoration(
         color: AppColors.card,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppColors.gameBrown.withOpacityValue(0.1)),
+        borderRadius: BorderRadius.circular(
+          AppTheme.radiusLg,
+        ),
+        border: Border.all(
+          color: AppColors.gameBrown
+              .withOpacityValue(0.1),
+        ),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
         children: [
           Container(
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: AppColors.gameRust.withOpacityValue(0.08),
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              color: AppColors.gameRust
+                  .withOpacityValue(0.08),
+              borderRadius: BorderRadius.circular(
+                AppTheme.radiusMd,
+              ),
             ),
-            child: Icon(icon, size: 18, color: AppColors.gameRust),
+            child: Icon(
+              icon,
+              size: 18,
+              color: AppColors.gameRust,
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(
+            width: AppTheme.spacingMd,
+          ),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.gameBrown.withOpacityValue(0.5),
+                  style: AppTypography.labelSmall
+                      .copyWith(
+                    color: AppColors.gameBrown
+                        .withOpacityValue(0.5),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(
+                  height: AppTheme.spacingXs,
+                ),
                 child,
               ],
             ),
@@ -58,10 +82,16 @@ class ReviewSectionCard extends StatelessWidget {
           GestureDetector(
             onTap: onEdit,
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(
+                AppTheme.spacingSm,
+              ),
               decoration: BoxDecoration(
-                color: AppColors.gameRust.withOpacityValue(0.08),
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                color: AppColors.gameRust
+                    .withOpacityValue(0.08),
+                borderRadius:
+                    BorderRadius.circular(
+                  AppTheme.radiusSm,
+                ),
               ),
               child: const Icon(
                 Icons.edit_outlined,
