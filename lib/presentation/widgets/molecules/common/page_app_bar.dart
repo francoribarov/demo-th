@@ -45,7 +45,7 @@ class PageAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final leadingIcon = switch (leadingType) {
       PageAppBarLeadingType.back => Icons.arrow_back,
-      PageAppBarLeadingType.close => Icons.close,
+      PageAppBarLeadingType.close => null, // Handled in actions
       PageAppBarLeadingType.none => null,
     };
 
@@ -60,14 +60,21 @@ class PageAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? null
           : AppBarIconAction(
               icon: leadingIcon,
-              semanticLabel: leadingType == PageAppBarLeadingType.back
-                  ? 'Volver'
-                  : 'Cerrar',
+              semanticLabel: 'Volver',
               iconColor: foregroundColor ?? AppColors.gameBrown,
               onPressed: onLeadingPressed,
             ),
-      automaticallyImplyLeading: leadingType != PageAppBarLeadingType.none,
-      actions: actions,
+      automaticallyImplyLeading: leadingType == PageAppBarLeadingType.back,
+      actions: [
+        ...?actions,
+        if (leadingType == PageAppBarLeadingType.close)
+          AppBarIconAction(
+            icon: Icons.close,
+            semanticLabel: 'Cerrar',
+            iconColor: foregroundColor ?? AppColors.gameBrown,
+            onPressed: onLeadingPressed,
+          ),
+      ],
     );
   }
 
