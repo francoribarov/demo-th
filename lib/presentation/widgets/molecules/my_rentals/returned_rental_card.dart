@@ -146,15 +146,41 @@ class ReturnedRentalCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                const Spacer(),
                 if (dropOffDate != null) ...[
-                  const Spacer(),
                   Text(
                     dropOffDate,
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.gameBrown,
                     ),
                   ),
+                  const SizedBox(width: 8),
                 ],
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onReport,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppColors.error.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.error.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.report_outlined,
+                          size: 18,
+                          color: AppColors.error,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
 
@@ -226,40 +252,22 @@ class ReturnedRentalCard extends StatelessWidget {
                 ),
               ),
 
-            // Action buttons
+            // Action button
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: onReport,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.error,
-                      foregroundColor: AppColors.primaryForeground,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      minimumSize: const Size.fromHeight(44),
-                    ),
-                    child: const Text('Reportar'),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: onConfirm,
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.primaryForeground,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
                   ),
+                  minimumSize: const Size.fromHeight(44),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: onConfirm,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.primaryForeground,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      minimumSize: const Size.fromHeight(44),
-                    ),
-                    child: const Text('Confirmar'),
-                  ),
-                ),
-              ],
+                child: const Text('Confirmar'),
+              ),
             ),
           ],
         ),
