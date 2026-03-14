@@ -9,7 +9,7 @@ import 'package:mobile_table_hopping/presentation/pages/rental/steps/checkout_de
 import 'package:mobile_table_hopping/presentation/pages/rental/steps/checkout_payment_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/steps/checkout_review_step.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/checkout_bottom_bar.dart';
-import 'package:mobile_table_hopping/presentation/widgets/rental/checkout_step_indicator.dart';
+import 'package:mobile_table_hopping/presentation/widgets/rental/checkout_progress_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/rental/rental_success_view.dart';
 
 class RentalConfirmPage extends StatefulWidget {
@@ -40,12 +40,6 @@ class _RentalConfirmPageState
     'Pago',
     'Entrega',
     'Resumen',
-  ];
-  static const _stepIcons = [
-    Icons.calendar_today,
-    Icons.payments,
-    Icons.local_shipping,
-    Icons.checklist,
   ];
 
   @override
@@ -241,13 +235,9 @@ class _RentalConfirmPageState
           ),
           body: Column(
             children: [
-              CheckoutStepIndicator(
+              CheckoutProgressBar(
                 currentStep: _currentStep,
                 totalSteps: _totalSteps,
-                labels: _stepLabels,
-                icons: _stepIcons,
-                onStepTapped: (step) =>
-                    _goToStep(step, state),
               ),
               Expanded(
                 child: PageView(
@@ -287,7 +277,6 @@ class _RentalConfirmPageState
                 ),
                 isSubmitting: state.isSubmitting,
                 onNext: () => _tryNext(state),
-                onBack: _back,
                 onSubmit: () => context
                     .read<RentalBloc>()
                     .add(
