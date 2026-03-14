@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:mobile_table_hopping/core/auth/session_expired_notifier.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
@@ -12,6 +13,7 @@ import 'package:mobile_table_hopping/domain/usecase/auth/logout.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/refresh_token.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/register.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';
@@ -27,6 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required Register register,
     required Logout logout,
     required RefreshToken refreshToken,
+    required SessionExpiredNotifier sessionExpiredNotifier,
   }) : _getAuthStatus = getAuthStatus,
        _login = login,
        _register = register,
@@ -49,6 +52,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_LogoutRequested>(_onLogoutRequested);
     on<_RefreshRequested>(_onRefreshRequested);
     on<_ClearErrors>(_onClearErrors);
+    on<_SessionExpired>(_onSessionExpired);
+    on<_ClearSessionNotice>(_onClearSessionNotice);
+
+    _sessionExpiredSubscription = sessionExpiredNotifier.stream.listen(
+      (_) => add(const AuthEvent.sessionExpired()),
+    );
 
     add(const AuthEvent.started());
   }
@@ -58,6 +67,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Register _register;
   final Logout _logout;
   final RefreshToken _refreshToken;
+  late final StreamSubscription<void> _sessionExpiredSubscription;
 
   Future<void> _onStarted(_Started event, Emitter<AuthState> emit) async {
     emit(state.copyWith(isCheckingStatus: true, errorMessage: null));
@@ -376,6 +386,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         registerErrorMessage: null,
       ),
     );
+  }
+
+  void _onSessionExpired(_SessionExpired event, Emitter<AuthState> emit) {
+    if (!state.isAuthenticated || state.sessionNotice != null) return;
+    emit(
+      state.copyWith(
+        status: AuthStatus.unauthenticated,
+        session: null,
+        sessionNotice: const FeedbackNotice(
+          message: 'Tu sesión expiró. Iniciá sesión nuevamente.',
+          severity: FeedbackSeverity.warning,
+        ),
+      ),
+    );
+  }
+
+  void _onClearSessionNotice(
+    _ClearSessionNotice event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(sessionNotice: null));
+  }
+
+  @override
+  Future<void> close() async {
+    await _sessionExpiredSubscription.cancel();
+    return super.close();
   }
 
   String _friendlyMessage(Object error, {required String fallback}) {

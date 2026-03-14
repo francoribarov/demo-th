@@ -1,4 +1,3 @@
-// RegExp deprecation is for implementers; normal usage is still valid (dart-lang/sdk#62012).
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/dropdown_form_input_field.dart';
@@ -8,6 +7,12 @@ import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selec
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/time_picker_field.dart';
+
+bool _matchesTimeFormat(String s) =>
+    s.length == 5 &&
+    s[2] == ':' &&
+    int.tryParse(s.substring(0, 2)) != null &&
+    int.tryParse(s.substring(3, 5)) != null;
 
 void main() {
   testWidgets(
@@ -243,7 +248,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(selected, isNotNull);
-    expect(RegExp(r'^\d{2}:\d{2}$').hasMatch(selected!), isTrue);
+    expect(_matchesTimeFormat(selected!), isTrue);
   });
 }
 

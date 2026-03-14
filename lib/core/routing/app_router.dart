@@ -196,7 +196,7 @@ class AppRouter {
       return true;
     }
 
-    final segments = Uri(path: location).pathSegments;
+    final segments = Uri(path: path).pathSegments;
 
     final isRentalRoute =
         segments.length == 3 &&
@@ -226,7 +226,7 @@ class AppRouter {
     }
 
     if (authState.status != AuthStatus.authenticated) {
-      return AppRoutes.home;
+      return AppRoutes.loginPath(from: location);
     }
 
     return null;
@@ -239,7 +239,7 @@ class AppRouter {
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(getIt<AuthBloc>().stream),
     redirect: (context, state) {
-      return authRedirectFor(getIt<AuthBloc>().state, state.uri.path);
+      return authRedirectFor(getIt<AuthBloc>().state, state.uri.toString());
     },
     routes: [
       StatefulShellRoute.indexedStack(
@@ -276,7 +276,9 @@ class AppRouter {
                 name: AppRoutes.homeName,
                 pageBuilder: (context, state) => NoTransitionPage(
                   child: BlocProvider<CatalogBloc>(
-                    create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
+                    create: (_) =>
+                        getIt<CatalogBloc>()
+                          ..add(const CatalogEvent.loadGames()),
                     child: const HomePage(),
                   ),
                 ),
