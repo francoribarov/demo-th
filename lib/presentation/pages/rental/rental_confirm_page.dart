@@ -34,10 +34,6 @@ class _RentalConfirmPageState
   final _pageController = PageController();
   int _currentStep = 0;
 
-  // Tracks the furthest step the user has
-  // legitimately reached via validation.
-  int _highestUnlockedStep = 0;
-
   static const _totalSteps = 4;
   static const _stepLabels = [
     'Fechas',
@@ -57,37 +53,6 @@ class _RentalConfirmPageState
     _pageController.dispose();
     super.dispose();
   }
-
-  void _goToStep(int step) {
-    if (step < 0 || step >= _totalSteps) return;
-    if (step > _highestUnlockedStep) return;
-    _pageController.animateToPage(
-      step,
-      duration:
-          const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-    setState(() => _currentStep = step);
-  }
-
-  void _tryNext(RentalState state) {
-    if (!_isStepValid(_currentStep, state)) {
-      _showValidationError(
-        _currentStep,
-        state,
-      );
-      return;
-    }
-    final next = _currentStep + 1;
-    if (next > _highestUnlockedStep) {
-      setState(
-        () => _highestUnlockedStep = next,
-      );
-    }
-    _goToStep(next);
-  }
-
-  void _back() => _goToStep(_currentStep - 1);
 
   bool _isStepValid(
     int step,
@@ -112,6 +77,51 @@ class _RentalConfirmPageState
     }
   }
 
+  /// The furthest step reachable given the
+  /// current state. Re-evaluated on every
+  /// build so clearing data on a previous step
+  /// immediately locks later ones.
+  int _maxReachableStep(RentalState state) {
+    for (var i = 0; i < _totalSteps - 1; i++) {
+      if (!_isStepValid(i, state)) return i;
+    }
+    return _totalSteps - 1;
+  }
+
+  void _animateToStep(int step) {
+    _pageController.animateToPage(
+      step,
+      duration:
+          const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    setState(() => _currentStep = step);
+  }
+
+  void _goToStep(int step, RentalState state) {
+    if (step < 0 || step >= _totalSteps) return;
+    final max = _maxReachableStep(state);
+    if (step > max) return;
+    _animateToStep(step);
+  }
+
+  void _tryNext(RentalState state) {
+    if (!_isStepValid(_currentStep, state)) {
+      _showValidationError(
+        _currentStep,
+        state,
+      );
+      return;
+    }
+    _animateToStep(_currentStep + 1);
+  }
+
+  void _back() {
+    if (_currentStep > 0) {
+      _animateToStep(_currentStep - 1);
+    }
+  }
+
   void _showValidationError(
     int step,
     RentalState state,
@@ -119,11 +129,8 @@ class _RentalConfirmPageState
     String? msg;
     switch (step) {
       case 0:
-        if (state.startDate == null ||
-            state.endDate == null) {
-          msg = 'Seleccioná las fechas de '
-              'inicio y fin del alquiler.';
-        }
+        msg = 'Seleccioná las fechas de '
+            'inicio y fin del alquiler.';
       case 2:
         if (state.isDelivery &&
             state.deliveryAddress
@@ -199,6 +206,18 @@ class _RentalConfirmPageState
           );
         }
 
+        // If state changed and the user is
+        // now past the max reachable step
+        // (e.g. cleared dates while on step 2),
+        // snap them back.
+        final max = _maxReachableStep(state);
+        if (_currentStep > max) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) {
+            _animateToStep(max);
+          });
+        }
+
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -227,7 +246,8 @@ class _RentalConfirmPageState
                 totalSteps: _totalSteps,
                 labels: _stepLabels,
                 icons: _stepIcons,
-                onStepTapped: _goToStep,
+                onStepTapped: (step) =>
+                    _goToStep(step, state),
               ),
               Expanded(
                 child: PageView(
@@ -252,7 +272,8 @@ class _RentalConfirmPageState
                     CheckoutReviewStep(
                       publication: publication,
                       state: state,
-                      onEditStep: _goToStep,
+                      onEditStep: (step) =>
+                          _goToStep(step, state),
                     ),
                   ],
                 ),
