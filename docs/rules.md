@@ -4,7 +4,7 @@
 - Keep feature modules in `lib/features/<feature>/` with `data`, `domain`, and `presentation` subfolders.
 - Shared code belongs in `lib/core/` (auth, DI, errors, network, routing, theme, utils, widgets).
 - App entrypoints are `lib/main.dart` and `lib/bootstrap.dart`.
-- Platform-specific code stays in `android/`, `ios/`, `web/`, `macos/`, `windows/`, and `linux/`.
+- Platform-specific code stays in `android/`, `ios/`, and `web/`.
 - Assets live in `assets/` and must be registered in `pubspec.yaml`.
 
 ## Layering

@@ -166,10 +166,7 @@ String _resolveBaseUrl() {
       return 'http://10.0.2.2:8000';
     case TargetPlatform.iOS:
       return 'http://localhost:8000';
-    case TargetPlatform.macOS:
-    case TargetPlatform.windows:
-    case TargetPlatform.linux:
-    case TargetPlatform.fuchsia:
+    default:
       return 'http://localhost:8000';
   }
 }
