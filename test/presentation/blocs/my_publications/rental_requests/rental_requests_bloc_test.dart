@@ -137,9 +137,9 @@ void main() {
         [tRequest],
         processingRequestId: 'r-1',
       ),
-      RentalRequestsState.success(
-        [tRequest.copyWith(status: RentalRequestStatus.accepted)],
-        feedbackNotice: const FeedbackNotice(
+      const RentalRequestsState.success(
+        [],
+        feedbackNotice: FeedbackNotice(
           message: 'Solicitud aceptada',
           severity: FeedbackSeverity.success,
         ),
@@ -162,9 +162,9 @@ void main() {
         [tRequest],
         processingRequestId: 'r-1',
       ),
-      RentalRequestsState.success(
-        [tRequest.copyWith(status: RentalRequestStatus.rejected)],
-        feedbackNotice: const FeedbackNotice(
+      const RentalRequestsState.success(
+        [],
+        feedbackNotice: FeedbackNotice(
           message: 'Solicitud rechazada',
           severity: FeedbackSeverity.success,
         ),

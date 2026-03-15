@@ -189,10 +189,12 @@ class AppRouter {
   static final _profileNavigatorKey = GlobalKey<NavigatorState>();
 
   static bool _isProtectedLocation(String location) {
-    if (location == AppRoutes.publish ||
-        location == AppRoutes.myPublications ||
-        location == AppRoutes.myRentals ||
-        location == AppRoutes.profile) {
+    final path = Uri.parse(location).path;
+
+    if (path == AppRoutes.publish ||
+        path == AppRoutes.myPublications ||
+        path == AppRoutes.myRentals ||
+        path == AppRoutes.profile) {
       return true;
     }
 

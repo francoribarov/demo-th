@@ -51,8 +51,8 @@ void main() {
                 const protectedIndexes = {1, 2, 3};
                 final targets = {
                   0: AppRoutes.home,
-                  1: AppRoutes.myPublications,
-                  2: AppRoutes.publish,
+                  1: AppRoutes.myRentals,
+                  2: AppRoutes.myPublications,
                   3: AppRoutes.profile,
                 };
                 if (protectedIndexes.contains(index) &&
@@ -79,17 +79,18 @@ void main() {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: AppRoutes.myPublications,
+                  path: AppRoutes.myRentals,
                   builder: (_, _) =>
-                      const Scaffold(body: Text('my-publications-page')),
+                      const Scaffold(body: Text('my-rentals-page')),
                 ),
               ],
             ),
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: AppRoutes.publish,
-                  builder: (_, _) => const Scaffold(body: Text('publish-page')),
+                  path: AppRoutes.myPublications,
+                  builder: (_, _) =>
+                      const Scaffold(body: Text('my-publications-page')),
                 ),
               ],
             ),
@@ -126,16 +127,16 @@ void main() {
     expect(find.byIcon(Icons.home), findsOneWidget);
     expect(find.byIcon(Icons.home_outlined), findsNothing);
 
-    await tester.tap(find.text('Publicar'));
+    await tester.tap(find.text('Publicaciones'));
     await tester.pumpAndSettle();
 
-    expect(find.text('publish-page'), findsOneWidget);
-    expect(find.byIcon(Icons.add_circle), findsOneWidget);
+    expect(find.text('my-publications-page'), findsOneWidget);
+    expect(find.byIcon(Icons.casino), findsOneWidget);
     expect(find.byIcon(Icons.home_outlined), findsOneWidget);
   });
 
   testWidgets(
-    'unauthenticated publish tab redirects to login preserving from',
+    'unauthenticated my rentals tab redirects to login preserving from',
     (
       tester,
     ) async {
@@ -144,10 +145,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Publicar'));
+      await tester.tap(find.text('Alquileres'));
       await tester.pumpAndSettle();
 
-      expect(find.text('login:/publish'), findsOneWidget);
+      expect(find.text('login:/my-rentals'), findsOneWidget);
     },
   );
 
@@ -159,7 +160,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Mis Publicaciones'));
+      await tester.tap(find.text('Publicaciones'));
       await tester.pumpAndSettle();
 
       expect(find.text('login:/my-publications'), findsOneWidget);
@@ -187,11 +188,11 @@ void main() {
     await tester.pumpWidget(
       buildSubject(
         authStatus: AuthStatus.unauthenticated,
-        initialLocation: AppRoutes.publish,
+        initialLocation: AppRoutes.myPublications,
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('publish-page'), findsOneWidget);
+    expect(find.text('my-publications-page'), findsOneWidget);
 
     await tester.tap(find.text('Inicio'));
     await tester.pumpAndSettle();
