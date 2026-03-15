@@ -82,11 +82,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('Confirmar alquiler'),
+        find.text('Aceptar alquiler'),
         findsOneWidget,
       );
 
-      await tester.tap(find.text('Confirmar alquiler'));
+      await tester.tap(find.text('Aceptar alquiler'));
       await tester.pumpAndSettle();
 
       expect(acceptedId, 'req-1');

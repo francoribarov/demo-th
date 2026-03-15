@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/my_publications/rental_request_card.dart';
@@ -29,7 +30,9 @@ class RentalRequestsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const StateFeedbackView(variant: StateFeedbackVariant.loading);
+      return const StateFeedbackView(
+        variant: StateFeedbackVariant.loading,
+      );
     }
     if (errorMessage != null) {
       return StateFeedbackView(
@@ -39,63 +42,108 @@ class RentalRequestsView extends StatelessWidget {
     }
     if (requests.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.inbox_outlined,
-              size: 64,
-              color: AppColors.textPlaceholder,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No hay solicitudes pendientes',
-              style: AppTypography.titleLarge.copyWith(
-                color: AppColors.gameBrown,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.spacing3xl,
+          ),
+          child: Column(
+            mainAxisAlignment:
+                MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: AppColors.gameCream,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.mail_outline_rounded,
+                  size: 40,
+                  color: AppColors.gameBrown,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Tus solicitudes de alquiler aparecerán aquí',
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textTertiary,
+              const SizedBox(
+                height: AppTheme.spacingLg,
               ),
-            ),
-          ],
+              Text(
+                'Sin solicitudes por ahora',
+                style: AppTypography.titleLarge
+                    .copyWith(
+                  color: AppColors.gameBrown,
+                ),
+              ),
+              const SizedBox(
+                height: AppTheme.spacingSm,
+              ),
+              Text(
+                'Cuando alguien quiera alquilar '
+                'uno de tus juegos, '
+                'la solicitud aparecerá acá.',
+                textAlign: TextAlign.center,
+                style: AppTypography.bodyMedium
+                    .copyWith(
+                  color: AppColors.textTertiary,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
     final dateFormat = DateFormat('dd/MM/yyyy');
     final pendingRequests = requests
-        .where((r) => r.status == RentalRequestStatus.pending)
+        .where(
+          (r) =>
+              r.status ==
+              RentalRequestStatus.pending,
+        )
         .toList();
     return ListView.builder(
       itemCount: requests.length,
       itemBuilder: (context, index) {
         final request = requests[index];
-        final duration = request.endDate.difference(request.startDate).inDays;
-        final isPending = request.status == RentalRequestStatus.pending;
-        final isAccepted = request.status == RentalRequestStatus.accepted;
+        final duration = request.endDate
+            .difference(request.startDate)
+            .inDays;
+        final isPending = request.status ==
+            RentalRequestStatus.pending;
+        final isAccepted = request.status ==
+            RentalRequestStatus.accepted;
         final overlapping = isPending
             ? pendingRequests
-                .where((r) => request.overlapsWith(r))
+                .where(
+                  (r) => request.overlapsWith(r),
+                )
                 .toList()
             : <RentalRequest>[];
         return RentalRequestCard(
+          key: ValueKey(request.id),
           request: request,
-          dateRangeText: '${dateFormat.format(request.startDate)}'
+          dateRangeText:
+              '${dateFormat.format(request.startDate)}'
               ' - '
               '${dateFormat.format(request.endDate)}',
           durationText: '$duration días',
           showActions: isPending,
           statusLabel: isPending
               ? null
-              : (isAccepted ? 'Aceptada' : 'Rechazada'),
+              : (isAccepted
+                  ? 'Aceptada'
+                  : 'Rechazada'),
           statusIsSuccess: isAccepted,
-          isProcessing: processingRequestId == request.id,
+          isProcessing:
+              processingRequestId == request.id,
           overlappingCount: overlapping.length,
-          onAccept: () => _confirmAccept(context, request, overlapping),
-          onReject: () => _confirmReject(context, request),
+          onAccept: () => _confirmAccept(
+            context,
+            request,
+            overlapping,
+          ),
+          onReject: () => _confirmReject(
+            context,
+            request,
+          ),
         );
       },
     );
@@ -106,7 +154,8 @@ class RentalRequestsView extends StatelessWidget {
     RentalRequest request,
     List<RentalRequest> overlapping,
   ) async {
-    final confirmed = await AcceptRequestConfirmationSheet.show(
+    final confirmed =
+        await AcceptRequestConfirmationSheet.show(
       context: context,
       request: request,
       overlappingRequests: overlapping,
@@ -120,14 +169,16 @@ class RentalRequestsView extends StatelessWidget {
     BuildContext context,
     RentalRequest request,
   ) async {
-    final confirmed = await ConfirmActionDialog.show(
+    final confirmed =
+        await ConfirmActionDialog.show(
       context: context,
       title: '¿Rechazar solicitud?',
-      message: '¿Confirmas que quieres rechazar '
-          'la solicitud de '
+      message:
+          '¿Seguro que querés rechazar la '
+          'solicitud de '
           '${request.requester.username}?',
       confirmLabel: 'Rechazar',
-      cancelLabel: 'Cancelar',
+      cancelLabel: 'Volver',
       isDestructive: true,
     );
     if (confirmed && context.mounted) {

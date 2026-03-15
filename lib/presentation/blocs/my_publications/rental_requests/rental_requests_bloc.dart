@@ -75,9 +75,12 @@ class RentalRequestsBloc
       },
       // Success case
       (_) {
-        final accepted = currentState.requests.firstWhere(
-          (r) => r.id == event.requestId,
-        );
+        final accepted =
+            currentState.requests.cast<RentalRequest?>().firstWhere(
+                  (r) => r!.id == event.requestId,
+                  orElse: () => null,
+                );
+        if (accepted == null) return;
         var rejectedCount = 0;
         final updatedRequests = currentState.requests.map((r) {
           if (r.id == event.requestId) {
