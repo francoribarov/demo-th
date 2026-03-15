@@ -1,10 +1,13 @@
 /// Typed validation errors for publication description.
+/// UI messages are mapped in `PublicationValidationErrorMapper`.
 enum PublicationDescriptionError { required, tooShort }
 
 /// Typed validation errors for publication condition.
+/// UI messages are mapped in `PublicationValidationErrorMapper`.
 enum PublicationConditionError { required }
 
 /// Typed validation errors for publication price.
+/// UI messages are mapped in `PublicationValidationErrorMapper`.
 enum PublicationPriceError { mustBePositive }
 
 /// Centralized validator for publication data.

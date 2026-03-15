@@ -1,6 +1,7 @@
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 
 /// Typed validation errors for rental date selection.
+/// UI messages are mapped in `RentalValidationErrorMapper`.
 enum RentalDateError {
   unavailablePublication,
   invalidFormat,

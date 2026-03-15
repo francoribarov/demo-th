@@ -4,6 +4,34 @@ import 'package:mobile_table_hopping/presentation/validators/publication_validat
 
 void main() {
   group('PublicationValidationErrorMapper', () {
+    test('maps each description error to a non-empty message', () {
+      for (final error in PublicationDescriptionError.values) {
+        final message = PublicationValidationErrorMapper.mapDescriptionError(
+          error,
+        );
+        expect(message, isNotNull);
+        expect(message, isNotEmpty);
+      }
+    });
+
+    test('maps each condition error to a non-empty message', () {
+      for (final error in PublicationConditionError.values) {
+        final message = PublicationValidationErrorMapper.mapConditionError(
+          error,
+        );
+        expect(message, isNotNull);
+        expect(message, isNotEmpty);
+      }
+    });
+
+    test('maps each price error to a non-empty message', () {
+      for (final error in PublicationPriceError.values) {
+        final message = PublicationValidationErrorMapper.mapPriceError(error);
+        expect(message, isNotNull);
+        expect(message, isNotEmpty);
+      }
+    });
+
     group('mapDescriptionError', () {
       test('returns message for required', () {
         expect(
