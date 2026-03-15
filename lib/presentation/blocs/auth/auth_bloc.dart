@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:mobile_table_hopping/core/auth/session_expired_notifier.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
@@ -23,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required GetAuthStatus getAuthStatus,
     required Logout logout,
     required RefreshToken refreshToken,
+    required SessionExpiredNotifier sessionExpiredNotifier,
   }) : _getAuthStatus = getAuthStatus,
        _logout = logout,
        _refreshToken = refreshToken,
@@ -32,6 +34,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<_LogoutRequested>(_onLogoutRequested);
     on<_RefreshRequested>(_onRefreshRequested);
     on<_ClearErrors>(_onClearErrors);
+    on<_SessionExpired>(_onSessionExpired);
+    on<_ClearSessionNotice>(_onClearSessionNotice);
+
+    _sessionExpiredSubscription = sessionExpiredNotifier.stream.listen(
+      (_) => add(const AuthEvent.sessionExpired()),
+    );
 
     add(const AuthEvent.started());
   }
@@ -39,6 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetAuthStatus _getAuthStatus;
   final Logout _logout;
   final RefreshToken _refreshToken;
+  late final StreamSubscription<void> _sessionExpiredSubscription;
 
   Future<void> _onStarted(_Started event, Emitter<AuthState> emit) async {
     emit(state.copyWith(isCheckingStatus: true, feedbackNotice: null));
@@ -143,5 +152,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _onClearErrors(_ClearErrors event, Emitter<AuthState> emit) {
     emit(state.copyWith(feedbackNotice: null));
+  }
+
+  void _onSessionExpired(_SessionExpired event, Emitter<AuthState> emit) {
+    if (!state.isAuthenticated || state.feedbackNotice != null) return;
+    emit(
+      state.copyWith(
+        status: AuthStatus.unauthenticated,
+        session: null,
+        feedbackNotice: const FeedbackNotice(
+          message: 'Tu sesión expiró. Iniciá sesión nuevamente.',
+          severity: FeedbackSeverity.warning,
+        ),
+      ),
+    );
+  }
+
+  void _onClearSessionNotice(
+    _ClearSessionNotice event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(feedbackNotice: null));
+  }
+
+  @override
+  Future<void> close() async {
+    await _sessionExpiredSubscription.cancel();
+    return super.close();
   }
 }

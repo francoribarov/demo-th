@@ -8,6 +8,12 @@ import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/time_picker_field.dart';
 
+bool _matchesTimeFormat(String s) =>
+    s.length == 5 &&
+    s[2] == ':' &&
+    int.tryParse(s.substring(0, 2)) != null &&
+    int.tryParse(s.substring(3, 5)) != null;
+
 void main() {
   testWidgets(
     'TextFormInputField renders validator error and supports suffix',
@@ -242,12 +248,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(selected, isNotNull);
-    final parts = selected!.split(':');
-    expect(parts.length, 2);
-    expect(parts[0].length, 2);
-    expect(parts[1].length, 2);
-    expect(int.tryParse(parts[0]), isNotNull);
-    expect(int.tryParse(parts[1]), isNotNull);
+    expect(_matchesTimeFormat(selected!), isTrue);
   });
 }
 

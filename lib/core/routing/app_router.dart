@@ -185,13 +185,15 @@ class AppRouter {
   static final _profileNavigatorKey = GlobalKey<NavigatorState>();
 
   static bool _isProtectedLocation(String location) {
-    if (location == AppRoutes.publish ||
-        location == AppRoutes.myPublications ||
-        location == AppRoutes.profile) {
+    final path = Uri.parse(location).path;
+
+    if (path == AppRoutes.publish ||
+        path == AppRoutes.myPublications ||
+        path == AppRoutes.profile) {
       return true;
     }
 
-    final segments = Uri(path: location).pathSegments;
+    final segments = Uri(path: path).pathSegments;
 
     final isRentalRoute =
         segments.length == 3 &&
@@ -221,7 +223,7 @@ class AppRouter {
     }
 
     if (authState.status != AuthStatus.authenticated) {
-      return AppRoutes.home;
+      return AppRoutes.loginPath(from: location);
     }
 
     return null;
@@ -234,7 +236,7 @@ class AppRouter {
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(getIt<AuthBloc>().stream),
     redirect: (context, state) {
-      return authRedirectFor(getIt<AuthBloc>().state, state.uri.path);
+      return authRedirectFor(getIt<AuthBloc>().state, state.uri.toString());
     },
     routes: [
       StatefulShellRoute.indexedStack(
@@ -266,7 +268,9 @@ class AppRouter {
                 name: AppRoutes.homeName,
                 pageBuilder: (context, state) => NoTransitionPage(
                   child: BlocProvider<CatalogBloc>(
-                    create: (_) => getIt<CatalogBloc>()..add(const LoadGames()),
+                    create: (_) =>
+                        getIt<CatalogBloc>()
+                          ..add(const CatalogEvent.loadGames()),
                     child: const HomePage(),
                   ),
                 ),

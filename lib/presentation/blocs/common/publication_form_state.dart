@@ -26,6 +26,5 @@ abstract class PublicationFormState with _$PublicationFormState {
       PublicationValidator.validateCondition(condition) == null;
 
   /// True when price is valid.
-  bool get hasValidPrice =>
-      PublicationValidator.validatePricing(price) == null;
+  bool get hasValidPrice => PublicationValidator.validatePricing(price) == null;
 }

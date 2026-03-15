@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:intl/intl.dart';
 
 /// Currency and number formatting utilities.
@@ -34,8 +36,14 @@ class DateFormatter {
     try {
       final fromDate = DateTime.parse(from);
       final toDate = DateTime.parse(to);
-      return '${_shortDateFormat.format(fromDate)} al ${_shortDateFormat.format(toDate)}';
-    } on Exception catch (_) {
+      return '${_shortDateFormat.format(fromDate)} al '
+          '${_shortDateFormat.format(toDate)}';
+    } on Exception catch (e, st) {
+      dev.log(
+        'DateFormatter.formatRange: invalid input "$from" – "$to"',
+        error: e,
+        stackTrace: st,
+      );
       return '$from - $to';
     }
   }
@@ -55,7 +63,12 @@ class DateFormatter {
     if (dateStr == null || dateStr.isEmpty) return null;
     try {
       return DateTime.parse(dateStr);
-    } on Exception catch (_) {
+    } on Exception catch (e, st) {
+      dev.log(
+        'DateFormatter.parseIso: invalid input "$dateStr"',
+        error: e,
+        stackTrace: st,
+      );
       return null;
     }
   }
@@ -131,7 +144,6 @@ class DurationParser {
 
     if (numbers.isEmpty) return null;
     if (numbers.length == 1) return numbers.first;
-
     // Return average for ranges
     return (numbers.reduce((a, b) => a + b) / numbers.length).round();
   }

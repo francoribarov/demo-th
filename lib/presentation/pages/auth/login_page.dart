@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listenWhen: (previous, current) =>
           previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
           context.goHome();
         }
       },
-      child: Scaffold(
+      builder: (context, _) => Scaffold(
         appBar: PageAppBar(
           title: const Text('Iniciar sesión'),
           leadingType: PageAppBarLeadingType.close,

@@ -139,8 +139,7 @@ class RentalBloc extends Bloc<RentalEvent, RentalState> {
               startDate: null,
               endDate: null,
               feedbackNotice: const FeedbackNotice(
-                message:
-                    'El juego debe estar disponible por al menos 3 días.',
+                message: 'El juego debe estar disponible por al menos 3 días.',
                 severity: FeedbackSeverity.warning,
               ),
             ),

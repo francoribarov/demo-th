@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/core/auth/session_expired_notifier.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
 import 'package:mobile_table_hopping/domain/model/auth/user.dart';
@@ -19,6 +20,7 @@ void main() {
   late GetAuthStatus getAuthStatus;
   late Logout logout;
   late RefreshToken refreshToken;
+  late SessionExpiredNotifier sessionExpiredNotifier;
 
   const session = AuthSession(
     tokens: AuthTokens(
@@ -32,6 +34,7 @@ void main() {
     getAuthStatus = MockGetAuthStatus();
     logout = MockLogout();
     refreshToken = MockRefreshToken();
+    sessionExpiredNotifier = SessionExpiredNotifier();
 
     when(() => getAuthStatus()).thenAnswer((_) async => null);
   });
@@ -40,6 +43,7 @@ void main() {
     getAuthStatus: getAuthStatus,
     logout: logout,
     refreshToken: refreshToken,
+    sessionExpiredNotifier: sessionExpiredNotifier,
   );
 
   blocTest<AuthBloc, AuthState>(
@@ -121,4 +125,73 @@ void main() {
       ),
     ],
   );
+
+  // Session expiry
+  group('sessionExpired event', () {
+    blocTest<AuthBloc, AuthState>(
+      'emits unauthenticated and clears session when authenticated',
+      build: () {
+        when(() => getAuthStatus()).thenAnswer((_) async => session);
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(const AuthEvent.sessionExpired()),
+      skip: 2, // skip isCheckingStatus + authenticated from _onStarted
+      expect: () => [
+        isA<AuthState>()
+            .having((s) => s.status, 'status', AuthStatus.unauthenticated)
+            .having((s) => s.session, 'session', isNull),
+      ],
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'is a no-op when already unauthenticated',
+      build: buildBloc,
+      // _onStarted resolves to unauthenticated (getAuthStatus returns null)
+      act: (bloc) => bloc.add(const AuthEvent.sessionExpired()),
+      skip: 2, // skip isCheckingStatus + unauthenticated from _onStarted
+      expect: () => <AuthState>[], // no additional state change
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'notifySessionExpired triggers unauthenticated via stream listener',
+      build: () {
+        when(() => getAuthStatus()).thenAnswer((_) async => session);
+        return buildBloc();
+      },
+      act: (bloc) async {
+        // Wait for _onStarted to settle before firing expiry
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        sessionExpiredNotifier.notifySessionExpired();
+      },
+      skip: 2,
+      expect: () => [
+        isA<AuthState>()
+            .having((s) => s.status, 'status', AuthStatus.unauthenticated)
+            .having((s) => s.session, 'session', isNull),
+      ],
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'multiple notifySessionExpired calls only emit once',
+      build: () {
+        when(() => getAuthStatus()).thenAnswer((_) async => session);
+        return buildBloc();
+      },
+      act: (bloc) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        sessionExpiredNotifier
+          ..notifySessionExpired()
+          ..notifySessionExpired()
+          ..notifySessionExpired();
+      },
+      skip: 2,
+      expect: () => [
+        isA<AuthState>().having(
+          (s) => s.status,
+          'status',
+          AuthStatus.unauthenticated,
+        ),
+      ],
+    );
+  });
 }
