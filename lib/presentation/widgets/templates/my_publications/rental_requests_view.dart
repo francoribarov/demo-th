@@ -6,6 +6,7 @@ import 'package:mobile_table_hopping/domain/model/my_publications/rental_request
 import 'package:mobile_table_hopping/presentation/widgets/molecules/my_publications/rental_request_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/common/state_feedback_view.dart';
 import 'package:mobile_table_hopping/presentation/widgets/templates/common/confirm_action_dialog.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/my_publications/accept_request_confirmation_sheet.dart';
 
 class RentalRequestsView extends StatelessWidget {
   const RentalRequestsView({
@@ -65,6 +66,9 @@ class RentalRequestsView extends StatelessWidget {
       );
     }
     final dateFormat = DateFormat('dd/MM/yyyy');
+    final pendingRequests = requests
+        .where((r) => r.status == RentalRequestStatus.pending)
+        .toList();
     return ListView.builder(
       itemCount: requests.length,
       itemBuilder: (context, index) {
@@ -72,6 +76,11 @@ class RentalRequestsView extends StatelessWidget {
         final duration = request.endDate.difference(request.startDate).inDays;
         final isPending = request.status == RentalRequestStatus.pending;
         final isAccepted = request.status == RentalRequestStatus.accepted;
+        final overlapping = isPending
+            ? pendingRequests
+                .where((r) => request.overlapsWith(r))
+                .toList()
+            : <RentalRequest>[];
         return RentalRequestCard(
           request: request,
           dateRangeText:
@@ -83,7 +92,8 @@ class RentalRequestsView extends StatelessWidget {
               : (isAccepted ? 'Aceptada' : 'Rechazada'),
           statusIsSuccess: isAccepted,
           isProcessing: processingRequestId == request.id,
-          onAccept: () => _confirmAccept(context, request),
+          overlappingCount: overlapping.length,
+          onAccept: () => _confirmAccept(context, request, overlapping),
           onReject: () => _confirmReject(context, request),
         );
       },
@@ -93,14 +103,12 @@ class RentalRequestsView extends StatelessWidget {
   Future<void> _confirmAccept(
     BuildContext context,
     RentalRequest request,
+    List<RentalRequest> overlapping,
   ) async {
-    final confirmed = await ConfirmActionDialog.show(
+    final confirmed = await AcceptRequestConfirmationSheet.show(
       context: context,
-      title: '¿Aceptar solicitud?',
-      message:
-          '¿Confirmas que quieres aceptar la solicitud de ${request.requester.username}?',
-      confirmLabel: 'Aceptar',
-      cancelLabel: 'Cancelar',
+      request: request,
+      overlappingRequests: overlapping,
     );
     if (confirmed && context.mounted) {
       onAcceptRequest(request.id);

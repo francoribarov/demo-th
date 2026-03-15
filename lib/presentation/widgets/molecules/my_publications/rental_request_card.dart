@@ -17,6 +17,7 @@ class RentalRequestCard extends StatelessWidget {
     this.statusLabel,
     this.statusIsSuccess = true,
     this.isProcessing = false,
+    this.overlappingCount = 0,
     super.key,
   });
 
@@ -41,6 +42,9 @@ class RentalRequestCard extends StatelessWidget {
   final VoidCallback onAccept;
   final VoidCallback onReject;
   final bool isProcessing;
+
+  /// Number of other pending requests with overlapping dates for the same game.
+  final int overlappingCount;
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +121,10 @@ class RentalRequestCard extends StatelessWidget {
               color: AppColors.textTertiary,
             ),
           ),
+          if (showActions && overlappingCount > 0) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            _OverlapBadge(count: overlappingCount),
+          ],
           const SizedBox(height: AppTheme.spacingLg),
           if (showActions) ...[
             if (isProcessing)
@@ -166,6 +174,48 @@ class RentalRequestCard extends StatelessWidget {
               ),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _OverlapBadge extends StatelessWidget {
+  const _OverlapBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final noun = count == 1 ? 'solicitud superpuesta' : 'solicitudes superpuestas';
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingMd,
+        vertical: AppTheme.spacingXs,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.warning.withOpacityValue(0.1),
+        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+        border: Border.all(
+          color: AppColors.warning.withOpacityValue(0.3),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.warning_amber_rounded,
+            size: 14,
+            color: AppColors.warning,
+          ),
+          const SizedBox(width: AppTheme.spacingXs),
+          Text(
+            '$count $noun',
+            style: AppTypography.labelSmall.copyWith(
+              color: AppColors.gameBrown,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
