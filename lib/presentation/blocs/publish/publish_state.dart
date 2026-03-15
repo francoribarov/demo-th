@@ -10,13 +10,7 @@ abstract class PublishState with _$PublishState {
     @Default(false) bool success,
     @Default(false) bool isSubmitting,
     String? errorMessage,
-    @Default('') String gameId,
-    @Default('') String description,
-    @Default(null) PublicationCondition? condition,
-    @Default(0) int price,
-    @Default([]) List<Game> allGames,
-    @Default([]) List<Game> filteredGames,
-    @Default(false) bool isLoadingGames,
+    @Default(PublicationFormState()) PublicationFormState form,
     @Default(false) bool isStepValid,
   }) = _PublishState;
 

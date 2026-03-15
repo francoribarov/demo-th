@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
+import 'package:mobile_table_hopping/domain/validators/auth/auth_validator.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
-import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/login/login_cubit.dart';
+import 'package:mobile_table_hopping/presentation/validators/auth_validation_error_mapper.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
@@ -33,32 +35,11 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordFocusNode = FocusNode();
 
   bool _isPasswordVisible = false;
-  bool _didClearErrors = false;
 
   @override
   void initState() {
     super.initState();
-    // The sessionExpired event may be emitted before this page mounts
-    // (during the router redirect), so the BlocConsumer won't catch it.
-    // Check for a pending notice on the first frame when ScaffoldMessenger
-    // is available.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final notice = context.read<AuthBloc>().state.sessionNotice;
-      if (notice != null) {
-        FeedbackMessenger.showWarning(context, message: notice.message);
-        context.read<AuthBloc>().add(const AuthEvent.clearSessionNotice());
-      }
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_didClearErrors) {
-      _didClearErrors = true;
-      context.read<AuthBloc>().add(const AuthEvent.clearErrors());
-    }
+    context.read<AuthBloc>().add(const AuthEvent.clearErrors());
   }
 
   @override
@@ -70,36 +51,20 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _submitLogin({required bool isSubmitting}) {
-    if (isSubmitting) {
-      return;
-    }
-
+  Future<void> _submitLogin({required bool isSubmitting}) async {
+    if (isSubmitting) return;
     final isValid = _formKey.currentState?.validate() ?? false;
-    if (!isValid) {
-      return;
-    }
-
+    if (!isValid) return;
     FocusScope.of(context).unfocus();
-    context.read<AuthBloc>().add(const AuthEvent.loginSubmitted());
+    await context.read<LoginCubit>().submit();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listenWhen: (previous, current) =>
-          (previous.status != current.status && current.isAuthenticated) ||
-          (previous.sessionNotice != current.sessionNotice &&
-              current.sessionNotice != null),
+          previous.status != current.status && current.isAuthenticated,
       listener: (context, state) {
-        if (state.sessionNotice != null) {
-          FeedbackMessenger.showWarning(
-            context,
-            message: state.sessionNotice!.message,
-          );
-          context.read<AuthBloc>().add(const AuthEvent.clearSessionNotice());
-          return;
-        }
         final redirectTo = widget.from;
         if (redirectTo != null &&
             redirectTo.trim().isNotEmpty &&
@@ -123,11 +88,22 @@ class _LoginPageState extends State<LoginPage> {
                   ? constraints.maxWidth * 0.18
                   : 24.0;
 
-              return BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  final isSubmitting = state.isSubmittingLogin;
-                  final errorMessage =
-                      state.loginErrorMessage ?? state.errorMessage;
+              return BlocConsumer<LoginCubit, LoginState>(
+                listenWhen: (previous, current) =>
+                    current.feedbackNotice != null &&
+                    previous.feedbackNotice != current.feedbackNotice,
+                listener: (context, state) {
+                  final notice = state.feedbackNotice;
+                  if (notice == null) return;
+                  FeedbackMessenger.showError(
+                    context,
+                    message: notice.message,
+                  );
+                  context.read<LoginCubit>().clearNotice();
+                },
+                builder: (context, loginState) {
+                  final isSubmitting = loginState.isSubmitting;
+                  final errorMessage = loginState.errorMessage;
                   final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
                   return SingleChildScrollView(
@@ -177,11 +153,14 @@ class _LoginPageState extends State<LoginPage> {
                                   labelText: 'Email',
                                   hintText: 'tu@email.com',
                                   validator: (value) =>
-                                      validateEmail(value ?? ''),
-                                  onChanged: (email) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.loginEmailChanged(email),
+                                      AuthValidationErrorMapper.mapEmailError(
+                                        AuthValidator.validateEmail(
+                                          value ?? '',
+                                        ),
                                       ),
+                                  onChanged: (email) => context
+                                      .read<LoginCubit>()
+                                      .emailChanged(email),
                                   onFieldSubmitted: (_) {
                                     _passwordFocusNode.requestFocus();
                                   },
@@ -194,7 +173,9 @@ class _LoginPageState extends State<LoginPage> {
                                   enabled: !isSubmitting,
                                   obscureText: !_isPasswordVisible,
                                   textInputAction: TextInputAction.done,
-                                  autofillHints: const [AutofillHints.password],
+                                  autofillHints: const [
+                                    AutofillHints.password,
+                                  ],
                                   autocorrect: false,
                                   enableSuggestions: false,
                                   labelText: 'Contraseña',
@@ -221,13 +202,14 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   validator: (value) =>
-                                      validatePasswordMin8(value ?? ''),
-                                  onChanged: (password) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.loginPasswordChanged(
-                                          password,
+                                      AuthValidationErrorMapper.mapPasswordError(
+                                        AuthValidator.validatePassword(
+                                          value ?? '',
                                         ),
                                       ),
+                                  onChanged: (password) => context
+                                      .read<LoginCubit>()
+                                      .passwordChanged(password),
                                   onFieldSubmitted: (_) =>
                                       _submitLogin(isSubmitting: isSubmitting),
                                 ),

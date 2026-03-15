@@ -81,6 +81,7 @@ class RentalConfirmPage extends StatelessWidget {
           );
         }
 
+        final pricing = state.pricing;
         return Scaffold(
           appBar: PageAppBar(
             title: const Text('Solicitar alquiler'),
@@ -173,13 +174,13 @@ class RentalConfirmPage extends StatelessWidget {
 
                 // Price breakdown
                 _PriceBreakdown(
-                  subtotal: state.subtotal,
-                  days: state.rentalDays,
+                  subtotal: pricing.subtotal,
+                  days: pricing.rentalDays,
                   pricePerDay: publication.price,
-                  serviceFee: state.serviceFee,
-                  deliveryFee: state.deliveryFee,
-                  foodTotal: state.foodTotal,
-                  total: state.total,
+                  serviceFee: pricing.serviceFee,
+                  deliveryFee: pricing.deliveryFee,
+                  foodTotal: pricing.foodTotal,
+                  total: pricing.total,
                 ),
 
                 const SizedBox(height: AppTheme.spacing2xl),

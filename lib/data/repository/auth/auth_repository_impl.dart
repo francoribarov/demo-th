@@ -69,7 +69,9 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   Future<AuthTokens> refresh() async {
     final refreshToken = _tokenStorage.getRefreshToken();
     if (refreshToken == null) {
-      throw Exception('No refresh token available');
+      throw const DomainException(
+        message: 'Tu sesión ha expirado. Iniciá sesión nuevamente.',
+      );
     }
 
     final response = await unwrapOrThrow<TokenResponse>(

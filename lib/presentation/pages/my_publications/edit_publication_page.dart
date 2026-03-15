@@ -79,8 +79,8 @@ class EditPublicationPage extends StatelessWidget {
             index: state.currentStep,
             children: [
               EditDataStep(
-                description: state.description,
-                condition: state.condition,
+                description: state.form.description,
+                condition: state.form.condition,
                 conditions: PublicationCondition.values,
                 selectedGame: state.selectedGame,
                 onDescriptionChanged: (v) =>
@@ -91,6 +91,8 @@ class EditPublicationPage extends StatelessWidget {
                     context.read<EditPublicationBloc>().add(
                       EditPublicationEvent.conditionChanged(v),
                     ),
+                descriptionError: state.form.descriptionError,
+                conditionError: state.form.conditionError,
               ),
               EditPhotosStep(
                 images: state.images,
@@ -103,12 +105,13 @@ class EditPublicationPage extends StatelessWidget {
                 ),
               ),
               EditPriceStep(
-                price: state.price,
+                price: state.form.price,
                 deliveryMethods: state.deliveryMethods,
                 availableDeliveryMethods: state.availableDeliveryMethods,
                 onPriceChanged: (v) => context.read<EditPublicationBloc>().add(
                   EditPublicationEvent.priceChanged(v),
                 ),
+                priceError: state.form.priceError,
                 onDeliveryMethodsChanged: (v) =>
                     context.read<EditPublicationBloc>().add(
                       EditPublicationEvent.deliveryMethodsChanged(v),
@@ -116,9 +119,9 @@ class EditPublicationPage extends StatelessWidget {
               ),
               EditReviewStep(
                 selectedGame: state.selectedGame,
-                description: state.description,
-                price: state.price,
-                condition: state.condition,
+                description: state.form.description,
+                price: state.form.price,
+                condition: state.form.condition,
                 images: state.images,
               ),
             ],

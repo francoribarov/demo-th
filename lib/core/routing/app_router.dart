@@ -7,7 +7,10 @@ import 'package:mobile_table_hopping/core/widgets/templates/app_scaffold.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/bloc/user_profile_bloc.dart';
 import 'package:mobile_table_hopping/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/login/login_cubit.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/register/register_cubit.dart';
 import 'package:mobile_table_hopping/presentation/blocs/catalog/catalog_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/game_search_cubit.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/edit_publication/edit_publication_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/my_publications_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/my_publications/rental_requests/rental_requests_bloc.dart';
@@ -30,6 +33,7 @@ import 'package:mobile_table_hopping/presentation/pages/publication_details/publ
 import 'package:mobile_table_hopping/presentation/pages/publish/publish_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/rental/rental_confirm_page.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Route paths for type-safe navigation.
 class AppRoutes {
@@ -237,11 +241,22 @@ class AppRouter {
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          return AppScaffold(
-            navigationShell: navigationShell,
-            onItemTapped: (index) {
-              navigationShell.goBranch(index);
+          return BlocConsumer<AuthBloc, AuthState>(
+            listenWhen: (previous, current) =>
+                current.feedbackNotice != null &&
+                previous.feedbackNotice != current.feedbackNotice,
+            listener: (context, authState) {
+              final notice = authState.feedbackNotice;
+              if (notice == null) return;
+              FeedbackMessenger.showError(context, message: notice.message);
+              context.read<AuthBloc>().add(const AuthEvent.clearErrors());
             },
+            builder: (context, _) => AppScaffold(
+              navigationShell: navigationShell,
+              onItemTapped: (index) {
+                navigationShell.goBranch(index);
+              },
+            ),
           );
         },
         branches: [
@@ -302,6 +317,9 @@ class AppRouter {
                             getIt<PublishBloc>()
                               ..add(const PublishEvent.started()),
                       ),
+                      BlocProvider<GameSearchCubit>(
+                        create: (_) => getIt<GameSearchCubit>(),
+                      ),
                       BlocProvider<DeliveryMethodBloc>(
                         create: (_) => getIt<DeliveryMethodBloc>(),
                       ),
@@ -334,7 +352,10 @@ class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final from = state.uri.queryParameters['from'];
-          return LoginPage(from: from);
+          return BlocProvider<LoginCubit>(
+            create: (_) => getIt<LoginCubit>(),
+            child: LoginPage(from: from),
+          );
         },
       ),
       GoRoute(
@@ -343,7 +364,10 @@ class AppRouter {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final from = state.uri.queryParameters['from'];
-          return RegisterPage(from: from);
+          return BlocProvider<RegisterCubit>(
+            create: (_) => getIt<RegisterCubit>(),
+            child: RegisterPage(from: from),
+          );
         },
       ),
       // Routes outside of shell (no bottom nav)

@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'publication_primitives.freezed.dart';
 
 /// Standard conditions for a publication.
+/// Values: like_new, good, fair.
 @JsonEnum(fieldRename: FieldRename.snake)
 enum PublicationCondition {
   @JsonValue('like_new')

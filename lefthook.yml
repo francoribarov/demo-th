@@ -3,7 +3,7 @@ pre-push:
     azure-gate:
       run: |
         set -euo pipefail
-        make format
+        make format-check
         make analyze
         make test
 
