@@ -59,61 +59,75 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('confirms and forwards accept callback via bottom sheet',
-      (tester) async {
-    String? acceptedId;
+  testWidgets(
+    'confirms and forwards accept callback via bottom sheet',
+    (tester) async {
+      String? acceptedId;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: RentalRequestsView(
-            isLoading: false,
-            requests: [request],
-            processingRequestId: null,
-            onAcceptRequest: (id) => acceptedId = id,
-            onRejectRequest: (_) {},
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RentalRequestsView(
+              isLoading: false,
+              requests: [request],
+              processingRequestId: null,
+              onAcceptRequest: (id) => acceptedId = id,
+              onRejectRequest: (_) {},
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    await tester.tap(find.text('Aceptar').first);
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Aceptar').first);
+      await tester.pumpAndSettle();
 
-    expect(find.text('Confirmar alquiler'), findsOneWidget);
+      expect(
+        find.text('Confirmar alquiler'),
+        findsOneWidget,
+      );
 
-    await tester.tap(find.text('Confirmar alquiler'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirmar alquiler'));
+      await tester.pumpAndSettle();
 
-    expect(acceptedId, 'req-1');
-  });
+      expect(acceptedId, 'req-1');
+    },
+  );
 
-  testWidgets('shows overlap warning in confirmation sheet', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: RentalRequestsView(
-            isLoading: false,
-            requests: [request, overlappingRequest],
-            processingRequestId: null,
-            onAcceptRequest: (_) {},
-            onRejectRequest: (_) {},
+  testWidgets(
+    'shows overlap warning in confirmation sheet',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RentalRequestsView(
+              isLoading: false,
+              requests: [request, overlappingRequest],
+              processingRequestId: null,
+              onAcceptRequest: (_) {},
+              onRejectRequest: (_) {},
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    expect(find.text('1 solicitud superpuesta'), findsNWidgets(2));
+      expect(
+        find.text('1 solicitud superpuesta'),
+        findsNWidgets(2),
+      );
 
-    await tester.tap(find.text('Aceptar').first);
-    await tester.pumpAndSettle();
+      await tester.tap(find.text('Aceptar').first);
+      await tester.pumpAndSettle();
 
-    expect(find.text('Aceptar y rechazar 1'), findsOneWidget);
-    expect(
-      find.textContaining('será rechazada'),
-      findsOneWidget,
-    );
-  });
+      expect(
+        find.text('Aceptar y rechazar 1'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('será rechazada'),
+        findsOneWidget,
+      );
+    },
+  );
 
   testWidgets('shows no overlap badge for non-overlapping requests',
       (tester) async {
