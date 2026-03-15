@@ -93,7 +93,9 @@ class RentalRequestsBloc
 
         final message = rejectedCount > 0
             ? 'Solicitud aceptada · $rejectedCount '
-                '${rejectedCount == 1 ? 'solicitud rechazada' : 'solicitudes rechazadas'} '
+                '${rejectedCount == 1
+                    ? 'solicitud rechazada'
+                    : 'solicitudes rechazadas'} '
                 'automáticamente'
             : 'Solicitud aceptada';
 

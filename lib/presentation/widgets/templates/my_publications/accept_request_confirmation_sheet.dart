@@ -5,6 +5,7 @@ import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/rental_request.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Bottom sheet that confirms accepting a rental request and warns about
 /// overlapping requests that will be automatically rejected.
@@ -91,46 +92,22 @@ class AcceptRequestConfirmationSheet extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppTheme.radius2xl),
-                      ),
-                      side: BorderSide(
-                        color: AppColors.gameBrown.withOpacityValue(0.3),
-                      ),
-                    ),
-                    child: Text(
-                      'Volver',
-                      style: AppTypography.labelLarge,
-                    ),
+                  child: AppSecondaryButton(
+                    onPressed: () =>
+                        Navigator.of(context).pop(false),
+                    label: 'Volver',
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingMd),
                 Expanded(
                   flex: hasOverlaps ? 2 : 1,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.gameRust,
-                      foregroundColor: AppColors.primaryForeground,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppTheme.radius2xl),
-                      ),
-                    ),
-                    child: Text(
-                      hasOverlaps
-                          ? 'Aceptar y rechazar ${overlappingRequests.length}'
-                          : 'Confirmar alquiler',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: AppColors.primaryForeground,
-                      ),
-                    ),
+                  child: AppPrimaryButton(
+                    onPressed: () =>
+                        Navigator.of(context).pop(true),
+                    label: hasOverlaps
+                        ? 'Aceptar y rechazar '
+                            '${overlappingRequests.length}'
+                        : 'Confirmar alquiler',
                   ),
                 ),
               ],
@@ -189,16 +166,22 @@ class _RequestSummaryTile extends StatelessWidget {
                   request.requester.username,
                   style: AppTypography.titleMedium,
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(
+                  height: AppTheme.spacingXs,
+                ),
                 Text(
                   request.game.title,
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.textTertiary,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(
+                  height: AppTheme.spacingXs,
+                ),
                 Text(
-                  '${dateFormat.format(request.startDate)} – ${dateFormat.format(request.endDate)}',
+                  '${dateFormat.format(request.startDate)}'
+                  ' – '
+                  '${dateFormat.format(request.endDate)}',
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.textMuted,
                   ),

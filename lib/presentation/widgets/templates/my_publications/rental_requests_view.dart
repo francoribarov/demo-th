@@ -83,8 +83,9 @@ class RentalRequestsView extends StatelessWidget {
             : <RentalRequest>[];
         return RentalRequestCard(
           request: request,
-          dateRangeText:
-              '${dateFormat.format(request.startDate)} - ${dateFormat.format(request.endDate)}',
+          dateRangeText: '${dateFormat.format(request.startDate)}'
+              ' - '
+              '${dateFormat.format(request.endDate)}',
           durationText: '$duration días',
           showActions: isPending,
           statusLabel: isPending
@@ -122,8 +123,9 @@ class RentalRequestsView extends StatelessWidget {
     final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Rechazar solicitud?',
-      message:
-          '¿Confirmas que quieres rechazar la solicitud de ${request.requester.username}?',
+      message: '¿Confirmas que quieres rechazar '
+          'la solicitud de '
+          '${request.requester.username}?',
       confirmLabel: 'Rechazar',
       cancelLabel: 'Cancelar',
       isDestructive: true,

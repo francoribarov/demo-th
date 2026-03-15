@@ -27,10 +27,12 @@ class RentalRequestCard extends StatelessWidget {
   /// Pre-formatted date range string, e.g. "01/06/2025 - 05/06/2025".
   final String dateRangeText;
 
-  /// Pre-formatted duration label shown next to the total price, e.g. "5 días".
+  /// Pre-formatted duration label shown next to the total
+  /// price, e.g. "5 días".
   final String durationText;
 
-  /// Whether to show accept/reject action buttons (true when request is pending).
+  /// Whether to show accept/reject action buttons
+  /// (true when request is pending).
   final bool showActions;
 
   /// Label for the status badge shown when [showActions] is false.
@@ -187,7 +189,9 @@ class _OverlapBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final noun = count == 1 ? 'solicitud superpuesta' : 'solicitudes superpuestas';
+    final noun = count == 1
+        ? 'solicitud superpuesta'
+        : 'solicitudes superpuestas';
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingMd,
