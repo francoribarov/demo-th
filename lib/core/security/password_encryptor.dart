@@ -28,6 +28,12 @@ class PasswordEncryptor {
     );
     final pem = response.data!['public_key'] as String;
     final publicKey = RSAKeyParser().parse(pem) as RSAPublicKey;
-    return Encrypter(RSA(publicKey: publicKey, digest: RSADigest.SHA256));
+    return Encrypter(
+      RSA(
+        publicKey: publicKey,
+        encoding: RSAEncoding.OAEP,
+        digest: RSADigest.SHA256,
+      ),
+    );
   }
 }
