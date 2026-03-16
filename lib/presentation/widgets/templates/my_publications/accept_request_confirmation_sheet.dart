@@ -109,11 +109,7 @@ class AcceptRequestConfirmationSheet
               const SizedBox(
                 height: AppTheme.spacing2xl,
               ),
-              _ActionButtons(
-                hasOverlaps: hasOverlaps,
-                overlappingCount:
-                    overlappingRequests.length,
-              ),
+              const _ActionButtons(),
             ],
           ),
         ),
@@ -353,62 +349,80 @@ class _OverlapWarning extends StatelessWidget {
         : 'serán rechazadas';
 
     return Container(
-      padding: const EdgeInsets.all(
-        AppTheme.spacingLg,
-      ),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: AppColors.gameGold
-            .withOpacityValue(0.08),
+        color: AppColors.gameCream
+            .withOpacityValue(0.5),
         borderRadius: BorderRadius.circular(
           AppTheme.radiusLg,
         ),
         border: Border.all(
-          color: AppColors.gameGold
-              .withOpacityValue(0.3),
+          color: AppColors.gameBrown
+              .withOpacityValue(0.1),
         ),
       ),
       child: Column(
         crossAxisAlignment:
             CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.info_outline_rounded,
-                color: AppColors.gameBrown,
-                size: 20,
-              ),
-              const SizedBox(
-                width: AppTheme.spacingSm,
-              ),
-              Expanded(
-                child: Text(
-                  'Al aceptar, $count $noun '
-                  'con fechas superpuestas '
-                  '$verb automáticamente:',
-                  style: AppTypography.bodyMedium
-                      .copyWith(
-                    color: AppColors.gameBrown,
-                    fontWeight: FontWeight.w600,
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTheme.spacingLg,
+              vertical: AppTheme.spacingMd,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.gameRust
+                  .withOpacityValue(0.08),
+            ),
+            child: Row(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.swap_horiz_rounded,
+                  color: AppColors.gameRust,
+                  size: 20,
+                ),
+                const SizedBox(
+                  width: AppTheme.spacingSm,
+                ),
+                Expanded(
+                  child: Text(
+                    'Al aceptar, $count $noun '
+                    'con fechas superpuestas '
+                    '$verb automáticamente.',
+                    style: AppTypography
+                        .bodyMedium
+                        .copyWith(
+                      color: AppColors.gameRust,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(
-            height: AppTheme.spacingMd,
-          ),
-          ...overlappingRequests.map(
-            (r) => Padding(
-              padding: const EdgeInsets.only(
-                bottom: AppTheme.spacingSm,
-              ),
-              child: _OverlapRequestTile(
-                request: r,
-                dateFormat: dateFormat,
-              ),
+          Padding(
+            padding: const EdgeInsets.all(
+              AppTheme.spacingMd,
+            ),
+            child: Column(
+              children: overlappingRequests
+                  .map(
+                    (r) => Padding(
+                      padding:
+                          const EdgeInsets.only(
+                        bottom:
+                            AppTheme.spacingSm,
+                      ),
+                      child: _OverlapRequestTile(
+                        request: r,
+                        dateFormat: dateFormat,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ],
@@ -516,13 +530,7 @@ class _OverlapRequestTile extends StatelessWidget {
 }
 
 class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({
-    required this.hasOverlaps,
-    required this.overlappingCount,
-  });
-
-  final bool hasOverlaps;
-  final int overlappingCount;
+  const _ActionButtons();
 
   @override
   Widget build(BuildContext context) {
@@ -539,14 +547,10 @@ class _ActionButtons extends StatelessWidget {
           width: AppTheme.spacingMd,
         ),
         Expanded(
-          flex: hasOverlaps ? 2 : 1,
           child: AppPrimaryButton(
             onPressed: () =>
                 Navigator.of(context).pop(true),
-            label: hasOverlaps
-                ? 'Aceptar y rechazar '
-                    '$overlappingCount'
-                : 'Aceptar alquiler',
+            label: 'Aceptar',
           ),
         ),
       ],

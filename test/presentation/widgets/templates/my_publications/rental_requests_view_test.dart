@@ -81,12 +81,11 @@ void main() {
       await tester.tap(find.text('Aceptar').first);
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('Aceptar alquiler'),
-        findsOneWidget,
-      );
+      // Sheet CTA is also "Aceptar" — find the
+      // one inside the bottom sheet (last match).
+      expect(find.text('Aceptar'), findsWidgets);
 
-      await tester.tap(find.text('Aceptar alquiler'));
+      await tester.tap(find.text('Aceptar').last);
       await tester.pumpAndSettle();
 
       expect(acceptedId, 'req-1');
@@ -118,10 +117,6 @@ void main() {
       await tester.tap(find.text('Aceptar').first);
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('Aceptar y rechazar 1'),
-        findsOneWidget,
-      );
       expect(
         find.textContaining('será rechazada'),
         findsOneWidget,
