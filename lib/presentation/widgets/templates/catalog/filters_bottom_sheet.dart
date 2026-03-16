@@ -115,25 +115,28 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
 
           return BottomSheetShell(
             title: Text('Filtros', style: AppTypography.titleMedium),
-            leading: TextButton(
+            leading: AppSecondaryButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Cerrar',
-                style: AppTypography.labelLarge.copyWith(
-                  color: AppColors.gameBrown,
-                  decoration: TextDecoration.underline,
-                  decorationStyle: TextDecorationStyle.dotted,
+              label: 'Cerrar',
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.gameBrown,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.spacingMd,
+                  vertical: AppTheme.spacingSm,
                 ),
               ),
             ),
-            trailing: TextButton(
+            trailing: AppSecondaryButton(
               onPressed: _clearAll,
-              child: Text(
-                'Borrá todo',
-                style: AppTypography.labelLarge.copyWith(
-                  color: AppColors.gameRust,
-                  decoration: TextDecoration.underline,
-                  decorationStyle: TextDecorationStyle.dotted,
+              label: 'Borrá todo',
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.gameRust,
+                side: BorderSide(
+                  color: AppColors.gameRust.withOpacityValue(0.3),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.spacingMd,
+                  vertical: AppTheme.spacingSm,
                 ),
               ),
             ),
