@@ -349,40 +349,48 @@ class _OverlapWarning extends StatelessWidget {
         : 'serán rechazadas';
 
     return Container(
-      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.gameCream
-            .withOpacityValue(0.5),
+            .withOpacityValue(0.4),
         borderRadius: BorderRadius.circular(
           AppTheme.radiusLg,
         ),
-        border: Border.all(
-          color: AppColors.gameBrown
-              .withOpacityValue(0.1),
+        border: Border(
+          left: BorderSide(
+            color: AppColors.gameRust
+                .withOpacityValue(0.6),
+            width: 3,
+          ),
+          top: BorderSide(
+            color: AppColors.gameBrown
+                .withOpacityValue(0.08),
+          ),
+          right: BorderSide(
+            color: AppColors.gameBrown
+                .withOpacityValue(0.08),
+          ),
+          bottom: BorderSide(
+            color: AppColors.gameBrown
+                .withOpacityValue(0.08),
+          ),
         ),
       ),
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.spacingLg,
-              vertical: AppTheme.spacingMd,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.gameRust
-                  .withOpacityValue(0.08),
-            ),
-            child: Row(
+      child: Padding(
+        padding: const EdgeInsets.all(
+          AppTheme.spacingLg,
+        ),
+        child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+          children: [
+            Row(
               crossAxisAlignment:
                   CrossAxisAlignment.start,
               children: [
                 Icon(
-                  Icons.swap_horiz_rounded,
+                  Icons.info_outline_rounded,
                   color: AppColors.gameRust,
-                  size: 20,
+                  size: 18,
                 ),
                 const SizedBox(
                   width: AppTheme.spacingSm,
@@ -391,41 +399,35 @@ class _OverlapWarning extends StatelessWidget {
                   child: Text(
                     'Al aceptar, $count $noun '
                     'con fechas superpuestas '
-                    '$verb automáticamente.',
+                    '$verb automáticamente:',
                     style: AppTypography
                         .bodyMedium
                         .copyWith(
-                      color: AppColors.gameRust,
-                      fontWeight: FontWeight.w600,
+                      color: AppColors.gameBrown,
+                      fontWeight:
+                          FontWeight.w600,
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(
-              AppTheme.spacingMd,
+            const SizedBox(
+              height: AppTheme.spacingMd,
             ),
-            child: Column(
-              children: overlappingRequests
-                  .map(
-                    (r) => Padding(
-                      padding:
-                          const EdgeInsets.only(
-                        bottom:
-                            AppTheme.spacingSm,
-                      ),
-                      child: _OverlapRequestTile(
-                        request: r,
-                        dateFormat: dateFormat,
-                      ),
-                    ),
-                  )
-                  .toList(),
+            ...overlappingRequests.map(
+              (r) => Padding(
+                padding:
+                    const EdgeInsets.only(
+                  bottom: AppTheme.spacingSm,
+                ),
+                child: _OverlapRequestTile(
+                  request: r,
+                  dateFormat: dateFormat,
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
