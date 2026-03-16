@@ -75,17 +75,37 @@ class RentalRequestsBloc
       },
       // Success case
       (_) {
+        final accepted = currentState.requests
+            .cast<RentalRequest?>()
+            .firstWhere(
+              (r) => r!.id == event.requestId,
+              orElse: () => null,
+            );
+        if (accepted == null) return;
+        var rejectedCount = 0;
         final updatedRequests = currentState.requests.map((r) {
           if (r.id == event.requestId) {
             return r.copyWith(status: RentalRequestStatus.accepted);
           }
+          if (r.status == RentalRequestStatus.pending &&
+              accepted.overlapsWith(r)) {
+            rejectedCount++;
+            return r.copyWith(status: RentalRequestStatus.rejected);
+          }
           return r;
         }).toList();
+
+        final message = rejectedCount > 0
+            ? 'Solicitud aceptada · $rejectedCount '
+                  '${rejectedCount == 1 ? 'solicitud rechazada' : 'solicitudes rechazadas'} '
+                  'automáticamente'
+            : 'Solicitud aceptada';
+
         emit(
           RentalRequestsState.success(
             updatedRequests,
-            feedbackNotice: const FeedbackNotice(
-              message: 'Solicitud aceptada',
+            feedbackNotice: FeedbackNotice(
+              message: message,
               severity: FeedbackSeverity.success,
             ),
           ),

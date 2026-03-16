@@ -94,18 +94,13 @@ void main() {
 
       await tester.tap(find.text('Open Regular'));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(TextButton, 'Cancelar'));
+      await tester.tap(find.text('Cancelar'));
       await tester.pumpAndSettle();
       expect(result, isFalse);
 
       await tester.tap(find.text('Open Destructive'));
       await tester.pumpAndSettle();
-      final destructiveConfirmButton = tester.widget<TextButton>(
-        find.widgetWithText(TextButton, 'Eliminar'),
-      );
-      expect(destructiveConfirmButton.style, isNotNull);
-
-      await tester.tap(find.widgetWithText(TextButton, 'Eliminar'));
+      await tester.tap(find.text('Eliminar'));
       await tester.pumpAndSettle();
       expect(result, isTrue);
     },

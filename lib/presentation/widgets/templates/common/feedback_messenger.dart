@@ -21,11 +21,20 @@ class FeedbackMessenger {
     FeedbackMessageTone tone = FeedbackMessageTone.info,
     Duration duration = const Duration(seconds: 3),
   }) {
+    final icon = _leadingIcon(tone);
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(message),
+          content: icon != null
+              ? Row(
+                  children: [
+                    Icon(icon, color: AppColors.card, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(message)),
+                  ],
+                )
+              : Text(message),
           duration: duration,
           backgroundColor: _backgroundColor(tone),
         ),
@@ -87,11 +96,24 @@ class FeedbackMessenger {
     );
   }
 
-  static Color? _backgroundColor(FeedbackMessageTone tone) {
+  static Color? _backgroundColor(
+    FeedbackMessageTone tone,
+  ) {
     return switch (tone) {
-      FeedbackMessageTone.success => AppColors.success,
+      FeedbackMessageTone.success => AppColors.gameSage,
       FeedbackMessageTone.error => AppColors.destructive,
       FeedbackMessageTone.warning => AppColors.warning,
+      FeedbackMessageTone.info => null,
+    };
+  }
+
+  static IconData? _leadingIcon(
+    FeedbackMessageTone tone,
+  ) {
+    return switch (tone) {
+      FeedbackMessageTone.success => Icons.check_circle_rounded,
+      FeedbackMessageTone.error => Icons.error_outline_rounded,
+      FeedbackMessageTone.warning => Icons.warning_amber_rounded,
       FeedbackMessageTone.info => null,
     };
   }

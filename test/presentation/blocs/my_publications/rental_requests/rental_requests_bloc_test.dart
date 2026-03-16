@@ -148,6 +148,92 @@ void main() {
   );
 
   blocTest<RentalRequestsBloc, RentalRequestsState>(
+    'accepted auto-rejects overlapping pending requests for the same game',
+    build: () {
+      when(
+        () => acceptRentalRequest('r-1'),
+      ).thenAnswer((_) async => const Right<DomainException, void>(null));
+      return buildBloc();
+    },
+    seed: () {
+      final overlapping = RentalRequest(
+        id: 'r-2',
+        game: const RentalRequestGameSummary(
+          id: 'g-1',
+          title: 'Chess',
+          price: 100,
+        ),
+        requester: const RentalRequestUserSummary(
+          id: 'u-2',
+          email: 'bob@test.com',
+          username: 'Bob',
+        ),
+        startDate: DateTime(2026, 1, 11),
+        endDate: DateTime(2026, 1, 14),
+        totalPrice: 400,
+        status: RentalRequestStatus.pending,
+      );
+      return RentalRequestsState.success([tRequest, overlapping]);
+    },
+    act: (bloc) => bloc.add(const RentalRequestsEvent.accepted('r-1')),
+    expect: () => [
+      isA<RentalRequestsState>(),
+      isA<RentalRequestsState>().having(
+        (s) => s.mapOrNull(
+          success: (s) => s.requests
+              .where(
+                (r) => r.status == RentalRequestStatus.rejected,
+              )
+              .length,
+        ),
+        'rejected overlapping count',
+        1,
+      ),
+    ],
+  );
+
+  blocTest<RentalRequestsBloc, RentalRequestsState>(
+    'accepted feedback message mentions auto-rejected count',
+    build: () {
+      when(
+        () => acceptRentalRequest('r-1'),
+      ).thenAnswer((_) async => const Right<DomainException, void>(null));
+      return buildBloc();
+    },
+    seed: () {
+      final overlapping = RentalRequest(
+        id: 'r-2',
+        game: const RentalRequestGameSummary(
+          id: 'g-1',
+          title: 'Chess',
+          price: 100,
+        ),
+        requester: const RentalRequestUserSummary(
+          id: 'u-2',
+          email: 'bob@test.com',
+          username: 'Bob',
+        ),
+        startDate: DateTime(2026, 1, 11),
+        endDate: DateTime(2026, 1, 14),
+        totalPrice: 400,
+        status: RentalRequestStatus.pending,
+      );
+      return RentalRequestsState.success([tRequest, overlapping]);
+    },
+    act: (bloc) => bloc.add(const RentalRequestsEvent.accepted('r-1')),
+    expect: () => [
+      isA<RentalRequestsState>(),
+      isA<RentalRequestsState>().having(
+        (s) => s.mapOrNull(
+          success: (s) => s.feedbackNotice?.message,
+        ),
+        'feedback message',
+        contains('1 solicitud rechazada'),
+      ),
+    ],
+  );
+
+  blocTest<RentalRequestsBloc, RentalRequestsState>(
     'rejected emits success severity feedback when request is rejected',
     build: () {
       when(

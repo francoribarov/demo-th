@@ -17,3 +17,13 @@ abstract class RentalRequest with _$RentalRequest {
     required RentalRequestStatus status,
   }) = _RentalRequest;
 }
+
+extension RentalRequestOverlap on RentalRequest {
+  /// Whether this request's date range overlaps with [other] for the same game.
+  bool overlapsWith(RentalRequest other) {
+    return game.id == other.game.id &&
+        id != other.id &&
+        startDate.isBefore(other.endDate) &&
+        other.startDate.isBefore(endDate);
+  }
+}

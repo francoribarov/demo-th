@@ -87,6 +87,7 @@ This file documents the atomic taxonomy adopted for the presentation layer and c
 - `lib/presentation/widgets/organisms/my_publications/my_publications_grid.dart`: `MyPublicationsGrid` = Organism
 - `lib/presentation/widgets/organisms/my_publications/my_publications_loading_view.dart`: `MyPublicationsLoadingView` = Organism
 - `lib/presentation/widgets/molecules/my_publications/rental_request_card.dart`: `RentalRequestCard` = Molecule
+- `lib/presentation/widgets/templates/my_publications/accept_request_confirmation_sheet.dart`: `AcceptRequestConfirmationSheet` = Template
 - `lib/presentation/widgets/templates/my_publications/rental_requests_view.dart`: `RentalRequestsView` = Template
 - `lib/presentation/widgets/organisms/publication_details/availability_checker.dart`: `AvailabilityChecker` = Organism
 - `lib/presentation/widgets/molecules/publication_details/game_recommendation_card.dart`: `GameRecommendationCard` = Molecule
