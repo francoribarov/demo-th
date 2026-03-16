@@ -142,7 +142,7 @@ class _RequestSummary extends StatelessWidget {
                     width: 56,
                     height: 56,
                     fit: BoxFit.cover,
-                    errorWidget: (_, __, ___) => _GamePlaceholder(
+                    errorWidget: (_, _, _) => _GamePlaceholder(
                       title: request.game.title,
                     ),
                   ),

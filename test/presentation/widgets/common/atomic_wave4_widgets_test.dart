@@ -142,7 +142,7 @@ void main() {
       snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
       expect(find.text('success-msg'), findsOneWidget);
       expect(find.text('info-msg'), findsNothing);
-      expect(snackBar.backgroundColor, AppColors.success);
+      expect(snackBar.backgroundColor, AppColors.gameSage);
 
       await tester.tap(find.text('Error'));
       await tester.pump();

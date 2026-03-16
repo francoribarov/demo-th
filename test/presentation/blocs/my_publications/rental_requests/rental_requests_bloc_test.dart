@@ -180,9 +180,11 @@ void main() {
       isA<RentalRequestsState>(),
       isA<RentalRequestsState>().having(
         (s) => s.mapOrNull(
-          success: (s) => s.requests.where(
-            (r) => r.status == RentalRequestStatus.rejected,
-          ).length,
+          success: (s) => s.requests
+              .where(
+                (r) => r.status == RentalRequestStatus.rejected,
+              )
+              .length,
         ),
         'rejected overlapping count',
         1,

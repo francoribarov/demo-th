@@ -47,13 +47,12 @@ class RentalRequestsView extends StatelessWidget {
             horizontal: AppTheme.spacing3xl,
           ),
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 width: 80,
                 height: 80,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppColors.gameCream,
                   shape: BoxShape.circle,
                 ),
@@ -68,8 +67,7 @@ class RentalRequestsView extends StatelessWidget {
               ),
               Text(
                 'Sin solicitudes por ahora',
-                style: AppTypography.titleLarge
-                    .copyWith(
+                style: AppTypography.titleLarge.copyWith(
                   color: AppColors.gameBrown,
                 ),
               ),
@@ -81,8 +79,7 @@ class RentalRequestsView extends StatelessWidget {
                 'uno de tus juegos, '
                 'la solicitud aparecerá acá.',
                 textAlign: TextAlign.center,
-                style: AppTypography.bodyMedium
-                    .copyWith(
+                style: AppTypography.bodyMedium.copyWith(
                   color: AppColors.textTertiary,
                 ),
               ),
@@ -94,28 +91,18 @@ class RentalRequestsView extends StatelessWidget {
     final dateFormat = DateFormat('dd/MM/yyyy');
     final pendingRequests = requests
         .where(
-          (r) =>
-              r.status ==
-              RentalRequestStatus.pending,
+          (r) => r.status == RentalRequestStatus.pending,
         )
         .toList();
     return ListView.builder(
       itemCount: requests.length,
       itemBuilder: (context, index) {
         final request = requests[index];
-        final duration = request.endDate
-            .difference(request.startDate)
-            .inDays;
-        final isPending = request.status ==
-            RentalRequestStatus.pending;
-        final isAccepted = request.status ==
-            RentalRequestStatus.accepted;
+        final duration = request.endDate.difference(request.startDate).inDays;
+        final isPending = request.status == RentalRequestStatus.pending;
+        final isAccepted = request.status == RentalRequestStatus.accepted;
         final overlapping = isPending
-            ? pendingRequests
-                .where(
-                  (r) => request.overlapsWith(r),
-                )
-                .toList()
+            ? pendingRequests.where(request.overlapsWith).toList()
             : <RentalRequest>[];
         return RentalRequestCard(
           key: ValueKey(request.id),
@@ -128,12 +115,9 @@ class RentalRequestsView extends StatelessWidget {
           showActions: isPending,
           statusLabel: isPending
               ? null
-              : (isAccepted
-                  ? 'Aceptada'
-                  : 'Rechazada'),
+              : (isAccepted ? 'Aceptada' : 'Rechazada'),
           statusIsSuccess: isAccepted,
-          isProcessing:
-              processingRequestId == request.id,
+          isProcessing: processingRequestId == request.id,
           overlappingCount: overlapping.length,
           onAccept: () => _confirmAccept(
             context,
@@ -154,8 +138,7 @@ class RentalRequestsView extends StatelessWidget {
     RentalRequest request,
     List<RentalRequest> overlapping,
   ) async {
-    final confirmed =
-        await AcceptRequestConfirmationSheet.show(
+    final confirmed = await AcceptRequestConfirmationSheet.show(
       context: context,
       request: request,
       overlappingRequests: overlapping,
@@ -169,8 +152,7 @@ class RentalRequestsView extends StatelessWidget {
     BuildContext context,
     RentalRequest request,
   ) async {
-    final confirmed =
-        await ConfirmActionDialog.show(
+    final confirmed = await ConfirmActionDialog.show(
       context: context,
       title: '¿Rechazar solicitud?',
       message:

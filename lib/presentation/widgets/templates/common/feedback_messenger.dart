@@ -100,12 +100,9 @@ class FeedbackMessenger {
     FeedbackMessageTone tone,
   ) {
     return switch (tone) {
-      FeedbackMessageTone.success =>
-        AppColors.gameSage,
-      FeedbackMessageTone.error =>
-        AppColors.destructive,
-      FeedbackMessageTone.warning =>
-        AppColors.warning,
+      FeedbackMessageTone.success => AppColors.gameSage,
+      FeedbackMessageTone.error => AppColors.destructive,
+      FeedbackMessageTone.warning => AppColors.warning,
       FeedbackMessageTone.info => null,
     };
   }
@@ -114,12 +111,9 @@ class FeedbackMessenger {
     FeedbackMessageTone tone,
   ) {
     return switch (tone) {
-      FeedbackMessageTone.success =>
-        Icons.check_circle_rounded,
-      FeedbackMessageTone.error =>
-        Icons.error_outline_rounded,
-      FeedbackMessageTone.warning =>
-        Icons.warning_amber_rounded,
+      FeedbackMessageTone.success => Icons.check_circle_rounded,
+      FeedbackMessageTone.error => Icons.error_outline_rounded,
+      FeedbackMessageTone.warning => Icons.warning_amber_rounded,
       FeedbackMessageTone.info => null,
     };
   }

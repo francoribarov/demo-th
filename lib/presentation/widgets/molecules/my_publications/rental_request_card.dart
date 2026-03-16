@@ -52,8 +52,7 @@ class RentalRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final username =
-        request.requester.username;
+    final username = request.requester.username;
 
     return SurfaceCard(
       margin: const EdgeInsets.symmetric(
@@ -66,92 +65,71 @@ class RentalRequestCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(
         AppTheme.radiusXl,
       ),
-      borderColor: AppColors.gameBrown
-          .withOpacityValue(0.1),
+      borderColor: AppColors.gameBrown.withOpacityValue(0.1),
       boxShadow: AppTheme.shadowMd,
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               CircleAvatar(
-                backgroundColor:
-                    AppColors.gameCream,
-                backgroundImage:
-                    request.requester.imageUrl !=
-                            null
-                        ? NetworkImage(
-                            request.requester
-                                .imageUrl!,
-                          )
-                        : null,
-                child:
-                    request.requester.imageUrl ==
-                            null
-                        ? Text(
-                            _safeInitial(
-                              username,
-                            ),
-                            style: AppTypography
-                                .labelMedium
-                                .copyWith(
-                              color: AppColors
-                                  .gameBrown,
-                            ),
-                          )
-                        : null,
+                backgroundColor: AppColors.gameCream,
+                backgroundImage: request.requester.imageUrl != null
+                    ? NetworkImage(
+                        request.requester.imageUrl!,
+                      )
+                    : null,
+                child: request.requester.imageUrl == null
+                    ? Text(
+                        _safeInitial(
+                          username,
+                        ),
+                        style: AppTypography.labelMedium.copyWith(
+                          color: AppColors.gameBrown,
+                        ),
+                      )
+                    : null,
               ),
               const SizedBox(
                 width: AppTheme.spacingMd,
               ),
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       username,
-                      style: AppTypography
-                          .titleMedium,
+                      style: AppTypography.titleMedium,
                       maxLines: 1,
-                      overflow:
-                          TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       'Quiere alquilar '
                       '${request.game.title}',
-                      style: AppTypography
-                          .bodyMedium
-                          .copyWith(
-                        color: AppColors
-                            .textTertiary,
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.textTertiary,
                       ),
                       maxLines: 1,
-                      overflow:
-                          TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
               Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     CurrencyFormatter.formatUYU(
                       request.totalPrice,
                     ),
-                    style: AppTypography.titleLarge
-                        .copyWith(
+                    style: AppTypography.titleLarge.copyWith(
                       color: AppColors.gameRust,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     'Total ($durationText)',
-                    style: AppTypography.bodySmall
-                        .copyWith(
+                    style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textMuted,
                     ),
                   ),
@@ -164,13 +142,11 @@ class RentalRequestCard extends StatelessWidget {
           ),
           Text(
             'Fechas: $dateRangeText',
-            style:
-                AppTypography.bodyMedium.copyWith(
+            style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textTertiary,
             ),
           ),
-          if (showActions &&
-              overlappingCount > 0) ...[
+          if (showActions && overlappingCount > 0) ...[
             const SizedBox(
               height: AppTheme.spacingSm,
             ),
@@ -253,11 +229,8 @@ class RentalRequestCard extends StatelessWidget {
         child: Text(
           statusLabel!,
           textAlign: TextAlign.center,
-          style:
-              AppTypography.labelLarge.copyWith(
-            color: statusIsSuccess
-                ? AppColors.gameSage
-                : AppColors.destructive,
+          style: AppTypography.labelLarge.copyWith(
+            color: statusIsSuccess ? AppColors.gameSage : AppColors.destructive,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -286,20 +259,18 @@ class _OverlapBadge extends StatelessWidget {
         vertical: AppTheme.spacingXs,
       ),
       decoration: BoxDecoration(
-        color: AppColors.gameGold
-            .withOpacityValue(0.1),
+        color: AppColors.gameGold.withOpacityValue(0.1),
         borderRadius: BorderRadius.circular(
           AppTheme.radiusFull,
         ),
         border: Border.all(
-          color: AppColors.gameGold
-              .withOpacityValue(0.3),
+          color: AppColors.gameGold.withOpacityValue(0.3),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.info_outline_rounded,
             size: 14,
             color: AppColors.gameBrown,
@@ -309,8 +280,7 @@ class _OverlapBadge extends StatelessWidget {
           ),
           Text(
             '$count $noun',
-            style:
-                AppTypography.labelSmall.copyWith(
+            style: AppTypography.labelSmall.copyWith(
               color: AppColors.gameBrown,
               fontWeight: FontWeight.w600,
             ),

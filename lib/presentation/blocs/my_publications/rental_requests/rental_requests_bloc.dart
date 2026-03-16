@@ -75,11 +75,12 @@ class RentalRequestsBloc
       },
       // Success case
       (_) {
-        final accepted =
-            currentState.requests.cast<RentalRequest?>().firstWhere(
-                  (r) => r!.id == event.requestId,
-                  orElse: () => null,
-                );
+        final accepted = currentState.requests
+            .cast<RentalRequest?>()
+            .firstWhere(
+              (r) => r!.id == event.requestId,
+              orElse: () => null,
+            );
         if (accepted == null) return;
         var rejectedCount = 0;
         final updatedRequests = currentState.requests.map((r) {
@@ -96,10 +97,8 @@ class RentalRequestsBloc
 
         final message = rejectedCount > 0
             ? 'Solicitud aceptada · $rejectedCount '
-                '${rejectedCount == 1
-                    ? 'solicitud rechazada'
-                    : 'solicitudes rechazadas'} '
-                'automáticamente'
+                  '${rejectedCount == 1 ? 'solicitud rechazada' : 'solicitudes rechazadas'} '
+                  'automáticamente'
             : 'Solicitud aceptada';
 
         emit(
