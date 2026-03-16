@@ -81,12 +81,11 @@ void main() {
       await tester.tap(find.text('Aceptar').first);
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('Aceptar alquiler'),
-        findsOneWidget,
-      );
+      // Sheet CTA is also "Aceptar" — find the
+      // one inside the bottom sheet (last match).
+      expect(find.text('Aceptar'), findsWidgets);
 
-      await tester.tap(find.text('Aceptar alquiler'));
+      await tester.tap(find.text('Aceptar').last);
       await tester.pumpAndSettle();
 
       expect(acceptedId, 'req-1');
@@ -119,18 +118,15 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('Aceptar y rechazar 1'),
-        findsOneWidget,
-      );
-      expect(
         find.textContaining('será rechazada'),
         findsOneWidget,
       );
     },
   );
 
-  testWidgets('shows no overlap badge for non-overlapping requests',
-      (tester) async {
+  testWidgets('shows no overlap badge for non-overlapping requests', (
+    tester,
+  ) async {
     final nonOverlapping = RentalRequest(
       id: 'req-3',
       game: const RentalRequestGameSummary(
@@ -143,7 +139,7 @@ void main() {
         email: 'carol@test.com',
         username: 'Carol',
       ),
-      startDate: DateTime(2026, 2, 1),
+      startDate: DateTime(2026, 2),
       endDate: DateTime(2026, 2, 5),
       totalPrice: 320,
       status: RentalRequestStatus.pending,

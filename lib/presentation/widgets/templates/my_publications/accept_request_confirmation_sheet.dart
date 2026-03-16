@@ -12,8 +12,7 @@ import 'package:mobile_table_hopping/presentation/widgets/molecules/common/label
 /// Bottom sheet confirming rental request acceptance.
 /// When overlapping requests exist, warns the publisher
 /// that they will be auto-rejected.
-class AcceptRequestConfirmationSheet
-    extends StatelessWidget {
+class AcceptRequestConfirmationSheet extends StatelessWidget {
   const AcceptRequestConfirmationSheet({
     required this.request,
     required this.overlappingRequests,
@@ -23,21 +22,18 @@ class AcceptRequestConfirmationSheet
   final RentalRequest request;
   final List<RentalRequest> overlappingRequests;
 
-  static final _dateFormat =
-      DateFormat('dd/MM/yyyy');
+  static final _dateFormat = DateFormat('dd/MM/yyyy');
 
   static Future<bool> show({
     required BuildContext context,
     required RentalRequest request,
     required List<RentalRequest> overlappingRequests,
   }) async {
-    final result =
-        await showModalBottomSheet<bool>(
+    final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
-      builder: (_) =>
-          AcceptRequestConfirmationSheet(
+      builder: (_) => AcceptRequestConfirmationSheet(
         request: request,
         overlappingRequests: overlappingRequests,
       ),
@@ -47,17 +43,13 @@ class AcceptRequestConfirmationSheet
 
   @override
   Widget build(BuildContext context) {
-    final hasOverlaps =
-        overlappingRequests.isNotEmpty;
-    final duration = request.endDate
-        .difference(request.startDate)
-        .inDays;
+    final hasOverlaps = overlappingRequests.isNotEmpty;
+    final duration = request.endDate.difference(request.startDate).inDays;
 
     return SafeArea(
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxHeight:
-              MediaQuery.sizeOf(context).height * 0.85,
+          maxHeight: MediaQuery.sizeOf(context).height * 0.85,
         ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
@@ -68,13 +60,11 @@ class AcceptRequestConfirmationSheet
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Aceptar solicitud',
-                style:
-                    AppTypography.headlineMedium,
+                style: AppTypography.headlineMedium,
               ),
               const SizedBox(
                 height: AppTheme.spacingLg,
@@ -82,8 +72,7 @@ class AcceptRequestConfirmationSheet
               Flexible(
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _RequestSummary(
@@ -93,12 +82,10 @@ class AcceptRequestConfirmationSheet
                       ),
                       if (hasOverlaps) ...[
                         const SizedBox(
-                          height:
-                              AppTheme.spacingLg,
+                          height: AppTheme.spacingLg,
                         ),
                         _OverlapWarning(
-                          overlappingRequests:
-                              overlappingRequests,
+                          overlappingRequests: overlappingRequests,
                           dateFormat: _dateFormat,
                         ),
                       ],
@@ -109,11 +96,7 @@ class AcceptRequestConfirmationSheet
               const SizedBox(
                 height: AppTheme.spacing2xl,
               ),
-              _ActionButtons(
-                hasOverlaps: hasOverlaps,
-                overlappingCount:
-                    overlappingRequests.length,
-              ),
+              const _ActionButtons(),
             ],
           ),
         ),
@@ -135,8 +118,7 @@ class _RequestSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage =
-        request.game.images.isNotEmpty;
+    final hasImage = request.game.images.isNotEmpty;
 
     return SurfaceCard(
       variant: SurfaceCardVariant.subtle,
@@ -152,19 +134,15 @@ class _RequestSummary extends StatelessWidget {
             children: [
               if (hasImage)
                 ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(
+                  borderRadius: BorderRadius.circular(
                     AppTheme.radiusMd,
                   ),
                   child: CachedNetworkImage(
-                    imageUrl:
-                        request.game.images.first,
+                    imageUrl: request.game.images.first,
                     width: 56,
                     height: 56,
                     fit: BoxFit.cover,
-                    errorWidget:
-                        (_, __, ___) =>
-                            _GamePlaceholder(
+                    errorWidget: (_, __, ___) => _GamePlaceholder(
                       title: request.game.title,
                     ),
                   ),
@@ -178,16 +156,13 @@ class _RequestSummary extends StatelessWidget {
               ),
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       request.game.title,
-                      style:
-                          AppTypography.titleMedium,
+                      style: AppTypography.titleMedium,
                       maxLines: 2,
-                      overflow:
-                          TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(
                       height: AppTheme.spacingXs,
@@ -196,56 +171,35 @@ class _RequestSummary extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 10,
-                          backgroundColor:
-                              AppColors.gameCream,
-                          backgroundImage: request
-                                      .requester
-                                      .imageUrl !=
-                                  null
+                          backgroundColor: AppColors.gameCream,
+                          backgroundImage: request.requester.imageUrl != null
                               ? NetworkImage(
-                                  request.requester
-                                      .imageUrl!,
+                                  request.requester.imageUrl!,
                                 )
                               : null,
-                          child: request
-                                      .requester
-                                      .imageUrl ==
-                                  null
+                          child: request.requester.imageUrl == null
                               ? Text(
                                   _safeInitial(
-                                    request
-                                        .requester
-                                        .username,
+                                    request.requester.username,
                                   ),
-                                  style:
-                                      AppTypography
-                                          .labelSmall
-                                          .copyWith(
-                                    color: AppColors
-                                        .gameBrown,
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: AppColors.gameBrown,
                                     fontSize: 9,
                                   ),
                                 )
                               : null,
                         ),
                         const SizedBox(
-                          width:
-                              AppTheme.spacingXs,
+                          width: AppTheme.spacingXs,
                         ),
                         Flexible(
                           child: Text(
-                            request
-                                .requester
-                                .username,
-                            style: AppTypography
-                                .bodySmall
-                                .copyWith(
-                              color: AppColors
-                                  .textTertiary,
+                            request.requester.username,
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.textTertiary,
                             ),
                             maxLines: 1,
-                            overflow: TextOverflow
-                                .ellipsis,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -260,15 +214,13 @@ class _RequestSummary extends StatelessWidget {
           ),
           Divider(
             height: 1,
-            color: AppColors.gameBrown
-                .withOpacityValue(0.1),
+            color: AppColors.gameBrown.withOpacityValue(0.1),
           ),
           const SizedBox(
             height: AppTheme.spacingMd,
           ),
           LabelValueRow(
-            leadingIcon:
-                Icons.calendar_today_outlined,
+            leadingIcon: Icons.calendar_today_outlined,
             label: 'Fechas',
             value:
                 '${dateFormat.format(request.startDate)}'
@@ -287,15 +239,13 @@ class _RequestSummary extends StatelessWidget {
             height: AppTheme.spacingSm,
           ),
           LabelValueRow(
-            leadingIcon:
-                Icons.attach_money_outlined,
+            leadingIcon: Icons.attach_money_outlined,
             label: 'Total',
             value: CurrencyFormatter.formatUYU(
               request.totalPrice,
             ),
             valueColor: AppColors.gameRust,
-            valueStyle:
-                AppTypography.titleMedium.copyWith(
+            valueStyle: AppTypography.titleMedium.copyWith(
               color: AppColors.gameRust,
               fontWeight: FontWeight.bold,
             ),
@@ -345,73 +295,80 @@ class _OverlapWarning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final count = overlappingRequests.length;
-    final noun = count == 1
-        ? 'solicitud'
-        : 'solicitudes';
-    final verb = count == 1
-        ? 'será rechazada'
-        : 'serán rechazadas';
+    final noun = count == 1 ? 'solicitud' : 'solicitudes';
+    final verb = count == 1 ? 'será rechazada' : 'serán rechazadas';
 
-    return Container(
-      padding: const EdgeInsets.all(
-        AppTheme.spacingLg,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(
+        AppTheme.radiusLg,
       ),
-      decoration: BoxDecoration(
-        color: AppColors.gameGold
-            .withOpacityValue(0.08),
-        borderRadius: BorderRadius.circular(
-          AppTheme.radiusLg,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.gameCream.withOpacityValue(0.4),
+          border: Border(
+            left: BorderSide(
+              color: AppColors.gameRust.withOpacityValue(0.6),
+              width: 3,
+            ),
+            top: BorderSide(
+              color: AppColors.gameBrown.withOpacityValue(0.08),
+            ),
+            right: BorderSide(
+              color: AppColors.gameBrown.withOpacityValue(0.08),
+            ),
+            bottom: BorderSide(
+              color: AppColors.gameBrown.withOpacityValue(0.08),
+            ),
+          ),
         ),
-        border: Border.all(
-          color: AppColors.gameGold
-              .withOpacityValue(0.3),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.all(
+            AppTheme.spacingLg,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.info_outline_rounded,
-                color: AppColors.gameBrown,
-                size: 20,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    color: AppColors.gameRust,
+                    size: 18,
+                  ),
+                  const SizedBox(
+                    width: AppTheme.spacingSm,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Al aceptar, $count $noun '
+                      'con fechas superpuestas '
+                      '$verb automáticamente:',
+                      style: AppTypography.bodyMedium.copyWith(
+                        color: AppColors.gameBrown,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
-                width: AppTheme.spacingSm,
+                height: AppTheme.spacingMd,
               ),
-              Expanded(
-                child: Text(
-                  'Al aceptar, $count $noun '
-                  'con fechas superpuestas '
-                  '$verb automáticamente:',
-                  style: AppTypography.bodyMedium
-                      .copyWith(
-                    color: AppColors.gameBrown,
-                    fontWeight: FontWeight.w600,
+              ...overlappingRequests.map(
+                (r) => Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: AppTheme.spacingSm,
+                  ),
+                  child: _OverlapRequestTile(
+                    request: r,
+                    dateFormat: dateFormat,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: AppTheme.spacingMd,
-          ),
-          ...overlappingRequests.map(
-            (r) => Padding(
-              padding: const EdgeInsets.only(
-                bottom: AppTheme.spacingSm,
-              ),
-              child: _OverlapRequestTile(
-                request: r,
-                dateFormat: dateFormat,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -439,8 +396,7 @@ class _OverlapRequestTile extends StatelessWidget {
           AppTheme.radiusSm,
         ),
         border: Border.all(
-          color: AppColors.gameBrown
-              .withOpacityValue(0.1),
+          color: AppColors.gameBrown.withOpacityValue(0.1),
         ),
       ),
       child: Row(
@@ -448,52 +404,41 @@ class _OverlapRequestTile extends StatelessWidget {
           CircleAvatar(
             radius: 14,
             backgroundColor: AppColors.gameCream,
-            backgroundImage:
-                request.requester.imageUrl != null
-                    ? NetworkImage(
-                        request
-                            .requester.imageUrl!,
-                      )
-                    : null,
-            child:
-                request.requester.imageUrl == null
-                    ? Text(
-                        _safeInitial(
-                          request
-                              .requester.username,
-                        ),
-                        style: AppTypography
-                            .labelSmall
-                            .copyWith(
-                          color:
-                              AppColors.gameBrown,
-                          fontSize: 10,
-                        ),
-                      )
-                    : null,
+            backgroundImage: request.requester.imageUrl != null
+                ? NetworkImage(
+                    request.requester.imageUrl!,
+                  )
+                : null,
+            child: request.requester.imageUrl == null
+                ? Text(
+                    _safeInitial(
+                      request.requester.username,
+                    ),
+                    style: AppTypography.labelSmall.copyWith(
+                      color: AppColors.gameBrown,
+                      fontSize: 10,
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(
             width: AppTheme.spacingSm,
           ),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   request.requester.username,
-                  style:
-                      AppTypography.labelMedium,
+                  style: AppTypography.labelMedium,
                   maxLines: 1,
-                  overflow:
-                      TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   '${dateFormat.format(request.startDate)}'
                   ' – '
                   '${dateFormat.format(request.endDate)}',
-                  style: AppTypography.bodySmall
-                      .copyWith(
+                  style: AppTypography.bodySmall.copyWith(
                     color: AppColors.textMuted,
                   ),
                 ),
@@ -504,8 +449,7 @@ class _OverlapRequestTile extends StatelessWidget {
             CurrencyFormatter.formatUYU(
               request.totalPrice,
             ),
-            style:
-                AppTypography.labelMedium.copyWith(
+            style: AppTypography.labelMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
@@ -516,13 +460,7 @@ class _OverlapRequestTile extends StatelessWidget {
 }
 
 class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({
-    required this.hasOverlaps,
-    required this.overlappingCount,
-  });
-
-  final bool hasOverlaps;
-  final int overlappingCount;
+  const _ActionButtons();
 
   @override
   Widget build(BuildContext context) {
@@ -530,8 +468,7 @@ class _ActionButtons extends StatelessWidget {
       children: [
         Expanded(
           child: AppSecondaryButton(
-            onPressed: () =>
-                Navigator.of(context).pop(false),
+            onPressed: () => Navigator.of(context).pop(false),
             label: 'Volver',
           ),
         ),
@@ -539,14 +476,9 @@ class _ActionButtons extends StatelessWidget {
           width: AppTheme.spacingMd,
         ),
         Expanded(
-          flex: hasOverlaps ? 2 : 1,
           child: AppPrimaryButton(
-            onPressed: () =>
-                Navigator.of(context).pop(true),
-            label: hasOverlaps
-                ? 'Aceptar y rechazar '
-                    '$overlappingCount'
-                : 'Aceptar alquiler',
+            onPressed: () => Navigator.of(context).pop(true),
+            label: 'Aceptar',
           ),
         ),
       ],
