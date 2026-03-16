@@ -348,34 +348,35 @@ class _OverlapWarning extends StatelessWidget {
         ? 'será rechazada'
         : 'serán rechazadas';
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.gameCream
-            .withOpacityValue(0.4),
-        borderRadius: BorderRadius.circular(
-          AppTheme.radiusLg,
-        ),
-        border: Border(
-          left: BorderSide(
-            color: AppColors.gameRust
-                .withOpacityValue(0.6),
-            width: 3,
-          ),
-          top: BorderSide(
-            color: AppColors.gameBrown
-                .withOpacityValue(0.08),
-          ),
-          right: BorderSide(
-            color: AppColors.gameBrown
-                .withOpacityValue(0.08),
-          ),
-          bottom: BorderSide(
-            color: AppColors.gameBrown
-                .withOpacityValue(0.08),
-          ),
-        ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(
+        AppTheme.radiusLg,
       ),
-      child: Padding(
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.gameCream
+              .withOpacityValue(0.4),
+          border: Border(
+            left: BorderSide(
+              color: AppColors.gameRust
+                  .withOpacityValue(0.6),
+              width: 3,
+            ),
+            top: BorderSide(
+              color: AppColors.gameBrown
+                  .withOpacityValue(0.08),
+            ),
+            right: BorderSide(
+              color: AppColors.gameBrown
+                  .withOpacityValue(0.08),
+            ),
+            bottom: BorderSide(
+              color: AppColors.gameBrown
+                  .withOpacityValue(0.08),
+            ),
+          ),
+        ),
+        child: Padding(
         padding: const EdgeInsets.all(
           AppTheme.spacingLg,
         ),
@@ -428,6 +429,7 @@ class _OverlapWarning extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }
