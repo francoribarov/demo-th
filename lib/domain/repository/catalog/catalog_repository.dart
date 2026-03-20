@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game_draft.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 
 /// Unified repository interface for catalog operations.
@@ -73,4 +74,7 @@ abstract class CatalogRepository {
   Future<Either<DomainException, List<Game>>> getRecommendedGames(
     String gameId,
   );
+
+  /// Creates a new game in the catalog.
+  Future<Either<DomainException, Game>> createGame(GameDraft draft);
 }
