@@ -52,4 +52,7 @@ abstract class CatalogService {
 
   @GET('/api/games/{id}/recommended')
   Future<List<GameModel>> getRecommendedGames(@Path('id') String gameId);
+
+  @POST('/api/games')
+  Future<GameModel> createGame(@Body() Map<String, dynamic> body);
 }
