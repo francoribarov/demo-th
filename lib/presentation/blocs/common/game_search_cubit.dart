@@ -58,4 +58,15 @@ class GameSearchCubit extends Cubit<GameSearchState> {
       );
     }
   }
+
+  /// Adds a newly created game to the catalog list.
+  void addGame(Game game) {
+    final updatedAll = [game, ...state.allGames];
+    emit(
+      state.copyWith(
+        allGames: updatedAll,
+        filteredGames: updatedAll,
+      ),
+    );
+  }
 }
