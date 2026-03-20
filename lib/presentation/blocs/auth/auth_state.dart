@@ -13,30 +13,14 @@ enum AuthStatus {
 }
 
 @freezed
-/// State for authentication and auth-related forms.
+/// State for authentication session lifecycle.
 abstract class AuthState with _$AuthState {
   /// Creates the current authentication state snapshot.
   const factory AuthState({
     @Default(AuthStatus.unknown) AuthStatus status,
     AuthSession? session,
     @Default(false) bool isCheckingStatus,
-    String? errorMessage,
-
-    // Login
-    @Default('') String loginEmail,
-    @Default('') String loginPassword,
-    @Default(false) bool isSubmittingLogin,
-    String? loginErrorMessage,
-
-    // Register
-    @Default('') String registerEmail,
-    @Default('') String registerPassword,
-    @Default('') String registerPasswordConfirm,
-    @Default('') String registerUsername,
-    @Default('') String registerLocation,
-    @Default(false) bool isSubmittingRegister,
-    @Default(false) bool isRegisterPasswordVisible,
-    String? registerErrorMessage,
+    FeedbackNotice? feedbackNotice,
   }) = _AuthState;
 
   const AuthState._();

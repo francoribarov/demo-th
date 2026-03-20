@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/publish/delivery_method.dart';
 import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
-import 'package:mobile_table_hopping/domain/usecase/catalog/get_games_use_case.dart';
 import 'package:mobile_table_hopping/domain/usecase/publish/create_publication_use_case.dart';
-import 'package:mobile_table_hopping/domain/validators/publish/publication_validator.dart';
+import 'package:mobile_table_hopping/domain/validators/publication/publication_validator.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/publication_form_state.dart';
+import 'package:mobile_table_hopping/presentation/validators/publication_validation_error_mapper.dart';
 
 part 'publish_bloc.freezed.dart';
 part 'publish_event.dart';
@@ -20,10 +20,8 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   PublishBloc({
     required CreatePublicationUseCase createPublication,
     required AuthBloc authBloc,
-    required GetGamesUseCase getGames,
   }) : _createPublication = createPublication,
        _authBloc = authBloc,
-       _getGames = getGames,
        super(const PublishState()) {
     on<_Started>(_onStarted);
     on<_NextStep>(_onNextStep);
@@ -34,17 +32,13 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     on<_DescriptionChanged>(_onDescriptionChanged);
     on<_PriceChanged>(_onPriceChanged);
     on<_ConditionChanged>(_onConditionChanged);
-    on<_LoadGames>(_onLoadGames);
-    on<_SearchGames>(_onSearchGames);
   }
 
   final CreatePublicationUseCase _createPublication;
   final AuthBloc _authBloc;
-  final GetGamesUseCase _getGames;
 
   void _onStarted(_Started event, Emitter<PublishState> emit) {
     emit(const PublishState());
-    add(const PublishEvent.loadGames());
   }
 
   void _onNextStep(_NextStep event, Emitter<PublishState> emit) {
@@ -58,10 +52,10 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
             currentStep: nextStep,
             isStepValid: _validateStep(
               nextStep,
-              state.gameId,
-              state.description,
-              state.condition,
-              state.price,
+              state.form.gameId,
+              state.form.description,
+              state.form.condition,
+              state.form.price,
             ),
           ),
         );
@@ -77,10 +71,10 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
           currentStep: prevStep,
           isStepValid: _validateStep(
             prevStep,
-            state.gameId,
-            state.description,
-            state.condition,
-            state.price,
+            state.form.gameId,
+            state.form.description,
+            state.form.condition,
+            state.form.price,
           ),
         ),
       );
@@ -104,10 +98,10 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
     final draft = PublicationDraft(
-      gameId: state.gameId,
-      description: state.description,
-      price: state.price,
-      condition: state.condition!,
+      gameId: state.form.gameId,
+      description: state.form.description,
+      price: state.form.price,
+      condition: state.form.condition!,
       images: event.images
           .map(
             (url) => PublicationImage(
@@ -149,14 +143,13 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   void _onGameIdChanged(_GameIdChanged event, Emitter<PublishState> emit) {
     emit(
       state.copyWith(
-        gameId: event.value,
-        condition: null,
+        form: state.form.copyWith(gameId: event.value),
         isStepValid: _validateStep(
           state.currentStep,
           event.value,
-          state.description,
-          null,
-          state.price,
+          state.form.description,
+          state.form.condition,
+          state.form.price,
         ),
       ),
     );
@@ -168,13 +161,19 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   ) {
     emit(
       state.copyWith(
-        description: event.value,
+        form: state.form.copyWith(
+          description: event.value,
+          descriptionError:
+              PublicationValidationErrorMapper.mapDescriptionError(
+                PublicationValidator.validateDescription(event.value),
+              ),
+        ),
         isStepValid: _validateStep(
           state.currentStep,
-          state.gameId,
+          state.form.gameId,
           event.value,
-          state.condition,
-          state.price,
+          state.form.condition,
+          state.form.price,
         ),
       ),
     );
@@ -183,12 +182,17 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   void _onPriceChanged(_PriceChanged event, Emitter<PublishState> emit) {
     emit(
       state.copyWith(
-        price: event.value,
+        form: state.form.copyWith(
+          price: event.value,
+          priceError: PublicationValidationErrorMapper.mapPriceError(
+            PublicationValidator.validatePricing(event.value),
+          ),
+        ),
         isStepValid: _validateStep(
           state.currentStep,
-          state.gameId,
-          state.description,
-          state.condition,
+          state.form.gameId,
+          state.form.description,
+          state.form.condition,
           event.value,
         ),
       ),
@@ -201,46 +205,21 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
   ) {
     emit(
       state.copyWith(
-        condition: event.value,
+        form: state.form.copyWith(
+          condition: event.value,
+          conditionError: PublicationValidationErrorMapper.mapConditionError(
+            PublicationValidator.validateCondition(event.value),
+          ),
+        ),
         isStepValid: _validateStep(
           state.currentStep,
-          state.gameId,
-          state.description,
+          state.form.gameId,
+          state.form.description,
           event.value,
-          state.price,
+          state.form.price,
         ),
       ),
     );
-  }
-
-  Future<void> _onLoadGames(
-    _LoadGames event,
-    Emitter<PublishState> emit,
-  ) async {
-    emit(state.copyWith(isLoadingGames: true));
-    final result = await _getGames();
-    result.fold(
-      (_) => emit(state.copyWith(isLoadingGames: false)),
-      (games) => emit(
-        state.copyWith(
-          isLoadingGames: false,
-          allGames: games,
-          filteredGames: games,
-        ),
-      ),
-    );
-  }
-
-  void _onSearchGames(_SearchGames event, Emitter<PublishState> emit) {
-    final query = event.query.toLowerCase();
-    if (query.isEmpty) {
-      emit(state.copyWith(filteredGames: state.allGames));
-    } else {
-      final filtered = state.allGames.where((game) {
-        return game.title.toLowerCase().contains(query);
-      }).toList();
-      emit(state.copyWith(filteredGames: filtered));
-    }
   }
 
   bool _validateStep(
@@ -253,17 +232,17 @@ class PublishBloc extends Bloc<PublishEvent, PublishState> {
     switch (step) {
       case 0: // Data step: game and description and condition
         return gameId.isNotEmpty &&
-            PublicationValidator.validateDescription(description).isValid &&
-            condition != null;
+            PublicationValidator.validateDescription(description) == null &&
+            PublicationValidator.validateCondition(condition) == null;
       case 1: // Photos step: no validation required (optional)
         return true;
       case 2: // Price step: price must be valid
-        return PublicationValidator.validatePricing(price).isValid;
+        return PublicationValidator.validatePricing(price) == null;
       case 3: // Review step: ready to submit
         return gameId.isNotEmpty &&
-            PublicationValidator.validateDescription(description).isValid &&
-            PublicationValidator.validatePricing(price).isValid &&
-            condition != null;
+            PublicationValidator.validateDescription(description) == null &&
+            PublicationValidator.validatePricing(price) == null &&
+            PublicationValidator.validateCondition(condition) == null;
       default:
         return false;
     }

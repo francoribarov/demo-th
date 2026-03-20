@@ -7,29 +7,40 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/login/login_cubit.dart';
+import 'package:mobile_table_hopping/presentation/blocs/common/feedback_notice.dart';
 import 'package:mobile_table_hopping/presentation/pages/auth/login_page.dart';
-import 'package:mobile_table_hopping/presentation/widgets/atoms/common/inline_feedback_text.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthBloc extends MockBloc<AuthEvent, AuthState> implements AuthBloc {}
 
+class MockLoginCubit extends MockCubit<LoginState> implements LoginCubit {}
+
 void main() {
   late MockAuthBloc authBloc;
+  late MockLoginCubit loginCubit;
 
   setUpAll(() {
     registerFallbackValue(const AuthEvent.started());
     registerFallbackValue(const AuthState());
+    registerFallbackValue(const LoginState());
   });
 
   setUp(() {
     authBloc = MockAuthBloc();
+    loginCubit = MockLoginCubit();
+
+    when(() => loginCubit.submit()).thenAnswer((_) async {});
   });
 
   Widget buildSubject({String? from}) {
     return MaterialApp(
       home: Scaffold(
-        body: BlocProvider<AuthBloc>.value(
-          value: authBloc,
+        body: MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthBloc>.value(value: authBloc),
+            BlocProvider<LoginCubit>.value(value: loginCubit),
+          ],
           child: LoginPage(from: from),
         ),
       ),
@@ -44,8 +55,11 @@ void main() {
           path: AppRoutes.login,
           builder: (context, state) {
             final from = state.uri.queryParameters['from'];
-            return BlocProvider<AuthBloc>.value(
-              value: authBloc,
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<AuthBloc>.value(value: authBloc),
+                BlocProvider<LoginCubit>.value(value: loginCubit),
+              ],
               child: LoginPage(from: from),
             );
           },
@@ -64,9 +78,20 @@ void main() {
   }
 
   testWidgets('renders email and password fields directly', (tester) async {
-    const state = AuthState(status: AuthStatus.unauthenticated);
-    whenListen(authBloc, const Stream<AuthState>.empty(), initialState: state);
-    when(() => authBloc.state).thenReturn(state);
+    const authState = AuthState(status: AuthStatus.unauthenticated);
+    const loginState = LoginState();
+    whenListen(
+      authBloc,
+      const Stream<AuthState>.empty(),
+      initialState: authState,
+    );
+    when(() => authBloc.state).thenReturn(authState);
+    whenListen(
+      loginCubit,
+      const Stream<LoginState>.empty(),
+      initialState: loginState,
+    );
+    when(() => loginCubit.state).thenReturn(loginState);
 
     await tester.pumpWidget(buildSubject());
 
@@ -76,16 +101,32 @@ void main() {
     expect(find.byKey(const Key('loginSubmitButton')), findsOneWidget);
   });
 
-  testWidgets('dispatches submit and renders loading and error states', (
+  testWidgets('dispatches to LoginCubit and renders loading and error states', (
     tester,
   ) async {
-    const initialState = AuthState(status: AuthStatus.unauthenticated);
-    final submittingState = initialState.copyWith(isSubmittingLogin: true);
-    final errorState = initialState.copyWith(loginErrorMessage: 'Login failed');
+    const authState = AuthState(status: AuthStatus.unauthenticated);
+    const initialLoginState = LoginState();
+    final submittingState = const LoginState().copyWith(isSubmitting: true);
+    final errorState = const LoginState().copyWith(
+      feedbackNotice: const FeedbackNotice(
+        message: 'Login failed',
+        severity: FeedbackSeverity.error,
+      ),
+    );
 
-    final controller = StreamController<AuthState>();
-    whenListen(authBloc, controller.stream, initialState: initialState);
-    when(() => authBloc.state).thenReturn(initialState);
+    final loginController = StreamController<LoginState>();
+    whenListen(
+      authBloc,
+      const Stream<AuthState>.empty(),
+      initialState: authState,
+    );
+    when(() => authBloc.state).thenReturn(authState);
+    whenListen(
+      loginCubit,
+      loginController.stream,
+      initialState: initialLoginState,
+    );
+    when(() => loginCubit.state).thenReturn(initialLoginState);
 
     await tester.pumpWidget(buildSubject());
 
@@ -99,31 +140,39 @@ void main() {
     );
     await tester.tap(find.byKey(const Key('loginSubmitButton')));
 
-    verify(
-      () => authBloc.add(const AuthEvent.loginEmailChanged('user@example.com')),
-    ).called(1);
-    verify(
-      () => authBloc.add(const AuthEvent.loginPasswordChanged('password123')),
-    ).called(1);
-    verify(() => authBloc.add(const AuthEvent.loginSubmitted())).called(1);
+    verify(() => loginCubit.emailChanged('user@example.com')).called(1);
+    verify(() => loginCubit.passwordChanged('password123')).called(1);
+    verify(() => loginCubit.submit()).called(1);
 
-    controller.add(submittingState);
+    loginController.add(submittingState);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    controller.add(errorState);
+    loginController.add(errorState);
     await tester.pump();
     expect(find.text('Login failed'), findsOneWidget);
+    verify(() => loginCubit.clearNotice()).called(1);
 
-    await controller.close();
+    await loginController.close();
   });
 
   testWidgets('validates invalid email and password before submitting', (
     tester,
   ) async {
-    const state = AuthState(status: AuthStatus.unauthenticated);
-    whenListen(authBloc, const Stream<AuthState>.empty(), initialState: state);
-    when(() => authBloc.state).thenReturn(state);
+    const authState = AuthState(status: AuthStatus.unauthenticated);
+    const loginState = LoginState();
+    whenListen(
+      authBloc,
+      const Stream<AuthState>.empty(),
+      initialState: authState,
+    );
+    when(() => authBloc.state).thenReturn(authState);
+    whenListen(
+      loginCubit,
+      const Stream<LoginState>.empty(),
+      initialState: loginState,
+    );
+    when(() => loginCubit.state).thenReturn(loginState);
 
     await tester.pumpWidget(buildSubject());
 
@@ -140,13 +189,24 @@ void main() {
       find.text('La contraseña debe tener al menos 8 caracteres.'),
       findsOneWidget,
     );
-    verifyNever(() => authBloc.add(const AuthEvent.loginSubmitted()));
+    verifyNever(() => loginCubit.submit());
   });
 
   testWidgets('toggles password visibility icon', (tester) async {
-    const state = AuthState(status: AuthStatus.unauthenticated);
-    whenListen(authBloc, const Stream<AuthState>.empty(), initialState: state);
-    when(() => authBloc.state).thenReturn(state);
+    const authState = AuthState(status: AuthStatus.unauthenticated);
+    const loginState = LoginState();
+    whenListen(
+      authBloc,
+      const Stream<AuthState>.empty(),
+      initialState: authState,
+    );
+    when(() => authBloc.state).thenReturn(authState);
+    whenListen(
+      loginCubit,
+      const Stream<LoginState>.empty(),
+      initialState: loginState,
+    );
+    when(() => loginCubit.state).thenReturn(loginState);
 
     await tester.pumpWidget(buildSubject());
 
@@ -157,28 +217,23 @@ void main() {
     expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
   });
 
-  testWidgets('renders only one consolidated error message', (tester) async {
-    const state = AuthState(
-      status: AuthStatus.unauthenticated,
-      loginErrorMessage: 'Login failed',
-      errorMessage: 'Unexpected error',
-    );
-    whenListen(authBloc, const Stream<AuthState>.empty(), initialState: state);
-    when(() => authBloc.state).thenReturn(state);
-
-    await tester.pumpWidget(buildSubject());
-
-    expect(find.byType(InlineFeedbackText), findsOneWidget);
-    expect(find.text('Login failed'), findsOneWidget);
-    expect(find.text('Unexpected error'), findsNothing);
-  });
-
   testWidgets('register switch row navigates to register preserving from', (
     tester,
   ) async {
-    const state = AuthState(status: AuthStatus.unauthenticated);
-    whenListen(authBloc, const Stream<AuthState>.empty(), initialState: state);
-    when(() => authBloc.state).thenReturn(state);
+    const authState = AuthState(status: AuthStatus.unauthenticated);
+    const loginState = LoginState();
+    whenListen(
+      authBloc,
+      const Stream<AuthState>.empty(),
+      initialState: authState,
+    );
+    when(() => authBloc.state).thenReturn(authState);
+    whenListen(
+      loginCubit,
+      const Stream<LoginState>.empty(),
+      initialState: loginState,
+    );
+    when(() => loginCubit.state).thenReturn(loginState);
 
     await tester.pumpWidget(
       buildRoutedSubject(initialLocation: '/login?from=%2Fpublish'),

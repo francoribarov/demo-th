@@ -18,4 +18,4 @@ build:
 	./scripts/build.sh $(TARGET) $(ARGS)
 
 pre-pr:
-	./scripts/pre_pr_check.sh
+	./scripts/pre_pr.sh

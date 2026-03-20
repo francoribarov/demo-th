@@ -1,21 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_table_hopping/core/auth/session_expired_notifier.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_session.dart';
 import 'package:mobile_table_hopping/domain/model/auth/auth_tokens.dart';
 import 'package:mobile_table_hopping/domain/model/auth/user.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/get_auth_status.dart';
-import 'package:mobile_table_hopping/domain/usecase/auth/login.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/logout.dart';
 import 'package:mobile_table_hopping/domain/usecase/auth/refresh_token.dart';
-import 'package:mobile_table_hopping/domain/usecase/auth/register.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetAuthStatus extends Mock implements GetAuthStatus {}
-
-class MockLogin extends Mock implements Login {}
-
-class MockRegister extends Mock implements Register {}
 
 class MockLogout extends Mock implements Logout {}
 
@@ -23,10 +18,9 @@ class MockRefreshToken extends Mock implements RefreshToken {}
 
 void main() {
   late GetAuthStatus getAuthStatus;
-  late Login login;
-  late Register register;
   late Logout logout;
   late RefreshToken refreshToken;
+  late SessionExpiredNotifier sessionExpiredNotifier;
 
   const session = AuthSession(
     tokens: AuthTokens(
@@ -38,270 +32,166 @@ void main() {
 
   setUp(() {
     getAuthStatus = MockGetAuthStatus();
-    login = MockLogin();
-    register = MockRegister();
     logout = MockLogout();
     refreshToken = MockRefreshToken();
+    sessionExpiredNotifier = SessionExpiredNotifier();
 
     when(() => getAuthStatus()).thenAnswer((_) async => null);
   });
 
   AuthBloc buildBloc() => AuthBloc(
     getAuthStatus: getAuthStatus,
-    login: login,
-    register: register,
     logout: logout,
     refreshToken: refreshToken,
+    sessionExpiredNotifier: sessionExpiredNotifier,
   );
 
   blocTest<AuthBloc, AuthState>(
-    'emits authenticated state on login success',
-    build: () {
-      when(
-        () => login(
-          email: any(named: 'email'),
-          password: any(named: 'password'),
-        ),
-      ).thenAnswer((_) async => session);
-      return buildBloc();
-    },
-    act: (bloc) => bloc
-      ..add(const AuthEvent.loginEmailChanged('user@example.com'))
-      ..add(const AuthEvent.loginPasswordChanged('password123'))
-      ..add(const AuthEvent.loginSubmitted()),
-    skip: 4,
+    'emits unauthenticated when no session found on start',
+    build: buildBloc,
+    skip: 1,
     expect: () => [
-      isA<AuthState>().having(
-        (state) => state.isSubmittingLogin,
-        'isSubmittingLogin',
-        true,
-      ),
       isA<AuthState>()
           .having(
-            (state) => state.isSubmittingLogin,
-            'isSubmittingLogin',
-            false,
-          )
-          .having((state) => state.status, 'status', AuthStatus.authenticated)
-          .having((state) => state.session, 'session', session),
-    ],
-  );
-
-  blocTest<AuthBloc, AuthState>(
-    'emits error on login failure',
-    build: () {
-      when(
-        () => login(
-          email: any(named: 'email'),
-          password: any(named: 'password'),
-        ),
-      ).thenThrow(Exception('Invalid'));
-      return buildBloc();
-    },
-    act: (bloc) => bloc
-      ..add(const AuthEvent.loginEmailChanged('user@example.com'))
-      ..add(const AuthEvent.loginPasswordChanged('password123'))
-      ..add(const AuthEvent.loginSubmitted()),
-    skip: 4,
-    expect: () => [
-      isA<AuthState>().having(
-        (state) => state.isSubmittingLogin,
-        'isSubmittingLogin',
-        true,
-      ),
-      isA<AuthState>()
-          .having(
-            (state) => state.isSubmittingLogin,
-            'isSubmittingLogin',
+            (s) => s.isCheckingStatus,
+            'isCheckingStatus',
             false,
           )
           .having(
-            (state) => state.loginErrorMessage,
-            'loginErrorMessage',
-            contains('Invalid'),
+            (s) => s.status,
+            'status',
+            AuthStatus.unauthenticated,
           ),
     ],
   );
 
   blocTest<AuthBloc, AuthState>(
-    'emits validation error on invalid login email without calling login',
+    'emits authenticated when session found on start',
+    build: () {
+      when(() => getAuthStatus()).thenAnswer((_) async => session);
+      return buildBloc();
+    },
+    skip: 1,
+    expect: () => [
+      isA<AuthState>()
+          .having(
+            (s) => s.status,
+            'status',
+            AuthStatus.authenticated,
+          )
+          .having((s) => s.session, 'session', session),
+    ],
+  );
+
+  blocTest<AuthBloc, AuthState>(
+    'emits authenticated state when sessionObtained is added',
     build: buildBloc,
-    act: (bloc) => bloc
-      ..add(const AuthEvent.loginEmailChanged('correo-invalido'))
-      ..add(const AuthEvent.loginPasswordChanged('password123'))
-      ..add(const AuthEvent.loginSubmitted()),
-    skip: 4,
+    act: (bloc) => bloc.add(const AuthEvent.sessionObtained(session)),
+    skip: 2,
     expect: () => [
-      isA<AuthState>().having(
-        (state) => state.loginErrorMessage,
-        'loginErrorMessage',
-        'Ingresá un email válido.',
-      ),
+      isA<AuthState>()
+          .having(
+            (s) => s.status,
+            'status',
+            AuthStatus.authenticated,
+          )
+          .having((s) => s.session, 'session', session),
     ],
-    verify: (_) {
-      verifyNever(
-        () => login(
-          email: 'correo-invalido',
-          password: 'password123',
-        ),
-      );
-    },
   );
 
   blocTest<AuthBloc, AuthState>(
-    'emits authenticated state on register success',
+    'emits unauthenticated state on logout',
     build: () {
-      when(
-        () => register(
-          email: any(named: 'email'),
-          password: any(named: 'password'),
-          username: any(named: 'username'),
-          location: any(named: 'location'),
-        ),
-      ).thenAnswer((_) async => session);
+      when(() => logout()).thenAnswer((_) async {});
       return buildBloc();
     },
     act: (bloc) => bloc
-      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
-      ..add(const AuthEvent.registerPasswordChanged('password123'))
-      ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
-      ..add(const AuthEvent.registerUsernameChanged('User One'))
-      ..add(const AuthEvent.registerLocationChanged('Montevideo'))
-      ..add(const AuthEvent.registerSubmitted()),
-    skip: 7,
+      ..add(const AuthEvent.sessionObtained(session))
+      ..add(const AuthEvent.logoutRequested()),
+    skip: 2,
     expect: () => [
+      // sessionObtained -> authenticated
       isA<AuthState>().having(
-        (state) => state.isSubmittingRegister,
-        'isSubmittingRegister',
-        true,
+        (s) => s.status,
+        'status',
+        AuthStatus.authenticated,
       ),
-      isA<AuthState>()
-          .having(
-            (state) => state.isSubmittingRegister,
-            'isSubmittingRegister',
-            false,
-          )
-          .having((state) => state.status, 'status', AuthStatus.authenticated)
-          .having((state) => state.session, 'session', session)
-          .having((state) => state.registerPassword, 'registerPassword', ''),
+      // logoutRequested -> unauthenticated (clearErrors is deduplicated when
+      // feedbackNotice is already null)
+      isA<AuthState>().having(
+        (s) => s.status,
+        'status',
+        AuthStatus.unauthenticated,
+      ),
     ],
   );
 
-  blocTest<AuthBloc, AuthState>(
-    'registers with null location when location input is blank',
-    build: () {
-      when(
-        () => register(
-          email: any(named: 'email'),
-          password: any(named: 'password'),
-          username: any(named: 'username'),
-          location: any(named: 'location'),
-        ),
-      ).thenAnswer((_) async => session);
-      return buildBloc();
-    },
-    act: (bloc) => bloc
-      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
-      ..add(const AuthEvent.registerPasswordChanged('password123'))
-      ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
-      ..add(const AuthEvent.registerUsernameChanged('User One'))
-      ..add(const AuthEvent.registerLocationChanged('   '))
-      ..add(const AuthEvent.registerSubmitted()),
-    skip: 7,
-    expect: () => [
-      isA<AuthState>().having(
-        (state) => state.isSubmittingRegister,
-        'isSubmittingRegister',
-        true,
-      ),
-      isA<AuthState>()
-          .having(
-            (state) => state.isSubmittingRegister,
-            'isSubmittingRegister',
-            false,
-          )
-          .having((state) => state.status, 'status', AuthStatus.authenticated)
-          .having((state) => state.session, 'session', session),
-    ],
-    verify: (_) {
-      final capturedLocation = verify(
-        () => register(
-          email: 'user@example.com',
-          password: 'password123',
-          username: 'User One',
-          location: captureAny(named: 'location'),
-        ),
-      ).captured.single;
-      expect(capturedLocation, isNull);
-    },
-  );
+  // Session expiry
+  group('sessionExpired event', () {
+    blocTest<AuthBloc, AuthState>(
+      'emits unauthenticated and clears session when authenticated',
+      build: () {
+        when(() => getAuthStatus()).thenAnswer((_) async => session);
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(const AuthEvent.sessionExpired()),
+      skip: 2, // skip isCheckingStatus + authenticated from _onStarted
+      expect: () => [
+        isA<AuthState>()
+            .having((s) => s.status, 'status', AuthStatus.unauthenticated)
+            .having((s) => s.session, 'session', isNull),
+      ],
+    );
 
-  blocTest<AuthBloc, AuthState>(
-    'emits validation error when register passwords do not match',
-    build: buildBloc,
-    act: (bloc) => bloc
-      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
-      ..add(const AuthEvent.registerPasswordChanged('password123'))
-      ..add(const AuthEvent.registerPasswordConfirmChanged('different123'))
-      ..add(const AuthEvent.registerUsernameChanged('User One'))
-      ..add(const AuthEvent.registerSubmitted()),
-    skip: 6,
-    expect: () => [
-      isA<AuthState>().having(
-        (state) => state.registerErrorMessage,
-        'registerErrorMessage',
-        'Las contraseñas no coinciden.',
-      ),
-    ],
-    verify: (_) {
-      verifyNever(
-        () => register(
-          email: 'user@example.com',
-          password: 'password123',
-          username: 'User One',
-        ),
-      );
-    },
-  );
+    blocTest<AuthBloc, AuthState>(
+      'is a no-op when already unauthenticated',
+      build: buildBloc,
+      // _onStarted resolves to unauthenticated (getAuthStatus returns null)
+      act: (bloc) => bloc.add(const AuthEvent.sessionExpired()),
+      skip: 2, // skip isCheckingStatus + unauthenticated from _onStarted
+      expect: () => <AuthState>[], // no additional state change
+    );
 
-  blocTest<AuthBloc, AuthState>(
-    'emits error on register failure',
-    build: () {
-      when(
-        () => register(
-          email: any(named: 'email'),
-          password: any(named: 'password'),
-          username: any(named: 'username'),
-          location: any(named: 'location'),
+    blocTest<AuthBloc, AuthState>(
+      'notifySessionExpired triggers unauthenticated via stream listener',
+      build: () {
+        when(() => getAuthStatus()).thenAnswer((_) async => session);
+        return buildBloc();
+      },
+      act: (bloc) async {
+        // Wait for _onStarted to settle before firing expiry
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        sessionExpiredNotifier.notifySessionExpired();
+      },
+      skip: 2,
+      expect: () => [
+        isA<AuthState>()
+            .having((s) => s.status, 'status', AuthStatus.unauthenticated)
+            .having((s) => s.session, 'session', isNull),
+      ],
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'multiple notifySessionExpired calls only emit once',
+      build: () {
+        when(() => getAuthStatus()).thenAnswer((_) async => session);
+        return buildBloc();
+      },
+      act: (bloc) async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        sessionExpiredNotifier
+          ..notifySessionExpired()
+          ..notifySessionExpired()
+          ..notifySessionExpired();
+      },
+      skip: 2,
+      expect: () => [
+        isA<AuthState>().having(
+          (s) => s.status,
+          'status',
+          AuthStatus.unauthenticated,
         ),
-      ).thenThrow(Exception('Register failed'));
-      return buildBloc();
-    },
-    act: (bloc) => bloc
-      ..add(const AuthEvent.registerEmailChanged('user@example.com'))
-      ..add(const AuthEvent.registerPasswordChanged('password123'))
-      ..add(const AuthEvent.registerPasswordConfirmChanged('password123'))
-      ..add(const AuthEvent.registerUsernameChanged('User One'))
-      ..add(const AuthEvent.registerLocationChanged('Montevideo'))
-      ..add(const AuthEvent.registerSubmitted()),
-    skip: 7,
-    expect: () => [
-      isA<AuthState>().having(
-        (state) => state.isSubmittingRegister,
-        'isSubmittingRegister',
-        true,
-      ),
-      isA<AuthState>()
-          .having(
-            (state) => state.isSubmittingRegister,
-            'isSubmittingRegister',
-            false,
-          )
-          .having(
-            (state) => state.registerErrorMessage,
-            'registerErrorMessage',
-            contains('Register failed'),
-          ),
-    ],
-  );
+      ],
+    );
+  });
 }

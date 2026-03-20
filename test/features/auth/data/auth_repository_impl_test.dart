@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/errors/data/data_exception.dart';
 import 'package:mobile_table_hopping/core/resources/api_result.dart';
+import 'package:mobile_table_hopping/core/security/password_encryptor.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_local_data_source.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
@@ -15,9 +16,12 @@ class MockAuthRemoteDatasource extends Mock implements AuthRemoteDatasource {}
 
 class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
 
+class MockPasswordEncryptor extends Mock implements PasswordEncryptor {}
+
 void main() {
   late AuthRemoteDatasource remote;
   late AuthLocalDataSource local;
+  late PasswordEncryptor passwordEncryptor;
   late SharedPreferences prefs;
   late TokenStorage tokenStorage;
   late AuthRepositoryImpl repository;
@@ -58,7 +62,16 @@ void main() {
     tokenStorage = TokenStorage(prefs);
     remote = MockAuthRemoteDatasource();
     local = MockAuthLocalDataSource();
-    repository = AuthRepositoryImpl(remote, tokenStorage, local);
+    passwordEncryptor = MockPasswordEncryptor();
+    when(() => passwordEncryptor.encrypt(any())).thenAnswer(
+      (i) async => i.positionalArguments[0] as String,
+    );
+    repository = AuthRepositoryImpl(
+      remote,
+      tokenStorage,
+      local,
+      passwordEncryptor,
+    );
 
     // Setup default mock behaviors
     when(() => local.saveUser(any())).thenAnswer((_) async {});

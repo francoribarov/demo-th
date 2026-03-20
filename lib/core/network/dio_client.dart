@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:mobile_table_hopping/core/auth/session_expired_notifier.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/auth_interceptor.dart';
 import 'package:mobile_table_hopping/core/network/interceptors/logging_interceptor.dart';
@@ -13,7 +14,7 @@ import 'package:mobile_table_hopping/core/network/interceptors/refresh_intercept
 @lazySingleton
 class DioClient {
   /// Creates a configured Dio client with interceptors.
-  DioClient(this._tokenStorage) : _dio = Dio() {
+  DioClient(this._tokenStorage, this._sessionExpiredNotifier) : _dio = Dio() {
     final baseOptions = BaseOptions(
       baseUrl: _resolveBaseUrl(),
       connectTimeout: const Duration(seconds: 30),
@@ -30,13 +31,19 @@ class DioClient {
     // Add interceptors
     _dio.interceptors.addAll([
       AuthInterceptor(_tokenStorage),
-      RefreshInterceptor(_tokenStorage, _dio, refreshDio),
+      RefreshInterceptor(
+        _tokenStorage,
+        _dio,
+        refreshDio,
+        onSessionExpired: _sessionExpiredNotifier.notifySessionExpired,
+      ),
       createLoggingInterceptor(),
     ]);
   }
 
   final Dio _dio;
   final TokenStorage _tokenStorage;
+  final SessionExpiredNotifier _sessionExpiredNotifier;
 
   /// Exposes the configured Dio instance.
   Dio get dio => _dio;

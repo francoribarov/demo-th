@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobile_table_hopping/core/auth/token_storage.dart';
 import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
+import 'package:mobile_table_hopping/core/security/password_encryptor.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_local_data_source.dart';
 import 'package:mobile_table_hopping/data/datasource/auth/auth_remote_datasource.dart';
 import 'package:mobile_table_hopping/data/dto/auth/auth_models.dart';
@@ -15,19 +16,28 @@ import 'package:mobile_table_hopping/domain/repository/auth/auth_repository.dart
 /// Default implementation of [AuthRepository].
 class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   /// Creates an [AuthRepositoryImpl].
-  AuthRepositoryImpl(this._remote, this._tokenStorage, this._local);
+  AuthRepositoryImpl(
+    this._remote,
+    this._tokenStorage,
+    this._local,
+    this._passwordEncryptor,
+  );
 
   final AuthRemoteDatasource _remote;
   final TokenStorage _tokenStorage;
   final AuthLocalDataSource _local;
+  final PasswordEncryptor _passwordEncryptor;
 
   @override
   Future<AuthSession> login({
     required String email,
     required String password,
   }) async {
+    final encryptedPassword = await _passwordEncryptor.encrypt(password);
     final response = await unwrapOrThrow<AuthResponse>(
-      () => _remote.login(LoginRequest(email: email, password: password)),
+      () => _remote.login(
+        LoginRequest(email: email, password: encryptedPassword),
+      ),
     );
     await _persistSession(response);
     return response.toDomainModel();
@@ -40,11 +50,12 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     required String username,
     String? location,
   }) async {
+    final encryptedPassword = await _passwordEncryptor.encrypt(password);
     final response = await unwrapOrThrow<AuthResponse>(
       () => _remote.register(
         RegisterRequest(
           email: email,
-          password: password,
+          password: encryptedPassword,
           username: username,
           location: location,
         ),
@@ -58,7 +69,9 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   Future<AuthTokens> refresh() async {
     final refreshToken = _tokenStorage.getRefreshToken();
     if (refreshToken == null) {
-      throw Exception('No refresh token available');
+      throw const DomainException(
+        message: 'Tu sesión ha expirado. Iniciá sesión nuevamente.',
+      );
     }
 
     final response = await unwrapOrThrow<TokenResponse>(

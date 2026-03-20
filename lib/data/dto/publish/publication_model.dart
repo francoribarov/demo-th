@@ -91,7 +91,7 @@ sealed class PublicationCreateRequestModel
     /// Description of the publication
     required String description,
 
-    /// Condition: "new", "like_new", "good", "fair", "worn"
+    /// Condition: "like_new", "good", "fair"
     required PublicationCondition condition,
 
     /// Price in UYU

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
-import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/steps/data_step.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
@@ -44,22 +44,18 @@ void main() {
     expect(descriptionField.maxLength, 500);
   });
 
-  testWidgets('opens condition options bottom sheet on tap', (tester) async {
+  testWidgets('displays condition options inline and tap selects', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildSubject());
-
-    final conditionSelector = find.byKey(
-      const ValueKey('publish_condition_1_'),
-    );
-
-    expect(conditionSelector, findsOneWidget);
-
-    await tester.tap(conditionSelector);
-    await tester.pumpAndSettle();
 
     expect(find.text('Estado del juego'), findsOneWidget);
     for (final condition in PublicationCondition.values) {
       expect(find.text(condition.label), findsOneWidget);
       expect(find.text(condition.description), findsOneWidget);
     }
+
+    await tester.tap(find.text(PublicationCondition.likeNew.label));
+    await tester.pumpAndSettle();
   });
 }

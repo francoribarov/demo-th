@@ -19,6 +19,8 @@ class EditDataStep extends StatelessWidget {
     required this.onDescriptionChanged,
     required this.onConditionChanged,
     this.selectedGame,
+    this.descriptionError,
+    this.conditionError,
     super.key,
   });
 
@@ -39,6 +41,12 @@ class EditDataStep extends StatelessWidget {
 
   /// Callback when condition changes.
   final ValueChanged<PublicationCondition> onConditionChanged;
+
+  /// Validation error for description from bloc.
+  final String? descriptionError;
+
+  /// Validation error for condition from bloc.
+  final String? conditionError;
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +156,10 @@ class EditDataStep extends StatelessWidget {
           maxLength: 500,
           hintText: 'Describe el estado y cualquier detalle importante...',
           variant: TextInputVisualVariant.subtle,
+          validator: (_) => descriptionError,
+          autovalidateMode: descriptionError != null
+              ? AutovalidateMode.always
+              : AutovalidateMode.onUserInteraction,
           onChanged: onDescriptionChanged,
         ),
         const SizedBox(height: 24),
@@ -160,9 +172,20 @@ class EditDataStep extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
+        if (conditionError != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+            child: Text(
+              conditionError!,
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.destructive,
+              ),
+            ),
+          ),
+        ],
         ...conditions.map(
           (c) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
             child: _ConditionOption(
               condition: c,
               isSelected: condition == c,

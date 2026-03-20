@@ -64,6 +64,7 @@ InputDecoration buildTextInputDecoration({
     focusedBorder: border(AppColors.gameRust, width: 2),
     errorBorder: border(AppColors.destructive),
     focusedErrorBorder: border(AppColors.destructive, width: 2),
+    errorMaxLines: 3,
   );
 }
 

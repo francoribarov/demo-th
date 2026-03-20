@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/core/utils/formatters.dart';
+import 'package:mobile_table_hopping/domain/validators/optional_date_range_validator.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/date_picker_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/search_input_field.dart';
@@ -132,39 +134,12 @@ class _SearchSheetCubit extends Cubit<_SearchSheetFormState> {
   }
 
   bool validateDates() {
-    final start = state.startDate;
-    final end = state.endDate;
-
-    final hasStart = start != null && start.isNotEmpty;
-    final hasEnd = end != null && end.isNotEmpty;
-
-    if ((hasStart && !hasEnd) || (!hasStart && hasEnd)) {
-      emit(
-        state.copyWith(
-          dateError: 'Ingresá una fecha de inicio y de fin para continuar.',
-        ),
-      );
-      return false;
-    }
-
-    if (hasStart && hasEnd) {
-      final parsedStart = DateTime.tryParse(start);
-      final parsedEnd = DateTime.tryParse(end);
-      if (parsedStart != null &&
-          parsedEnd != null &&
-          !parsedEnd.isAfter(parsedStart)) {
-        emit(
-          state.copyWith(
-            dateError:
-                'La fecha de fin tiene que ser posterior a la de inicio.',
-          ),
-        );
-        return false;
-      }
-    }
-
-    emit(state.copyWith(dateError: null));
-    return true;
+    final error = OptionalDateRangeValidator.validate(
+      startDate: state.startDate,
+      endDate: state.endDate,
+    );
+    emit(state.copyWith(dateError: error));
+    return error == null;
   }
 }
 
@@ -415,15 +390,18 @@ class _SearchSheetState extends State<SearchSheet> {
                             ),
                           ),
                         ),
-                        TextButton(
+                        AppSecondaryButton(
                           onPressed: () =>
                               context.read<_SearchSheetCubit>().clearDates(),
-                          child: Text(
-                            'Reiniciá las fechas',
-                            style: AppTypography.labelSmall.copyWith(
-                              color: AppColors.gameRust,
-                              decoration: TextDecoration.underline,
-                              decorationStyle: TextDecorationStyle.dotted,
+                          label: 'Reiniciá las fechas',
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.gameRust,
+                            side: BorderSide(
+                              color: AppColors.gameRust.withOpacityValue(0.3),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppTheme.spacingMd,
+                              vertical: AppTheme.spacingSm,
                             ),
                           ),
                         ),
@@ -468,14 +446,14 @@ class _SearchSheetState extends State<SearchSheet> {
               top: false,
               child: Row(
                 children: [
-                  TextButton(
+                  AppSecondaryButton(
                     onPressed: _handleClear,
-                    child: Text(
-                      'Borrá todo',
-                      style: AppTypography.labelLarge.copyWith(
-                        color: AppColors.gameBrown,
-                        decoration: TextDecoration.underline,
-                        decorationStyle: TextDecorationStyle.dotted,
+                    label: 'Borrá todo',
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.gameBrown,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.spacingLg,
+                        vertical: AppTheme.spacingMd,
                       ),
                     ),
                   ),

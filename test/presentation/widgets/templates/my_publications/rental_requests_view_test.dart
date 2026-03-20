@@ -23,6 +23,24 @@ void main() {
     status: RentalRequestStatus.pending,
   );
 
+  final overlappingRequest = RentalRequest(
+    id: 'req-2',
+    game: const RentalRequestGameSummary(
+      id: 'game-1',
+      title: 'Chess',
+      price: 100,
+    ),
+    requester: const RentalRequestUserSummary(
+      id: 'user-2',
+      email: 'bob@test.com',
+      username: 'Bob',
+    ),
+    startDate: DateTime(2026, 1, 11),
+    endDate: DateTime(2026, 1, 14),
+    totalPrice: 400,
+    status: RentalRequestStatus.pending,
+  );
+
   testWidgets('shows loading state', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -41,29 +59,106 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('confirms and forwards accept callback', (tester) async {
-    String? acceptedId;
+  testWidgets(
+    'confirms and forwards accept callback via bottom sheet',
+    (tester) async {
+      String? acceptedId;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RentalRequestsView(
+              isLoading: false,
+              requests: [request],
+              processingRequestId: null,
+              onAcceptRequest: (id) => acceptedId = id,
+              onRejectRequest: (_) {},
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Aceptar').first);
+      await tester.pumpAndSettle();
+
+      // Sheet CTA is also "Aceptar" — find the
+      // one inside the bottom sheet (last match).
+      expect(find.text('Aceptar'), findsWidgets);
+
+      await tester.tap(find.text('Aceptar').last);
+      await tester.pumpAndSettle();
+
+      expect(acceptedId, 'req-1');
+    },
+  );
+
+  testWidgets(
+    'shows overlap warning in confirmation sheet',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RentalRequestsView(
+              isLoading: false,
+              requests: [request, overlappingRequest],
+              processingRequestId: null,
+              onAcceptRequest: (_) {},
+              onRejectRequest: (_) {},
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        find.text('1 solicitud superpuesta'),
+        findsNWidgets(2),
+      );
+
+      await tester.tap(find.text('Aceptar').first);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.textContaining('será rechazada'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('shows no overlap badge for non-overlapping requests', (
+    tester,
+  ) async {
+    final nonOverlapping = RentalRequest(
+      id: 'req-3',
+      game: const RentalRequestGameSummary(
+        id: 'game-2',
+        title: 'Monopoly',
+        price: 80,
+      ),
+      requester: const RentalRequestUserSummary(
+        id: 'user-3',
+        email: 'carol@test.com',
+        username: 'Carol',
+      ),
+      startDate: DateTime(2026, 2),
+      endDate: DateTime(2026, 2, 5),
+      totalPrice: 320,
+      status: RentalRequestStatus.pending,
+    );
 
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: RentalRequestsView(
             isLoading: false,
-            requests: [request],
+            requests: [request, nonOverlapping],
             processingRequestId: null,
-            onAcceptRequest: (id) => acceptedId = id,
+            onAcceptRequest: (_) {},
             onRejectRequest: (_) {},
           ),
         ),
       ),
     );
 
-    await tester.tap(find.text('Aceptar').first);
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Aceptar').last);
-    await tester.pumpAndSettle();
-
-    expect(acceptedId, 'req-1');
+    expect(find.textContaining('superpuesta'), findsNothing);
   });
 }

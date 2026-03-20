@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile_table_hopping/core/theme/app_colors.dart';
+import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 
 /// Shared confirm/cancel action dialog.
 class ConfirmActionDialog {
@@ -21,18 +22,19 @@ class ConfirmActionDialog {
         title: Text(title),
         content: Text(message),
         actions: [
-          TextButton(
+          AppSecondaryButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(cancelLabel),
+            label: cancelLabel,
           ),
-          TextButton(
+          AppPrimaryButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
+            label: confirmLabel,
             style: isDestructive
-                ? TextButton.styleFrom(
-                    foregroundColor: AppColors.destructive,
+                ? ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.destructive,
+                    foregroundColor: AppColors.destructiveForeground,
                   )
                 : null,
-            child: Text(confirmLabel),
           ),
         ],
       ),

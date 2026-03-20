@@ -3,8 +3,8 @@ import 'package:mobile_table_hopping/core/theme/app_colors.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
 import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
-import 'package:mobile_table_hopping/domain/model/publish/publication.dart';
-import 'package:mobile_table_hopping/domain/validators/publish/publication_validator.dart';
+import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
+import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 import 'package:mobile_table_hopping/presentation/widgets/organisms/publish/game_selector.dart';
 
@@ -25,6 +25,8 @@ class DataStep extends StatelessWidget {
     required this.onGameSearchCleared,
     required this.onDescriptionChanged,
     required this.onConditionChanged,
+    this.descriptionError,
+    this.conditionError,
     super.key,
   });
 
@@ -56,6 +58,12 @@ class DataStep extends StatelessWidget {
 
   /// Callback when condition changes.
   final void Function(PublicationCondition) onConditionChanged;
+
+  /// Validation error for description from bloc.
+  final String? descriptionError;
+
+  /// Validation error for condition from bloc.
+  final String? conditionError;
 
   @override
   Widget build(BuildContext context) {
@@ -96,132 +104,60 @@ class DataStep extends StatelessWidget {
           hintText: 'Contanos qué hace especial a este juego...',
           onChanged: onDescriptionChanged,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) {
-            final result = PublicationValidator.validateDescription(
-              value ?? '',
-            );
-            return result.isValid ? null : result.message;
-          },
+          validator: (_) => descriptionError,
         ),
         const SizedBox(height: AppTheme.spacing2xl),
 
-        // Condition Selector
-        InkWell(
-          key: ValueKey('publish_condition_${formVersion}_$gameId'),
-          onTap: () async {
-            FocusScope.of(context).unfocus();
-
-            final selected = await showModalBottomSheet<PublicationCondition>(
-              context: context,
-              backgroundColor: AppColors.card,
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(AppTheme.radius2xl),
-                ),
-              ),
-              builder: (context) {
-                return SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppTheme.spacingLg,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.spacingLg,
-                          ),
-                          child: Text(
-                            'Estado del juego',
-                            style: AppTypography.titleSmall.copyWith(
-                              color: AppColors.gameBrown,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: AppTheme.spacingMd),
-                        ...conditions.map((c) {
-                          final isSelected = condition == c;
-                          return InkWell(
-                            onTap: () => Navigator.pop(context, c),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppTheme.spacingLg,
-                                vertical: AppTheme.spacingMd,
-                              ),
-                              color: isSelected
-                                  ? AppColors.isSelected
-                                  : Colors.transparent,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          c.label,
-                                          style: isSelected
-                                              ? AppTypography.labelLarge
-                                              : AppTypography.bodyLarge,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          c.description,
-                                          style: AppTypography.bodySmall
-                                              .copyWith(
-                                                color: AppColors.textTertiary,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (isSelected)
-                                    const Icon(
-                                      Icons.check_circle,
-                                      color: AppColors.gameRust,
-                                    ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
+        // Condition
+        Text('Estado del juego', style: AppTypography.titleMedium),
+        const SizedBox(height: AppTheme.spacingMd),
+        FormField<PublicationCondition>(
+          initialValue: condition,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (_) => conditionError,
+          builder: (field) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...conditions.map(
+                  (c) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+                    child: SelectableInputCard(
+                      onTap: () {
+                        field.didChange(c);
+                        onConditionChanged(c);
+                      },
+                      isSelected: field.value == c,
+                      indicatorMode: SelectableInputIndicatorMode.radio,
+                      indicatorPosition:
+                          SelectableInputIndicatorPosition.leading,
+                      title: c.label,
+                      subtitle: c.description,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                      selectedBackgroundColor: AppColors.gameRust
+                          .withOpacityValue(0.1),
+                      unselectedBorderColor: AppColors.border,
+                      selectedTextColor: AppColors.gameRust,
+                      unselectedTextColor: AppColors.foreground,
                     ),
                   ),
-                );
-              },
+                ),
+                if (field.hasError)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: AppTheme.spacingXs,
+                      left: AppTheme.spacingMd,
+                    ),
+                    child: Text(
+                      field.errorText!,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.destructive,
+                      ),
+                    ),
+                  ),
+              ],
             );
-
-            if (selected != null) {
-              onConditionChanged(selected);
-            }
           },
-          borderRadius: BorderRadius.circular(AppTheme.radius2xl),
-          child: InputDecorator(
-            decoration:
-                buildTextInputDecoration(
-                  variant: TextInputVisualVariant.surface,
-                  hintText: 'Selecciona el estado...',
-                ).copyWith(
-                  suffixIcon: const Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-            isEmpty: condition == null,
-            child: condition == null
-                ? const SizedBox.shrink()
-                : Text(
-                    condition!.label,
-                    style: AppTypography.bodyLarge.copyWith(
-                      color: AppColors.gameBrown,
-                    ),
-                  ),
-          ),
         ),
       ],
     );

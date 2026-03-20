@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:intl/intl.dart';
 
 /// Currency and number formatting utilities.
@@ -34,8 +36,14 @@ class DateFormatter {
     try {
       final fromDate = DateTime.parse(from);
       final toDate = DateTime.parse(to);
-      return '${_shortDateFormat.format(fromDate)} al ${_shortDateFormat.format(toDate)}';
-    } on Exception catch (_) {
+      return '${_shortDateFormat.format(fromDate)} al '
+          '${_shortDateFormat.format(toDate)}';
+    } on Exception catch (e, st) {
+      dev.log(
+        'DateFormatter.formatRange: invalid input "$from" – "$to"',
+        error: e,
+        stackTrace: st,
+      );
       return '$from - $to';
     }
   }
@@ -60,7 +68,12 @@ class DateFormatter {
     if (dateStr == null || dateStr.isEmpty) return null;
     try {
       return DateTime.parse(dateStr);
-    } on Exception catch (_) {
+    } on Exception catch (e, st) {
+      dev.log(
+        'DateFormatter.parseIso: invalid input "$dateStr"',
+        error: e,
+        stackTrace: st,
+      );
       return null;
     }
   }
@@ -70,18 +83,60 @@ class DateFormatter {
 class TextNormalizer {
   TextNormalizer._();
 
+  static const _accentMap = {
+    'á': 'a',
+    'à': 'a',
+    'â': 'a',
+    'ä': 'a',
+    'é': 'e',
+    'è': 'e',
+    'ê': 'e',
+    'ë': 'e',
+    'í': 'i',
+    'ì': 'i',
+    'î': 'i',
+    'ï': 'i',
+    'ó': 'o',
+    'ò': 'o',
+    'ô': 'o',
+    'ö': 'o',
+    'ú': 'u',
+    'ù': 'u',
+    'û': 'u',
+    'ü': 'u',
+    'ñ': 'n',
+  };
+
   /// Normalizes text for search comparison.
   /// Removes accents and converts to lowercase.
   static String normalize(String value) {
-    return value
-        .toLowerCase()
-        .replaceAll(RegExp('[áàâä]'), 'a')
-        .replaceAll(RegExp('[éèêë]'), 'e')
-        .replaceAll(RegExp('[íìîï]'), 'i')
-        .replaceAll(RegExp('[óòôö]'), 'o')
-        .replaceAll(RegExp('[úùûü]'), 'u')
-        .replaceAll(RegExp('[ñ]'), 'n');
+    var result = value.toLowerCase();
+    for (final e in _accentMap.entries) {
+      result = result.replaceAll(e.key, e.value);
+    }
+    return result;
   }
+}
+
+List<int> _extractIntegers(String s) {
+  final numbers = <int>[];
+  var i = 0;
+  while (i < s.length) {
+    if (s[i].compareTo('0') >= 0 && s[i].compareTo('9') <= 0) {
+      var j = i;
+      while (j < s.length &&
+          s[j].compareTo('0') >= 0 &&
+          s[j].compareTo('9') <= 0) {
+        j++;
+      }
+      final n = int.tryParse(s.substring(i, j));
+      if (n != null) numbers.add(n);
+      i = j;
+    } else {
+      i++;
+    }
+  }
+  return numbers;
 }
 
 /// Duration parsing utilities.
@@ -90,15 +145,10 @@ class DurationParser {
 
   /// Parses duration string (e.g., "60-90 min") to average minutes.
   static int? parseMinutes(String duration) {
-    final matches = RegExp(r'\d+').allMatches(duration);
-    final numbers = matches
-        .map((m) => int.tryParse(m.group(0) ?? ''))
-        .whereType<int>()
-        .toList();
+    final numbers = _extractIntegers(duration);
 
     if (numbers.isEmpty) return null;
     if (numbers.length == 1) return numbers.first;
-
     // Return average for ranges
     return (numbers.reduce((a, b) => a + b) / numbers.length).round();
   }
@@ -110,11 +160,7 @@ class PlayersParser {
 
   /// Parses players string (e.g., "2-4 jugadores") to min/max range.
   static ({int? min, int? max}) parseRange(String players) {
-    final matches = RegExp(r'\d+').allMatches(players);
-    final numbers = matches
-        .map((m) => int.tryParse(m.group(0) ?? ''))
-        .whereType<int>()
-        .toList();
+    final numbers = _extractIntegers(players);
 
     if (numbers.isEmpty) return (min: null, max: null);
     if (numbers.length == 1) return (min: numbers.first, max: numbers.first);

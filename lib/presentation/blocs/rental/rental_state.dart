@@ -20,12 +20,23 @@ abstract class RentalState with _$RentalState {
     @Default([]) List<String> selectedFoodBundles,
     @Default(false) bool isSubmitting,
     FeedbackNotice? feedbackNotice,
-    @Default(1) int rentalDays,
-    @Default(0.0) double subtotal,
-    @Default(0) int serviceFee,
-    @Default(0) int deliveryFee,
-    @Default(0) int foodTotal,
-    @Default(0.0) double total,
   }) = _RentalState;
+
   const RentalState._();
+
+  /// Computed pricing totals derived from current state.
+  RentalPricingTotals get pricing => RentalPricingCalculator.calculate(
+    pricePerDay: publication?.price ?? 0,
+    startDate: startDate,
+    endDate: endDate,
+    isDelivery: isDelivery,
+    foodBundlesCount: selectedFoodBundles.length,
+  );
+
+  int get rentalDays => pricing.rentalDays;
+  double get subtotal => pricing.subtotal;
+  int get serviceFee => pricing.serviceFee;
+  int get deliveryFee => pricing.deliveryFee;
+  int get foodTotal => pricing.foodTotal;
+  double get total => pricing.total;
 }

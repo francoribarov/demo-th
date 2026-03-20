@@ -34,10 +34,4 @@ abstract class PublishEvent with _$PublishEvent {
   /// Updates the condition input.
   const factory PublishEvent.conditionChanged(PublicationCondition value) =
       _ConditionChanged;
-
-  /// Loads the list of available games.
-  const factory PublishEvent.loadGames() = _LoadGames;
-
-  /// Filters the list of games by query.
-  const factory PublishEvent.searchGames(String query) = _SearchGames;
 }

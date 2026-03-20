@@ -90,7 +90,7 @@ sealed class PublicationListingModel
     @JsonKey(name: 'game_id') @IntToStringConverter() required String gameId,
     required String title,
 
-    /// Condition: "new", "like_new", "good", "fair", "worn"
+    /// Condition: "like_new", "good", "fair"
     @JsonEnum() required PublicationCondition condition,
 
     /// Price in UYU.

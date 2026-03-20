@@ -4,13 +4,16 @@ import 'package:go_router/go_router.dart';
 
 import 'package:mobile_table_hopping/core/routing/navigation.dart';
 import 'package:mobile_table_hopping/core/theme/app_theme.dart';
+import 'package:mobile_table_hopping/domain/validators/auth/auth_validator.dart';
 import 'package:mobile_table_hopping/presentation/blocs/auth/auth_bloc.dart';
-import 'package:mobile_table_hopping/presentation/blocs/auth/auth_validators.dart';
+import 'package:mobile_table_hopping/presentation/blocs/auth/register/register_cubit.dart';
+import 'package:mobile_table_hopping/presentation/validators/auth_validation_error_mapper.dart';
 import 'package:mobile_table_hopping/presentation/widgets/atoms/atoms.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_header.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/auth/auth_switch_row.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/page_app_bar.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
+import 'package:mobile_table_hopping/presentation/widgets/templates/common/feedback_messenger.dart';
 
 /// Registration screen for new users.
 class RegisterPage extends StatefulWidget {
@@ -59,18 +62,12 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _submitRegister({required bool isSubmitting}) {
-    if (isSubmitting) {
-      return;
-    }
-
+  Future<void> _submitRegister({required bool isSubmitting}) async {
+    if (isSubmitting) return;
     final isValid = _formKey.currentState?.validate() ?? false;
-    if (!isValid) {
-      return;
-    }
-
+    if (!isValid) return;
     FocusScope.of(context).unfocus();
-    context.read<AuthBloc>().add(const AuthEvent.registerSubmitted());
+    await context.read<RegisterCubit>().submit();
   }
 
   @override
@@ -101,11 +98,22 @@ class _RegisterPageState extends State<RegisterPage> {
                   ? constraints.maxWidth * 0.18
                   : 24.0;
 
-              return BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  final isSubmitting = state.isSubmittingRegister;
-                  final errorMessage =
-                      state.registerErrorMessage ?? state.errorMessage;
+              return BlocConsumer<RegisterCubit, RegisterState>(
+                listenWhen: (previous, current) =>
+                    current.feedbackNotice != null &&
+                    previous.feedbackNotice != current.feedbackNotice,
+                listener: (context, state) {
+                  final notice = state.feedbackNotice;
+                  if (notice == null) return;
+                  FeedbackMessenger.showError(
+                    context,
+                    message: notice.message,
+                  );
+                  context.read<RegisterCubit>().clearNotice();
+                },
+                builder: (context, registerState) {
+                  final isSubmitting = registerState.isSubmitting;
+                  final errorMessage = registerState.errorMessage;
                   final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
                   return SingleChildScrollView(
@@ -154,11 +162,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ],
                                   labelText: 'Nombre',
                                   validator: (value) =>
-                                      validateUsernameRequired(value ?? ''),
-                                  onChanged: (name) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerUsernameChanged(name),
+                                      AuthValidationErrorMapper.mapUsernameError(
+                                        AuthValidator.validateUsernameRequired(
+                                          value ?? '',
+                                        ),
                                       ),
+                                  onChanged: (name) => context
+                                      .read<RegisterCubit>()
+                                      .usernameChanged(name),
                                   onFieldSubmitted: (_) {
                                     _emailFocusNode.requestFocus();
                                   },
@@ -179,11 +190,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                   labelText: 'Email',
                                   hintText: 'tu@email.com',
                                   validator: (value) =>
-                                      validateEmail(value ?? ''),
-                                  onChanged: (email) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerEmailChanged(email),
+                                      AuthValidationErrorMapper.mapEmailError(
+                                        AuthValidator.validateEmail(
+                                          value ?? '',
+                                        ),
                                       ),
+                                  onChanged: (email) => context
+                                      .read<RegisterCubit>()
+                                      .emailChanged(email),
                                   onFieldSubmitted: (_) {
                                     _passwordFocusNode.requestFocus();
                                   },
@@ -225,13 +239,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ),
                                   validator: (value) =>
-                                      validatePasswordMin8(value ?? ''),
-                                  onChanged: (password) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerPasswordChanged(
-                                          password,
+                                      AuthValidationErrorMapper.mapPasswordError(
+                                        AuthValidator.validatePassword(
+                                          value ?? '',
                                         ),
                                       ),
+                                  onChanged: (password) => context
+                                      .read<RegisterCubit>()
+                                      .passwordChanged(password),
                                   onFieldSubmitted: (_) {
                                     _confirmPasswordFocusNode.requestFocus();
                                   },
@@ -274,16 +289,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ),
                                   validator: (value) =>
-                                      validatePasswordConfirmation(
-                                        password: _passwordController.text,
-                                        confirmation: value ?? '',
-                                      ),
-                                  onChanged: (confirmPassword) =>
-                                      context.read<AuthBloc>().add(
-                                        AuthEvent.registerPasswordConfirmChanged(
-                                          confirmPassword,
+                                      AuthValidationErrorMapper.mapPasswordConfirmationError(
+                                        AuthValidator.validatePasswordConfirmation(
+                                          password: _passwordController.text,
+                                          confirmation: value ?? '',
                                         ),
                                       ),
+                                  onChanged: (confirmPassword) => context
+                                      .read<RegisterCubit>()
+                                      .passwordConfirmChanged(confirmPassword),
                                   onFieldSubmitted: (_) => _submitRegister(
                                     isSubmitting: isSubmitting,
                                   ),
