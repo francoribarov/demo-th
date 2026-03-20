@@ -13,23 +13,41 @@ part 'create_game_state.dart';
 
 @injectable
 /// BLoC coordinating the create-game wizard flow.
+///
+/// Steps:
+/// 0 - Title, description, images
+/// 1 - Game characteristics (duration, players, difficulty)
+/// 2 - PDF rules (optional)
 class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
   CreateGameBloc({required CreateGameUseCase createGame})
       : _createGame = createGame,
         super(const CreateGameState()) {
     on<_TitleChanged>(_onTitleChanged);
     on<_DescriptionChanged>(_onDescriptionChanged);
+    on<_ImagesChanged>(_onImagesChanged);
     on<_DurationChanged>(_onDurationChanged);
     on<_PlayersChanged>(_onPlayersChanged);
     on<_DifficultyChanged>(_onDifficultyChanged);
+    on<_RulesUrlChanged>(_onRulesUrlChanged);
     on<_NextStep>(_onNextStep);
     on<_PreviousStep>(_onPreviousStep);
+    on<_GoToStep>(_onGoToStep);
     on<_Submit>(_onSubmit);
   }
 
-  static const int maxStep = 1;
+  static const int totalSteps = 3;
+  static const int maxStep = totalSteps - 1;
+
+  static const stepLabels = ['Información', 'Detalles', 'Reglas'];
+  static const stepIcons = [
+    0xe3ab, // Icons.edit_outlined (int value for serialization)
+    0xe55d, // Icons.tune
+    0xe229, // Icons.description_outlined
+  ];
 
   final CreateGameUseCase _createGame;
+
+  // --- Field change handlers ---
 
   void _onTitleChanged(_TitleChanged event, Emitter<CreateGameState> emit) {
     final titleError = GameValidationErrorMapper.mapTitleError(
@@ -39,13 +57,7 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
       state.copyWith(
         title: event.value,
         titleError: titleError,
-        isStepValid: _validateStep(
-          state.currentStep,
-          title: event.value,
-          description: state.description,
-          duration: state.duration,
-          players: state.players,
-        ),
+        isStepValid: _validateStep(state.currentStep, state, title: event.value),
       ),
     );
   }
@@ -63,13 +75,18 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
         descriptionError: descError,
         isStepValid: _validateStep(
           state.currentStep,
-          title: state.title,
+          state,
           description: event.value,
-          duration: state.duration,
-          players: state.players,
         ),
       ),
     );
+  }
+
+  void _onImagesChanged(
+    _ImagesChanged event,
+    Emitter<CreateGameState> emit,
+  ) {
+    emit(state.copyWith(images: event.value));
   }
 
   void _onDurationChanged(
@@ -85,10 +102,8 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
         durationError: durError,
         isStepValid: _validateStep(
           state.currentStep,
-          title: state.title,
-          description: state.description,
+          state,
           duration: event.value,
-          players: state.players,
         ),
       ),
     );
@@ -107,9 +122,7 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
         playersError: playersError,
         isStepValid: _validateStep(
           state.currentStep,
-          title: state.title,
-          description: state.description,
-          duration: state.duration,
+          state,
           players: event.value,
         ),
       ),
@@ -120,19 +133,17 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
     _DifficultyChanged event,
     Emitter<CreateGameState> emit,
   ) {
-    emit(
-      state.copyWith(
-        difficulty: event.value,
-        isStepValid: _validateStep(
-          state.currentStep,
-          title: state.title,
-          description: state.description,
-          duration: state.duration,
-          players: state.players,
-        ),
-      ),
-    );
+    emit(state.copyWith(difficulty: event.value));
   }
+
+  void _onRulesUrlChanged(
+    _RulesUrlChanged event,
+    Emitter<CreateGameState> emit,
+  ) {
+    emit(state.copyWith(rulesUrl: event.value));
+  }
+
+  // --- Navigation ---
 
   void _onNextStep(_NextStep event, Emitter<CreateGameState> emit) {
     if (!state.isStepValid || state.currentStep >= maxStep) return;
@@ -140,13 +151,7 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
     emit(
       state.copyWith(
         currentStep: nextStep,
-        isStepValid: _validateStep(
-          nextStep,
-          title: state.title,
-          description: state.description,
-          duration: state.duration,
-          players: state.players,
-        ),
+        isStepValid: _validateStep(nextStep, state),
       ),
     );
   }
@@ -157,20 +162,27 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
     emit(
       state.copyWith(
         currentStep: prevStep,
-        isStepValid: _validateStep(
-          prevStep,
-          title: state.title,
-          description: state.description,
-          duration: state.duration,
-          players: state.players,
-        ),
+        isStepValid: _validateStep(prevStep, state),
       ),
     );
   }
 
-  Future<void> _onSubmit(_Submit event, Emitter<CreateGameState> emit) async {
-    if (!state.isStepValid) return;
+  void _onGoToStep(_GoToStep event, Emitter<CreateGameState> emit) {
+    final step = event.step;
+    if (step < 0 || step >= totalSteps) return;
+    final maxReachable = _maxReachableStep(state);
+    if (step > maxReachable) return;
+    emit(
+      state.copyWith(
+        currentStep: step,
+        isStepValid: _validateStep(step, state),
+      ),
+    );
+  }
 
+  // --- Submit ---
+
+  Future<void> _onSubmit(_Submit event, Emitter<CreateGameState> emit) async {
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
     final draft = GameDraft(
@@ -179,6 +191,7 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
       duration: state.duration,
       players: state.players,
       difficulty: state.difficulty,
+      images: event.images,
     );
 
     try {
@@ -207,22 +220,37 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
     }
   }
 
+  // --- Validation ---
+
+  int _maxReachableStep(CreateGameState s) {
+    for (var i = 0; i < totalSteps - 1; i++) {
+      if (!_validateStep(i, s)) return i;
+    }
+    return totalSteps - 1;
+  }
+
   bool _validateStep(
-    int step, {
-    required String title,
-    required String description,
-    required int duration,
-    required String players,
+    int step,
+    CreateGameState s, {
+    String? title,
+    String? description,
+    int? duration,
+    String? players,
   }) {
+    final t = title ?? s.title;
+    final d = description ?? s.description;
+    final dur = duration ?? s.duration;
+    final p = players ?? s.players;
+
     switch (step) {
       case 0:
-        return GameValidator.validateTitle(title) == null &&
-            GameValidator.validateDescription(description) == null;
+        return GameValidator.validateTitle(t) == null &&
+            GameValidator.validateDescription(d) == null;
       case 1:
-        return GameValidator.validateDuration(duration) == null &&
-            GameValidator.validatePlayers(players) == null &&
-            GameValidator.validateTitle(title) == null &&
-            GameValidator.validateDescription(description) == null;
+        return GameValidator.validateDuration(dur) == null &&
+            GameValidator.validatePlayers(p) == null;
+      case 2:
+        return true;
       default:
         return false;
     }

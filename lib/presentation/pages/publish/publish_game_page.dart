@@ -43,8 +43,15 @@ class _PublishGamePageState extends State<PublishGamePage> {
   Future<void> _openCreateGame() async {
     final createdGame = await Navigator.of(context).push<Game>(
       MaterialPageRoute(
-        builder: (_) => BlocProvider<CreateGameBloc>(
-          create: (_) => getIt<CreateGameBloc>(),
+        builder: (_) => MultiBlocProvider(
+          providers: [
+            BlocProvider<CreateGameBloc>(
+              create: (_) => getIt<CreateGameBloc>(),
+            ),
+            BlocProvider<ImageUploadBloc>(
+              create: (_) => getIt<ImageUploadBloc>(),
+            ),
+          ],
           child: const CreateGamePage(),
         ),
       ),

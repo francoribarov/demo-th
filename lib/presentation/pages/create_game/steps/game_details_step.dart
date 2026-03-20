@@ -6,10 +6,9 @@ import 'package:mobile_table_hopping/core/theme/app_typography.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/selectable_input_card.dart';
 import 'package:mobile_table_hopping/presentation/widgets/molecules/common/text_form_input_field.dart';
 
-/// Difficulty options for game creation.
 const _difficulties = ['Fácil', 'Medio', 'Difícil'];
 
-/// Step 2 of the create-game wizard: duration, players, difficulty.
+/// Step 2: Game characteristics — duration, players, difficulty.
 class GameDetailsStep extends StatelessWidget {
   const GameDetailsStep({
     required this.duration,
@@ -34,69 +33,77 @@ class GameDetailsStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Detalles del juego', style: AppTypography.headlineMedium),
-        const SizedBox(height: AppTheme.spacingSm),
-        Text(
-          'Completá la información técnica del juego.',
-          style: AppTypography.bodyMedium.copyWith(
-            color: AppColors.textTertiary,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.spacingLg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Características del juego',
+            style: AppTypography.headlineMedium,
           ),
-        ),
-        const SizedBox(height: AppTheme.spacing2xl),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            'Estos datos ayudan a los usuarios a encontrar y filtrar juegos.',
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppColors.gameBrown.withOpacityValue(0.6),
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingXl),
 
-        TextFormInputField(
-          key: ValueKey('create_game_duration_$duration'),
-          initialValue: duration > 0 ? duration.toString() : '',
-          labelText: 'Duración (minutos) *',
-          hintText: 'Ej: 60',
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          onChanged: (v) => onDurationChanged(int.tryParse(v) ?? 0),
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (_) => durationError,
-        ),
-        const SizedBox(height: AppTheme.spacingLg),
+          TextFormInputField(
+            key: ValueKey('create_game_duration_$duration'),
+            initialValue: duration > 0 ? duration.toString() : '',
+            labelText: 'Duración (minutos) *',
+            hintText: 'Ej: 60',
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (v) => onDurationChanged(int.tryParse(v) ?? 0),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (_) => durationError,
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
 
-        TextFormInputField(
-          key: ValueKey('create_game_players_$players'),
-          initialValue: players,
-          labelText: 'Jugadores *',
-          hintText: 'Ej: 2-4',
-          helperText: 'Formato: "2-4" o un número fijo como "3"',
-          onChanged: onPlayersChanged,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (_) => playersError,
-        ),
-        const SizedBox(height: AppTheme.spacing2xl),
+          TextFormInputField(
+            key: ValueKey('create_game_players_$players'),
+            initialValue: players,
+            labelText: 'Jugadores *',
+            hintText: 'Ej: 2-4',
+            helperText: 'Formato: "2-4" o un número fijo como "3"',
+            onChanged: onPlayersChanged,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (_) => playersError,
+          ),
+          const SizedBox(height: AppTheme.spacing2xl),
 
-        Text('Dificultad', style: AppTypography.titleMedium),
-        const SizedBox(height: AppTheme.spacingMd),
-        ...List.generate(
-          _difficulties.length,
-          (index) {
-            final d = _difficulties[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-              child: SelectableInputCard(
-                onTap: () => onDifficultyChanged(d),
-                isSelected: difficulty == d,
-                indicatorMode: SelectableInputIndicatorMode.radio,
-                indicatorPosition: SelectableInputIndicatorPosition.leading,
-                title: d,
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                selectedBackgroundColor:
-                    AppColors.gameRust.withOpacityValue(0.1),
-                unselectedBorderColor: AppColors.border,
-                selectedTextColor: AppColors.gameRust,
-                unselectedTextColor: AppColors.foreground,
-              ),
-            );
-          },
-        ),
-      ],
+          Text('Dificultad', style: AppTypography.titleMedium),
+          const SizedBox(height: AppTheme.spacingMd),
+          ...List.generate(
+            _difficulties.length,
+            (index) {
+              final d = _difficulties[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+                child: SelectableInputCard(
+                  onTap: () => onDifficultyChanged(d),
+                  isSelected: difficulty == d,
+                  indicatorMode: SelectableInputIndicatorMode.radio,
+                  indicatorPosition: SelectableInputIndicatorPosition.leading,
+                  title: d,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                  selectedBackgroundColor:
+                      AppColors.gameRust.withOpacityValue(0.1),
+                  unselectedBorderColor: AppColors.border,
+                  selectedTextColor: AppColors.gameRust,
+                  unselectedTextColor: AppColors.foreground,
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(height: AppTheme.spacingScrollBottom),
+        ],
+      ),
     );
   }
 }
