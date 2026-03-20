@@ -27,6 +27,7 @@ class DataStep extends StatelessWidget {
     required this.onConditionChanged,
     this.descriptionError,
     this.conditionError,
+    this.onCreateGamePressed,
     super.key,
   });
 
@@ -65,6 +66,9 @@ class DataStep extends StatelessWidget {
   /// Validation error for condition from bloc.
   final String? conditionError;
 
+  /// Callback to open the create-game flow.
+  final VoidCallback? onCreateGamePressed;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -91,6 +95,7 @@ class DataStep extends StatelessWidget {
           onGameSelected: (game) {
             onGameIdChanged(game.id);
           },
+          onCreateGamePressed: onCreateGamePressed,
         ),
         const SizedBox(height: AppTheme.spacingLg),
 
