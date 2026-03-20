@@ -18,6 +18,7 @@ class GameSelector extends StatefulWidget {
     required this.onSearchChanged,
     required this.onSearchCleared,
     required this.onGameSelected,
+    this.onCreateGamePressed,
     super.key,
   });
 
@@ -31,6 +32,9 @@ class GameSelector extends StatefulWidget {
 
   /// Callback when a game is selected.
   final ValueChanged<Game> onGameSelected;
+
+  /// Callback to open the create-game flow.
+  final VoidCallback? onCreateGamePressed;
 
   @override
   State<GameSelector> createState() => _GameSelectorState();
@@ -129,11 +133,44 @@ class _GameSelectorState extends State<GameSelector> {
                       else if (widget.filteredGames.isEmpty)
                         Padding(
                           padding: const EdgeInsets.all(AppTheme.spacingLg),
-                          child: Text(
-                            'No se encontraron juegos',
-                            style: AppTypography.bodyMedium.copyWith(
-                              color: AppColors.textTertiary,
-                            ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.search_off_rounded,
+                                size: 32,
+                                color: AppColors.textTertiary,
+                              ),
+                              const SizedBox(height: AppTheme.spacingSm),
+                              Text(
+                                'No se encontraron juegos',
+                                style: AppTypography.bodyMedium.copyWith(
+                                  color: AppColors.textTertiary,
+                                ),
+                              ),
+                              if (widget.onCreateGamePressed != null) ...[
+                                const SizedBox(height: AppTheme.spacingMd),
+                                Text(
+                                  '¿No encontrás tu juego?',
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.textMuted,
+                                  ),
+                                ),
+                                const SizedBox(height: AppTheme.spacingSm),
+                                TextButton.icon(
+                                  onPressed: () {
+                                    _focusNode.unfocus();
+                                    setState(() => _showResults = false);
+                                    widget.onCreateGamePressed!();
+                                  },
+                                  icon: const Icon(Icons.add_circle_outline),
+                                  label: const Text('Crear juego nuevo'),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppColors.gameRust,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         )
                       else ...[

@@ -3,6 +3,7 @@ import 'package:mobile_table_hopping/core/resources/api_result.dart';
 import 'package:mobile_table_hopping/core/resources/base_data_source.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/catalog_params.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/catalog_responses.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_create_request_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_list_item_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
@@ -54,6 +55,9 @@ abstract class CatalogRemoteDataSource {
 
   /// Fetches recommended games for a specific game.
   Future<ApiResult<List<GameModel>>> getRecommendedGames(String gameId);
+
+  /// Creates a new game in the catalog.
+  Future<ApiResult<GameModel>> createGame(GameCreateRequestModel request);
 }
 
 /// Implementation of [CatalogRemoteDataSource] using Retrofit service.
@@ -192,6 +196,13 @@ class CatalogRemoteDataSourceImpl extends BaseDataSource
   Future<ApiResult<List<GameModel>>> getRecommendedGames(String gameId) {
     return getStateOf<List<GameModel>>(
       request: () => _service.getRecommendedGames(gameId),
+    );
+  }
+
+  @override
+  Future<ApiResult<GameModel>> createGame(GameCreateRequestModel request) {
+    return getStateOf<GameModel>(
+      request: () => _service.createGame(request.toJson()),
     );
   }
 }

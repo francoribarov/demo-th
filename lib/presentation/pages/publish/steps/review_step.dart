@@ -16,11 +16,15 @@ class ReviewStep extends StatelessWidget {
     required this.price,
     required this.condition,
     required this.images,
+    this.gameName,
     super.key,
   });
 
   /// The game ID.
   final String gameId;
+
+  /// The game title for display.
+  final String? gameName;
 
   /// The game description.
   final String description;
@@ -72,7 +76,10 @@ class ReviewStep extends StatelessWidget {
               ),
               const SizedBox(height: AppTheme.spacingLg),
 
-              Text('Juego ID: $gameId', style: AppTypography.headlineMedium),
+              Text(
+                gameName ?? gameId,
+                style: AppTypography.headlineMedium,
+              ),
               const SizedBox(height: AppTheme.spacingSm),
               Text(
                 description.isEmpty ? 'Sin descripción' : description,

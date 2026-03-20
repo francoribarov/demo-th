@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_table_hopping/core/di/injection.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
 import 'package:mobile_table_hopping/domain/model/my_publications/publication_primitives.dart';
 import 'package:mobile_table_hopping/presentation/blocs/common/game_search_cubit.dart';
+import 'package:mobile_table_hopping/presentation/blocs/create_game/create_game_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publish/delivery_method_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publish/image_upload_bloc.dart';
 import 'package:mobile_table_hopping/presentation/blocs/publish/publish_bloc.dart';
+import 'package:mobile_table_hopping/presentation/pages/create_game/create_game_page.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/steps/data_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/steps/photos_step.dart';
 import 'package:mobile_table_hopping/presentation/pages/publish/steps/price_step.dart';
@@ -34,6 +38,24 @@ class _PublishGamePageState extends State<PublishGamePage> {
       );
       await context.read<GameSearchCubit>().load();
     });
+  }
+
+  Future<void> _openCreateGame() async {
+    final createdGame = await Navigator.of(context).push<Game>(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider<CreateGameBloc>(
+          create: (_) => getIt<CreateGameBloc>(),
+          child: const CreateGamePage(),
+        ),
+      ),
+    );
+
+    if (createdGame != null && mounted) {
+      context.read<GameSearchCubit>().addGame(createdGame);
+      context.read<PublishBloc>().add(
+        PublishEvent.gameIdChanged(createdGame.id),
+      );
+    }
   }
 
   @override
@@ -100,6 +122,7 @@ class _PublishGamePageState extends State<PublishGamePage> {
                             descriptionError:
                                 publishState.form.descriptionError,
                             conditionError: publishState.form.conditionError,
+                            onCreateGamePressed: _openCreateGame,
                           ),
                           PhotosStep(
                             images: imageState.images,
@@ -135,6 +158,12 @@ class _PublishGamePageState extends State<PublishGamePage> {
                           ),
                           ReviewStep(
                             gameId: publishState.form.gameId,
+                            gameName: gameSearchState.allGames
+                                .where(
+                                  (g) => g.id == publishState.form.gameId,
+                                )
+                                .firstOrNull
+                                ?.title,
                             description: publishState.form.description,
                             price: publishState.form.price,
                             condition: publishState.form.condition,

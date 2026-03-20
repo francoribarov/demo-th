@@ -4,12 +4,14 @@ import 'package:mobile_table_hopping/core/data/base_repository.dart';
 import 'package:mobile_table_hopping/core/errors/domain/domain_exception.dart';
 import 'package:mobile_table_hopping/data/datasource/catalog/catalog_data_source.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/catalog_params.dart';
+import 'package:mobile_table_hopping/data/dto/catalog/game_create_request_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/game_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_list_item_model.dart';
 import 'package:mobile_table_hopping/data/dto/catalog/publication_listing_model.dart';
 import 'package:mobile_table_hopping/data/mapper/catalog/catalog_filter_mapper.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/filters.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/game.dart';
+import 'package:mobile_table_hopping/domain/model/catalog/game_draft.dart';
 import 'package:mobile_table_hopping/domain/model/catalog/publication_listing.dart';
 import 'package:mobile_table_hopping/domain/repository/catalog/catalog_repository.dart';
 
@@ -177,6 +179,15 @@ class CatalogRepositoryImpl extends BaseRepository
   ) async {
     return executeDataSourceList<GameModel, Game>(
       function: () => _dataSource.getRecommendedGames(gameId),
+    );
+  }
+
+  @override
+  Future<Either<DomainException, Game>> createGame(GameDraft draft) async {
+    return executeDataSource<GameModel, Game>(
+      function: () => _dataSource.createGame(
+        GameCreateRequestModel.fromDraft(draft),
+      ),
     );
   }
 }
